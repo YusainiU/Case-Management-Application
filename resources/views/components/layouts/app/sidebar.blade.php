@@ -14,6 +14,7 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Dashboard</flux:navlist.item>
+                    <flux:navlist.item icon="ellipsis-vertical" :href="route('user-management')" :current="request()->routeIs('user-management')" wire:navigate>User Management</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('engineer-management')" :current="request()->routeIs('engineer-management')" wire:navigate>Engineer Management</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('engineer-skills')" :current="request()->routeIs('engineer-skills')" wire:navigate>Skills</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('engineer-certificates')" :current="request()->routeIs('engineer-certificates')" wire:navigate>Certificates</flux:navlist.item>
