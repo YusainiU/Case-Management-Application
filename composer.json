@@ -16,6 +16,7 @@
         "livewire/flux": "^2.1.1",
         "livewire/volt": "^1.7.0",
         "simplydigital/engineermanagement": "dev-main",
+	"simplydigital/usermanagement": "dev-main",
         "spatie/laravel-permission": "^6.24",
         "wire-elements/modal": "^3.0"
     },
@@ -36,7 +37,14 @@
             "options": {
                 "symlink": true
             }
-        }
+        },
+	{
+	    "type": "path",
+	    "url": "packages/Simplydigital/UserManagement",
+	    "options": {
+		"symlink":true	    
+	    }
+	}
     ],
     "autoload": {
         "psr-4": {

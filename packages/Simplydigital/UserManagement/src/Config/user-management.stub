@@ -1,0 +1,24 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Configuration template for SimplyDigital UserManager package.
+ *
+ * Copy this file to your application's config directory and adjust values as needed.
+ */
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Prefixes
+    |--------------------------------------------------------------------------
+    |
+    | Prefixes for record numbers.
+    |
+    */
+
+    'LEAVE_PREFIX' => 'LVE',
+
+];
