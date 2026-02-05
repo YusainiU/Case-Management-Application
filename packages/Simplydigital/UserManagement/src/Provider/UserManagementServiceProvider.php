@@ -6,8 +6,10 @@ use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 
 use Simplydigital\UserManagement\Http\Components\BladeAddNewUserComponent;
-
+use Simplydigital\UserManagement\Http\Components\BladeListAllUserComponent;
 use Simplydigital\UserManagement\Livewire\AddNewUser;
+use Simplydigital\UserManagement\Livewire\ListAllUser;
+use Simplydigital\UserManagement\Livewire\UpdateUser;
 
 class UserManagementServiceProvider extends ServiceProvider
 {
@@ -46,12 +48,14 @@ class UserManagementServiceProvider extends ServiceProvider
     {
         // Register Blade components here if needed
         Blade::component('blade-addnewuser', BladeAddNewUserComponent::class);
+        Blade::component('blade-listalluser', BladeListAllUserComponent::class);
     }
-
     public function registerLivewireComponents()
     {
         // Register Livewire components here if needed
         Livewire::component('addnewuser-component', AddNewUser::class);
+        Livewire::component('listalluser-component', ListAllUser::class);
+        Livewire::component('updateuser-component', UpdateUser::class);
     }
 
     public function register()

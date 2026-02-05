@@ -2,10 +2,10 @@
 
 Namespace Simplydigital\UserManagement\Livewire;
 
-use Livewire\Component;
+use LivewireUI\Modal\ModalComponent;
 use App\Models\User;
 
-class AddNewUser extends Component
+class AddNewUser extends ModalComponent
 {
     public $name;
     public $email;
@@ -16,6 +16,11 @@ class AddNewUser extends Component
         'email' => 'required|email|unique:users,email',
         'password' => 'required|string|min:8',
     ];
+
+    public function maxWidth(): string
+    {
+        return '6xl';
+    }
 
     public function addUser()
     {
@@ -31,6 +36,10 @@ class AddNewUser extends Component
 
         // Reset form fields
         $this->reset(['name', 'email', 'password']);
+
+        // Emit event to refresh the user list        $this->emit('closeModal');
+        $this->dispatch('closeModal');
+        
     }
 
     public function render()

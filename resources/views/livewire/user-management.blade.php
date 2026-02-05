@@ -1,3 +1,3 @@
 <div>
-    <x-usermanagement::add-new-user />
+    <x-usermanagement::list-all-user />
 </div>
