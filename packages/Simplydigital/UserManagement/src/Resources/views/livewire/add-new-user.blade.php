@@ -20,8 +20,8 @@
         <!-- Password -->
         <div class="mb-4">
             <x-usermanagement::input-label for="password" name='Password' />
-            <x-usermanagement::text-input id="password" class="block mt-1 w-full" type="password" wire:model="password"
-                required />
+            <x-usermanagement::text-input id="password" class="block mt-1 w-full" type="text" wire:model="password"
+                required disabled />
             <x-usermanagement::input-error field="password" class="mt-2" />
         </div>
 

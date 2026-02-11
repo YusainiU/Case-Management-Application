@@ -18,9 +18,9 @@
                     <x-usermanagement::select id="role" name="role" model="role" :options="$roles" placeholder="Select a role" />
                 </div>
 
-                <div>
+                {{-- <div>
                     <x-usermanagement::checkbox id="active" name="status" value="1" label="Active" model="active" :checked="$active" />
-                </div>
+                </div> --}}
             </div>
     </x-usermanagement::modal>
 </div>

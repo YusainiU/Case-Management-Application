@@ -1,14 +1,4 @@
 <div class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center">
-        <div></div>
-        <button wire:click="openCreateUser" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Create New User
-        </button>
-    </div>
-
-    <div class="mb-6">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200">Users</h1>
-    </div>
 
     @if($showCreateModal)
         <livewire:addnewuser-component />
@@ -17,6 +7,46 @@
     @if($showUpdateModal)
         <livewire:updateuser-component :userId="$userId" />
     @endif
+
+    @if($showPermissions)
+        <livewire:listpermissions-component />
+    @endif
+
+    @if($showRoles)
+        <livewire:listroles-component />
+    @endif
+
+    <x-usermanagement::section-title>
+        <x-slot name="title">
+            <div class="">
+                <x-usermanagement-ui-icon name="user" class="h-10 w-10" />
+                User Management                
+            </div>
+        </x-slot>
+        <x-slot name="description">            
+            Manage your users effectively.
+        </x-slot>
+    </x-usermanagement::section-title>
+
+    <div class="flex justify-between items-center mt-4 mb-4">
+        <button wire:click="openRoles" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Roles
+        </button>
+        <button wire:click="openPermissions" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Permissions
+        </button>                
+        <button wire:click="openCreateUser" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Create New User
+        </button>
+    </div>
+    
+    <div class="mt-3 mb-3 flex justify-between gap-x-6">
+        <x-input name="filter" class="" placeholder="Search records" wire:model.live='filter' />
+    </div>
+    
+    <div class="mt-6">
+        {{ $users->links() }}
+    </div>
 
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
@@ -51,4 +81,5 @@
     <div class="mt-6">
         {{ $users->links() }}
     </div>
+
 </div>

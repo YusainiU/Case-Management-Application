@@ -14,6 +14,8 @@ class ListAllUser extends Component
     public $filter = '';
     public $showCreateModal = false;
     public $showUpdateModal = false;
+    public $showRoles = false;
+    public $showPermissions = false;
     protected $listeners = [
         'closeModal',
     ];    
@@ -30,6 +32,8 @@ class ListAllUser extends Component
         $this->userId = null;
         $this->showCreateModal = false;
         $this->showUpdateModal = false;
+        $this->showPermissions = false;
+        $this->showRoles = false;
     }
 
     public function updatingSearch()
@@ -41,6 +45,18 @@ class ListAllUser extends Component
     {
         $this->resetShowModals();
         $this->showCreateModal = true;
+    }
+
+    public function openRoles()
+    {
+        $this->resetShowModals();
+        $this->showRoles = true;
+    }
+
+    public function openPermissions()
+    {
+        $this->resetShowModals();
+        $this->showPermissions = true;
     }
 
     public function openUpdateUser($userId)

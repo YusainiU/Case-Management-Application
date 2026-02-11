@@ -1,6 +1,7 @@
 <?php
 namespace Simplydigital\UserManagement\Provider;
 
+use App\View\Components\Icon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
@@ -10,6 +11,10 @@ use Simplydigital\UserManagement\Http\Components\BladeListAllUserComponent;
 use Simplydigital\UserManagement\Livewire\AddNewUser;
 use Simplydigital\UserManagement\Livewire\ListAllUser;
 use Simplydigital\UserManagement\Livewire\UpdateUser;
+use Simplydigital\UserManagement\Livewire\AddNewPermission;
+use Simplydigital\UserManagement\Livewire\AddNewRole;
+use Simplydigital\UserManagement\Livewire\ListPermissions;
+use Simplydigital\UserManagement\Livewire\ListRoles;
 
 class UserManagementServiceProvider extends ServiceProvider
 {
@@ -23,11 +28,14 @@ class UserManagementServiceProvider extends ServiceProvider
         $this->loadRoutes();
         $this->registerBladeComponents();
         $this->registerLivewireComponents();
+        $this->publishMigrations();
+        $this->publishConfig();
     }
 
     public function loadViews()
     {
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'usermanagement');
+        $this->loadViewComponentsAs('usermanagement-ui',[Icon::class]);
     }
 
     public function loadRoutes()
@@ -36,6 +44,21 @@ class UserManagementServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
         }    
     }
+
+    public function publishMigrations()
+    {
+        $this->publishes([
+         __DIR__ . '/../Database/migrations/create_users_details_table.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_users_details_table.php'),
+         __DIR__ . '/../Database/migrations/create_users_statuses_table.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_users_statuses_table.php'),
+        ]);
+    }
+
+    public function publishResources()
+    {
+        $this->publishes([
+            __DIR__.'/../Resources/icons' => resource_path('Simplydigital/UserManagement/icons')
+        ], 'simplydigital-usermanagement-resources');        
+    }   
 
     public function publishConfig()
     {
@@ -56,6 +79,10 @@ class UserManagementServiceProvider extends ServiceProvider
         Livewire::component('addnewuser-component', AddNewUser::class);
         Livewire::component('listalluser-component', ListAllUser::class);
         Livewire::component('updateuser-component', UpdateUser::class);
+        Livewire::component('addnewpermission-component', AddNewPermission::class);
+        Livewire::component('addnewrole-component', AddNewRole::class);
+        Livewire::component('listpermissions-component', ListPermissions::class);
+        Livewire::component('listroles-component', ListRoles::class);
     }
 
     public function register()

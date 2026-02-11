@@ -1,4 +1,4 @@
-<div class="mb-4">
+<div class="mb-4 w-full">
     <input
         {{ $attributes->merge([
             'class' => 'appearance-none text-black block w-full border border-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500',
@@ -9,6 +9,7 @@
             'placeholder' => $placeholder ?? '',
             'required' => $required ?? false,
             'autofocus' => $autofocus ?? false,
+            'disabled' => $disabled ?? false,
         ])}}
     />
 </div>

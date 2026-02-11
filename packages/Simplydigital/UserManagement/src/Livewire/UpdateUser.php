@@ -3,6 +3,8 @@
 Namespace Simplydigital\UserManagement\Livewire;
 
 use LivewireUI\Modal\ModalComponent;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use App\Models\User;
 
 class UpdateUser extends ModalComponent
@@ -10,7 +12,7 @@ class UpdateUser extends ModalComponent
     public $userId;
     public $name = '';
     public $email = '';
-    public $password = '';
+    //public $password = '';
     public $active = true;
     public $modalTitle = 'Update User';
     public $modalAction = 'update';
@@ -20,7 +22,6 @@ class UpdateUser extends ModalComponent
     protected $rules = [
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255|unique:users,email',
-        'password' => 'nullable|string|min:8',
         'active' => 'boolean',
     ];
 
@@ -50,22 +51,34 @@ class UpdateUser extends ModalComponent
         }
     }
 
-    public function update()
+    public function confirm()
     {
-        $this->validate();
+        $input = [
+            'name' => $this->name,
+            'email' => $this->email,
+        ];
 
+        Validator::make($input, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique(User::class),
+            ],
+        ])->validate();        
+        
         $user = User::find($this->userId);
+
         if ($user) {
             $user->name = $this->name;
             $user->email = $this->email;
-            if (!empty($this->password)) {
-                $user->password = bcrypt($this->password);
-            }
-            $user->active = $this->active;
             $user->save();
         }
         $this->closeModal();
         $this->dispatch('userUpdated');
+
     }
 
     public function maxWidth(): string
