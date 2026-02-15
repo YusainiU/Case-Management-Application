@@ -75,13 +75,15 @@ class AddNewUser extends ModalComponent
 
         session()->flash('message', 'User added successfully.');
 
-        // Reset form fields
-        $this->reset(['name', 'email', 'password']);
-
-        // Emit event to refresh the user list        $this->emit('closeModal');
-        $this->dispatch('closeModal');
+        $this->closeThis();
         
     }
+
+    public function closeThis()
+    {
+        $this->reset();
+        $this->dispatch('closeCreateNewUser');
+    }    
 
     public function render()
     {

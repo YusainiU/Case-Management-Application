@@ -11,7 +11,7 @@
 
 <div class="text-gray-800">
     <x-usermanagement::modal title="Permissions" wire:model="showModal" widthsize="6xl" cancelText="Close"
-        confirm="{{ $confirmCall }}" confirmText="{{ $confirmText }}">
+        confirm="{{ $confirmCall }}" confirmText="{{ $confirmText }}" cancelThisWith="closeThis">
 
         @if ($showList)
 
@@ -58,7 +58,16 @@
 
         @if ($showAddPermission)
             <div class="space-y-4">
+                <div class="group">
+                    <span class="cursor-pointer group-hover:hidden">
+                        <x-usermanagement-ui-icon name="left" class="h-6 w-6 text-gray-900" />
+                    </span>
+                    <button class="hidden group-hover:block text-sm text-gray-800 cursor-pointer" wire:click="backToList">
+                        Back to List
+                    </button>
+                </div>                
                 <div>
+
                     <x-usermanagement::input-label for="name" name="Name" class="block text-sm font-medium text-gray-700" :required="true" />
 
                     <x-usermanagement::text-input

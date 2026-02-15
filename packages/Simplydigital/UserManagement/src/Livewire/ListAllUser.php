@@ -17,9 +17,32 @@ class ListAllUser extends Component
     public $showRoles = false;
     public $showPermissions = false;
     protected $listeners = [
-        'closeModal',
+        'closeRoleModal',
+        'closePermissionModal',
+        'closeCreateNewUser',
+        'userUpdated',
     ];    
 
+
+    public function closeRoleModal()
+    {
+        $this->closeModal();
+    }
+
+    public function closeCreateNewUser()
+    {
+        $this->closeModal();
+    }
+
+    public function closePermissionModal()
+    {
+        $this->closeModal();
+    }
+
+    public function userUpdated()
+    {
+        $this->closeModal();
+    }
 
     public function closeModal()
     {

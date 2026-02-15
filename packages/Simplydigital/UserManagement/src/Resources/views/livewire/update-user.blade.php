@@ -1,5 +1,5 @@
 <div>
-    <x-usermanagement::modal title="Update User Details">
+    <x-usermanagement::modal title="Update User Details" cancelThisWith="closeThis">
             <div class="space-y-4">
                 <div>
                     <x-usermanagement::input-label for="name" name="Name" />
@@ -15,7 +15,7 @@
 
                 <div>
                     <x-usermanagement::input-label for="role" name="Role" />
-                    <x-usermanagement::select id="role" name="role" model="role" :options="$roles" placeholder="Select a role" />
+                    <x-usermanagement::select id="role" name="role" model="selectedRoles" :options="$roles" placeholder="Select a role" multiple="multiple" />
                 </div>
 
                 {{-- <div>

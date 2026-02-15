@@ -1,5 +1,5 @@
 <div>
-    <x-usermanagement::modal title="Add New User" wire:model="showModal">
+    <x-usermanagement::modal title="Add New User" wire:model="showModal" cancelThisWith="closeThis">
         <!-- Name -->
         <div class="mb-4">
             <x-usermanagement::input-label for="name" name='Name' />

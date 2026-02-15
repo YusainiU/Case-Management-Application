@@ -27,7 +27,7 @@ class Icon extends Component
     {
         //return view('components.icon');
         $path = resource_path("icons/{$this->name}.svg");
-
+        
         // If the SVG file doesn't exist, return an empty icon
         if (!file_exists($path)) {
             return "<!-- Icon {$this->name} not found -->";

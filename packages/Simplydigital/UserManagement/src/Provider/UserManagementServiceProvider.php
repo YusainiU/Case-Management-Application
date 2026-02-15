@@ -30,12 +30,13 @@ class UserManagementServiceProvider extends ServiceProvider
         $this->registerLivewireComponents();
         $this->publishMigrations();
         $this->publishConfig();
+        $this->publishResources();
     }
 
     public function loadViews()
     {
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'usermanagement');
-        $this->loadViewComponentsAs('usermanagement-ui',[Icon::class]);
+        $this->loadViewComponentsAs('usermanagement-ui',[\Simplydigital\UserManagement\View\Components\Icon::class]);
     }
 
     public function loadRoutes()

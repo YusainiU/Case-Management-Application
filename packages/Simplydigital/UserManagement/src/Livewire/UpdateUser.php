@@ -6,6 +6,8 @@ use LivewireUI\Modal\ModalComponent;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UpdateUser extends ModalComponent
 {
@@ -18,6 +20,7 @@ class UpdateUser extends ModalComponent
     public $modalAction = 'update';
     public $modalClose = 'close';
     public $roles = [];
+    public $selectedRoles = [];
 
     protected $rules = [
         'name' => 'required|string|max:255',
@@ -34,11 +37,7 @@ class UpdateUser extends ModalComponent
 
     public function loadRoles()
     {
-        $this->roles = [
-            ['id' => 1, 'name' => 'Admin'],
-            ['id' => 2, 'name' => 'Editor'],
-            ['id' => 3, 'name' => 'Viewer'],
-        ];
+        $this->roles = Role::all()->pluck('name', 'name');
     }
 
     public function loadUser($userId)
@@ -67,6 +66,7 @@ class UpdateUser extends ModalComponent
                 'max:255',
                 Rule::unique(User::class),
             ],
+            'selectedRoles' => 'array',
         ])->validate();        
         
         $user = User::find($this->userId);
@@ -76,9 +76,15 @@ class UpdateUser extends ModalComponent
             $user->email = $this->email;
             $user->save();
         }
-        $this->closeModal();
-        $this->dispatch('userUpdated');
 
+        $this->closeThis();
+
+    }
+
+    public function closeThis()
+    {
+        $this->dispatch('userUpdated');
+        $this->closeModal();
     }
 
     public function maxWidth(): string

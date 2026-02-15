@@ -13,18 +13,27 @@ class ListPermissions extends ModalComponent
 
     public $name;
     public $filter = '';
-    public $perPage = 10;
+    public $perPage = 5;
     public $showList = true;
     public $showAddPermission = false;
     public $confirmCall = 'displayCreateForm';
     public $confirmText = 'Create New Permission';
     public $defaultGuardName = 'web';
 
-    protected $queryString = ['search', 'page'];
-
+ 
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function mount()
+    {
+        
+    }
+
+    public function backToList()
+    {
+        $this->resetDisplay();
     }
 
     public function resetDisplay()
@@ -48,6 +57,12 @@ class ListPermissions extends ModalComponent
     {
         return '6xl';
     }
+
+    public function closeThis()
+    {
+        $this->resetDisplay();
+        $this->dispatch('closePermissionModal');
+    }    
 
     public function createNewPermission()
     {
