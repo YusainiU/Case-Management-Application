@@ -5,6 +5,7 @@ Namespace Simplydigital\UserManagement\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 class ListAllUser extends Component
 {
 
@@ -16,11 +17,13 @@ class ListAllUser extends Component
     public $showUpdateModal = false;
     public $showRoles = false;
     public $showPermissions = false;
+    public $showUserProfile = false;
     protected $listeners = [
         'closeRoleModal',
         'closePermissionModal',
         'closeCreateNewUser',
         'userUpdated',
+        'closeUserProfile',
     ];    
 
 
@@ -44,6 +47,11 @@ class ListAllUser extends Component
         $this->closeModal();
     }
 
+    public function closeUserProfile()
+    {
+        $this->closeModal();
+    }    
+
     public function closeModal()
     {
         $this->resetShowModals();
@@ -57,10 +65,17 @@ class ListAllUser extends Component
         $this->showUpdateModal = false;
         $this->showPermissions = false;
         $this->showRoles = false;
+        $this->showUserProfile = false;
     }
 
     public function updatingSearch()
     {
+        $this->resetPage();
+    }
+
+    public function delete($userId)
+    {   
+        $user = User::find($userId)->deleteQuietly();
         $this->resetPage();
     }
 
@@ -87,6 +102,13 @@ class ListAllUser extends Component
         $this->resetShowModals();
         $this->userId = $userId;
         $this->showUpdateModal = true;
+    }
+
+    public function openUserProfile($userId)
+    {
+        $this->resetShowModals();
+        $this->userId = $userId;
+        $this->showUserProfile = true;
     }
 
     public function filter()

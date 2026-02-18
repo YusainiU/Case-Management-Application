@@ -12,6 +12,7 @@ use Spatie\Permission\Models\Permission;
 class UpdateUser extends ModalComponent
 {
     public $userId;
+    public $user;
     public $name = '';
     public $email = '';
     //public $password = '';
@@ -38,12 +39,20 @@ class UpdateUser extends ModalComponent
     public function loadRoles()
     {
         $this->roles = Role::all()->pluck('name', 'name');
+        if(!empty($this->user)) {
+            $roles = $this->user->getRoleNames()->toArray();
+            if(!empty($roles)) {
+                $r = array_values($roles);
+                $this->selectedRoles = $r;
+            }
+        }
     }
 
     public function loadUser($userId)
     {
         $user = User::find($userId);
         if ($user) {
+            $this->user = $user;
             $this->name = $user->name;
             $this->email = $user->email;
             $this->active = $user->active;
@@ -64,7 +73,6 @@ class UpdateUser extends ModalComponent
                 'string',
                 'email',
                 'max:255',
-                Rule::unique(User::class),
             ],
             'selectedRoles' => 'array',
         ])->validate();        
@@ -75,6 +83,11 @@ class UpdateUser extends ModalComponent
             $user->name = $this->name;
             $user->email = $this->email;
             $user->save();
+
+            if(!empty($this->selectedRoles))
+            {
+                $user->assignRole($this->selectedRoles);
+            }
         }
 
         $this->closeThis();

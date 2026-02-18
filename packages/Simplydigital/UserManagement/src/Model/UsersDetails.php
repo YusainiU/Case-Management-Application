@@ -3,13 +3,9 @@
 Namespace Simplydigital\UserManagement\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 class UsersDetails extends Model
 {
-
-    use SoftDeletes;
-
     protected $fillable = [
         'user_id',
         'date_started',
@@ -19,7 +15,20 @@ class UsersDetails extends Model
         'county',
         'postcode',
         'country',
+        'avatar',
     ];
+
+    public function getAddress()
+    {
+        $address = [
+            $this->address_1,
+            $this->address_2,
+            $this->county,
+            $this->postcode,
+            $this->country,
+        ];
+        return $address;
+    }
 
     public function user()
     {

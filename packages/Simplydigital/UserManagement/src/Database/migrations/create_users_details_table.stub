@@ -22,6 +22,7 @@ return new class extends Migration
                 $table->string('postcode')->nullable();
                 $table->string('country')->nullable();
                 $table->string('phone')->nullable();
+                $table->string('avatar')->nullable();
                 $table->foreign('user_id')
                     ->references('id')
                     ->on('users')

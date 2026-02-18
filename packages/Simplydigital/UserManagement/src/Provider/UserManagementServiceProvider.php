@@ -15,6 +15,7 @@ use Simplydigital\UserManagement\Livewire\AddNewPermission;
 use Simplydigital\UserManagement\Livewire\AddNewRole;
 use Simplydigital\UserManagement\Livewire\ListPermissions;
 use Simplydigital\UserManagement\Livewire\ListRoles;
+use Simplydigital\UserManagement\Livewire\UserProfile;
 
 class UserManagementServiceProvider extends ServiceProvider
 {
@@ -84,6 +85,7 @@ class UserManagementServiceProvider extends ServiceProvider
         Livewire::component('addnewrole-component', AddNewRole::class);
         Livewire::component('listpermissions-component', ListPermissions::class);
         Livewire::component('listroles-component', ListRoles::class);
+        Livewire::component('userprofile-component', UserProfile::class);
     }
 
     public function register()

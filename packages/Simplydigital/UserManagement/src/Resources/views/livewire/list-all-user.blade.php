@@ -16,6 +16,10 @@
         <livewire:listroles-component />
     @endif
 
+    @if($showUserProfile)
+        <livewire:userprofile-component :userId="$userId" />
+    @endif
+
     <x-usermanagement::section-title>
         <x-slot name="title">
             <div class="">
@@ -61,12 +65,35 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($users as $user)
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $user->email }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $user->role }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 align-top">
+                            <a href="#" wire:click='openUserProfile({{ $user->id }})' class="hover:underline">
+                                {{ $user->name }}
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 align-top">{{ $user->email }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 align-top">
+                            @php
+                                $buildList = false;
+                                $uroles = $user->getRoleNames();
+                                if(!empty($uroles)){
+                                    $buildList = true;
+                                }
+                            @endphp
+                            @if($buildList)
+                                @foreach($uroles as $urole)
+                                    <span class="block">{{ $urole }}</span>
+                                @endforeach
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium align-top">
                             <a href="#" class="text-blue-600 hover:text-blue-900" wire:click="openUpdateUser({{ $user->id }})">Edit</a>
-                            <a href="#" class="ml-4 text-red-600 hover:text-red-900">Delete</a>
+                            <a href="#" 
+                                class="ml-4 text-red-600 hover:text-red-900"
+                                 onclick="return confirm('Are you sure you want to delete this user?')"
+                                 wire:click='delete({{ $user->id }})'
+                            >
+                                Delete
+                            </a>
                         </td>
                     </tr>
                 @empty
