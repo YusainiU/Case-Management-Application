@@ -6,7 +6,6 @@ use App\Livewire\EngineerCertificates;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
-use App\Livewire\HelloWorldWelcome;
 
 Route::get('/', function () {
     return view('welcome');

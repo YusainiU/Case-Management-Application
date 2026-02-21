@@ -7,6 +7,8 @@ use Simplydigital\UserManagement\Model\UsersDetails;
 use Livewire\WithFileUploads;
 use LivewireUI\Modal\ModalComponent;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use Simplydigital\UserManagement\Services\UserManagementServices;
 
 class UserProfile extends ModalComponent
 {
@@ -20,18 +22,17 @@ class UserProfile extends ModalComponent
     public $name;
     public $email;
     public $phone;
+    public $address_1;
+    public $address_2;
+    public $county;
+    public $postcode;
+    public $country;
     public $image;
     public $imagePath;
     public $avatar;
-    public $isEditing = false;
+    public $showEditing = false;
     public $showUpload = false;
-
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
-        'phone' => 'nullable|string|max:20',
-        'avatar' => 'nullable|image|max:1024',
-    ];
+    public $showDefault = true;
 
     public function mount()
     {
@@ -41,16 +42,40 @@ class UserProfile extends ModalComponent
         }
     }
 
+    public function resetAll()
+    {
+        $this->loadUser();
+        $this->checkUserDetails();
+        $this->showDefault = true;
+        $this->showUpload = false;
+        $this->showEditing = false;
+        $this->image = null;
+        $this->imagePath = null;
+    }
+
+    public function closeProfile()
+    {
+        $this->dispatch('closeUserProfile');
+    }
+
+    public function closeUploadSection()
+    {
+        $this->resetAll();
+    }
+
     public function checkUserDetails()
     {
-        $details = UsersDetails::find($this->userId);
-        if(empty($details)){
-            $this->createUserDetails();
-        }else{
-            $this->userDetails = $details;
-            $this->userAddress = $details->getAddress();
-            $this->avatar = $details->avatar;
-        }
+        $userManagementServices = app(UserManagementServices::class);
+        $details = $userManagementServices->checkUserDetails($this->userId);
+        $this->userDetails = $details;
+        $this->userAddress = $details->getAddress();
+        $this->avatar = $details->avatar;
+        $this->address_1 = $details->address_1;
+        $this->address_2 = $details->address_2;
+        $this->county = $details->county;
+        $this->postcode = $details->postcode;
+        $this->country = $details->country ?? 'United Kingdom';
+        $this->userDetails->country = $this->country;
     }
 
     public function createUserDetails()
@@ -78,39 +103,49 @@ class UserProfile extends ModalComponent
 
     public function showUploadSection()
     {
+        $this->showDefault = false;
         $this->showUpload = true;
     }
 
-    public function toggleEdit()
+    public function showEditingSection()
     {
-        $this->isEditing = !$this->isEditing;
+        $this->showDefault = false;
+        $this->showEditing = true;
     }
 
-    public function upload()
+    public function save()
     {
         $this->validate([
             'image' => 'image|max:2048',
         ]);
 
         $this->imagePath = $this->image->store('images', 'private');
+        $this->userDetails->avatar = $this->imagePath;
+        $this->userDetails->save();
+        $this->resetAll();
     }
 
-    public function updateProfile()
+    public function saveDetails()
     {
-        $this->validate();
+        $rules = [
+            'address_1' => 'nullable|string|max:255',
+            'address_2' => 'nullable|string|max:255',
+            'county' => 'nullable|string|max:100',
+            'postcode' => 'nullable|string|max:10',
+            'country' => 'nullable|string|max:100',
+        ];
 
-        if ($this->image) {
-            $this->upload();
-        }
+        $input = [
+            'address_1' => $this->address_1,
+            'address_2' => $this->address_2,
+            'county' => $this->county,
+            'postcode' => $this->postcode,
+            'country' => $this->country,
+        ];
 
-        $this->user->update([
-            'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-        ]);
-
-        $this->isEditing = false;
-        $this->dispatch('profileUpdated');
+        $this->validate($rules);
+        $this->userDetails->update($input);
+        $this->resetAll();
     }
 
     public function render()

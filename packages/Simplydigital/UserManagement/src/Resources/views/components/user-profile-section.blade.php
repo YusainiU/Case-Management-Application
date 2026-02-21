@@ -36,13 +36,6 @@
             </p>
         </div>
 
-        {{-- <div>
-            <label class="{{ $label }}">Role</label>
-            <p class="{{ $p }}">
-                {{ $user->roles->pluck('name')->join(', ') }}
-            </p>
-        </div> --}}
-
         <div>
             <label class="{{ $label }}">Joined</label>
             <p class="{{ $p }}">
@@ -53,10 +46,17 @@
     </div>
 
     
-    <div class="mt-8">
+    <div class="mt-8 flex flex-col md:flex-row justify-center gap-4">
         <a href="{{ route('profile.edit') }}"
             class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition">
             Edit Profile
+        </a>
+        <a 
+            wire:click='showEditingSection'
+            href="#" 
+            class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-gray-400 transition"
+        >
+            Edit Details
         </a>
     </div> 
    

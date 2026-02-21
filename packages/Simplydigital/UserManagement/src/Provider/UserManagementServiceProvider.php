@@ -16,6 +16,7 @@ use Simplydigital\UserManagement\Livewire\AddNewRole;
 use Simplydigital\UserManagement\Livewire\ListPermissions;
 use Simplydigital\UserManagement\Livewire\ListRoles;
 use Simplydigital\UserManagement\Livewire\UserProfile;
+use Simplydigital\UserManagement\Services\UserManagementServices;
 
 class UserManagementServiceProvider extends ServiceProvider
 {
@@ -42,9 +43,8 @@ class UserManagementServiceProvider extends ServiceProvider
 
     public function loadRoutes()
     {
-        if (file_exists(__DIR__ . '/../Routes/web.php')) {
-            $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
-        }    
+        $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
+            
     }
 
     public function publishMigrations()
@@ -90,7 +90,9 @@ class UserManagementServiceProvider extends ServiceProvider
 
     public function register()
     {
-        
+        $this->app->singleton('usermanagementservices', function () {
+            return new UserManagementServices();
+        });           
     }
 
 }

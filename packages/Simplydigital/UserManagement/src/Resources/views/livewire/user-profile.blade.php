@@ -9,7 +9,7 @@
 
 
 <div>
-    <x-usermanagement::modal title="User Profile" widthsize="6xl">
+    <x-usermanagement::modal-frame title="User Profile" widthsize="" cancelThisWith="closeProfile">
 
         {{-- min-h-screen bg-gray-100 py-10 --}}
         <div class="">
@@ -23,7 +23,7 @@
                         {{-- Profile Image Frame --}}
                         <div class="relative">
                             <img 
-                                src="{{ $user->profile_photo ? asset('storage/' . $user->profile_photo) : asset('images/default-avatar.png') }}"
+                                src="{{ $avatar ?  route('usermanagement.private.image', ['path' => $avatar]) : asset('images/default-avatar.png') }}"
                                 alt=""
                                 class="{{ $img }}"
                             />
@@ -41,11 +41,18 @@
                     </div>
                 </div>
 
+                @if ($showDefault)                    
+                    <x-usermanagement::user-profile-section :user=$user :details=$userDetails :address=$userAddress />
+                @endif                
+
                 @if ($showUpload)
                     <x-usermanagement::upload />
-                @else                    
-                    <x-usermanagement::user-profile-section :user=$user :details=$userDetails :address=$userAddress />
                 @endif
+
+                @if($showEditing)
+                    <x-usermanagement::update-user-details :details="$userDetails" />
+                @endif
+
             </div>
         </div>
     </x-usermanagement::modal>

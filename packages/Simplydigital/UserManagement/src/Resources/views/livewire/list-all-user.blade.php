@@ -87,10 +87,11 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium align-top">
                             <a href="#" class="text-blue-600 hover:text-blue-900" wire:click="openUpdateUser({{ $user->id }})">Edit</a>
-                            <a href="#" 
+                            <a 
+                                x-data
+                                href="#" 
                                 class="ml-4 text-red-600 hover:text-red-900"
-                                 onclick="return confirm('Are you sure you want to delete this user?')"
-                                 wire:click='delete({{ $user->id }})'
+                                @click="if (confirm('Delete this record?')) $wire.delete({{ $user->id }})"
                             >
                                 Delete
                             </a>
