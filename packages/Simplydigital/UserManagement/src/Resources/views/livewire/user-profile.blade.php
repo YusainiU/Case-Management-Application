@@ -53,6 +53,10 @@
                     <x-usermanagement::update-user-details :details="$userDetails" />
                 @endif
 
+                @if($showResetPassword)
+                    <x-usermanagement::reset-password />
+                @endif
+
             </div>
         </div>
     </x-usermanagement::modal>

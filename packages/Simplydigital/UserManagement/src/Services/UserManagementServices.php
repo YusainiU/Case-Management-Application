@@ -1,14 +1,37 @@
 <?php
 
-Namespace Simplydigital\UserManagement\Services;
+namespace Simplydigital\UserManagement\Services;
 
 use Simplydigital\UserManagement\Model\UsersDetails;
-use Simplydigital\UserMmanagement\Model\UsersStatuses;
+use Illuminate\Support\Str;
 use App\Models\User;
 
 class UserManagementServices
 {
+
+
     // Service class for User Management functionalities
+
+    public function resetUserPassword(User $user, $newPassword)
+    {
+
+        $user->forcefill([
+            'password' => bcrypt($newPassword)
+        ])->save();
+    }
+
+    public function generateRandomPassword()
+    {
+        $password = Str::password(
+            length: 12,
+            letters: true,
+            numbers: true,
+            symbols: true
+        );
+        return $password;
+    }
+
+
     public function checkUserDetails($userId)
     {
         //return UsersDetails::where('user_id', $userId)->first();

@@ -7,7 +7,6 @@ use Simplydigital\UserManagement\Model\UsersDetails;
 use Livewire\WithFileUploads;
 use LivewireUI\Modal\ModalComponent;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
 use Simplydigital\UserManagement\Services\UserManagementServices;
 
 class UserProfile extends ModalComponent
@@ -22,6 +21,7 @@ class UserProfile extends ModalComponent
     public $name;
     public $email;
     public $phone;
+    public $password;
     public $address_1;
     public $address_2;
     public $county;
@@ -33,12 +33,14 @@ class UserProfile extends ModalComponent
     public $showEditing = false;
     public $showUpload = false;
     public $showDefault = true;
+    public $showResetPassword = false;
 
     public function mount()
     {
         if ($this->userId) {
             $this->loadUser();
             $this->checkUserDetails();
+            $this->generateRandomPassword();
         }
     }
 
@@ -49,6 +51,7 @@ class UserProfile extends ModalComponent
         $this->showDefault = true;
         $this->showUpload = false;
         $this->showEditing = false;
+        $this->showResetPassword = false;
         $this->image = null;
         $this->imagePath = null;
     }
@@ -60,6 +63,19 @@ class UserProfile extends ModalComponent
 
     public function closeUploadSection()
     {
+        $this->resetAll();
+    }
+
+    public function generateRandomPassword()
+    {
+        $service = app(UserManagementServices::class);
+        $this->password = $service->generateRandomPassword();
+    }
+
+    public function resetUserPassword()
+    {
+        $services = app(UserManagementServices::class);
+        $services->resetUserPassword($this->user, $this->password);
         $this->resetAll();
     }
 
@@ -113,18 +129,50 @@ class UserProfile extends ModalComponent
         $this->showEditing = true;
     }
 
+    public function showResetPasswordSection()
+    {
+        $this->showDefault = false;
+        $this->showResetPassword = true;
+    }
+
     public function save()
     {
+
+        $profileDisk = config('user-management.PROFILE_IMAGE_DISK');
+
         $this->validate([
             'image' => 'image|max:2048',
         ]);
 
-        $this->imagePath = $this->image->store('images', 'private');
+        //Check whether image path exists in UserDetails, 
+        //if it does delete the file from storage and update path with new image, 
+        //if not just save new path to UserDetails
+
+        if ($this->avatar) {
+            Storage::disk('private')->delete($this->avatar);
+        }; 
+
+        $this->imagePath = $this->image->store($profileDisk, 'private');
+        $this->image->delete();
         $this->userDetails->avatar = $this->imagePath;
         $this->userDetails->save();
         $this->resetAll();
     }
 
+
+    public function removeProfileImage()
+    {
+        $profileDisk = config('user-management.PROFILE_IMAGE_DISK');
+
+        if ($this->avatar) {
+            //Delete path from UserDetails and delete file from storage
+            Storage::disk('private')->delete($this->avatar);
+            $this->userDetails->avatar = null;
+            $this->userDetails->save();
+            $this->resetAll();
+        }
+    }
+    
     public function saveDetails()
     {
         $rules = [
@@ -133,6 +181,8 @@ class UserProfile extends ModalComponent
             'county' => 'nullable|string|max:100',
             'postcode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:100',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $this->userId,            
         ];
 
         $input = [
@@ -143,8 +193,14 @@ class UserProfile extends ModalComponent
             'country' => $this->country,
         ];
 
+        $profileInput = [
+            'name' => $this->name,
+            'email' => $this->email,
+        ];
+
         $this->validate($rules);
         $this->userDetails->update($input);
+        $this->user->update($profileInput);
         $this->resetAll();
     }
 

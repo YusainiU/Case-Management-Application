@@ -47,9 +47,11 @@
 
     
     <div class="mt-8 flex flex-col md:flex-row justify-center gap-4">
-        <a href="{{ route('profile.edit') }}"
+        <a 
+            href="#" 
+            wire:click='showResetPasswordSection'
             class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition">
-            Edit Profile
+            Reset Password
         </a>
         <a 
             wire:click='showEditingSection'

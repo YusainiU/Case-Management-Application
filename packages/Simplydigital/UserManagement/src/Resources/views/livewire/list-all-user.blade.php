@@ -86,7 +86,12 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium align-top">
-                            <a href="#" class="text-blue-600 hover:text-blue-900" wire:click="openUpdateUser({{ $user->id }})">Edit</a>
+                            <a 
+                                href="#" class="text-blue-600 hover:text-blue-900" 
+                                wire:click="openUpdateUser({{ $user->id }})"
+                            >
+                                Update Roles
+                            </a>
                             <a 
                                 x-data
                                 href="#" 

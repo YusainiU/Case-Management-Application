@@ -13,21 +13,12 @@ class UpdateUser extends ModalComponent
 {
     public $userId;
     public $user;
-    public $name = '';
-    public $email = '';
-    //public $password = '';
     public $active = true;
     public $modalTitle = 'Update User';
     public $modalAction = 'update';
     public $modalClose = 'close';
     public $roles = [];
     public $selectedRoles = [];
-
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:users,email',
-        'active' => 'boolean',
-    ];
 
     public function mount($userId)
     {
@@ -61,29 +52,18 @@ class UpdateUser extends ModalComponent
 
     public function confirm()
     {
+
         $input = [
-            'name' => $this->name,
-            'email' => $this->email,
+            'selectedRoles' => $this->selectedRoles,
         ];
 
         Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-            ],
             'selectedRoles' => 'array',
         ])->validate();        
         
         $user = User::find($this->userId);
 
         if ($user) {
-            $user->name = $this->name;
-            $user->email = $this->email;
-            $user->save();
-
             if(!empty($this->selectedRoles))
             {
                 $user->assignRole($this->selectedRoles);

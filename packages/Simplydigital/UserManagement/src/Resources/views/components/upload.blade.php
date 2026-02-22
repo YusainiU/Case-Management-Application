@@ -51,6 +51,11 @@
                     Upload File
                 </button>
                 <button
+                    class="mt-6 w-full bg-red-700 text-gray-100 py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300"
+                    wire:click='removeProfileImage'>
+                    Remove Photo
+                </button>                
+                <button
                     class="mt-6 w-full bg-gray-200 text-gray-700 py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300"
                     wire:click='closeUploadSection'>
                     Cancel

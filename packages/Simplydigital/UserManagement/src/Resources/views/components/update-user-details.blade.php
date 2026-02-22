@@ -7,31 +7,46 @@
         </h2>
 
         <form wire:submit.prevent='saveDetails'>
-
-            <div class="flex flex-col md:flex-row gap-6 justify-center">
-                <div class="mb-4 flex-row gap-4 justify-end">
-                    <x-usermanagement::input-label name="Address 1" />
-                    <x-usermanagement::text-input model="address_1" />
-                </div>
-                <div class="mb-4 flex-row gap-4">
-                    <x-usermanagement::input-label name="Address 2" />
-                    <x-usermanagement::text-input model="address_2" />
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row gap-6 justify-center">
-                <div class="mb-4 flex-row gap-4">
-                    <x-usermanagement::input-label name="County" />
-                    <x-usermanagement::text-input model="county" />
-                </div>
-                <div class="mb-4 flex-row gap-4">
-                    <x-usermanagement::input-label name="Postcode" />
-                    <x-usermanagement::text-input model="postcode" />
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row gap-6 justify-center">
-                <div class="mb-4 flex-row gap-4">
-                    <x-usermanagement::input-label name="Country" />
-                    <x-usermanagement::text-input model="country" />
+            <div class="w-full flex flex-col md:flex-row gap-6 justify-center mt-6">
+                <div class="flex flex-col gap-4 justify-center mt-6 w-2xl">
+                    <div class="flex flex-col md:flex-row gap-6 justify-start">
+                        <div class="mb-4 flex-row gap-4 justify-start">
+                            <x-usermanagement::input-label name="name" :required="true" />
+                            <x-usermanagement::text-input model="name" />
+                            <x-usermanagement::input-error field="name" />
+                        </div>
+                        <div class="mb-4 flex-row gap-4 justify-start">
+                            <x-usermanagement::input-label name="email" :required="true" />
+                            <x-usermanagement::text-input model="email" />
+                            <x-usermanagement::input-error field="email" />
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-6 justify-start">
+                        <div class="mb-4 flex-row gap-4 justify-start">
+                            <x-usermanagement::input-label name="Address 1" />
+                            <x-usermanagement::text-input model="address_1" />
+                        </div>
+                        <div class="mb-4 flex-row gap-4 justify-start">
+                            <x-usermanagement::input-label name="Address 2" />
+                            <x-usermanagement::text-input model="address_2" />
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-6 justify-start">
+                        <div class="mb-4 flex-row gap-4 justify-start">
+                            <x-usermanagement::input-label name="County" />
+                            <x-usermanagement::text-input model="county" />
+                        </div>
+                        <div class="mb-4 flex-row gap-4 justify-start">
+                            <x-usermanagement::input-label name="Postcode" />
+                            <x-usermanagement::text-input model="postcode" />
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-6 justify-start">
+                        <div class="mb-4 flex-row gap-4 justify-start">
+                            <x-usermanagement::input-label name="Country" />
+                            <x-usermanagement::text-input model="country" />
+                        </div>
+                    </div>
                 </div>
             </div>
 

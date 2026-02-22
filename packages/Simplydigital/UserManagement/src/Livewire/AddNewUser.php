@@ -6,6 +6,7 @@ use LivewireUI\Modal\ModalComponent;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password; 
 use Illuminate\Support\Facades\Validator;
+use Simplydigital\UserManagement\Services\UserManagementServices;
 use Illuminate\Support\Str;
 use App\Models\User;
 
@@ -28,12 +29,8 @@ class AddNewUser extends ModalComponent
 
     public function generateRandomPassword()
     {
-        $this->password = Str::password(
-            length: 12,
-            letters: true,
-            numbers: true,
-            symbols: true
-        );
+        $service = app(UserManagementServices::class);
+        $this->password = $service->generateRandomPassword();
     }
 
     public function confirm()
