@@ -1,0 +1,1 @@
+<livewire:skills-component />
