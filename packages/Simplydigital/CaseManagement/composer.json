@@ -1,0 +1,33 @@
+{
+    "name": "simplydigital/casemanagement",
+    "description": "Case Management Module",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Simplydigital\\Casemanagement\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Simplydigital\\CaseManagement\\Provider\\CaseManagementServiceProvider"
+            ]
+        }
+    },    
+    "require": {
+        "php": ">=8.2",
+        "illuminate/database": "^10.0|^11.0|^12.0",
+        "illuminate/view": "^10|^11|^12.0",
+        "livewire/livewire": "^3.5.4",
+        "illuminate/support": "^12.0",
+        "simplydigital/casemanagement": "*"
+    },    
+    "authors": [
+        {
+            "name": "YusainiU",
+            "email": "yusaini.usulludin@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
