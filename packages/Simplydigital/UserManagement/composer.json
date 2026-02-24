@@ -22,7 +22,8 @@
         "livewire/livewire": "^3.5.4",
         "illuminate/support": "^12.0",
         "spatie/laravel-permission": "^6.24",
-        "simplydigital/usermanagement": "*"
+        "simplydigital/usermanagement": "*",
+        "spatie/laravel-activitylog": "*"
     },        
     "authors": [
         {

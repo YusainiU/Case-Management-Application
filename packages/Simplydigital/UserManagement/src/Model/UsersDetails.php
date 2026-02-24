@@ -1,11 +1,16 @@
 <?php
 
-Namespace Simplydigital\UserManagement\Model;
+namespace Simplydigital\UserManagement\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 class UsersDetails extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'user_id',
         'date_started',
@@ -17,6 +22,15 @@ class UsersDetails extends Model
         'country',
         'avatar',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('user_details')
+            ->logAll()
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function getAddress()
     {
