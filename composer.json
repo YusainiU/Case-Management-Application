@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.10.1",
         "livewire/flux": "^2.1.1",
         "livewire/volt": "^1.7.0",
+        "simplydigital/casemanagement": "dev-main",
         "simplydigital/engineermanagement": "dev-main",
         "simplydigital/usermanagement": "dev-main",
         "spatie/laravel-activitylog": "^4.12",
@@ -39,13 +40,20 @@
                 "symlink": true
             }
         },
-	{
-	    "type": "path",
-	    "url": "packages/Simplydigital/UserManagement",
-	    "options": {
-		"symlink":true	    
-	    }
-	}
+        {
+            "type": "path",
+            "url": "packages/Simplydigital/UserManagement",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "packages/Simplydigital/CaseManagement",
+            "options": {
+                "symlink": true
+            }
+        }
     ],
     "autoload": {
         "psr-4": {

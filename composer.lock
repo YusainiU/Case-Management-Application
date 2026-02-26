@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5ffcd7166fbf042604a3bcbf138fbb64",
+    "content-hash": "f3134d42121b9421e3d7890a0aaa7677",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -3795,6 +3795,51 @@
                 "source": "https://github.com/ramsey/uuid/tree/4.9.2"
             },
             "time": "2025-12-14T04:43:48+00:00"
+        },
+        {
+            "name": "simplydigital/casemanagement",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Simplydigital/CaseManagement",
+                "reference": "304dd269af2d761e25d9200baf7ed324c3e9773f"
+            },
+            "require": {
+                "illuminate/database": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^12.0",
+                "illuminate/view": "^10|^11|^12.0",
+                "livewire/livewire": "^3.5.4",
+                "php": ">=8.2",
+                "simplydigital/casemanagement": "*",
+                "spatie/laravel-activitylog": "*"
+            },
+            "type": "project",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Simplydigital\\CaseManagement\\Provider\\CaseManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Simplydigital\\Casemanagement\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "YusainiU",
+                    "email": "yusaini.usulludin@gmail.com"
+                }
+            ],
+            "description": "Case Management Module",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "simplydigital/engineermanagement",
@@ -9469,6 +9514,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "simplydigital/casemanagement": 20,
         "simplydigital/engineermanagement": 20,
         "simplydigital/usermanagement": 20
     },

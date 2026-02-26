@@ -38,9 +38,11 @@ class Asset extends Model
 
     protected static function booted()
     {
-        $prefix = config('casemanagement.ASSET_PREFIX');
-        static::creating(function ($model) use ($prefix) {
-            $model->number = "$prefix-" . now()->format('YmdHis') . mt_rand(1000, 9999);
+        
+        static::creating(function ($model) {
+            $prefix = config('case-management.ASSET_PREFIX');
+            $utilityService = app('case-management-utility-services');
+            $model->number = $utilityService::generateRecordNumber($prefix);
         });
     }    
 

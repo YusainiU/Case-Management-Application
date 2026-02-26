@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('number');
             $table->unsignedBigInteger('customer_id');
-            $table->unsignedBigInteger('sla_applications_id');
+            $table->unsignedBigInteger('sla_applications_id')->nullable();
             $table->string('customer_reference')->nullable();
             $table->string('category');
             $table->string('created_by');

@@ -22,10 +22,11 @@ class Product extends Model
     ];
 
     protected static function booted()
-    {
-        $prefix = config('case-management.PRODUCT_PREFIX');
-        static::creating(function ($product) use ($prefix) {
-            $product->number = "$prefix-" . str_pad($product->id, 6, '0', STR_PAD_LEFT);
+    {      
+        static::creating(function ($product) {
+            $prefix = config('case-management.PRODUCT_PREFIX');
+            $utilityService = app('case-management-utility-services');
+            $product->number = $utilityService::generateRecordNumber($prefix);
         });
     }
 

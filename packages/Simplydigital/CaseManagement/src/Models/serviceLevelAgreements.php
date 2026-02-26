@@ -30,9 +30,11 @@ class serviceLevelAgreements extends Model
 
     protected static function booted()
     {
-        $prefix = config('casemanagement.SLA_PREFIX');
-        static::creating(function ($model) use ($prefix) {
-            $model->number = "$prefix-" . now()->format('YmdHis') . mt_rand(1000, 9999);
+        
+        static::creating(function ($model) {
+            $prefix = config('case-management.SLA_PREFIX');
+            $utilityService = app('case-management-utility-services');
+            $model->number = $utilityService::generateRecordNumber($prefix);
         });
     }      
 

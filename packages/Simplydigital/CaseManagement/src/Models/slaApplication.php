@@ -25,9 +25,11 @@ class slaApplication extends Model
 
     protected static function booted(): void
     {
-        $prefix = config('case-management.SLA_APPLICATION_PREFIX');
-        static::creating(function ($slaApplication) use ($prefix) {
-            $slaApplication->number = "$prefix-" . str_pad($slaApplication->id, 6, '0', STR_PAD_LEFT);
+        
+        static::creating(function ($slaApplication) {
+            $prefix = config('case-management.SLA_APPLICATION_PREFIX');
+            $utilityService = app('case-management-utility-services');
+            $slaApplication->number = $utilityService::generateRecordNumber($prefix);
         });
     }
     

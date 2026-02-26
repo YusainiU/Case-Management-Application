@@ -3,13 +3,15 @@
 namespace Simplydigital\CaseManagement\Provider;
 
 use Illuminate\Support\ServiceProvider;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class CaseManagementServiceProvider extends ServiceProvider
 {
+
     /**
-     * Register services.
+     * Bootstrap services.
      */
-    public function register(): void
+    public function boot(): void
     {
         $this->loadViews();
         $this->loadRoutes();
@@ -18,6 +20,15 @@ class CaseManagementServiceProvider extends ServiceProvider
         $this->publishResources();
         $this->registerBladeComponents();
         $this->registerLivewireComponents();
+    }
+    /**
+     * Register services.
+     */
+    public function register(): void
+    {
+        $this->app->singleton('case-management-utility-services', function () {
+            return new CaseManagementUtilityServices();
+        });     
     }
 
     public function loadViews()
@@ -59,14 +70,8 @@ class CaseManagementServiceProvider extends ServiceProvider
     
     public function registerLivewireComponents()
     {
-        
+
     }    
 
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
-    {
 
-    }
 }
