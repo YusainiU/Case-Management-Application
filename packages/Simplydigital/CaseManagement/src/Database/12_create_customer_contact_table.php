@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('customer_contacts', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('number');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('customer_id');
             $table->string('customerRole');

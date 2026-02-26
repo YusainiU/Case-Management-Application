@@ -13,10 +13,23 @@ return [
     |--------------------------------------------------------------------------
     | Case Management Configuration
     |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | Prefixes
+    |--------------------------------------------------------------------------
     |
-    | This file is for storing the configuration settings for the Case Management
-    | package. You can customize these settings as needed for your application.
+    | Prefixes for record numbers.
     |
     */
+    
+    'ASSET_PREFIX' => 'ASSET',
+    'SLA_PREFIX' => 'SLA',
+    'TICKET_PREFIX' => 'TICKET',
+    'CUSTOMER_PREFIX' => 'CUST',
+    'PRODUCT_PREFIX' => 'PROD',
+    'SLA_APPLICATION_PREFIX' => 'SLAAPP',
+
     
 ];

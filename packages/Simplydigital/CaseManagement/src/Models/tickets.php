@@ -22,7 +22,7 @@ class tickets extends Model
             ->dontSubmitEmptyLogs();
     }
     protected $fillable = [
-        'ticket_number',
+        'number',
         'customer_id',
         'sla_applications_id',
         'customer_reference',
@@ -48,6 +48,14 @@ class tickets extends Model
         'resolved_datetime',
         'resolved_by',
     ];
+
+    protected static function booted()
+    {
+        $prefix = config('casemanagement.TICKET_PREFIX');
+        static::creating(function ($model) use ($prefix){
+            $model->number = "$prefix-" . now()->format('YmdHis') . mt_rand(1000, 9999);
+        });
+    }      
 
     protected function casts()
     {

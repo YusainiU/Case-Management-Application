@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('ticket_number');
+            $table->string('number');
             $table->unsignedBigInteger('customer_id');
             $table->unsignedBigInteger('sla_applications_id');
             $table->string('customer_reference')->nullable();

@@ -15,7 +15,7 @@ class serviceLevelAgreements extends Model
     protected $fillable = [
         'name',
         'short_description',
-        'sla_key',
+        'number',
         'start_day',
         'end_day',
         'service_start_time',
@@ -27,6 +27,14 @@ class serviceLevelAgreements extends Model
         'response_time',
         'fixed_time',
     ];
+
+    protected static function booted()
+    {
+        $prefix = config('casemanagement.SLA_PREFIX');
+        static::creating(function ($model) use ($prefix) {
+            $model->number = "$prefix-" . now()->format('YmdHis') . mt_rand(1000, 9999);
+        });
+    }      
 
     protected function casts(): array
     {
@@ -40,7 +48,7 @@ class serviceLevelAgreements extends Model
     }
 
     /*
-    Example usage:
+    Example usage with DaysOfWeek enum:
     
     $sla = new ServiceLevelAgreement();
     $sla->start_day = DaysOfWeek::Monday;

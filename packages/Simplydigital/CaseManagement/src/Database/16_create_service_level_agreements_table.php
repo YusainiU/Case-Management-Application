@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name');
             $table->string('short_description');
-            $table->string('sla_key');
+            $table->string('number');
             $table->string('start_day')->index();
             $table->string('end_day')->index();
             $table->integer('service_start_time')->default(0);

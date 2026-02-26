@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('sla_applications', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('number');
             $table->string('name');
             $table->string('short_description')->nullable();
             $table->tinyInteger('priority');

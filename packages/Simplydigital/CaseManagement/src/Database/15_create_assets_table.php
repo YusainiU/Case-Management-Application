@@ -16,13 +16,13 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('short_description');
-            $table->string('asset_number');
+            $table->string('number');
             $table->unsignedBigInteger('product_id')->nullable();
             $table->unsignedBigInteger('supplier_id')->nullable();
             $table->unsignedBigInteger('customer_id');
             $table->boolean('active')->default(true);
-            $table->decimal('buy_price',8,2)->default(0.00);
-            $table->decimal('sell_price',8,2)->default(0.00);
+            $table->decimal('buy_price',10,2)->default(0.00);
+            $table->decimal('sell_price',10,2)->default(0.00);
             $table->string('notes')->nullable();
             $table->string('license_number')->nullable();
             $table->string('location')->nullable();
