@@ -1,7 +1,6 @@
 <?php
+
 namespace Simplydigital\CaseManagement\Services;
-
-
 
 class CaseManagementUtilityServices
 {

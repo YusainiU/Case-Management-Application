@@ -62,4 +62,15 @@ class User extends Authenticatable
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
+    public function isInternalUser(): bool
+    {
+        return $this->hasRole('Internal User');
+    }
+
+    public function isExternalUser(): bool
+    {
+        return $this->hasRole('External User');
+    }
+
 }

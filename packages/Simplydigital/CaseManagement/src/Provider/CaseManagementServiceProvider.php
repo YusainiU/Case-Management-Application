@@ -3,7 +3,16 @@
 namespace Simplydigital\CaseManagement\Provider;
 
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Blade;
+
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
+use Simplydigital\CaseManagement\Services\CaseTicketServices;
+use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
+use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
+use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
+use Symfony\Component\Routing\Router;
 
 class CaseManagementServiceProvider extends ServiceProvider
 {
@@ -26,9 +35,7 @@ class CaseManagementServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('case-management-utility-services', function () {
-            return new CaseManagementUtilityServices();
-        });     
+        $this->registerServices();
     }
 
     public function loadViews()
@@ -40,8 +47,9 @@ class CaseManagementServiceProvider extends ServiceProvider
     }
 
     public function loadRoutes()
-    {
-        $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+    {        
+        Route::middleware('web')->group(__DIR__.'/../Routes/web.php');
+        Route::aliasMiddleware('restrict.internal.user', RestrictInternalUserOnly::class);   
     }
 
     public function loadMigrations()
@@ -70,8 +78,19 @@ class CaseManagementServiceProvider extends ServiceProvider
     
     public function registerLivewireComponents()
     {
-
-    }    
+        Livewire::component('create-customer', CreateCustomer::class);
+        Livewire::component('view-customer', ViewCustomers::class);
+    }
+    
+    public function registerServices()
+    {
+        $this->app->singleton('case-management-utility-services', function () {
+            return new CaseManagementUtilityServices();
+        });
+        $this->app->singleton('case-ticket-services', function () {
+            return new CaseTicketServices();
+        });
+    }
 
 
 }

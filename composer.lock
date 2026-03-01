@@ -3802,7 +3802,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/CaseManagement",
-                "reference": "304dd269af2d761e25d9200baf7ed324c3e9773f"
+                "reference": "8e887650a7447564047acd343abb01d430360940"
             },
             "require": {
                 "illuminate/database": "^10.0|^11.0|^12.0",
@@ -3811,7 +3811,8 @@
                 "livewire/livewire": "^3.5.4",
                 "php": ">=8.2",
                 "simplydigital/casemanagement": "*",
-                "spatie/laravel-activitylog": "*"
+                "spatie/laravel-activitylog": "*",
+                "spatie/laravel-permission": "*"
             },
             "type": "project",
             "extra": {
@@ -3823,7 +3824,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Simplydigital\\Casemanagement\\": "src/"
+                    "Simplydigital\\CaseManagement\\": "src/"
                 }
             },
             "license": [
