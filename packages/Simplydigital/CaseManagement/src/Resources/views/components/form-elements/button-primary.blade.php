@@ -1,7 +1,7 @@
 <div>
     <button 
         type="{{ $type ?? 'button' }}" 
-        class="primary-button {{ $class ?? '' }}" 
+        class="px-6 py-3 text-left text-xs font-medium text-gray-200 bg-blue-500 uppercase tracking-wider cursor-pointer rounded hover:bg-blue-600 transition-colors duration-300" 
         wire:click="{{ $attributes->get('action') ?? '' }}"
     >    
         {{ $attributes->get('label') }}

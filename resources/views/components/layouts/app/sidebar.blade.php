@@ -11,9 +11,15 @@
                 <x-app-logo />
             </a>
 
+             <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('Customers')" class="grid" expandable="true" expanded="false">
+                    <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.view.customers')" :current="request()->routeIs('casemanagement.view.customers')" wire:navigate>Dashboard</flux:navlist.item>
+                </flux:navlist.group>   
+             </flux:navlist>
+
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Personnel</flux:navlist.item>
+                <flux:navlist.group :heading="__('User Management')" class="grid" expandable="true" expanded="false">
+                    <flux:navlist.item icon="ellipsis-vertical" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Dashboard</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('user-management')" :current="request()->routeIs('user-management')" wire:navigate>User Management</flux:navlist.item>            
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('engineer-management')" :current="request()->routeIs('engineer-management')" wire:navigate>Engineer Management</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('engineer-skills')" :current="request()->routeIs('engineer-skills')" wire:navigate>Skills</flux:navlist.item>

@@ -11,6 +11,18 @@ class ViewCustomers extends Component
     use WithPagination;
 
     public $customers;
+    public $displayCreateModal = false;
+
+    public function resetAll()
+    {
+        $this->displayCreateModal = false;
+    }
+
+    public function openCreateModal()
+    {
+        $this->resetAll();
+        $this->displayCreateModal = true;
+    }
 
     public function render()
     {

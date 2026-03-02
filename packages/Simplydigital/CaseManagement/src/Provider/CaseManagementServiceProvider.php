@@ -12,7 +12,6 @@ use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
-use Symfony\Component\Routing\Router;
 
 class CaseManagementServiceProvider extends ServiceProvider
 {

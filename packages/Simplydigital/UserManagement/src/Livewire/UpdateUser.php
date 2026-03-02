@@ -17,6 +17,8 @@ class UpdateUser extends ModalComponent
     public $modalTitle = 'Update User';
     public $modalAction = 'update';
     public $modalClose = 'close';
+    public $name;
+    public $email;
     public $roles = [];
     public $selectedRoles = [];
 
@@ -56,17 +58,16 @@ class UpdateUser extends ModalComponent
         $input = [
             'selectedRoles' => $this->selectedRoles,
         ];
-
+        
         Validator::make($input, [
             'selectedRoles' => 'array',
         ])->validate();        
-        
-        $user = User::find($this->userId);
 
+        $user = User::find($this->userId);
         if ($user) {
             if(!empty($this->selectedRoles))
-            {
-                $user->assignRole($this->selectedRoles);
+            {                
+                $user->syncRoles($this->selectedRoles);
             }
         }
 
