@@ -13,9 +13,16 @@ class ViewCustomers extends Component
     public $customers;
     public $displayCreateModal = false;
 
+    protected $listeners = ['closeCreateModal'];
+
     public function resetAll()
     {
         $this->displayCreateModal = false;
+    }
+
+    public function closeCreateModal()
+    {
+        $this->resetAll();
     }
 
     public function openCreateModal()
