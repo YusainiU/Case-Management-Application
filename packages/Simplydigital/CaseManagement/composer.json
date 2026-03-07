@@ -5,7 +5,9 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Simplydigital\\CaseManagement\\": "src/"
+            "Simplydigital\\CaseManagement\\": "src/",
+            "Simplydigital\\CaseManagement\\Database\\Seeders\\": "database/seeders/",
+            "Simplydigital\\CaseManagement\\Database\\Factories\\": "database/factories/"                  
         }
     },
     "extra": {

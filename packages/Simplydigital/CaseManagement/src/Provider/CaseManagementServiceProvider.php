@@ -5,10 +5,10 @@ namespace Simplydigital\CaseManagement\Provider;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Blade;
 
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
+use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
@@ -53,7 +53,14 @@ class CaseManagementServiceProvider extends ServiceProvider
 
     public function loadMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__.'/../Database');
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+        $this->publishes([
+            __DIR__.'/../../database/seeders' => database_path('seeders/simplydigital/casemanagement'),
+        ], 'casemanagement-seeders');
+
+        $this->publishes([
+            __DIR__.'/../../database/factories' => database_path('factories/simplydigital/casemanagement'),
+        ], 'casemanagement-factories');        
     }
 
     public function publishConfig()
@@ -89,6 +96,9 @@ class CaseManagementServiceProvider extends ServiceProvider
         $this->app->singleton('case-ticket-services', function () {
             return new CaseTicketServices();
         });
+        $this->app->singleton('case-customer-services', function () {
+            return new CaseCustomerServices();
+        });        
     }
 
 

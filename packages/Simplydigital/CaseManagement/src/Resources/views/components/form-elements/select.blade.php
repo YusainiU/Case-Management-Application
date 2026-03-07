@@ -1,6 +1,6 @@
 <div>
     <select
-        wire:model="{{ $model }}"
+        wire:model.live="{{ $model }}"
         id="{{ $name }}"
         name="{{ $name }}"
         {{  $multiple ?? ''  }}

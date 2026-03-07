@@ -29,6 +29,12 @@ class Customer extends Model
         'portal_enabled',
     ];
 
+
+    protected static function newFactory()
+    {
+        return \Simplydigital\CaseManagement\Database\Factories\CustomerFactory::new();
+    }
+
     protected function casts(): array
     {
         return [
