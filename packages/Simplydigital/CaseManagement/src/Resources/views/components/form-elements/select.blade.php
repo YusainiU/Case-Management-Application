@@ -11,4 +11,7 @@
             <option value="{{ $key }}">{{ $value }}</option>
         @endforeach
     </select>
+    @if ($hint ?? null)
+        <p class="text-xs text-gray-500">{{ $hint }}</p>
+    @endif    
 </div>

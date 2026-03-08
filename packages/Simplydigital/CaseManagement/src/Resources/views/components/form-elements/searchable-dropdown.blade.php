@@ -22,8 +22,8 @@
 
     }"
 >
-    <div  class="relative mt-2">
-        <button @click="open = !open" type="button" class="relative cursor-pointer w-full text-normal border-gray-300 rounded-md bg-white py-2 pl-3 pr-10 text-left shadow-sm ring-1 ring-inset ring-gray-300  focus:border-sky-500 focus:ring-sky-500">
+    <div  class="w-full">
+        <button @click="open = !open" type="button" class="appearance-none text-gray-900 block w-full border border-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
             <span class="block truncate" x-text="selectedOption ? selectedOption.name : 'Select an option'"></span>
             <input hidden name="selected_value" x-model="selectedValue" />
             <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -33,16 +33,16 @@
             </span>
         </button>
 
-        <div x-show="open" @click.away="open = false" x-cloak class="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg">
-            <input id="xInputId" type="text" x-model="search" placeholder="Search..." class="block w-full border-0 border-b border-gray-300 bg-white pb-2 pl-3 text-left focus:ring-0">
+        <div x-show="open" @click.away="open = false" x-cloak class="absolute z-50 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg w-max">
+            <x-casemanagement::form-elements.input-text id="xInputId" type="text" x-model="search" placeholder="Search.." />
             <ul class="max-h-60 overflow-auto">
                 <template x-for="option in filteredOptions" :key="option.id">
                     <li 
                         @click="selectOption(option);selectedValue=selectedOption.id;" 
-                        class="cursor-pointer select-none py-2 pl-3 pr-9 hover:bg-gray-100 hover:text-gray-800" 
-                        :class="{'bg-sky-600 text-white': selectedOption && selectedOption.id === option.id}"
+                        class="cursor-pointer select-none py-2 pl-3 pr-9 hover:bg-gray-100 hover:text-gray-900" 
+                        :class="{'bg-sky-600 text-gray-900': selectedOption && selectedOption.id === option.id}"
                     >
-                        <span x-text="option.name" class="font-normal block truncate"></span>
+                        <span x-text="option.name" class="font-normal text-gray-900 block truncate"></span>
                     </li>
                 </template>
             </ul>

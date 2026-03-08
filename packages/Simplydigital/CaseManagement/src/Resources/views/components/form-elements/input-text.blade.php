@@ -1,4 +1,4 @@
-<div class="mb-4 w-full">
+<div class="">
     <input
         {{ $attributes->merge([
             'class' => 'appearance-none text-black block w-full border border-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500',
@@ -11,6 +11,10 @@
             'required' => $required ?? false,
             'autofocus' => $autofocus ?? false,
             'disabled' => $disabled ?? false,
+            'x-model' => $xmodel ?? '',
         ])}}
     />
+    @if ($hint ?? null)
+        <p class="text-xs text-gray-500">{{ $hint }}</p>
+    @endif    
 </div>
