@@ -13,7 +13,7 @@
 
              <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Customers')" class="grid" expandable="true" expanded="false">
-                    <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.view.customers')" :current="request()->routeIs('casemanagement.view.customers')" wire:navigate>Dashboard</flux:navlist.item>
+                    <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.customers.view')" :current="request()->routeIs('casemanagement.customers.view')" wire:navigate>Dashboard</flux:navlist.item>
                 </flux:navlist.group>   
              </flux:navlist>
 

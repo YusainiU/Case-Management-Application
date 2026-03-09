@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Route;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
+
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
+use Simplydigital\CaseManagement\Livewire\Customer\CustomerProfile;
+
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 
 class CaseManagementServiceProvider extends ServiceProvider
@@ -86,6 +89,7 @@ class CaseManagementServiceProvider extends ServiceProvider
     {
         Livewire::component('create-customer', CreateCustomer::class);
         Livewire::component('view-customer', ViewCustomers::class);
+        Livewire::component('customer-profile', CustomerProfile::class);
     }
     
     public function registerServices()

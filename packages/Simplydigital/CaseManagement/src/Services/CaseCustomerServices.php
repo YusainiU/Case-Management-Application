@@ -20,4 +20,9 @@ class CaseCustomerServices
             ->toArray();
         return array_values($c);
     }
+
+    public function getCustomer($customerId)
+    {
+        return Customer::find($customerId);
+    }
 }

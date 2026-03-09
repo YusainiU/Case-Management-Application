@@ -78,6 +78,8 @@ class CreateCustomer extends ModalComponent
 
         $new = Customer::create($input);
 
+        return redirect()->route('casemanagement.customer.profile', $new->id);
+
     }
     public function render()
     {
