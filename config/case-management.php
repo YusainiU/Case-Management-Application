@@ -34,5 +34,21 @@ return [
     'SUPPLIER_PREFIX' => 'SUPP',
     'CUSTOMER_CONTACT_PREFIX' => 'CUSTCONT',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Customer Profile Tabs
+    |--------------------------------------------------------------------------
+    |
+    | Tabs for customer profile 
+    |
+    */
+
+    'customer_profile_tabs' => [
+        'outstandingCases' => 'Outstanding Cases',
+        'assets' => 'Assets',
+        'contacts' => 'Contacts',
+        'childs' => 'Child Companies',
+    ],    
+
     
 ];

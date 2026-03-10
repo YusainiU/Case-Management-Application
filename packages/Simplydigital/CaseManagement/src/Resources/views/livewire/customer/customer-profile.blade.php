@@ -22,7 +22,12 @@
     <x-casemanagement::page-elements.seperator margin="2"/>
 
     <div class="my-4">
-        <x-casemanagement::page-elements.title title="Tabbed Information" />
+        <x-casemanagement::page-elements.tab :tabHeaders=$tabHeaders selectedTab="{{ $this->selectedTab }}">
+            <x-slot name="tabSelectedComponent">
+                Selected Tab        
+            </x-slot>
+        </x-casemanagement::page-elements.tab>
+        
     </div>
 
 </div>
