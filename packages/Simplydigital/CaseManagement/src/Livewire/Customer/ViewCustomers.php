@@ -10,10 +10,21 @@ class ViewCustomers extends Component
 {
     use WithPagination;
 
-    public $customers;
+    public $activeCustomers;
     public $displayCreateModal = false;
 
     protected $listeners = ['closeCreateModal'];
+
+    public function mount()
+    {
+        $this->getAllActiveCustomers();
+    }
+
+    public function getAllActiveCustomers()
+    {
+        $utilityService = app('case-customer-services');
+        $this->activeCustomers = $utilityService->getAllActiveCustomers();        
+    }
 
     public function resetAll()
     {

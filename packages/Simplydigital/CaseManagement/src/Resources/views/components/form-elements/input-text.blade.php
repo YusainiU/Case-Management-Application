@@ -11,8 +11,9 @@
             'required' => $required ?? false,
             'autofocus' => $autofocus ?? false,
             'disabled' => $disabled ?? false,
-            'x-model' => $xmodel ?? '',
+            // 'x-model' => $xmodel ?? '',
         ])}}
+        {{ isset($xmodel) ? "x-model='$xmodel'" : '' }}
     />
     @if ($hint ?? null)
         <p class="text-xs text-gray-500">{{ $hint }}</p>

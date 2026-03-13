@@ -11,7 +11,9 @@ class CreateCustomer extends ModalComponent
 {
 
     public $customerId;
+    public $customer;
     public $title = "Create New Customer";
+    public $confirmText = "Create";
     public $name;
     public $primaryType;
     public $childType;
@@ -19,8 +21,11 @@ class CreateCustomer extends ModalComponent
     public $address_1;
     public $address_2;
     public $address_3;
+    public $telephone_1;
     public $url;
     public $description;
+    public $active = true;
+    public $portalEnabled = false;
     public $primaryTypes = [];
     public $childTypes = [];
     public $customers = [];
@@ -38,6 +43,36 @@ class CreateCustomer extends ModalComponent
         $this->primaryTypes = CustomerPrimaryTypes::options();
         $this->childTypes = CustomerChildTypes::options();
         $this->customers = $this->getAllActiveCustomers();
+        if($this->customerId){
+            $this->getCustomer();
+        }
+    }
+
+    public function getCustomer()
+    {
+        $service = app('case-customer-services');
+        $this->customer = $service->getCustomer($this->customerId);
+        if($this->customer){
+            $this->retrieveCustomerDetails();
+            $this->title = "Update Customer Details";
+            $this->confirmText = "Update";
+        }
+    }
+
+    public function retrieveCustomerDetails()
+    {
+        $this->name = $this->customer->name;
+        $this->primaryType = $this->customer->primary_type?->value;
+        $this->childType = $this->customer->child_type?->value;
+        $this->parentCompany = $this->customer->    parent_company;
+        $this->address_1 = $this->customer->address_1;
+        $this->address_2 = $this->customer->address_2;
+        $this->address_3 = $this->customer->address_3;
+        $this->telephone_1 = $this->customer->telephone_1;
+        $this->url = $this->customer->url;
+        $this->description = $this->customer->short_description;
+        $this->active = $this->customer->active;
+        $this->portalEnabled = $this->customer->portalEnabled;
     }
 
     public function getAllActiveCustomers()
@@ -67,20 +102,27 @@ class CreateCustomer extends ModalComponent
             'address_1' => $this->address_1,
             'address_2' => $this->address_2,
             'address_3' => $this->address_3,
-            'description' => $this->description,
+            'telephone_1' => $this->telephone_1,
+            'short_description' => $this->description,
             'url' => $this->url,
-            'active' => true,
+            'active' => $this->active,
+            'portal_enabled' => $this->portalEnabled,
         ];
 
         if($this->parentCompany){
             $input['parent_company'] = $this->parentCompany;
         }
 
-        $new = Customer::create($input);
-
-        return redirect()->route('casemanagement.customer.profile', $new->id);
-
+        if($this->customerId){
+            $this->customer->update($input);
+            $this->closeThisModal();
+        }else{
+            $new = Customer::create($input);
+            return redirect()->route('casemanagement.customer.profile', $new->id);
+        }
+        
     }
+
     public function render()
     {
         return view('casemanagement::livewire.customer.create-customer');

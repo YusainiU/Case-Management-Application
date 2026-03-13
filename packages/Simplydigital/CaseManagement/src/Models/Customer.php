@@ -6,6 +6,7 @@ use Simplydigital\CaseManagement\Enums\CustomerChildTypes;
 use Simplydigital\CaseManagement\Enums\CustomerPrimaryTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Customer extends Model
 {
@@ -53,6 +54,24 @@ class Customer extends Model
             $utilityService = app('case-management-utility-services');
             $model->number = $utilityService::generateRecordNumber($prefix);
         });
-    }      
+    }
+    
+    public function parentCompany()
+    {
+        return $this->belongsTo(Customer::class,'parent_company');
+    }
+
+    public function getAddress()
+    {
+        if($this->address_1) {
+            $address = [
+                $this->address_1,
+                $this->address_2,
+                $this->address_3,
+            ];
+            return $address;
+        }
+        return [];
+    }    
     
 }

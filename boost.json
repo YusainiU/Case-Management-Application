@@ -1,0 +1,19 @@
+{
+    "agents": [
+        "copilot"
+    ],
+    "guidelines": true,
+    "herd_mcp": false,
+    "mcp": true,
+    "packages": [
+        "laravel/fortify",
+        "livewire/volt"
+    ],
+    "sail": false,
+    "skills": [
+        "fluxui-development",
+        "volt-development",
+        "tailwindcss-development",
+        "fortify-development"
+    ]
+}

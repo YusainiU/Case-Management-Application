@@ -1,6 +1,6 @@
 <div>
     <x-casemanagement::page-elements.modal title="{{ $title }}" widthsize="6xl" cancelThisWith="closeThisModal"
-        confirmText="Create" confirm="save">
+        confirmText="{{ $confirmText }}" confirm="save">
 
         {{-- md:grid-cols-[150px_1fr] --}}
         <div class="grid grid-cols-2 gap-4">
@@ -52,7 +52,7 @@
 
             <div>
                 <x-casemanagement::form-elements.input-label name="Telephone" :required=false />
-                <x-casemanagement::form-elements.input-text model="telephone_1" placeholder="Address 1"
+                <x-casemanagement::form-elements.input-text model="telephone_1" placeholder="Telephone"
                     :required=false />
             </div>
 
@@ -68,6 +68,10 @@
                 <x-casemanagement::form-elements.textarea name="description" model="description"
                     hint="Customer Description" />
                 <x-casemanagement::form-elements.input-error field="description" />
+            </div>
+            <div class="flex flex-col gap-4 justify-items-start">
+                <x-casemanagement::form-elements.checkbox name="Active" :value=$active model="active" label="Active"/>
+                <x-casemanagement::form-elements.checkbox name="Portal Enabled" :value=$portalEnabled model="portalEnabled" label="Portal Enabled"/>
             </div>
 
         </div>
