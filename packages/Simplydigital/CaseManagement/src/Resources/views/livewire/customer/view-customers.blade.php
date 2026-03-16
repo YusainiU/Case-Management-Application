@@ -4,6 +4,11 @@
         <livewire:create-customer />
     @endif
 
+    @if($displayUpdateModal)
+        <livewire:create-customer :customerId="$customerId" />
+    @endif
+
+
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="Customers" description="Manage your customers here."
             aside="what is this" />
@@ -13,16 +18,20 @@
 
     <x-casemanagement::form-elements.button-primary label="Create New Customer" action="openCreateModal" />
 
+    <x-casemanagement::form-elements.input-filter />
+    
+    {{ $customers?->links() }}
+
     <x-casemanagement::table-elements.table>
 
         <thead>
             <x-casemanagement::table-elements.table-th>
                 &nbsp;
             </x-casemanagement::table-elements.table-th>
-            <x-casemanagement::table-elements.table-th sortable field="name">
+            <x-casemanagement::table-elements.table-th sortable field="name" direction="asc">
                 Name
             </x-casemanagement::table-elements.table-th>
-            <x-casemanagement::table-elements.table-th sortable field="primary_type">
+            <x-casemanagement::table-elements.table-th sortable field="primary_type" direction="asc">
                 Primary Type
             </x-casemanagement::table-elements.table-th>
             <x-casemanagement::table-elements.table-th>
@@ -42,10 +51,13 @@
                 @foreach($customers as $customer)
                     <tr>
                         <x-casemanagement::table-elements.table-td>
-                            {{  $loop->iteration }}
+                            {{  $customers->firstItem() + $loop->index }}
                         </x-casemanagement::table-elements.table-td>
-                        <x-casemanagement::table-elements.table-td>
-                            {{ $customer->name }}
+                        <x-casemanagement::table-elements.table-td>                            
+                            <x-casemanagement::page-elements.href 
+                                href="{{ route('casemanagement.customer.profile',['customerId' => $customer->id ]) }}" 
+                                label="{{ $customer->name }}"
+                            />
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             {{ $customer->primary_type->label() }}
@@ -58,8 +70,7 @@
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             <div class="flex space-x-2">
-                                <x-casemanagement::form-elements.button-primary label="Edit" />
-                                <x-casemanagement::form-elements.button-secondary label="Delete" />
+                                <x-casemanagement::form-elements.button-primary label="Edit" action="openUpdateModal({{ $customer->id }})" />
                             </div>
                         </x-casemanagement::table-elements.table-td>
                     </tr> 

@@ -2,7 +2,7 @@
     <input
         {{ $attributes->merge([
             'class' => 'appearance-none text-black block w-full border border-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500',
-            'wire:model' => $model ?? null,
+            'wire:model.live' => $model ?? null,
             'id' => $id ?? null,
             'name' => $name ?? null,
             'type' => $type ?? 'text',

@@ -15,8 +15,11 @@ class CustomerProfile extends Component
     public $selectedTab;
     public $customerAddress;
     public $showUpdateModal = false;
+    public $showConfirmDelete = false;
     protected $listeners = [
         'closeCreateModal',
+        'closeDeleteModal',
+        'closeDeleteAndRedirect',
     ];
 
     public function mount()
@@ -36,9 +39,28 @@ class CustomerProfile extends Component
         $this->resetAllModals();
     }
 
+    public function closeDeleteModal()
+    {
+        $this->resetAllModals();
+        
+    }
+
+    public function closeDeleteAndRedirect()
+    {
+        $this->resetAllModals();
+        $this->redirectRoute('casemanagement.customers.view');
+    }
+
+    public function confirmDelete()
+    {
+        $this->resetAllModals();
+        $this->showConfirmDelete = true;
+    }
+
     public function resetAllModals()
     {
         $this->showUpdateModal = false;
+        $this->showConfirmDelete = false;
     }
 
     public function selectTab($selectedTab)
@@ -66,6 +88,11 @@ class CustomerProfile extends Component
             $this->customerAddress = implode(', ', $this->customer->getAddress());
         }
     }
+
+    public function viewCustomerList()
+    {
+        $this->redirectRoute('casemanagement.customers.view',['customerId' => $this->customerId]);
+    }    
 
     public function render()
     {

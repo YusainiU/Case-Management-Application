@@ -5,6 +5,7 @@ namespace Simplydigital\CaseManagement\Provider;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Database\Query\Builder;
 
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
@@ -13,6 +14,7 @@ use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerProfile;
+use Simplydigital\CaseManagement\Livewire\Customer\DeleteCustomer;
 
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 
@@ -31,10 +33,21 @@ class CaseManagementServiceProvider extends ServiceProvider
         $this->publishResources();
         $this->registerBladeComponents();
         $this->registerLivewireComponents();
+        $this->addCustomeHelper();
+        
     }
     /**
      * Register services.
      */
+
+    public function addCustomeHelper()
+    {
+        Builder::macro('dumpRawSql', function () {
+            dump($this->toRawSql());
+            return $this;
+        });        
+    }
+
     public function register(): void
     {
         $this->registerServices();
@@ -90,6 +103,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('create-customer', CreateCustomer::class);
         Livewire::component('view-customer', ViewCustomers::class);
         Livewire::component('customer-profile', CustomerProfile::class);
+        Livewire::component('delete-customer', DeleteCustomer::class);
     }
     
     public function registerServices()

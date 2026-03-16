@@ -4,6 +4,10 @@
         <livewire:create-customer :customerId="$customerId" />
     @endif
 
+    @if($showConfirmDelete)
+        <livewire:delete-customer :customerId="$customerId" />
+    @endif
+
 
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="Customer Profile" description="{{ $customer->short_description }}"
@@ -13,7 +17,9 @@
     <x-casemanagement::page-elements.seperator margin="2"/>
 
     <div class="flex flex-row gap-4 justify-items-start">
+        <x-casemanagement::form-elements.button-primary label="Customers List" action="viewCustomerList" />
         <x-casemanagement::form-elements.button-primary label="Update Details" action="displayUpdate" />
+        <x-casemanagement::form-elements.button-danger label="Delete" action="confirmDelete" />
     </div>
 
     <div class="grid grid-cols-2 gap-4">

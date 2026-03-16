@@ -6,7 +6,7 @@
 
 <th 
     @if($sortable)
-        wire:click="$parent.sortBy('{{ $field }}')"
+        wire:click="sortByField('{{ $field }}','{{ $direction ?? null }}')"
         class="{{ $th }} cursor-pointer"
     @endif
     class="{{ $th }}"

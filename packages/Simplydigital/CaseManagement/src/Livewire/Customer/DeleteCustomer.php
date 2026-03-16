@@ -1,0 +1,40 @@
+<?php
+
+namespace Simplydigital\CaseManagement\Livewire\Customer;
+
+use LivewireUI\Modal\ModalComponent;
+
+class DeleteCustomer extends ModalComponent
+{
+
+    public $customerId;
+    public $customer;
+    public $deleteText;
+
+    public function mount()
+    {
+        $this->getCustomer();
+        $this->deleteText = "Delete For Customer has not been built yet";
+    }
+
+    public function getCustomer()
+    {
+        $utilityService = app('case-customer-services');
+        $this->customer = $utilityService->getCustomer($this->customerId);        
+    }
+    
+    public function deleteCustomer()
+    {
+        $this->dispatch('closeDeleteAndRedirect');
+    }
+
+    public function closeDeleteModal()
+    {
+        $this->dispatch('closeDeleteModal');
+    }
+
+    public function render()
+    {
+        return view('casemanagement::livewire.customer.delete-customer');
+    }
+}
