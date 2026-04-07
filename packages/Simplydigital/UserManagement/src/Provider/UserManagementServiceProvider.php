@@ -50,8 +50,9 @@ class UserManagementServiceProvider extends ServiceProvider
     public function publishMigrations()
     {
         $this->publishes([
-         __DIR__ . '/../Database/migrations/create_users_details_table.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_users_details_table.php'),
-         __DIR__ . '/../Database/migrations/create_users_statuses_table.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_users_statuses_table.php'),
+         __DIR__ . '/../Database/migrations/1_create_users_details_table.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_users_details_table.php'),
+         __DIR__ . '/../Database/migrations/2_create_users_statuses_table.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_users_statuses_table.php'),
+         __DIR__ . '/../Database/migrations/3_add_identification_field_to_user_details_table.stub' => database_path('migrations/' . date('Y_m_d_His', time()) . '_create_users_roles_table.php'),
         ]);
     }
 

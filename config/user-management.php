@@ -34,9 +34,25 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | User Identification for Login purposes
+    |--------------------------------------------------------------------------
+    |
+    | Identification for users_details table.
+    |
+    */
+
+    'identification' => [
+        'customer' =>' customer',
+        'internal' => 'internal',
+        'others' => 'others',
+    ],    
+
+    /*
+    |--------------------------------------------------------------------------
     | Tailwinds Elements Classes
     |--------------------------------------------------------------------------
-    */    
+    */
+        
 
     'tableClasses' => [
         'table' => 'w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400',

@@ -30,6 +30,8 @@ class UserProfile extends ModalComponent
     public $image;
     public $imagePath;
     public $avatar;
+    public $identification;
+    public $identifications = [];
     public $showEditing = false;
     public $showUpload = false;
     public $showDefault = true;
@@ -41,6 +43,7 @@ class UserProfile extends ModalComponent
             $this->loadUser();
             $this->checkUserDetails();
             $this->generateRandomPassword();
+            $this->identifications = config('user-management.identification');  
         }
     }
 
@@ -52,6 +55,7 @@ class UserProfile extends ModalComponent
         $this->showUpload = false;
         $this->showEditing = false;
         $this->showResetPassword = false;
+        $this->identification = null;
         $this->image = null;
         $this->imagePath = null;
     }
@@ -92,6 +96,7 @@ class UserProfile extends ModalComponent
         $this->postcode = $details->postcode;
         $this->country = $details->country ?? 'United Kingdom';
         $this->userDetails->country = $this->country;
+        $this->identification = $details->identification;
     }
 
     public function createUserDetails()
@@ -109,6 +114,7 @@ class UserProfile extends ModalComponent
         $this->name = $this->user->name;
         $this->email = $this->user->email;
         $this->phone = $this->user->phone ?? '';
+        $this->checkUserDetails();
     }
 
     public function resetAndRefresh()
@@ -182,7 +188,8 @@ class UserProfile extends ModalComponent
             'postcode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:100',
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $this->userId,            
+            'email' => 'required|email|max:255|unique:users,email,' . $this->userId,
+            'identification' => 'nullable|string|max:50',
         ];
 
         $input = [
@@ -191,6 +198,7 @@ class UserProfile extends ModalComponent
             'county' => $this->county,
             'postcode' => $this->postcode,
             'country' => $this->country,
+            'identification' => $this->identification,
         ];
 
         $profileInput = [
@@ -202,6 +210,7 @@ class UserProfile extends ModalComponent
         $this->userDetails->update($input);
         $this->user->update($profileInput);
         $this->resetAll();
+        $this->resetAndRefresh();
     }
 
     public function render()

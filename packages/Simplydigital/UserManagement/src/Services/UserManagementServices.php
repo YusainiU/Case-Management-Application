@@ -42,6 +42,13 @@ class UserManagementServices
         return $u;
     }
 
+    public function createUser($input)
+    {
+        $user = User::create($input);
+        $this->createDefaultUserDetails($user->id);
+        return $user;
+    }
+
     public function createDefaultUserDetails($userId)
     {
         $input = [

@@ -21,6 +21,7 @@ class UsersDetails extends Model
         'postcode',
         'country',
         'avatar',
+        'identification',   //customer/internal/other
     ];
 
     public function getActivitylogOptions(): LogOptions

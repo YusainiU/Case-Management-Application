@@ -42,7 +42,7 @@
                 </div>
 
                 @if ($showDefault)                    
-                    <x-usermanagement::user-profile-section :user=$user :details=$userDetails :address=$userAddress />
+                    <x-usermanagement::user-profile-section :user=$user :details=$userDetails :address=$userAddress :identification=$identification />
                 @endif                
 
                 @if ($showUpload)
@@ -50,7 +50,7 @@
                 @endif
 
                 @if($showEditing)
-                    <x-usermanagement::update-user-details :details="$userDetails" />
+                    <x-usermanagement::update-user-details :details="$userDetails" :identifications="$identifications" />
                 @endif
 
                 @if($showResetPassword)

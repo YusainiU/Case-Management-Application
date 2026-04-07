@@ -43,6 +43,13 @@
             </p>
         </div>
 
+        <div>
+            <label class="{{ $label }}">Identification</label>
+            <p class="{{ $p }}">
+                {{ $identification ?? 'N/A' }}
+            </p>
+        </div>        
+
     </div>
 
     

@@ -2,8 +2,10 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
+use App\Models\User;
 use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CustomerContacts extends Model
 {
@@ -11,7 +13,9 @@ class CustomerContacts extends Model
         'user_id',
         'number',
         'customerRole',
-        'description',        
+        'description',
+        'active',
+        'has_portal_access',        
     ];
 
     protected static function booted()
@@ -24,10 +28,17 @@ class CustomerContacts extends Model
         });
     }
 
+    public function userDetails()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
     protected function casts()
     {
         return [
             'customerRole' => CustomerContactRoles::class,
+            'active' => 'boolean',
+            'has_portal_access' => 'boolean',
         ];
     }
 

@@ -25,7 +25,9 @@
         "illuminate/support": "^12.0",
         "simplydigital/casemanagement": "*",
         "spatie/laravel-activitylog": "*",
-        "spatie/laravel-permission": "*"     
+        "spatie/laravel-permission": "*",
+        "simplydigital/usermanagement": "*",
+        "simplydigital/engineermanagement": "*"    
     },    
     "authors": [
         {

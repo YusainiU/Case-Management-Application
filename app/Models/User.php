@@ -73,4 +73,9 @@ class User extends Authenticatable
         return $this->hasRole('External User');
     }
 
+    public function isCustomer(): bool
+    {
+        return $this->hasRole('Customer');
+    }
+
 }

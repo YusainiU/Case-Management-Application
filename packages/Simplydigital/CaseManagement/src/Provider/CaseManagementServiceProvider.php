@@ -15,6 +15,7 @@ use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerProfile;
 use Simplydigital\CaseManagement\Livewire\Customer\DeleteCustomer;
+use Simplydigital\CaseManagement\Livewire\Customer\CustomerContacts;
 
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 
@@ -104,6 +105,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('view-customer', ViewCustomers::class);
         Livewire::component('customer-profile', CustomerProfile::class);
         Livewire::component('delete-customer', DeleteCustomer::class);
+        Livewire::component('customer-contacts', CustomerContacts::class);
     }
     
     public function registerServices()
