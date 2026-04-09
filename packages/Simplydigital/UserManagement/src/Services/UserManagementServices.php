@@ -5,6 +5,7 @@ namespace Simplydigital\UserManagement\Services;
 use Simplydigital\UserManagement\Model\UsersDetails;
 use Illuminate\Support\Str;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 class UserManagementServices
 {
@@ -47,6 +48,16 @@ class UserManagementServices
         $user = User::create($input);
         $this->createDefaultUserDetails($user->id);
         return $user;
+    }
+
+    public function createUserOnly($input)
+    {
+        return User::create($input);
+    }
+
+    public function createUserDetails($input)
+    {
+        return UsersDetails::create($input);
     }
 
     public function createDefaultUserDetails($userId)

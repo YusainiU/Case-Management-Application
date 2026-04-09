@@ -15,6 +15,26 @@ class CustomerContacts extends Component
     public $filter;
     public $sortBy;
     public $sortDirection = 'asc';
+    public $showCreateContactModal = false;
+
+    public $listeners = [
+        'closeCreateCustomerContactModal',
+    ];
+
+    public function closeCreateCustomerContactModal()
+    {
+        $this->resetAllModals();
+    }
+
+    public function resetAllModals()
+    {
+        $this->showCreateContactModal = false;
+    }
+
+    public function openCreateContactModal()
+    {
+        $this->showCreateContactModal = true;
+    }
 
     public function getCustomerContacts()
     {

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('number');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('customer_id');
-            $table->string('customerRole');
+            $table->string('customerRole')->nullable();
             $table->string('description')->nullable();
 
             $table->foreign('user_id')

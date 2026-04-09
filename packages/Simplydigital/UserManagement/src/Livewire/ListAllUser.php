@@ -75,7 +75,8 @@ class ListAllUser extends Component
 
     public function delete($userId)
     {   
-        $user = User::find($userId)->deleteQuietly();
+        $user = User::find($userId);
+        $user->delete();
         $this->resetPage();
     }
 
