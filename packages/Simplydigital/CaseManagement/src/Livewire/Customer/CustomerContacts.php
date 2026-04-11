@@ -11,14 +11,19 @@ class CustomerContacts extends Component
 
     use WithPagination;
     public $customerContactId;
+    public $userProfileId;
     public $customerId;
     public $filter;
     public $sortBy;
     public $sortDirection = 'asc';
     public $showCreateContactModal = false;
+    public $showContactProfileModal = false;
+    public $showContactUpdateModal = false;
 
     public $listeners = [
         'closeCreateCustomerContactModal',
+        'closeUserProfile' => 'closeProfile',
+        'closeUpdateCustomerContactModal' => 'closeUpdateModal',
     ];
 
     public function closeCreateCustomerContactModal()
@@ -26,15 +31,43 @@ class CustomerContacts extends Component
         $this->resetAllModals();
     }
 
+    public function closeUpdateModal()
+    {
+        $this->resetAllModals();
+        $this->customerContactId = null;
+    }
+
+    public function closeProfile()
+    {
+        $this->resetAllModals();
+        $this->customerContactId = null;
+    }    
+
     public function resetAllModals()
     {
         $this->showCreateContactModal = false;
+        $this->showContactProfileModal = false;
+        $this->showContactUpdateModal = false;
     }
 
     public function openCreateContactModal()
     {
         $this->showCreateContactModal = true;
     }
+
+    public function openContactProfileModal($userId)
+    {
+        $this->resetAllModals();
+        $this->showContactProfileModal = true;
+        $this->userProfileId = $userId;
+    }
+
+    public function openUpdateContactModal($contactId)
+    {
+        $this->resetAllModals();
+        $this->showContactUpdateModal = true;
+        $this->customerContactId = $contactId;
+    }   
 
     public function getCustomerContacts()
     {
@@ -44,8 +77,8 @@ class CustomerContacts extends Component
 
     public function getAllCustomerContacts()
     {
-        $caseCustomerServices = new CaseCustomerServices();
-        return $caseCustomerServices->getAllCustomerContacts();
+        $utilityService = app('case-customer-services');
+        return $utilityService->getAllCustomerContacts();
     }
 
     public function getCustomerContactDetails()
@@ -58,11 +91,11 @@ class CustomerContacts extends Component
     {
         $customerContact = null;
         if($this->filter){
-            $caseCustomerServices = new CaseCustomerServices();
+            $utilityService = app('case-customer-services');
             if($this->sortBy){
-                $caseCustomerServices->sortByField($this->sortBy, $this->sortDirection);
+                $utilityService->sortByField($this->sortBy, $this->sortDirection);
             }
-            $caseCustomerServices->filterResult($this->filter);
+            $utilityService->filterResult($this->filter);
         }
         if ($this->customerContactId) {
             $customerContact = $this->getCustomerContactDetails() ?? [];

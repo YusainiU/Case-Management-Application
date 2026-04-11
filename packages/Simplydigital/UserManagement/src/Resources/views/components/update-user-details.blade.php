@@ -47,6 +47,12 @@
                             <x-usermanagement::text-input model="country" />
                         </div>
                         <div class="mb-4 flex-row gap-4 justify-start">
+                            <x-usermanagement::input-label name="Phone Number" />
+                            <x-usermanagement::text-input model="phone" />
+                        </div>                        
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-6 justify-start">
+                        <div class="mb-4 flex-row gap-4 justify-start">
                             <x-usermanagement::input-label name="Identification" />
                             <x-usermanagement::select model="identification" :options=$identifications name="identification" />
                         </div>

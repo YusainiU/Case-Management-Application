@@ -55,7 +55,7 @@ class UserProfile extends ModalComponent
         $this->showUpload = false;
         $this->showEditing = false;
         $this->showResetPassword = false;
-        $this->identification = null;
+        //$this->identification = null;
         $this->image = null;
         $this->imagePath = null;
     }
@@ -97,15 +97,7 @@ class UserProfile extends ModalComponent
         $this->country = $details->country ?? 'United Kingdom';
         $this->userDetails->country = $this->country;
         $this->identification = $details->identification;
-    }
-
-    public function createUserDetails()
-    {
-        $input = [
-            'user_id' => $this->userId,
-            'address_1' => 'Unavailable',
-        ];
-        $this->userDetails = UsersDetails::create($input);
+        $this->phone = $details->phone ?? '';
     }
 
     public function loadUser()
@@ -187,6 +179,7 @@ class UserProfile extends ModalComponent
             'county' => 'nullable|string|max:100',
             'postcode' => 'nullable|string|max:10',
             'country' => 'nullable|string|max:100',
+            'phone' => 'nullable|string|max:20',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $this->userId,
             'identification' => 'nullable|string|max:50',
@@ -198,6 +191,7 @@ class UserProfile extends ModalComponent
             'county' => $this->county,
             'postcode' => $this->postcode,
             'country' => $this->country,
+            'phone' => $this->phone,
             'identification' => $this->identification,
         ];
 

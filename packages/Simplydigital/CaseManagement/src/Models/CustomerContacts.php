@@ -5,13 +5,14 @@ namespace Simplydigital\CaseManagement\Models;
 use App\Models\User;
 use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Simplydigital\UserManagement\Model\UsersDetails;
 
 class CustomerContacts extends Model
 {
     protected $fillable = [
         'user_id',
         'number',
+        'customer_id',
         'customerRole',
         'description',
         'active',
@@ -28,9 +29,19 @@ class CustomerContacts extends Model
         });
     }
 
-    public function userDetails()
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class,'customer_id');
+    }
+
+    public function customerUser()
     {
         return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function customerUserDetails()
+    {
+        return $this->hasOneThrough(UsersDetails::class, User::class, 'id', 'user_id', 'user_id', 'id');
     }
 
     protected function casts()

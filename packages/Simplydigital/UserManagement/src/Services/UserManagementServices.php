@@ -5,7 +5,6 @@ namespace Simplydigital\UserManagement\Services;
 use Simplydigital\UserManagement\Model\UsersDetails;
 use Illuminate\Support\Str;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
 
 class UserManagementServices
 {
@@ -35,12 +34,7 @@ class UserManagementServices
 
     public function checkUserDetails($userId)
     {
-        //return UsersDetails::where('user_id', $userId)->first();
-        $u = UsersDetails::where('user_id', $userId)->first();
-        if (empty($u)) {
-            return $this->createDefaultUserDetails($userId);
-        }
-        return $u;
+        return $this->createDefaultUserDetails($userId);
     }
 
     public function createUser($input)
@@ -62,10 +56,15 @@ class UserManagementServices
 
     public function createDefaultUserDetails($userId)
     {
-        $input = [
-            'user_id' => $userId,
-            'address_1' => 'Unavailable',
-        ];
-        return UsersDetails::create($input);
+        $exist = UsersDetails::where('user_id', $userId)->exists();
+        if (!$exist) {
+            $input = [
+                'user_id' => $userId,
+                'address_1' => 'Unavailable',
+            ];
+            return UsersDetails::create($input);
+        } else {
+            return UsersDetails::where('user_id', $userId)->first();
+        }
     }
 }

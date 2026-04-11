@@ -32,7 +32,7 @@
         <div>
             <label class="{{ $label }}">Phone</label>
             <p class="{{ $p }}">
-                {{ $user->phone ?? 'N/A' }}
+                {{ $details->phone ?? 'N/A' }}
             </p>
         </div>
 
@@ -46,7 +46,7 @@
         <div>
             <label class="{{ $label }}">Identification</label>
             <p class="{{ $p }}">
-                {{ $identification ?? 'N/A' }}
+                {{ $details->identification ?? 'N/A' }}
             </p>
         </div>        
 

@@ -55,7 +55,7 @@
             </div>                                                 
             <div>
                 <x-casemanagement::form-elements.input-label name="Telephone" :required=false />
-                <x-casemanagement::form-elements.input-text model="telephone" placeholder="Contact Telephone"
+                <x-casemanagement::form-elements.input-text model="phone" placeholder="Contact Telephone"
                     :required=false />
             </div>
             <div>

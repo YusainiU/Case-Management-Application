@@ -65,6 +65,11 @@ class CaseCustomerServices
         return Customer::find($customerId);
     }
 
+    public function getCustomerContactById($contactId)
+    {
+        return CustomerContacts::find($contactId);
+    }
+
     public function getAllCustomerContacts()
     {
         $query = CustomerContacts::query();
@@ -74,7 +79,12 @@ class CaseCustomerServices
                 $q->orWhere('number', 'like', $filterValue)
                     ->orWhere('customerRole', 'like', $filterValue)
                     ->orWhere('description', 'like', $filterValue)
-                    ->orWhereHas('userDetails', function ($qq) use ($filterValue) {
+                    ->orWhereHas('customerUserDetails', function ($qq) use ($filterValue) {
+                        $qq->where('name', 'like', $filterValue)
+                            ->orWhere('email', 'like', $filterValue)
+                            ->orWhere('phone', 'like', $filterValue);
+                    })
+                    ->orWhereHas('customer', function ($qq) use ($filterValue) {
                         $qq->where('name', 'like', $filterValue);
                     });
             });
@@ -94,7 +104,12 @@ class CaseCustomerServices
                 $q->orWhere('number', 'like', $filterValue)
                     ->orWhere('customerRole', 'like', $filterValue)
                     ->orWhere('description', 'like', $filterValue)
-                    ->orWhereHas('userDetails', function ($qq) use ($filterValue) {
+                    ->orWhereHas('customerUserDetails', function ($qq) use ($filterValue) {
+                        $qq->where('name', 'like', $filterValue)
+                            ->orWhere('email', 'like', $filterValue)
+                            ->orWhere('phone', 'like', $filterValue);
+                    })
+                    ->orWhereHas('customer', function ($qq) use ($filterValue) {
                         $qq->where('name', 'like', $filterValue);
                     });
             });
@@ -148,6 +163,22 @@ class CaseCustomerServices
         $contact->save();
         return $contact;
     }
+
+    public function updateCustomerContactOnly($contactId, $input)
+    {
+        $contact = CustomerContacts::find($contactId);
+        if (!$contact) {
+            return null;
+        }
+
+        $contact->description = $input['description'];
+        $contact->active = $input['active'];
+        $contact->customerRole = $input['customerRole'];
+        $contact->has_portal_access = $input['has_portal_access'];
+        $contact->save();
+
+        return $contact;
+    }   
     
     public function updateCustomerContact($contactId, $input)
     {
