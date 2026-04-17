@@ -7,7 +7,6 @@
         confirm="save"
     >
         <div class="grid grid-cols-2 gap-4">
-
             <div>
                 <x-casemanagement::form-elements.input-label name="Customer" :required=true />
                 <x-casemanagement::form-elements.searchable-dropdown :options=$customers property="customer" />

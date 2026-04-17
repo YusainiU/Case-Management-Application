@@ -13,6 +13,7 @@ class CustomerProfile extends Component
     public $customer;
     public $tabHeaders = [];
     public $selectedTab;
+    PUBLIC $customerIdToDelete;
     public $customerAddress;
     public $showUpdateModal = false;
     public $showConfirmDelete = false;

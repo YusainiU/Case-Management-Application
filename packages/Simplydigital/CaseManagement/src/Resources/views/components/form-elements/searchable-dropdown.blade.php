@@ -11,18 +11,16 @@
         },
         get selectedOption() {
             if (!this.selectedId) return null;
-            return this.options.find(option => option.id === this.selectedId);
+            return this.options.find(option => option.id == this.selectedId);
         },
         selectOption(option) {
             this.selectedId = option.id;
             this.open = false;
         },
         selectedValue: @entangle($property).live,
-
-
     }"
 >
-    <div  class="w-full">
+    <div  class="w-full">        
         <button @click="open = !open" type="button" class="appearance-none text-gray-900 block w-full border border-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
             <span class="block truncate" x-text="selectedOption ? selectedOption.name : 'Select an option'"></span>
             <input hidden name="selected_value" x-model="selectedValue" />
@@ -32,7 +30,6 @@
                 </svg>
             </span>
         </button>
-
         <div x-show="open" @click.away="open = false" x-cloak class="absolute z-50 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 text-base shadow-lg w-max">
             <x-casemanagement::form-elements.input-text id="xInputId" type="text" x-model="search" placeholder="Search.." />
             <ul class="max-h-60 overflow-auto">

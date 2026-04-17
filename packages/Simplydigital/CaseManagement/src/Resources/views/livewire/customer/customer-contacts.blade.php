@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 gap-4 p-4">
 
     @if($showCreateContactModal)
-        <livewire:create-update-customer-contact />
+        <livewire:create-update-customer-contact :customerId="$customerId" />
     @endif
 
     @if($showContactProfileModal)

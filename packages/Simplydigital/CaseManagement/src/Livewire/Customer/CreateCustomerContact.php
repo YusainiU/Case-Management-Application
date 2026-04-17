@@ -40,8 +40,10 @@ class CreateCustomerContact extends ModalComponent
             $this->title = 'Update Customer Contact';
             $this->confirmText = 'Update';
         }
+        if($this->customerId) {
+            $this->customer = $this->customerId;
+        }
     }
-
     public function resetAll()
     {
         $this->customerContactId = null;
@@ -86,7 +88,7 @@ class CreateCustomerContact extends ModalComponent
 
     public function save()
     {
-        $this->validate();   
+        $this->validate();
         $service = app('case-customer-services');
         $input = [
             'customer_id' => $this->customer,

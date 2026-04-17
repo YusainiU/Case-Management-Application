@@ -61,11 +61,15 @@
     <x-casemanagement::page-elements.seperator margin="2" />
 
     <div class="my-4">
-        <x-casemanagement::page-elements.tab :tabHeaders=$tabHeaders selectedTab="{{ $this->selectedTab }}">
+        <x-casemanagement::page-elements.tab :tabHeaders=$tabHeaders selectedTab="{{ $selectedTab }}">
             <x-slot name="tabSelectedComponent">
                 Selected Tab
             </x-slot>
         </x-casemanagement::page-elements.tab>
+        
+        @if('contacts' === $selectedTab)
+            <livewire:customer-contacts :customerId="$customerId" />   
+        @endif
 
     </div>
 
