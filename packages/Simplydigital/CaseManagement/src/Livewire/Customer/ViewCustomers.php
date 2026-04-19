@@ -7,7 +7,9 @@ use Livewire\WithPagination;
 
 class ViewCustomers extends Component
 {
-    use WithPagination; 
+    use WithPagination;
+    public $title = "Customers";
+    public $viewChildCompanies; 
     public $customerId;
     public $displayCreateModal = false;
     public $displayUpdateModal = false;
@@ -19,6 +21,9 @@ class ViewCustomers extends Component
     public function mount()
     {
         $this->getAllActiveCustomers();
+        if($this->viewChildCompanies){
+            $this->title = "Child Companies";
+        }
     }
 
     public function sortByField($fieldName, $direction)
@@ -36,6 +41,9 @@ class ViewCustomers extends Component
     public function getAllActiveCustomers()
     {
         $utilityService = app('case-customer-services');
+        if($this->viewChildCompanies){
+            $utilityService->selectCildCompanies($this->viewChildCompanies);
+        }
         if($this->sortField){
             $utilityService->sortByField($this->sortField, $this->sortDirection);
         }

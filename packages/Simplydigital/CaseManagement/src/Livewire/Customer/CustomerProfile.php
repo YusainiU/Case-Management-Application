@@ -17,6 +17,7 @@ class CustomerProfile extends Component
     public $customerAddress;
     public $showUpdateModal = false;
     public $showConfirmDelete = false;
+    public $navigateToComponent;
     protected $listeners = [
         'closeCreateModal',
         'closeDeleteModal',
@@ -27,6 +28,13 @@ class CustomerProfile extends Component
     {
         $this->getCustomer();
         $this->getTabHeaders();        
+    }
+
+    public function navigateTo($componentName)
+    {
+        if($componentName === 'parentCompany'){
+            $this->redirectRoute('casemanagement.customer.profile', ['customerId' => $this->customer->parentCompany->id]);
+        }
     }
 
     public function displayUpdate()

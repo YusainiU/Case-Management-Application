@@ -11,6 +11,7 @@ class CaseCustomerServices
     private $sortBy;
     private $sortDirection = 'asc';
     private $filter;
+    private $viewChildCompanies;
 
 
     public function sortByField(string $sortBy, ?string $sortDirection = null)
@@ -26,10 +27,18 @@ class CaseCustomerServices
         $this->filter = $filter;
     }
 
+    public function selectCildCompanies($parentId)
+    {
+        $this->viewChildCompanies = $parentId;
+    }
+
     public function getAllActiveCustomers()
     {
         $query = Customer::query();
         $query->where('active', true);
+        if ($this->viewChildCompanies) {
+            $query->where('parent_company', $this->viewChildCompanies);
+        }
 
         if ($this->filter) {
             $filterValue = '%' . $this->filter . '%';
