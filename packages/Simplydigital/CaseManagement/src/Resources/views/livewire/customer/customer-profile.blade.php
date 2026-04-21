@@ -11,7 +11,7 @@
 
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="Customer Profile" description="{{ $customer->short_description }}"
-            padding=" " aside="{{ $customer->active ? 'Account is Active' : 'Account is Not Active' }}" />
+            padding=" " aside="{{ $customer->active ? 'Account is Active' : 'Account is Not Active' }}" />        
     </div>
 
     <x-casemanagement::page-elements.seperator margin="2"/>

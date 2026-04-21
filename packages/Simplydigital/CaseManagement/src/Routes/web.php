@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerProfile;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerContacts;
+use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 
 
@@ -16,4 +17,6 @@ Route::middleware([
                 ->name('casemanagement.customer.profile');
             Route::get('/casemanagement/customer-contacts/{customerId?}', CustomerContacts::class)
                 ->name('casemanagement.customer.contacts');
+            Route::get('/casemanagement/view-products', ViewProducts::class)->name('casemanagement.products.view');
+            
     });

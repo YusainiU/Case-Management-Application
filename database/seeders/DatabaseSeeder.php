@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Simplydigital\CaseManagement\Models\Customer;
+use Simplydigital\CaseManagement\Models\Product;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,7 +14,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         
-        Customer::factory(20)->create();
+        Product::factory(20)->create();
         
     }
 }

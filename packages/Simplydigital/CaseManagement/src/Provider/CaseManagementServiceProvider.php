@@ -10,6 +10,8 @@ use Illuminate\Database\Query\Builder;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
+use Simplydigital\CaseManagement\Services\CaseAssetServices;
+use Simplydigital\CaseManagement\Services\CaseProductService;
 
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
@@ -18,6 +20,9 @@ use Simplydigital\CaseManagement\Livewire\Customer\DeleteCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerContacts;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomerContact;
 use Simplydigital\CaseManagement\Livewire\Customer\UpdateCustomerContact;
+use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
+use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
+use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
 
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 
@@ -110,6 +115,9 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('customer-contacts', CustomerContacts::class);
         Livewire::component('create-update-customer-contact', CreateCustomerContact::class);
         Livewire::component('update-customer-contact', UpdateCustomerContact::class);
+        Livewire::component('view-assets', ViewAssets::class);
+        Livewire::component('view-products', ViewProducts::class);
+        Livewire::component('create-product', CreateProduct::class);
     }
     
     public function registerServices()
@@ -122,7 +130,13 @@ class CaseManagementServiceProvider extends ServiceProvider
         });
         $this->app->singleton('case-customer-services', function () {
             return new CaseCustomerServices();
-        });        
+        });
+        $this->app->singleton('case-asset-services', function () {
+            return new CaseAssetServices();
+        });
+        $this->app->singleton('case-product-services', function () {
+            return new CaseProductService();
+        });
     }
 
 

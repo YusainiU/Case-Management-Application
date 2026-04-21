@@ -18,7 +18,7 @@ class CaseCustomerServices
     {
         $this->sortBy = $sortBy;
         if ($sortDirection) {
-            $this->sortDirection;
+            $this->sortDirection = $sortDirection;
         }
     }
 

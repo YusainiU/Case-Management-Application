@@ -19,7 +19,13 @@ class Product extends Model
         'type',
         'make',
         'version',
+        'active',
     ];
+
+    protected static function newFactory()
+    {
+        return \Simplydigital\CaseManagement\Database\Factories\ProductFactory::new();
+    }    
 
     protected static function booted()
     {      
@@ -30,4 +36,10 @@ class Product extends Model
         });
     }
 
+    public function casts(): array
+    {
+        return [
+            'active' => 'boolean',
+        ];
+    }
 }
