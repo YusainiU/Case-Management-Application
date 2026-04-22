@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Simplydigital\CaseManagement\Enums\ProductTypes;
 
 class Product extends Model
 {
@@ -25,8 +26,8 @@ class Product extends Model
     protected static function newFactory()
     {
         return \Simplydigital\CaseManagement\Database\Factories\ProductFactory::new();
-    }    
-
+    }
+    
     protected static function booted()
     {      
         static::creating(function ($product) {
@@ -40,6 +41,7 @@ class Product extends Model
     {
         return [
             'active' => 'boolean',
+            'type' => ProductTypes::class,
         ];
     }
 }

@@ -3,7 +3,7 @@
 namespace Simplydigital\CaseManagement\Livewire\Product;
 
 use LivewireUI\Modal\ModalComponent;
-use PSpell\Config;
+use Simplydigital\CaseManagement\Enums\ProductTypes;
 
 class CreateProduct extends ModalComponent
 {
@@ -13,19 +13,19 @@ class CreateProduct extends ModalComponent
     public $name = '';
     public $product_code = '';
     public $short_description = '';
-    public $type = '';
+    public $product_type = '';
     public $make = '';
     public $model = '';
     public $version = '';
     public $active = true;   
-    public $types = [];
+    public $product_types = [];
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'product_code' => 'required|string|max:255',
+        'product_code' => 'nullable|string|max:255',
         'short_description' => 'nullable|string',
-        'type' => 'required|string|max:255',
-        'make' => 'required|string|max:255',
+        'product_type' => 'required',
+        'make' => 'nullable|string|max:255',
         'model' => 'nullable|string',
         'version' => 'nullable|string',
         'active' => 'boolean',
@@ -33,6 +33,7 @@ class CreateProduct extends ModalComponent
 
     public function mount()
     {
+        $this->loadTypes();        
         if($this->productId){            
             $this->updateMode();
         }else{
@@ -55,7 +56,7 @@ class CreateProduct extends ModalComponent
 
     public function loadTypes()
     {
-        $this->types = config('casemanagement.productTypes');
+        $this->product_types = ProductTypes::options();
     }
 
     public function loadProduct()
@@ -66,7 +67,7 @@ class CreateProduct extends ModalComponent
             $this->name = $product->name;
             $this->product_code = $product->product_code;
             $this->short_description = $product->short_description;
-            $this->type = $product->type;
+            $this->product_type = $product->type;
             $this->make = $product->make;
             $this->model = $product->model;
             $this->version = $product->version;
@@ -81,7 +82,7 @@ class CreateProduct extends ModalComponent
             'name',
             'product_code',
             'short_description',
-            'type',
+            'product_type',
             'make',
             'model',
             'version',
@@ -93,7 +94,11 @@ class CreateProduct extends ModalComponent
     public function closeThisModal()
     {
         $this->resetAll();
-        $this->dispatch('closeCreateProductModal');
+        if($this->productId){
+            $this->dispatch('closeUpdateProductModal');
+        }else{          
+            $this->dispatch('closeCreateProductModal');
+        }
     }
     
     public function save()
@@ -103,7 +108,7 @@ class CreateProduct extends ModalComponent
             'name' => $this->name,
             'product_code' => $this->product_code,
             'short_description' => $this->short_description,
-            'type' => $this->type,
+            'type' => $this->product_type,
             'make' => $this->make,
             'model' => $this->model,
             'version' => $this->version,

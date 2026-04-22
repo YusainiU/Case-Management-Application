@@ -23,6 +23,7 @@ use Simplydigital\CaseManagement\Livewire\Customer\UpdateCustomerContact;
 use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
 use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
 use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
+use Simplydigital\CaseManagement\Livewire\Product\ProductProfile;
 
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 
@@ -118,6 +119,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('view-assets', ViewAssets::class);
         Livewire::component('view-products', ViewProducts::class);
         Livewire::component('create-product', CreateProduct::class);
+        Livewire::component('product-profile', ProductProfile::class);
     }
     
     public function registerServices()

@@ -17,9 +17,11 @@ class ViewProducts extends Component
     public $sortDirection;
     public $displayCreateModal = false;
     public $displayUpdateModal = false;
+    public $displayProfileModal = false;
     protected $listeners = [
         'closeCreateProductModal' => 'closeCreateModal',
         'closeUpdateProductModal' => 'closeUpdateModal',
+        'closeProfileModal' => 'closeProfileModal',
     ];
 
     public function closeCreateModal()
@@ -28,8 +30,13 @@ class ViewProducts extends Component
     }
 
     public function closeUpdateModal()
-    {
+    {        
         $this->displayUpdateModal = false;
+    }
+
+    public function closeProfileModal()
+    {        
+        $this->displayProfileModal = false;
     }
 
     public function loadProducts()
@@ -62,6 +69,7 @@ class ViewProducts extends Component
             'sortDirection',
             'displayCreateModal',
             'displayUpdateModal',
+            'displayProfileModal',
         );
     }
 
@@ -76,7 +84,14 @@ class ViewProducts extends Component
         $this->resetAll();
         $this->productId = $productId;
         $this->displayUpdateModal = true;
-    }   
+    }
+    
+    public function openProfileModal($productId)
+    {
+        $this->resetAll();
+        $this->productId = $productId;
+        $this->displayProfileModal = true;
+    }
 
     public function render()
     {

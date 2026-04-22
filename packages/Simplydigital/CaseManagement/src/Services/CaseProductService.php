@@ -1,7 +1,9 @@
 <?php
 
 namespace Simplydigital\CaseManagement\Services;
+
 use Simplydigital\CaseManagement\Models\Product;
+use Carbon\Carbon;
 
 class CaseProductService
 {
@@ -12,7 +14,7 @@ class CaseProductService
     public function filterResult($filter)
     {
         $this->filter = $filter;
-    }   
+    }
 
     public function sortByField($sortBy, $sortDirection)
     {
@@ -22,9 +24,33 @@ class CaseProductService
         }
     }
 
+    public function checkIfDate($value)
+    {
+        return is_string($value) && Carbon::hasFormat($value, 'Y-m-d');
+    }
+
+    public function buildProfileItems($product)
+    {
+        $items = [];
+        foreach ($product->getAttributes() as $key => $value) {
+
+            if ($this->checkIfDate($value)) {
+                $value = Carbon::parse($value)->format('d/m/Y h:i:s');
+            }
+            if ($key == 'active') {
+                $value = $value ? 'Yes' : 'No';
+            }
+            $items[] = [
+                'label' => ucfirst(str_replace('_', ' ', $key)),
+                'value' => $value,
+            ];
+        }
+        return $items;
+    }
+
     public function buildFilter($query)
     {
-        if($this->filter) {
+        if ($this->filter) {
             $filterValue = '%' . $this->filter . '%';
             $query->where(function ($q) use ($filterValue) {
                 $q->orWhere('product_code', 'like', $filterValue)
@@ -40,7 +66,7 @@ class CaseProductService
         if ($this->sortBy) {
             $query->orderBy($this->sortBy, $this->sortDirection);
         }
-        return $query;        
+        return $query;
     }
 
     public function getActiveProducts()
@@ -75,6 +101,4 @@ class CaseProductService
         }
         return $product;
     }
-
-
 }

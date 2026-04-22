@@ -4,6 +4,14 @@
         <livewire:create-product />
     @endif
 
+    @if($displayUpdateModal)
+        <livewire:create-product :productId="$productId" />
+    @endif
+
+    @if($displayProfileModal)
+        <livewire:product-profile :productId="$productId" />
+    @endif
+
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="{{ $title }}"
             description="Manage your customers here." aside="what is this" />
@@ -60,7 +68,8 @@
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             <div class="flex items-center gap-2">
-
+                                <x-casemanagement::form-elements.button-primary label="Edit" action="openUpdateModal({{ $product->id }})" />
+                                <x-casemanagement::form-elements.button-secondary label="View" action="openProfileModal({{ $product->id }})" />
                             </div>
                         </x-casemanagement::table-elements.table-td>
                     </tr>

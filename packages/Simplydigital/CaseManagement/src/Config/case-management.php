@@ -49,19 +49,5 @@ return [
         'contacts' => 'Contacts',
         'childs' => 'Child Companies',
     ],
-
-        /*
-    |--------------------------------------------------------------------------
-    | List of Product Types
-    |--------------------------------------------------------------------------
-    */
-
-    'productTypes' => [
-        'Hardware',
-        'Software',
-        'Services',
-        'Network'
-    ],
-
     
 ];
