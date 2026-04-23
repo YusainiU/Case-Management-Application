@@ -12,6 +12,7 @@ use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Services\CaseAssetServices;
 use Simplydigital\CaseManagement\Services\CaseProductService;
+use Simplydigital\CaseManagement\Services\CaseSupplierService;
 
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
@@ -24,8 +25,11 @@ use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
 use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
 use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
 use Simplydigital\CaseManagement\Livewire\Product\ProductProfile;
+use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
+use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
 
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
+
 
 class CaseManagementServiceProvider extends ServiceProvider
 {
@@ -120,6 +124,9 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('view-products', ViewProducts::class);
         Livewire::component('create-product', CreateProduct::class);
         Livewire::component('product-profile', ProductProfile::class);
+        Livewire::component('view-suppliers', ViewSuppliers::class);
+        Livewire::component('create-supplier', CreateSupplier::class);
+
     }
     
     public function registerServices()
@@ -138,6 +145,9 @@ class CaseManagementServiceProvider extends ServiceProvider
         });
         $this->app->singleton('case-product-services', function () {
             return new CaseProductService();
+        });
+        $this->app->singleton('case-supplier-services', function () {
+            return new CaseSupplierService();
         });
     }
 

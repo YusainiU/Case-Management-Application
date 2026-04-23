@@ -19,7 +19,7 @@ class CaseProductService
     public function sortByField($sortBy, $sortDirection)
     {
         $this->sortBy = $sortBy;
-        if ($sortDirection) {
+        if ($sortDirection) {   
             $this->sortDirection = $sortDirection;
         }
     }

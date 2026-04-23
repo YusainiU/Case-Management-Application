@@ -5,7 +5,9 @@ use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerProfile;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerContacts;
 use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
+use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
+use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
 
 
 Route::middleware([
@@ -18,5 +20,7 @@ Route::middleware([
             Route::get('/casemanagement/customer-contacts/{customerId?}', CustomerContacts::class)
                 ->name('casemanagement.customer.contacts');
             Route::get('/casemanagement/view-products', ViewProducts::class)->name('casemanagement.products.view');
+            Route::get('/casemanagement/view-assets', ViewAssets::class)->name('casemanagement.assets.view');
+            Route::get('/casemanagement/view-suppliers', ViewSuppliers::class)->name('casemanagement.suppliers.view');
             
     });
