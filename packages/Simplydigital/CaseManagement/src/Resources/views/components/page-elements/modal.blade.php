@@ -15,14 +15,14 @@
         <div class="bg-gray-100 rounded-lg shadow-xl max-w-{{ $widthsize ?? 'md' }} w-full mx-4">
             <!-- Header -->
             <div class="flex items-center justify-between p-6 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900">
+                <h3 class="text-lg font-medium text-gray-900 uppercase">
                     {{ $title ?? 'Modal' }}
                 </h3>
                 <button wire:click="{{ $cancelThisWith ?? 'closeModal' }}" class="text-gray-400 hover:text-gray-600">
                     <span class="text-2xl">&times;</span>
                 </button>
             </div>
-
+            <x-casemanagement::page-elements.seperator margin="0" />
             <!-- Content -->
             <div class="p-6">
                 {{ $slot }}

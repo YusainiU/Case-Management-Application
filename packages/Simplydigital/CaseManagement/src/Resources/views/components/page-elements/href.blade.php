@@ -1,3 +1,3 @@
-<a href="{{ $href }}" class="hover:underline hover:text-blue-500">
+<a href="{{ $href }}"  {{ $attributes->merge(['class' => 'hover:underline hover:text-blue-500']) }} >
     {{ $label }}
 </a>
