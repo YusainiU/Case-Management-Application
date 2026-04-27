@@ -57,6 +57,12 @@
             <x-casemanagement::form-elements.input-error field="url" />
         </div>
 
+        <div>
+            <x-casemanagement::form-elements.input-label name="Short Description" :required=false />
+            <x-casemanagement::form-elements.textarea model="short_description" placeholder="Supplier Short Description" :required=false hint="Supplier Short Description"   />
+            <x-casemanagement::form-elements.input-error field="short_description" />
+        </div>
+
         <div class="flex flex-col gap-4 justify-items-start">
             <x-casemanagement::form-elements.checkbox name="Active" :value=$active model="active" label="Active" />
         </div>

@@ -24,12 +24,14 @@ class ViewSuppliers extends Component
 
     public function closeCreateModal()
     {
-        $this->displayCreateModal = false;  
+        $this->displayCreateModal = false;
+        $this->displayUpdateModal = false;  
     }
 
     public function closeUpdateModal()
     {        
         $this->displayUpdateModal = false;
+        $this->displayCreateModal = false;
     }
 
     public function closeProfileModal()

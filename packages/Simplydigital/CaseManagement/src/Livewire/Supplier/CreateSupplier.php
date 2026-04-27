@@ -16,13 +16,14 @@ class CreateSupplier extends ModalComponent
     public $address_2;
     public $address_3;
     public $address_4;
+    public $short_description;
     public $url;
     public $active = true;
 
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:suppliers,email',
+        'email' => 'required|email|max:255',
         'telephone' => 'nullable|string|max:20',
         'address_1' => 'nullable|string|max:255',
         'address_2' => 'nullable|string|max:255',
@@ -30,6 +31,7 @@ class CreateSupplier extends ModalComponent
         'address_4' => 'nullable|string|max:255',
         'url' => 'nullable|url',
         'active' => 'boolean',
+        'short_description' => 'nullable|string|max:255',
     ];
 
     public function mount()
@@ -58,9 +60,10 @@ class CreateSupplier extends ModalComponent
             $this->address_1 = $this->supplier->address_1;
             $this->address_2 = $this->supplier->address_2;
             $this->address_3 = $this->supplier->address_3;
-            $this->address_4 = $this->supplier->address_4;
+            $this->address_4 = $this->supplier->address_4;      
             $this->url = $this->supplier->url;
             $this->active = $this->supplier->active;
+            $this->short_description = $this->supplier->short_description;
         }
     }   
 
@@ -78,6 +81,7 @@ class CreateSupplier extends ModalComponent
             'address_3' => $this->address_3,
             'address_4' => $this->address_4,
             'url' => $this->url,
+            'short_description' => $this->short_description,
             'active' => $this->active,
         ];
 
@@ -87,7 +91,7 @@ class CreateSupplier extends ModalComponent
             $caseSupplierServices->createSupplier($input);
         }
 
-        $this->dispatch('closeCreateSupplierModal');
+        $this->closeThisModal();
     }
 
     public function closeThisModal()

@@ -27,9 +27,10 @@ use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
 use Simplydigital\CaseManagement\Livewire\Product\ProductProfile;
 use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
 use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
+use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
 
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
-
+use Termwind\Components\Li;
 
 class CaseManagementServiceProvider extends ServiceProvider
 {
@@ -126,6 +127,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('product-profile', ProductProfile::class);
         Livewire::component('view-suppliers', ViewSuppliers::class);
         Livewire::component('create-supplier', CreateSupplier::class);
+        Livewire::component('supplier-profile', SupplierProfile::class);
 
     }
     

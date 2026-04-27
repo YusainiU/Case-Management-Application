@@ -21,6 +21,7 @@ class Supplier extends Model
         'email',
         'url',
         'active',
+        'short_description',
     ];
 
     protected function casts(): array
