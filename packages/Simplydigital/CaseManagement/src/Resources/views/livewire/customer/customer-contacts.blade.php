@@ -81,7 +81,7 @@
                             {{ $contact->has_portal_access ? 'Yes' : 'No' }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            <x-casemanagement::form-elements.button-secondary label="Update Contact" action="openUpdateContactModal({{ $contact->id }})" />
+                            <x-casemanagement::form-elements.button-primary label="Update Contact" action="openUpdateContactModal({{ $contact->id }})" />
                         </x-casemanagement::table-elements.table-td>
                     </tr>
                 @endforeach

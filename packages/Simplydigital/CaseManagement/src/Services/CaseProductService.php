@@ -3,20 +3,21 @@
 namespace Simplydigital\CaseManagement\Services;
 
 use Simplydigital\CaseManagement\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
 class CaseProductService
 {
-    public $sortBy;
-    public $sortDirection = 'asc';
-    public $filter;
+    public ?string $sortBy = null;
+    public string $sortDirection = 'asc';
+    public string|int|null $filter = null;
 
-    public function filterResult($filter)
+    public function filterResult(string|int $filter)
     {
         $this->filter = $filter;
     }
 
-    public function sortByField($sortBy, $sortDirection)
+    public function sortByField(string $sortBy, ?string $sortDirection = null)
     {
         $this->sortBy = $sortBy;
         if ($sortDirection) {   
@@ -24,12 +25,20 @@ class CaseProductService
         }
     }
 
-    public function checkIfDate($value)
+    public function checkIfDate(string $value)
     {
         return is_string($value) && Carbon::hasFormat($value, 'Y-m-d');
     }
 
-    public function buildProfileItems($product)
+    public function buildOptionsForProductSelect()
+    {
+        return Product::where('active', true)
+            ->orderBy('name', 'asc')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
+    public function buildProfileItems(Product $product)
     {
         $items = [];
         foreach ($product->getAttributes() as $key => $value) {
@@ -48,7 +57,7 @@ class CaseProductService
         return $items;
     }
 
-    public function buildFilter($query)
+    public function buildFilter(Builder $query)
     {
         if ($this->filter) {
             $filterValue = '%' . $this->filter . '%';
@@ -83,22 +92,20 @@ class CaseProductService
         return $query;
     }
 
-    public function getProductById($id)
+    public function getProductById(int $id)
     {
         return Product::find($id);
     }
 
-    public function createProduct($data)
+    public function createProduct(array $data)
     {
         return Product::create($data);
     }
 
-    public function updateProduct($id, $data)
+    public function updateProduct(int $id, array $data)
     {
-        $product = $this->getProductById($id);
-        if ($product) {
-            $product->update($data);
-        }
+        $product = Product::findOrFail($id);
+        $product->update($data);
         return $product;
     }
 }

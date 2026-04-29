@@ -11,6 +11,7 @@
             'required' => $required ?? false,
             'autofocus' => $autofocus ?? false,
             'disabled' => $disabled ?? false,
+            'steps' => $steps ?? null,
             // 'x-model' => $xmodel ?? '',
         ])}}
         {{ isset($xmodel) ? "x-model='$xmodel'" : '' }}

@@ -22,12 +22,15 @@ use Simplydigital\CaseManagement\Livewire\Customer\CustomerContacts;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomerContact;
 use Simplydigital\CaseManagement\Livewire\Customer\UpdateCustomerContact;
 use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
+use Simplydigital\CaseManagement\Livewire\Asset\AssetProfile;
+use Simplydigital\CaseManagement\Livewire\Asset\CreateAsset;
 use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
 use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
 use Simplydigital\CaseManagement\Livewire\Product\ProductProfile;
 use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
 use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
 use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
+
 
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 use Termwind\Components\Li;
@@ -128,6 +131,8 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('view-suppliers', ViewSuppliers::class);
         Livewire::component('create-supplier', CreateSupplier::class);
         Livewire::component('supplier-profile', SupplierProfile::class);
+        Livewire::component('create-asset', CreateAsset::class);
+        Livewire::component('asset-profile', AssetProfile::class);
 
     }
     

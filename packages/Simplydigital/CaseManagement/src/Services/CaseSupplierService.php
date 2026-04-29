@@ -3,39 +3,48 @@
 namespace Simplydigital\CaseManagement\Services;
 
 use Simplydigital\CaseManagement\Models\Supplier;
+use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
 class CaseSupplierService
 {
-    protected $query;
-    protected $supplier;
-    protected $filter;
-    protected $sortBy;
-    protected $sortByDirection;
+    protected Builder $query;
+    protected ?Supplier $supplier = null;
+    protected string|int|null $filter = null;
+    protected ?string $sortBy = null;
+    protected ?string $sortByDirection = 'asc';
 
     public function __construct()
     {
         $this->query = Supplier::query();
     }
 
-    public function filterResult($filter)
+    public function filterResult(string|int $filter)
     {
         $this->filter = $filter;
     }
 
-    public function sortByField($field, $direction)
+    public function sortByField(string $field, ?string $direction = null)
     {
 
         $this->sortBy = $field;
-        $this->sortByDirection = $direction;
+        $this->sortByDirection = $direction ?? 'asc';
     }
 
-    public function checkIfDate($value)
+    public function checkIfDate(string $value)
     {
         return is_string($value) && Carbon::hasFormat($value, 'Y-m-d');
     }
 
-    public function buildProfileItems($supplier)
+    public function buildOptionsForSupplierSelect()
+    {
+        return Supplier::where('active', true)
+            ->orderBy('name', 'asc')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
+    public function buildProfileItems(Supplier $supplier)
     {
         $items = [];
         foreach ($supplier->getAttributes() as $key => $value) {
@@ -75,7 +84,7 @@ class CaseSupplierService
         return $this->buildFilter();
     }
 
-    public function getSupplierById($id)
+    public function getSupplierById(int $id)
     {
         return Supplier::findOrFail($id);
     }
@@ -85,12 +94,12 @@ class CaseSupplierService
         return $this->buildFilter();
     }
 
-    public function createSupplier($data)
+    public function createSupplier(array $data)
     {
         return Supplier::create($data);
     }
 
-    public function updateSupplier($id, $data)
+    public function updateSupplier(int $id, array $data)
     {
         $supplier = Supplier::findOrFail($id);
         $supplier->update($data);

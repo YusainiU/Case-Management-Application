@@ -4,20 +4,26 @@ namespace Simplydigital\CaseManagement\Livewire\Asset;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Simplydigital\CaseManagement\Models\Asset;
 
 class ViewAssets extends Component
 {
 
     use WithPagination;
-    public $assetId;
-    public $asset;
-    public $customerId;
-    public $filter;
-    public $sortField;
-    public $sortDirection;
-    public $displayCreateModal = false;
-    public $displayUpdateModal = false;
-    public $displayProfileModal = false;
+    public string $title = 'Assets';
+    public int $assetId;
+    public Asset $asset;
+    public ?int $customerId = null;
+    public ?string $filter = null;
+    public ?string $sortField = null;
+    public ?string $sortDirection = null;
+    public bool $displayCreateModal = false;
+    public bool $displayUpdateModal = false;
+    public bool $displayProfileModal = false;
+
+    /**
+    * @var array<string, string>
+    */
     protected $listeners = [
         'closeCreateAssetModal' => 'closeCreateModal',
         'closeUpdateAssetModal' => 'closeUpdateModal',
@@ -39,7 +45,7 @@ class ViewAssets extends Component
         $this->displayProfileModal = false;
     }
 
-    public function sortByField($field)
+    public function sortByField(?string $field)
     {
         if ($this->sortField === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
@@ -67,14 +73,14 @@ class ViewAssets extends Component
         $this->displayCreateModal = true;
     }
 
-    public function openUpdateModal($assetId)
+    public function openUpdateModal(int $assetId)
     {
         $this->resetAll();
         $this->assetId = $assetId;
         $this->displayUpdateModal = true;
     }
     
-    public function openProfileModal($assetId)
+    public function openProfileModal(int $assetId)
     {
         $this->resetAll();
         $this->assetId = $assetId;
@@ -100,7 +106,7 @@ class ViewAssets extends Component
     public function render()
     {
         $assets = $this->loadAssets()->paginate(10);
-        return view('casemanagement::livewire.asset.view-assets', [
+        return view('casemanagement::livewire.ass   et.view-assets', [
             'assets' => $assets,
         ]);
     }

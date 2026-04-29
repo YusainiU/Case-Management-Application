@@ -57,7 +57,7 @@
                             </x-casemanagement::table-elements.table-td>
                             <x-casemanagement::table-elements.table-td>
                                 <div class="flex items-center gap-2">
-                                    <x-casemanagement::form-elements.button-secondary label="View"
+                                    <x-casemanagement::form-elements.button-primary label="View"
                                         action="openProfileModal({{ $supplier->id }})" />
                                     <x-casemanagement::form-elements.button-secondary label="Edit"
                                         action="openUpdateModal({{ $supplier->id }})" />

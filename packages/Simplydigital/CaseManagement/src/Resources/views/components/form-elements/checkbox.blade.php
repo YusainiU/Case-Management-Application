@@ -3,7 +3,7 @@
         type="checkbox" 
         id="{{ $id ?? 'radio_' . uniqid() }}"
         name="{{ $name }}"
-        value="{{ $value }}"
+        {{-- value="{{ $value }}" --}}
         wire:model="{{ $model }}"
         @if($checked ?? false) checked @endif
         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-2 focus:ring-blue-500"

@@ -4,14 +4,16 @@ namespace Simplydigital\CaseManagement\Services;
 
 use Simplydigital\CaseManagement\Models\Customer;
 use Simplydigital\CaseManagement\Models\Asset;
+use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
 class CaseAssetServices
 {
-    private $customer;
-    private $sortBy;
-    private $sortDirection = 'asc';
-    private $filter;
+    private ?Customer $customer = null;
+    private ?string $sortBy = null;
+    private string $sortDirection = 'asc';
+    private string|int|null $filter = null;
     
-    public function setCustomer($customerId)
+    public function setCustomer(int $customerId)
     {
         $this->customer = Customer::find($customerId);
     }
@@ -24,7 +26,7 @@ class CaseAssetServices
         }
     }
     
-    public function filterResult($filter)
+    public function filterResult(string|int $filter)
     {
         $this->filter = $filter;
     }    
@@ -51,14 +53,55 @@ class CaseAssetServices
         return $query;
     }    
 
-    private function buildFilter($query)
+    public function buildProfileItems(Asset $asset)
+    {
+        $items = [];
+        foreach ($asset->getAttributes() as $key => $value) {
+
+            if ($value && $this->checkIfDate($value)) {
+                $value = Carbon::parse($value)->format('d/m/Y h:i:s');
+            }
+            if ($key == 'active') {
+                $value = $value ? 'Yes' : 'No';
+            }
+            if($key == 'sell_price' || $key == 'buy_price') {
+                $value = '£' . number_format(\floatval($value), 2);
+            }
+            if($key == 'customer_id'){
+                $value = $asset->customer->name;
+            }
+            if($key == 'product_id') {
+                $value = $asset->product->name;
+            }
+            if($key == 'supplier_id') {
+                $value = $asset->supplier->name;
+            }
+            $items[] = [
+                'label' => ucfirst(str_replace('_', ' ', $key)),
+                'value' => $value,
+            ];
+        }
+        return $items;
+    }
+
+    private function buildFilter(Builder $query)
     {
         if($this->filter) {
             $filterValue = '%' . $this->filter . '%';
             $query->where(function ($q) use ($filterValue) {
                 $q->orWhere('short_description', 'like', $filterValue)
                     ->orWhere('number', 'like', $filterValue)
-                    ->orWhere('productId', 'like', $filterValue);
+                    ->orWhere('short_description', 'like', $filterValue)
+                    ->orWhere('location', 'like', $filterValue)
+                    ->orWhereHas('product', function($q) use($filterValue){
+                        $q->where('name', 'like', $filterValue);
+                    })
+                    ->orWhereHas('supplier', function($q) use($filterValue){
+                        $q->where('name', 'like', $filterValue);
+                    })
+                    ->orWhereHas('customer', function($q) use($filterValue){
+                        $q->where('name', 'like', $filterValue);
+                    });
             });
         }
 
@@ -69,9 +112,37 @@ class CaseAssetServices
         return $query;
     }
     
-    public function getAssetById($assetId)
+    public function getAssetById(int $assetId)
     {
         return Asset::find($assetId);
     }
+
+    public function createAsset(array $data)
+    {
+        $data = $this->normaliseDecimalValues($data);
+        return Asset::create($data);
+    }
+
+    public function updateAsset(Asset $asset, array $data)
+    {
+        if ($asset) {
+            $data = $this->normaliseDecimalValues($data);
+            $asset->update($data);
+            return $asset;
+        }
+        return null;
+    }
+
+    public function normaliseDecimalValues(array $data)
+    {
+        $data['buy_price'] = (float) $data['buy_price'];
+        $data['sell_price'] = (float) $data['sell_price'];
+        return $data;
+    }
+
+    public function checkIfDate(string $value)
+    {
+        return is_string($value) && Carbon::hasFormat($value, 'Y-m-d');
+    }    
 
 }

@@ -8,10 +8,10 @@ use Simplydigital\UserManagement\Services\UserManagementServices;
 class CaseCustomerServices
 {
 
-    private $sortBy;
-    private $sortDirection = 'asc';
-    private $filter;
-    private $viewChildCompanies;
+    private ?string $sortBy = null;
+    private string $sortDirection = 'asc';
+    private string|int|null  $filter = null;
+    private ?int $viewChildCompanies = null;
 
 
     public function sortByField(string $sortBy, ?string $sortDirection = null)
@@ -22,14 +22,23 @@ class CaseCustomerServices
         }
     }
 
-    public function filterResult($filter)
+    public function filterResult(?string $filter)
     {
         $this->filter = $filter;
     }
 
-    public function selectCildCompanies($parentId)
+    public function selectCildCompanies(int $parentId)
     {
         $this->viewChildCompanies = $parentId;
+    }
+
+    public function buildOptionsForCustomerSelect()
+    {
+        $options = Customer::where('active', true)
+            ->orderBy('name', 'asc')
+            ->pluck('name', 'id')
+            ->toArray();
+        return $options;
     }
 
     public function getAllActiveCustomers()
@@ -69,12 +78,12 @@ class CaseCustomerServices
         return array_values($c);
     }
 
-    public function getCustomer($customerId)
+    public function getCustomer(int $customerId)
     {
         return Customer::find($customerId);
     }
 
-    public function getCustomerContactById($contactId)
+    public function getCustomerContactById(int $contactId)
     {
         return CustomerContacts::find($contactId);
     }
@@ -104,7 +113,7 @@ class CaseCustomerServices
         return $query;
     }
 
-    public function getCustomerContacts($customerId)
+    public function getCustomerContacts(int $customerId)
     {
         $query = CustomerContacts::where('customer_id', $customerId);
         if($this->filter){
@@ -129,12 +138,12 @@ class CaseCustomerServices
         return $query;
     }
 
-    public function getCustomerContactDetails($contactId)
+    public function getCustomerContactDetails(int $contactId)
     {
         return CustomerContacts::find($contactId);
     }
 
-    public function createCustomerContact($input)
+    public function createCustomerContact(array $input)
     {
 
         $userService = new UserManagementServices();
@@ -173,8 +182,9 @@ class CaseCustomerServices
         return $contact;
     }
 
-    public function updateCustomerContactOnly($contactId, $input)
+    public function updateCustomerContactOnly(int $contactId, array $input)
     {
+        /** @var CustomerContacts $contact */
         $contact = CustomerContacts::find($contactId);
         if (!$contact) {
             return null;
@@ -189,8 +199,9 @@ class CaseCustomerServices
         return $contact;
     }   
     
-    public function updateCustomerContact($contactId, $input)
+    public function updateCustomerContact(int $contactId, array $input)
     {
+        /** @var CustomerContacts $contact */
         $contact = CustomerContacts::find($contactId);
         if (!$contact) {
             return null;
