@@ -106,7 +106,7 @@ class ViewAssets extends Component
     public function render()
     {
         $assets = $this->loadAssets()->paginate(10);
-        return view('casemanagement::livewire.ass   et.view-assets', [
+        return view('casemanagement::livewire.asset.view-assets', [
             'assets' => $assets,
         ]);
     }
