@@ -11,15 +11,20 @@ class ViewAssets extends Component
 
     use WithPagination;
     public string $title = 'Assets';
-    public int $assetId;
+    public ?int $assetId = null;
     public Asset $asset;
+    public ?int $productId = null;
     public ?int $customerId = null;
+    public ?int $supplierId = null;
     public ?string $filter = null;
     public ?string $sortField = null;
     public ?string $sortDirection = null;
     public bool $displayCreateModal = false;
     public bool $displayUpdateModal = false;
     public bool $displayProfileModal = false;
+    public bool $displayProductProfile = false;
+    public bool $displayCustomerProfile = false;
+    public bool $displaySupplierProfile = false;
 
     /**
     * @var array<string, string>
@@ -42,7 +47,7 @@ class ViewAssets extends Component
 
     public function closeProfileModal()
     {        
-        $this->displayProfileModal = false;
+        $this->resetProfileModal();
     }
 
     public function sortByField(?string $field)
@@ -55,6 +60,16 @@ class ViewAssets extends Component
         }
     }
 
+    public function resetProfileModal()
+    {
+        $this->reset([
+            'displayProfileModal',
+            'displayProductProfile',
+            'displayCustomerProfile',
+            'displaySupplierProfile',
+        ]);
+    }
+
     public function resetAll()
     {
         $this->reset([
@@ -64,6 +79,9 @@ class ViewAssets extends Component
             'displayCreateModal',
             'displayUpdateModal',
             'displayProfileModal',
+            'displayProductProfile',
+            'displayCustomerProfile',
+            'displaySupplierProfile',            
         ]);
     }
 
@@ -86,6 +104,27 @@ class ViewAssets extends Component
         $this->assetId = $assetId;
         $this->displayProfileModal = true;
     }
+
+    public function openProductProfileModal(int|string $productId)
+    {
+        $this->resetAll();
+        $this->productId = (int) $productId;
+        $this->displayProductProfile = true;
+    }
+
+    public function openCustomerProfileModal(int|string $customerId)
+    {
+        $this->resetAll();
+        $this->customerId = (int) $customerId;
+        $this->displayCustomerProfile = true;
+    }
+    
+    public function openSupplierProfileModal(int|string $supplierId)
+    {
+        $this->resetAll();
+        $this->supplierId = (int) $supplierId;
+        $this->displaySupplierProfile = true;
+    }       
 
     public function loadAssets()
     {

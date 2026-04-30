@@ -8,6 +8,7 @@ use Simplydigital\CaseManagement\Models\Asset;
 class CreateAsset extends ModalComponent
 {
     public ?int $assetId = null;
+    public ?int $customerId = null;
 
     public Asset $asset;
 
@@ -98,7 +99,7 @@ class CreateAsset extends ModalComponent
     {
         $this->form = [
             'short_description' => '',
-            'customer_id' => null,
+            'customer_id' => $this->customerId ?? null,
             'product_id' => null,
             'supplier_id' => null,
             'buy_price' => null,
@@ -111,6 +112,7 @@ class CreateAsset extends ModalComponent
             'mac_address' => null,
             'ip_address' => null,
         ];
+
     }
 
     public function loadAssetForm()

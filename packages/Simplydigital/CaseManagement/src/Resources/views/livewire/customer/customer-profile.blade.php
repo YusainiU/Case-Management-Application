@@ -81,6 +81,9 @@
         @if('childs' === $selectedTab)
             <livewire:view-customer :viewChildCompanies="$customerId" />
         @endif
+        @if('assets' === $selectedTab)
+            <livewire:view-assets :customerId="$customerId" />
+        @endif
 
     </div>
 

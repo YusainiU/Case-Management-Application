@@ -56,16 +56,19 @@ class CaseAssetServices
     public function buildProfileItems(Asset $asset)
     {
         $items = [];
+        $service = app('case-management-utility-services');
         foreach ($asset->getAttributes() as $key => $value) {
-
             if ($value && $this->checkIfDate($value)) {
-                $value = Carbon::parse($value)->format('d/m/Y h:i:s');
+                $value = $service::displayDateValue($value);
             }
             if ($key == 'active') {
                 $value = $value ? 'Yes' : 'No';
             }
-            if($key == 'sell_price' || $key == 'buy_price') {
-                $value = '£' . number_format(\floatval($value), 2);
+            if($key == 'sell_price') {
+                $value = $asset->getBuyPriceFormattedAttribute($value);
+            }
+            if($key == 'buy_price'){
+                $value = $asset->getSellPriceFormattedAttribute($value);
             }
             if($key == 'customer_id'){
                 $value = $asset->customer->name;
@@ -135,14 +138,16 @@ class CaseAssetServices
 
     public function normaliseDecimalValues(array $data)
     {
-        $data['buy_price'] = (float) $data['buy_price'];
-        $data['sell_price'] = (float) $data['sell_price'];
+        $service = app('case-management-utility-services');
+        $data['buy_price'] = $service::normaliseDecimalPriceValues($data['buy_price']);
+        $data['sell_price'] = $service::normaliseDecimalPriceValues($data['sell_price']);
         return $data;
     }
 
     public function checkIfDate(string $value)
     {
-        return is_string($value) && Carbon::hasFormat($value, 'Y-m-d');
+        $service = app('case-management-utility-services');
+        return $service::checkIfDate($value);
     }    
 
 }

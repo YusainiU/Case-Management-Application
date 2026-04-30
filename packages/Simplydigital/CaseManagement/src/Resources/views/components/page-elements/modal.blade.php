@@ -26,7 +26,7 @@
                 </div>
                 <x-casemanagement::page-elements.seperator margin="0" />
                 <!-- Content -->
-                <div class="p-6">
+                <div class="p-6 max-h-[70vh] overflow-y-auto">
                     {{ $slot }}
                 </div>
 

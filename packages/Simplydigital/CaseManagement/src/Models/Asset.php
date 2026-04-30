@@ -63,12 +63,18 @@ class Asset extends Model
 
     public function getBuyPriceFormattedAttribute($value)
     {
-        return '£' . number_format(floatval($this->buy_price), 2);
+        return $this->formatPriceValue($value);
     }
 
     public function getSellPriceFormattedAttribute($value)
     {
-        return '£' . number_format(floatval($this->sell_price), 2);
+        return $this->formatPriceValue($value);
+    }
+
+    private function formatPriceValue($value)
+    {
+        $service = app('case-management-utility-services');
+        return $service::formatPriceValue($value);
     }
 
     /*

@@ -1,6 +1,6 @@
 <div class="grid grid-cols-1 gap-4 p-4">
     @if($displayCreateModal)
-        <livewire:create-asset />
+        <livewire:create-asset :customerId="$customerId"/>
     @endif
 
     @if($displayUpdateModal)
@@ -10,6 +10,18 @@
     @if($displayProfileModal)
         <livewire:asset-profile :assetId="$assetId" />
     @endif
+    
+    @if($displayProductProfile)
+        <livewire:product-profile :productId="$productId" />
+    @endif
+
+    @if($displayCustomerProfile)
+        <livewire:customer-profile :customerId="$customerId" />
+    @endif
+    
+    @if($displaySupplierProfile)
+        <livewire:supplier-profile :supplierId="$supplierId" />
+    @endif    
 
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="{{ $title }}"
@@ -51,13 +63,23 @@
                             {{ $asset->short_description }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{ $asset->product->name }}
+                            <a href="#" wire:click.prevent="openProductProfileModal('{{ $asset->product_id }}')">
+                                {{ $asset->product->name }}
+                            </a>
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{ $asset->customer->name }}
+                            @if($customerId)
+                                {{ $asset->customer->name }}
+                            @else                                
+                                <a href="#" wire:click.prevent="openCustomerProfileModal('{{ $asset->customer_id }}')">
+                                    {{ $asset->customer->name }}
+                                </a>                                
+                            @endif
                         </x-casemanagement::table-elements.table-td>
-                        <x-casemanagement::table-elements.table-td>
-                            {{ $asset->supplier->name }}
+                        <x-casemanagement::table-elements.table-td>                            
+                            <a href="#" wire:click.prevent="openSupplierProfileModal('{{ $asset->supplier_id }}')">
+                                {{ $asset->supplier->name }}
+                            </a>
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             {{ $asset->location }}
