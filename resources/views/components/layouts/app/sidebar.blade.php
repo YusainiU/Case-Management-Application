@@ -4,7 +4,7 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:sidebar :collapsible=true sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center justify-center space-x-2 rtl:space-x-reverse" wire:navigate>
@@ -14,12 +14,13 @@
             </a>
 
              <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Case Management')" class="grid" expandable="true" expanded="false">
+                <flux:navlist.group :heading="__('Case Management')" class="grid" expandable="true" expanded="true">
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.customers.view')" :current="request()->routeIs('casemanagement.customers.view')" wire:navigate>Customers</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.customer.contacts')" :current="request()->routeIs('casemanagement.customer.contacts')" wire:navigate>Customer Contacts</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.products.view')" :current="request()->routeIs('casemanagement.products.view')" wire:navigate>Products</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.suppliers.view')" :current="request()->routeIs('casemanagement.suppliers.view')" wire:navigate>Suppliers</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.assets.view')" :current="request()->routeIs('casemanagement.assets.view')" wire:navigate>Assets</flux:navlist.item>
+                    <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.serviceLevelAgreement.view')" :current="request()->routeIs('casemanagement.serviceLevelAgreement.view')" wire:navigate>Service Level Agreements</flux:navlist.item>
                 </flux:navlist.group>   
              </flux:navlist>
 
