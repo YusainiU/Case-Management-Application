@@ -33,6 +33,8 @@ return [
     'SLA_TASK_PREFIX' => 'SLATASK',
     'SUPPLIER_PREFIX' => 'SUPP',
     'CUSTOMER_CONTACT_PREFIX' => 'CUSTCONT',
+    'LOG_PREFIX' => 'LOG',
+    'LOGVISIT_PREFIX' => 'LOGVISIT', 
 
     /*
     |--------------------------------------------------------------------------
@@ -49,5 +51,130 @@ return [
         'contacts' => 'Contacts',
         'childs' => 'Child Companies',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ticket Management Config
+    |--------------------------------------------------------------------------
+    */
+
+    'ticketManagement' => [
+
+        'priority' => [
+            'Urgent',
+            'Not-Urgent',
+        ],
+
+        'state' => [
+            'open' => 'Open',
+            'closed' => 'Closed',
+            'resolved' => 'Resolved',
+            'cancelled' => 'Cancelled',
+            'completed' => 'Completed',
+        ],
+
+        'category' => [
+            'Failure',
+            'Part Replacement',
+            'Technical Support',
+        ],
+
+        'source' => [
+            'Phone',
+            'Email',
+            'Portal',
+        ],
+        'resolution' => [
+            'No Fault Found',
+            'Part Replacement',
+            'User Error',
+            'Configuration Changes',
+            'Software Upgrade',
+            'Software Downgrade',
+            'System Reset',
+            'Technical Support',
+            'System Features',
+            'Network Configuration',
+        ],
+    ],    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Log Management
+    |--------------------------------------------------------------------------
+    |
+    | List of Log Types and Source
+    |
+    */
+    
+    'taskManagement' => [
+        'type' => [
+            'sla' => 'Service Level Agreement',
+        ],
+        'state' => [
+            'Completed' => 'completed',
+            'Paused' => 'paused',
+            'In Progress' => 'in_progress',
+            'Open' => 'open',
+            'Resolved' => 'resolved',
+        ],
+    ],    
+
+    'logs' => [
+        'type' => [
+            'system' => 'system_log',
+            'error' => 'error_log',
+            'sla_tasks' => 'sla_tasks_log',
+            'ticket' => 'ticket_log',
+            'resolution' => 'resolution',
+            'completed' => 'completed',
+            'site_visit' => 'site_visit',
+            'site_visit_first' => 'site_visit_first',
+            'site_visit_note' => 'site_visit_note',
+            'site_visit_onsite' => 'site_visit_onsite',
+            'site_visit_enroute' => 'site_visit_enroute',
+            'site_visit_offsite' => 'site_visit_offsite',
+        ],
+        'source' => [
+            'system' => 'system',
+            'external' => 'external',
+            'internal' => 'internal',
+        ],
+    ],
+    
+    'ProgressLogs' => [
+
+        'create' => 'New Comment Created [%INFO%]: %NOTE% -- [%EXTRAINFO%]',
+        'remoteResponse' => 'Remote Response at %RESPONSE% by %BY%',
+        'fixedAt' => 'Fixed at %FIX% by %BY%',
+        'breach' => 'The service level agreement has been breached at %BREACH%',
+        'working' => '%USER% is currently working on the '.env('TICKET_MONIKER'),
+        'unsetWorking' => '%USER% has removed the working flag',
+        'assignedTo' => '%USER% assigned the '.env('TICKET_MONIKER').' to %ASSIGNEE% -- %DATETIME%',
+        'unassigned' => '%USER% unassigned %ASSIGNEE% -- %DATETIME%',
+        'email' => 'Progress Log %LOGNUMBER% has been emailed to %RECEIVER%',
+        'complete' => env('TICKET_MONIKER').' closed by %USER%',
+        'resolve' => '%USER% has resolved the case at %DATETIME%',
+
+    ],
+    'siteVisit' => [
+        'visitCreated' => 'Site Visit scheduled for %ASSIGNEE% by %SCHEDULER% on %DATETIME%',
+        'VisitNote' => 'Site Visit Note : %NOTE% -- [%CREATEDBY%]',
+        'scheduledUpdated' => 'Scheduled Date %SCHEDULED% has been changed to %DATETIME% -- [%USER%]',
+        'enrouteUpdated' => '%ASSIGNEE% enroute to site at %DATETIME% -- [%USER%]',
+        'enrouteRemoved' => 'Enroute has been removed -- [%USER%]',
+        'onsiteUpdate' => '%ASSIGNEE% is on site at %DATETIME% -- [%USER%]',
+        'onsiteRemoved' => 'Onsite has been removed -- [%USER%]',
+        'offsiteUpdate' => '%ASSIGNEE% is off site at %DATETIME% -- [%USER%]',
+        'offsiteRemoved' => 'Off site has been removed -- [%USER%]',
+        'assignedToUpdated' => 'Visit assignee has been changed from %CURRENT% to %NEW% -- [%USER%]',
+        'delete' => 'Site visit with a short description "%DESCRIPTION%" has been removed %DATETIME%-- [%USER%]',
+    ],
+    'ticket' => [
+        'create' => env('TICKET_MONIKER').' created at %CREATED% by %BY%',
+    ],
+    'slaTask' => [
+        'create' => 'SLA Task created at %CREATED%',
+    ],    
         
 ];
