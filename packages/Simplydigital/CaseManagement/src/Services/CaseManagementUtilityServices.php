@@ -106,6 +106,57 @@ class CaseManagementUtilityServices
             'minutes' => $minutes,
         ];
     }
+
+    public static function secondsToHMS(int $seconds)
+    {
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $hr = str_pad($hours, 2, '0', STR_PAD_LEFT);
+        $mn = str_pad($minutes, 2, '0', STR_PAD_LEFT);
+        $result = "$hr:$mn:00";
+        return $result;
+    }    
+
+    public static function HMSToSeconds(string $time): int
+    {
+        $d = explode(':', $time);
+        return ($d[0] * 3600) + ($d[1] * 60);
+    }
+
+    public static function convertTimeElementsToSeconds(int $hours, int $minutes)
+    {
+        return ($hours * 3600) + ($minutes * 60);
+    }
+
+    public static function convertStringTimeToInt(int $seconds, string $timeType)
+    {
+        $his = self::secondsToHMS($seconds);
+        $t = explode(":", $his);
+        $h = (int) $t[0];
+        $m = (int) $t[1];
+        $result = 0;
+        if ($timeType == 'hours') {
+            $result = $h;
+        }
+        if ($timeType == 'minutes') {
+            $result = $m;
+        }
+        return $result;
+    }
+    
+    public static function buildResponseTimeResult(int $response_time)
+    {
+        $h = self::convertStringTimeToInt($response_time, 'hours');
+        $m = self::convertStringTimeToInt($response_time, 'minutes');
+        $f = self::secondsToHM($response_time);
+
+        return [
+            'hours' => $h,
+            'minutes' => $m,
+            'seconds' => $response_time,
+            'formatted' => $f,
+        ];        
+    }    
     
     public static function timeDiff(int $start, int $end)
     {

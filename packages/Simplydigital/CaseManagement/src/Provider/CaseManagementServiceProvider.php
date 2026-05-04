@@ -7,6 +7,7 @@ use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Query\Builder;
 
+use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
@@ -30,6 +31,8 @@ use Simplydigital\CaseManagement\Livewire\Product\ProductProfile;
 use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
 use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
 use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\CreateServiceLevelAgreement;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewServiceLevelAgreement;
 
 
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
@@ -133,7 +136,8 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('supplier-profile', SupplierProfile::class);
         Livewire::component('create-asset', CreateAsset::class);
         Livewire::component('asset-profile', AssetProfile::class);
-
+        Livewire::component('create-sla',CreateServiceLevelAgreement::class);
+        Livewire::component('view-service-level-agreement', ViewServiceLevelAgreement::class);
     }
     
     public function registerServices()

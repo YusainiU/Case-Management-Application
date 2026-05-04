@@ -95,4 +95,14 @@ class CaseServiceLevelAgreement
         return $this->query->find($slaId);
     }
 
+    public function createSLA(array $input)
+    {
+        return serviceLevelAgreements::create($input);
+    }
+
+    public function updateSLA(serviceLevelAgreements $sla, array $data)
+    {
+        return $sla->update($data);
+    }
+
 }

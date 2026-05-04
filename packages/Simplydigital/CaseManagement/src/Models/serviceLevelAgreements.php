@@ -2,11 +2,12 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Simplydigital\CaseManagement\Enums\DaysOfWeek;
 use Simplydigital\CaseManagement\Enums\slaTypes;
-
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class serviceLevelAgreements extends Model
 {
@@ -36,7 +37,30 @@ class serviceLevelAgreements extends Model
             $utilityService = app('case-management-utility-services');
             $model->number = $utilityService::generateRecordNumber($prefix);
         });
-    }      
+    }
+
+    public function utilityService(): CaseManagementUtilityServices
+    {
+        return app(CaseManagementUtilityServices::class);
+    }
+        
+    public function getResponseTime()
+    {
+        $rpt = $this->response_time;
+        if($rpt){
+            return app(CaseManagementUtilityServices::class)->buildResponseTimeResult($rpt);       
+        };
+        return null;        
+    }
+
+    public function getFixedTime()
+    {
+        $rpx = $this->fixed_time;
+        if($rpx) {
+            return app(CaseManagementUtilityServices::class)->buildResponseTimeResult($rpx);
+        };
+        return null;
+    }
 
     protected function casts(): array
     {

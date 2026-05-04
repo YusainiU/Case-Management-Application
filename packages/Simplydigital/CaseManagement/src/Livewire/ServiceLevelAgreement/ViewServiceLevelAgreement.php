@@ -3,7 +3,6 @@
 namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement;
 
 use Livewire\Component;
-use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Services\CaseServiceLevelAgreement;
 use Livewire\WithPagination;
 
@@ -51,9 +50,8 @@ class ViewServiceLevelAgreement extends Component
     {
         $this->reset([
             'displayProfileModal',
-            'displayProductProfile',
-            'displayCustomerProfile',
-            'displaySupplierProfile',
+            'displayCreateModal',
+            'displayUpdateModal',
         ]);
     }    
 
@@ -111,7 +109,7 @@ class ViewServiceLevelAgreement extends Component
     {
         $ui = $this->buildUI();
         $slas = $this->loadSLAS()->paginate(10);
-        return view('casemanagement::livewire.serviceLevelAgreement.view-service-level-agreement', [
+        return view('casemanagement::livewire.service-level-agreement.view-service-level-agreement', [
             'slas' => $slas,
             'ui_params' => $ui,
         ]);
