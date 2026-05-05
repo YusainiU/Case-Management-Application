@@ -2,7 +2,6 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Simplydigital\CaseManagement\Enums\DaysOfWeek;
@@ -11,7 +10,7 @@ use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class serviceLevelAgreements extends Model
 {
-    /** @use HasFactory<\Database\Factories\ServiceLevelAgreementFactory> */
+    
     use HasFactory;
     protected $fillable = [
         'name',
@@ -43,6 +42,24 @@ class serviceLevelAgreements extends Model
     {
         return app(CaseManagementUtilityServices::class);
     }
+
+    public function getServiceStartTime(): string
+    {
+        $start = $this->service_start_time;
+        if($start){
+            return app(CaseManagementUtilityServices::class)->secondsToHMS($start);
+        }
+        return '';
+    }
+
+    public function getServiceEndTime(): string
+    {
+        $end = $this->service_end_time;
+        if($end){
+            return app(CaseManagementUtilityServices::class)->secondsToHMS($end);
+        }
+        return '';
+    }    
         
     public function getResponseTime()
     {

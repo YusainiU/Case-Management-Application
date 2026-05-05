@@ -48,8 +48,20 @@ class CaseServiceLevelAgreement
             if ($utility::checkIfDate($value)) {
                 $value = $utility::displayDateValue($value);
             }
+            if ($key == 'start_day') {
+                $value = $slas->start_day->label();
+            }
+            if ($key == 'end_day') {
+                $value = $slas->end_day->label();
+            }            
             if ($key == 'active') {
                 $value = $value ? 'Yes' : 'No';
+            }
+            if($key == 'type') {
+                $value = $slas->type->label();
+            }
+            if($key == 'service_start_time' || $key == 'service_end_time') {
+                $value = $utility->secondsToHMS($value);
             }
             $items[] = [
                 'label' => ucfirst(str_replace('_', ' ', $key)),

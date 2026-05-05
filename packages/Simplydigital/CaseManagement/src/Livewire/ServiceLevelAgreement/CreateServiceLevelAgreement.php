@@ -3,6 +3,7 @@
 namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement;
 
 use LivewireUI\Modal\ModalComponent;
+use Illuminate\Validation\Rules\Enum;
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Services\CaseServiceLevelAgreement;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
@@ -21,20 +22,24 @@ class CreateServiceLevelAgreement extends ModalComponent
     public array $types = [];
     public string $closureEvent = 'closeCreateSLAModal';
 
-    protected $rules = [
-        'form.name' => 'required|string|max:255',
-        'form.short_description' => 'required|string|max:255',
-        'form.start_day' => 'required|enum:'.DaysOfWeek::class,
-        'form.end_day' => 'required|enum:'.DaysOfWeek::class,
-        'form.service_start_time' => 'required|date_format:H:i',
-        'form.service_end_time' => 'required|date_format:H:i',
-        'form.include_public_holiday' => 'boolean',
-        'form.cover_details' => 'required|string|max:255',
-        'form.active' => 'boolean',
-        'form.response_time' => 'required|numeric',
-        'form.fixed_time' => 'required|numeric',
-        'form.type' => 'required|enum:'.slaTypes::class,
-    ];
+
+    public function rules()
+    {
+        return [
+            'form.name' => 'required|string|max:255',
+            'form.short_description' => 'required|string|max:255',
+            'form.start_day' => ['required', new Enum(DaysOfWeek::class)],
+            'form.end_day' => ['required', new Enum(DaysOfWeek::class)],
+            'form.service_start_time' => 'required|date_format:H:i',
+            'form.service_end_time' => 'required|date_format:H:i',
+            'form.include_public_holiday' => 'boolean',
+            'form.cover_details' => 'required|string|max:255',
+            'form.active' => 'boolean',
+            'form.response_time' => 'required|integer|between:0,99',
+            'form.fixed_time' => 'required|integer|between:0,99',
+            'form.type' => ['required', new Enum(slaTypes::class)],
+        ];
+    }    
     
     protected $validationAttributes = [
         'form.name' => 'Name',
@@ -144,7 +149,7 @@ class CreateServiceLevelAgreement extends ModalComponent
         $slaService = $this->slaService();
         $this->validate();
         $this->form['service_start_time']=$service->HMSToSeconds($this->form['service_start_time']);
-        $this->form['service_end_time']=$service->HMSToSeconds($this->form['service_end_time']);
+        $this->form['service_end_time']=$service->HMSToSeconds($this->form['service_end_time']);        
         if($this->slaId) {
             $slaService->updateSLA($this->sla, $this->form);
         }else{

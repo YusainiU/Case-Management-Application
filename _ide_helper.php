@@ -24397,6 +24397,13 @@ namespace Simplydigital\CaseManagement\Livewire\Supplier {
             }
     }
 
+namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement {
+    /**
+     */
+    class ViewServiceLevelAgreement extends \Livewire\Component {
+            }
+    }
+
 namespace Illuminate\Database\Query {
     /**
      */
