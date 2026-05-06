@@ -12,7 +12,7 @@ class ServiceLevelAgreementProfile extends ModalComponent
     public string $title = "Service Level Agreement Profile";
     public ?int $slaId = null;
     public ?serviceLevelAgreements $sla = null;
-    public array $slaProfile = [];
+    public array $slaItems = [];
 
     protected function slaService(): CaseServiceLevelAgreement
     {
@@ -28,7 +28,7 @@ class ServiceLevelAgreementProfile extends ModalComponent
     {
         $service = $this->slaService();
         $this->sla = $service->getSLAById($this->slaId);
-        $this->slaProfile = $service->buildProfileItems($this->sla);
+        $this->slaItems = $service->buildProfileItems($this->sla);
     }
 
     public function closeThisModal()

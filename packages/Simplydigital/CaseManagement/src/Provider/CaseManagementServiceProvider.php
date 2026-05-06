@@ -33,8 +33,8 @@ use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
 use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\CreateServiceLevelAgreement;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewServiceLevelAgreement;
-
-
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ServiceLevelAgreementProfile;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewSlaImplementation;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 use Termwind\Components\Li;
 
@@ -138,6 +138,8 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('asset-profile', AssetProfile::class);
         Livewire::component('create-sla',CreateServiceLevelAgreement::class);
         Livewire::component('view-service-level-agreement', ViewServiceLevelAgreement::class);
+        Livewire::component('sla-profile', ServiceLevelAgreementProfile::class);
+        Livewire::component('view-sla-application', ViewSlaImplementation::class);
     }
     
     public function registerServices()

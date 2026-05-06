@@ -61,8 +61,8 @@ return [
     'ticketManagement' => [
 
         'priority' => [
-            'Urgent',
-            'Not-Urgent',
+            'Urgent' => 'Urgent',
+            'Not Urgent' => 'Not Urgent',
         ],
 
         'state' => [
@@ -74,29 +74,30 @@ return [
         ],
 
         'category' => [
-            'Failure',
-            'Part Replacement',
-            'Technical Support',
+            'Failure' => 'Failure',
+            'Part Replacement' => 'Part Replacement',
+            'Technical Support' => 'Technical Support',
         ],
 
         'source' => [
-            'Phone',
-            'Email',
-            'Portal',
+            'Phone' => 'Phone',
+            'Email' => 'Email',
+            'Portal' => 'Portal',
         ],
         'resolution' => [
-            'No Fault Found',
-            'Part Replacement',
-            'User Error',
-            'Configuration Changes',
-            'Software Upgrade',
-            'Software Downgrade',
-            'System Reset',
-            'Technical Support',
-            'System Features',
-            'Network Configuration',
+            'No Fault Found' => 'No Fault Found',
+            'Part Replacement' => 'Part Replacement',
+            'User Error' => 'User Error',
+            'Configuration Changes' => 'Configuration Changes',
+            'Software Upgrade' => 'Software Upgrade',
+            'Software Downgrade' => 'Software Downgrade',
+            'System Reset' => 'System Reset',
+            'Technical Support' => 'Technical Support',
+            'System Features' => 'System Features',
+            'Network Configuration' => 'Network Configuration',
         ],
     ],    
+ 
 
     /*
     |--------------------------------------------------------------------------

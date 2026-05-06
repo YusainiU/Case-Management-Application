@@ -31,7 +31,7 @@ class CaseServiceLevelAgreement
         $this->sortByDirection = $direction ?? 'asc';
     }
     
-    public function buildOptionsForSupplierSelect()
+    public function buildOptionsForSLASelect()
     {
         return serviceLevelAgreements::where('active', true)
             ->orderBy('name', 'asc')
@@ -54,7 +54,7 @@ class CaseServiceLevelAgreement
             if ($key == 'end_day') {
                 $value = $slas->end_day->label();
             }            
-            if ($key == 'active') {
+            if ($key == 'active' || $key == 'include_public_holiday') {
                 $value = $value ? 'Yes' : 'No';
             }
             if($key == 'type') {

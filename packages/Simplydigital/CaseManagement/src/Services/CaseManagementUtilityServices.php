@@ -107,13 +107,17 @@ class CaseManagementUtilityServices
         ];
     }
 
-    public static function secondsToHMS(int $seconds)
+    public static function secondsToHMS(int $seconds, ?string $format = null)
     {
         $hours = floor($seconds / 3600);
         $minutes = floor(($seconds % 3600) / 60);
         $hr = str_pad($hours, 2, '0', STR_PAD_LEFT);
         $mn = str_pad($minutes, 2, '0', STR_PAD_LEFT);
-        $result = "$hr:$mn:00";
+        if($format == 'HM'){
+            $result = "$hr:$mn";
+        }else{
+            $result = "$hr:$mn:00";
+        }
         return $result;
     }    
 

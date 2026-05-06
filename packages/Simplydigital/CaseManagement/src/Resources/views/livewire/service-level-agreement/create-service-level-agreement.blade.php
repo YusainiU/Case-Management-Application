@@ -60,11 +60,10 @@
                     :required=true />
                 <x-casemanagement::form-elements.input-error field="form.fixed_time" />
             </div>
-            <div>
-                <x-casemanagement::form-elements.input-label name="Type" :required=true />
-                <x-casemanagement::form-elements.select model="form.type" name="type"
-                    placeholder="Type" :options=$types />
-            </div>              
+            <div class="flex flex-col gap-4 justify-items-start">
+                <x-casemanagement::form-elements.checkbox name="Active" model="form.active" label="Active" />
+                <x-casemanagement::form-elements.checkbox name="Include Public Holiday" model="form.include_public_holiday" label="Include Public Holiday?" />
+            </div>                
             <div>
                 <x-casemanagement::form-elements.input-label name="Description" :required=false />
                 <x-casemanagement::form-elements.textarea model="form.short_description" placeholder="Short Description"
@@ -77,10 +76,7 @@
                     :required=false hint="Cover Details" />
                 <x-casemanagement::form-elements.input-error field="cover_details" />
             </div>
-            <div class="flex flex-col gap-4 justify-items-start">
-                <x-casemanagement::form-elements.checkbox name="Active" model="form.active" label="Active" />
-                <x-casemanagement::form-elements.checkbox name="Include Public Holiday" model="form.include_public_holiday" label="Include Public Holiday?" />
-            </div>                                       
+                                 
             
         </div>
 

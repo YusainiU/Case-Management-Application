@@ -4,6 +4,14 @@
         <livewire:create-sla />
     @endif
 
+    @if ($displayProfileModal)
+        <livewire:sla-profile :slaId="$slaId">
+    @endif
+
+    @if ($displayUpdateModal)
+        <livewire:create-sla :slaId="$slaId"/>
+    @endif
+
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="{{ $ui_params['title'] }}"
             description="Manage Service Level Agreement." aside="what is this" />
@@ -78,8 +86,8 @@
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             <div class="flex flex-row gap-4">
-                                <x-casemanagement::form-elements.button-secondary label="View"
-                                    action="openProfileModal({{ $sla->id }})" />
+                                <x-casemanagement::form-elements.button-secondary label="View" action="openProfileModal({{ $sla->id }})" />
+                                <x-casemanagement::form-elements.button-primary label="Edit" action="openUpdateModal({{ $sla->id }})" />
                             </div>
                         </x-casemanagement::table-elements.table-td>
                     </tr>

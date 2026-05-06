@@ -23,6 +23,16 @@ class slaApplication extends Model
         ];
     }
 
+    public function serviceLevelAgreement()
+    {
+        return $this->belongsTo(serviceLevelAgreements::class, 'service_level_agreement_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
     protected static function booted(): void
     {
         

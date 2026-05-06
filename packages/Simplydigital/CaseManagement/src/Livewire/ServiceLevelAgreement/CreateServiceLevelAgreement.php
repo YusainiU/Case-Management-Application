@@ -2,6 +2,7 @@
 
 namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement;
 
+use Exception;
 use LivewireUI\Modal\ModalComponent;
 use Illuminate\Validation\Rules\Enum;
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
@@ -9,6 +10,7 @@ use Simplydigital\CaseManagement\Services\CaseServiceLevelAgreement;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Enums\DaysOfWeek;
 use Simplydigital\CaseManagement\Enums\slaTypes;
+use Illuminate\Validation\ValidationException;
 
 
 class CreateServiceLevelAgreement extends ModalComponent
@@ -116,9 +118,8 @@ class CreateServiceLevelAgreement extends ModalComponent
     public function loadSLAForm()
     {
         $service = $this->utilityService();
-        $startTime = $this->service_start_time ? $service->secondsToHM($this->service_start_time) : '00:00';
-        $endTime = $this->service_end_time ? $service->secondsToHM($this->service_end_time) : '00:00';
-
+        $startTime = $this->sla->service_start_time ? $service->secondsToHMS($this->sla->service_start_time,'HM') : '00:00';
+        $endTime = $this->sla->service_end_time ? $service->secondsToHMS($this->sla->service_end_time,'HM') : '00:00';
         $this->form = [
             'name' => $this->sla->name,
             'short_description' => $this->sla->short_description,
@@ -147,7 +148,11 @@ class CreateServiceLevelAgreement extends ModalComponent
     {
         $service = $this->utilityService();
         $slaService = $this->slaService();
-        $this->validate();
+        try {
+            $this->validate();
+        } catch(ValidationException $e) {
+            dd($e->validator->errors());
+        }
         $this->form['service_start_time']=$service->HMSToSeconds($this->form['service_start_time']);
         $this->form['service_end_time']=$service->HMSToSeconds($this->form['service_end_time']);        
         if($this->slaId) {
