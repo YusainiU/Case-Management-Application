@@ -41,6 +41,36 @@ class CaseCustomerServices
         return $options;
     }
 
+    public function buildProfileItems(Customer $customer)
+    {
+        $items = [];
+        $utility = app()->make(CaseManagementUtilityServices::class);
+        foreach ($customer->getAttributes() as $key => $value) {
+
+            if ($utility::checkIfDate($value)) {
+                $value = $utility::displayDateValue($value);
+            }
+            if($key ==  'primary_type') {
+                $value = $customer->primary_type->label();
+            }
+            if($key == 'child_type') {
+                $value = $customer->child_type->label();
+            }
+            if($key == 'parent_company') {
+                $value = $customer->parentCompany->name;
+            }
+            if($key == 'active' || $key == 'portal_enabled') {
+                $value = $value ? 'Yes' : 'No';
+            }
+
+            $items[] = [
+                'label' => ucfirst(str_replace('_', ' ', $key)),
+                'value' => $value,
+            ];
+        }
+        return $items;
+    }    
+
     public function getAllActiveCustomers()
     {
         $query = Customer::query();

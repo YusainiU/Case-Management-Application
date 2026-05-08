@@ -60,11 +60,6 @@ return [
 
     'ticketManagement' => [
 
-        'priority' => [
-            'Urgent' => 'Urgent',
-            'Not Urgent' => 'Not Urgent',
-        ],
-
         'state' => [
             'open' => 'Open',
             'closed' => 'Closed',

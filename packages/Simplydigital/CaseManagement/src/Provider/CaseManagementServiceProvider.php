@@ -7,6 +7,7 @@ use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Query\Builder;
 
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\CreateSlaImplementation;
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
@@ -25,6 +26,7 @@ use Simplydigital\CaseManagement\Livewire\Customer\UpdateCustomerContact;
 use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
 use Simplydigital\CaseManagement\Livewire\Asset\AssetProfile;
 use Simplydigital\CaseManagement\Livewire\Asset\CreateAsset;
+use Simplydigital\CaseManagement\Livewire\Customer\CustomerSummary;
 use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
 use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
 use Simplydigital\CaseManagement\Livewire\Product\ProductProfile;
@@ -34,9 +36,9 @@ use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\CreateServiceLevelAgreement;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewServiceLevelAgreement;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ServiceLevelAgreementProfile;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\SlaImplementationProfile;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewSlaImplementation;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
-use Termwind\Components\Li;
 
 class CaseManagementServiceProvider extends ServiceProvider
 {
@@ -140,6 +142,9 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('view-service-level-agreement', ViewServiceLevelAgreement::class);
         Livewire::component('sla-profile', ServiceLevelAgreementProfile::class);
         Livewire::component('view-sla-application', ViewSlaImplementation::class);
+        Livewire::component('create-sla-implementation', CreateSlaImplementation::class);
+        Livewire::component('customer-summary', CustomerSummary::class);
+        Livewire::component('sla-application-profile', SlaImplementationProfile::class);
     }
     
     public function registerServices()

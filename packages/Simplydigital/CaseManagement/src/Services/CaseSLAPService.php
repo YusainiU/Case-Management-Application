@@ -68,6 +68,10 @@ class CaseSLAPService
             if($key == 'service_level_agreement_id') {
                 $value = $slap->serviceLevelAgreement->name;
             }
+            if($key == 'priority')
+            {
+                $value = $slap->priority->label();
+            }
             $items[] = [
                 'label' => ucfirst(str_replace('_', ' ', $key)),
                 'value' => $value,
@@ -117,7 +121,17 @@ class CaseSLAPService
 
     public function getSLAPById(int $slapId)
     {
-        return $this->query->find($slapId);
-    }    
+        return slaApplication::find($slapId);
+    }
+
+    public function updateSLAP(slaApplication $slap, array $data)
+    {
+        return $slap->update($data);
+    }
+
+    public function createSLAP(array $data)
+    {
+        return slaApplication::create($data);
+    }
 
 }

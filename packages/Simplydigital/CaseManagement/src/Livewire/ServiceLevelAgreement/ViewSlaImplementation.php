@@ -20,6 +20,8 @@ class ViewSlaImplementation extends Component
     public bool $displayCreateModal = false;
     public bool $displayUpdateModal = false;
     public bool $displayProfileModal = false;
+    public bool $displaySLAProfileModal = false;
+    public bool $displayCustomerSummaryModal = false;
     
     /**
     * @var array<string, string>
@@ -28,11 +30,17 @@ class ViewSlaImplementation extends Component
         'closeCreateSLAPModal' => 'closeCreateModal',
         'closeUpdateSLAPModal' => 'closeUpdateModal',
         'closeProfileSLAPModal' => 'closeProfileModal',
+        'closeProfileModal' => 'closeProfileModal',
     ];
 
     protected function slapService(): CaseSLAPService
     {
         return app(CaseSLAPService::class);
+    }
+
+    public function closeSLAProfileModal()
+    {
+        $this->resetAllModal();
     }
     
     public function closeCreateModal()
@@ -73,6 +81,8 @@ class ViewSlaImplementation extends Component
             'displayProfileModal',
             'displayCreateModal',
             'displayUpdateModal',
+            'displaySLAProfileModal',
+            'displayCustomerSummaryModal',
         ]);
     }
     
@@ -85,7 +95,7 @@ class ViewSlaImplementation extends Component
     public function openUpdateModal(int $slapId)
     {
         $this->resetAllModal();
-        $this->slapId = $slapId;
+        $this->slapId = (int) $slapId;
         $this->displayUpdateModal = true;
     }
     
@@ -94,6 +104,20 @@ class ViewSlaImplementation extends Component
         $this->resetAllModal();
         $this->slapId = $slapId;
         $this->displayProfileModal = true;
+    }
+
+    public function openSLAProfileModal(string|int $slaId)
+    {
+        $this->resetAllModal();
+        $this->slaId = (int) $slaId;
+        $this->displaySLAProfileModal = true;
+    }
+
+    public function openCustomerSummaryModal(int $customerId)
+    {
+        $this->resetAllModal();
+        $this->customerId = $customerId;
+        $this->displayCustomerSummaryModal = true;
     }
     
     public function loadSLAP()
@@ -110,7 +134,7 @@ class ViewSlaImplementation extends Component
         }        
         $query = $service->getActiveSLAP();
         return $query;        
-    }        
+    }
     public function render()
     {
         $ui = $this->buildUI();

@@ -7,6 +7,8 @@ use Simplydigital\CaseManagement\Models\slaApplication;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Services\CaseServiceLevelAgreement;
 use Simplydigital\CaseManagement\Services\CaseSLAPService;
+use Simplydigital\CaseManagement\Enums\slaAppPriorities;
+use Illuminate\Validation\ValidationException;
 
 class CreateSlaImplementation extends ModalComponent
 {
@@ -23,6 +25,7 @@ class CreateSlaImplementation extends ModalComponent
     public array $customers = [];
 
     public array $slas = [];
+    public array $priorities = [];
 
     public string $closureEvent = 'closeCreateSLAPModal';
 
@@ -38,7 +41,7 @@ class CreateSlaImplementation extends ModalComponent
     public function mount()
     {
         $this->ui = [
-            'title' => 'Create SLA Application (SLAP)',
+            'title' => 'Apply SLA (SLAP)',
             'confirmText' => 'Create',
             'widthsize' => '6xl',
             'cancelThisWith' => 'closeThisModal',
@@ -72,7 +75,7 @@ class CreateSlaImplementation extends ModalComponent
             'name' => null,
             'short_description' => null,
             'priority' => null,
-            'customer_id' => null,
+            'customer_id' => $this->customerId ?? null,
             'service_level_agreement_id' => null,
             'active' => true,
         ];
@@ -108,7 +111,7 @@ class CreateSlaImplementation extends ModalComponent
         $this->ui['title'] = 'Update SLAP';
         $this->ui['confirmText'] = 'Update';
         $this->closureEvent = 'closeUpdateSLAPModal';
-        $this->loadSLAForm();        
+        $this->loadSLAPForm();        
     }
 
     public function loadSLAPForm()
@@ -127,10 +130,30 @@ class CreateSlaImplementation extends ModalComponent
     {
         $this->customers = app()->make(CaseCustomerServices::class)->buildOptionsForCustomerSelect();
         $this->slas = $this->slaService()->buildOptionsForSLASelect();
+        $this->priorities = slaAppPriorities::options();
     }
+
+    public function save()
+    {
+        try {         
+            $this->validate();
+        }catch(ValidationException $e){
+            dd($e->validator->errors());
+        }
+
+        $service = $this->slapService();
+        if ($this->slapId) {
+            $service->updateSLAP($this->slap, $this->form);
+        } else {
+            $service->createSLAP($this->form);
+        }
+        $this->dispatch($this->closureEvent);
+    }        
 
     public function render()
     {
-        return view('casemanagement::livewire.service-level-agreement.create-sla-implementation');
+        return view('casemanagement::livewire.service-level-agreement.create-sla-implementation',[
+            'ui_params' => $this->ui,
+        ]);
     }
 }

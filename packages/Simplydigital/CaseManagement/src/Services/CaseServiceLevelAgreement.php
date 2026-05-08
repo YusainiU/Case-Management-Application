@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Services;
 
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Illuminate\Database\Eloquent\Builder;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ServiceLevelAgreementProfile;
 
 class CaseServiceLevelAgreement
 {
@@ -104,7 +105,7 @@ class CaseServiceLevelAgreement
 
     public function getSLAById(int $slaId)
     {
-        return $this->query->find($slaId);
+        return serviceLevelAgreements::find($slaId);
     }
 
     public function createSLA(array $input)

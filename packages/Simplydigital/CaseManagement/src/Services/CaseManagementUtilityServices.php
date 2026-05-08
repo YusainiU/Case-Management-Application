@@ -16,7 +16,7 @@ class CaseManagementUtilityServices
         return '£' . number_format(\floatval($value), 2);
     }
 
-    public static function checkIfDate(string $value)
+    public static function checkIfDate(?string $value)
     {            
         return \is_string($value) && Carbon::hasFormat($value, 'Y-m-d');    
     }

@@ -3,6 +3,7 @@
 namespace Simplydigital\CaseManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Simplydigital\CaseManagement\Enums\slaAppPriorities;
 
 class slaApplication extends Model
 {
@@ -20,6 +21,7 @@ class slaApplication extends Model
     {
         return [
             'active' => 'boolean',
+            'priority' => slaAppPriorities::class,
         ];
     }
 
