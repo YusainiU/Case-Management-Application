@@ -1208,16 +1208,16 @@
         },
         {
             "name": "iamfarhad/laravel-audit-log",
-            "version": "1.7.0",
+            "version": "1.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/iamfarhad/laravel-audit-log.git",
-                "reference": "30ada46562e2a46c3f8c3fa38689beb63754612f"
+                "reference": "95b80489c53a0c00aa8faaef8d51352acad202b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/iamfarhad/laravel-audit-log/zipball/30ada46562e2a46c3f8c3fa38689beb63754612f",
-                "reference": "30ada46562e2a46c3f8c3fa38689beb63754612f",
+                "url": "https://api.github.com/repos/iamfarhad/laravel-audit-log/zipball/95b80489c53a0c00aa8faaef8d51352acad202b7",
+                "reference": "95b80489c53a0c00aa8faaef8d51352acad202b7",
                 "shasum": ""
             },
             "require": {
@@ -1274,9 +1274,9 @@
             ],
             "support": {
                 "issues": "https://github.com/iamfarhad/laravel-audit-log/issues",
-                "source": "https://github.com/iamfarhad/laravel-audit-log/tree/1.7.0"
+                "source": "https://github.com/iamfarhad/laravel-audit-log/tree/1.7.1"
             },
-            "time": "2026-05-07T21:10:12+00:00"
+            "time": "2026-05-10T08:16:46+00:00"
         },
         {
             "name": "laravel/fortify",
@@ -8603,16 +8603,16 @@
         },
         {
             "name": "laramint/laravel-brain",
-            "version": "v2.0.2",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laramint/laravel-brain.git",
-                "reference": "96c19a30d481d7d0baeeb83beb5e38772db16914"
+                "reference": "46b952099a23e691477dc07f109270cdd1ac50d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laramint/laravel-brain/zipball/96c19a30d481d7d0baeeb83beb5e38772db16914",
-                "reference": "96c19a30d481d7d0baeeb83beb5e38772db16914",
+                "url": "https://api.github.com/repos/laramint/laravel-brain/zipball/46b952099a23e691477dc07f109270cdd1ac50d8",
+                "reference": "46b952099a23e691477dc07f109270cdd1ac50d8",
                 "shasum": ""
             },
             "require": {
@@ -8648,7 +8648,7 @@
             "description": "Visualize your Laravel request lifecycle as an interactive graph",
             "support": {
                 "issues": "https://github.com/laramint/laravel-brain/issues",
-                "source": "https://github.com/laramint/laravel-brain/tree/v2.0.2"
+                "source": "https://github.com/laramint/laravel-brain/tree/v2.0.3"
             },
             "funding": [
                 {
@@ -8660,7 +8660,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-05-07T22:31:53+00:00"
+            "time": "2026-05-08T16:36:14+00:00"
         },
         {
             "name": "laramint/laravel-stress",

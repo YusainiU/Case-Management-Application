@@ -61,7 +61,7 @@ class ViewSlaImplementation extends Component
     public function buildUI()
     {
         return [
-            'title' => 'Service Level Agreement Application (SLAP)',
+            'title' => 'Service Level Agreement Implementation',
         ];
     }
     

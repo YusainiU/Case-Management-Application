@@ -21,7 +21,7 @@
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.suppliers.view')" :current="request()->routeIs('casemanagement.suppliers.view')" wire:navigate>Suppliers</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.assets.view')" :current="request()->routeIs('casemanagement.assets.view')" wire:navigate>Assets</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.serviceLevelAgreement.view')" :current="request()->routeIs('casemanagement.serviceLevelAgreement.view')" wire:navigate>Service Level</flux:navlist.item>
-                    <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.slaapplication.view')" :current="request()->routeIs('casemanagement.slaapplication.view')" wire:navigate>Service Level Application</flux:navlist.item>
+                    <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.slaapplication.view')" :current="request()->routeIs('casemanagement.slaapplication.view')" wire:navigate>Implement SLA</flux:navlist.item>
                     
                 </flux:navlist.group>   
              </flux:navlist>

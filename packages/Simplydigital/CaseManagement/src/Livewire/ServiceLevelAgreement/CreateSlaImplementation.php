@@ -13,35 +13,28 @@ use Illuminate\Validation\ValidationException;
 class CreateSlaImplementation extends ModalComponent
 {
     public ?int $slapId = null;
-
     public ?slaApplication $slap = null;
-
     public ?int $customerId = null;
-
     public array $ui = [];
-
     public array $form = [];
-
     public array $customers = [];
-
     public array $slas = [];
     public array $priorities = [];
-
     public string $closureEvent = 'closeCreateSLAPModal';
 
     protected $validationAttributes = [
-        'form.name' => 'required|string|max:255',
-        'form.short_description' => 'required|string|max:255',
-        'form.priority' => 'required|string',
-        'form.customer_id' => 'required|int',
-        'form.service_level_agreement_id' => 'required|int',
-        'form.active' => 'boolean',
+        'form.name' => 'Name',
+        'form.short_description' => 'Short Description',
+        'form.priority' => 'Priority',
+        'form.customer_id' => 'Customer',
+        'form.service_level_agreement_id' => 'SLA',
+        'form.active' => 'Active',
     ];
 
     public function mount()
     {
         $this->ui = [
-            'title' => 'Apply SLA (SLAP)',
+            'title' => 'Implement SLA',
             'confirmText' => 'Create',
             'widthsize' => '6xl',
             'cancelThisWith' => 'closeThisModal',
@@ -62,8 +55,8 @@ class CreateSlaImplementation extends ModalComponent
         return [
             'form.name' => 'required|string|max:255',
             'form.short_description' => 'required|string|max:255',
-            'form.priority' => 'required|string',
-            'form.customer_id' => 'required|int',
+            'form.priority' => 'required',
+            'form.customer_id' => 'required',
             'form.service_level_agreement_id' => 'required|int',
             'form.active' => 'boolean',
         ];
@@ -108,7 +101,7 @@ class CreateSlaImplementation extends ModalComponent
     {
         $service = $this->slapService();
         $this->slap = $service->getSLAPById($this->slapId);
-        $this->ui['title'] = 'Update SLAP';
+        $this->ui['title'] = 'Update Implementation';
         $this->ui['confirmText'] = 'Update';
         $this->closureEvent = 'closeUpdateSLAPModal';
         $this->loadSLAPForm();        
@@ -135,11 +128,13 @@ class CreateSlaImplementation extends ModalComponent
 
     public function save()
     {
-        try {         
-            $this->validate();
-        }catch(ValidationException $e){
-            dd($e->validator->errors());
-        }
+        // try {         
+        //     $this->validate();
+        // }catch(ValidationException $e){
+        //     $this->message = $e->validator->errors();
+        // }
+
+        $this->validate();
 
         $service = $this->slapService();
         if ($this->slapId) {

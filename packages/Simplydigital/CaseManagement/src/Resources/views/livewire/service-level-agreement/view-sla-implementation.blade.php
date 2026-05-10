@@ -17,7 +17,7 @@
     @endif
 
     @if($displayProfileModal)
-        <livewire:sla-application-profile :slapId="$slapId" />
+        <livewire:sla-implementation-profile :slapId="$slapId" />
     @endif
 
     <div class="my-4">
@@ -26,9 +26,11 @@
             description="Service Level Management Application." 
             aside="what is this" />
     </div>
+
     <x-casemanagement::page-elements.seperator margin="2" />
-    <x-casemanagement::form-elements.button-primary label="Apply SLA" action="openCreateModal" />
+    <x-casemanagement::form-elements.button-primary label="Implement SLA" action="openCreateModal" />
     <x-casemanagement::form-elements.input-filter />
+    
     {{ $slaps?->links() }}
 
     <x-casemanagement::table-elements.table>

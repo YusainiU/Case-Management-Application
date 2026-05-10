@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Query\Builder;
-
+use Simplydigital\CaseManagement\Database\Factories\ImplementationProfile as FactoriesImplementationProfile;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\CreateSlaImplementation;
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
@@ -36,8 +36,10 @@ use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\CreateServiceLevelAgreement;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewServiceLevelAgreement;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ServiceLevelAgreementProfile;
-use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\SlaImplementationProfile;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewSlaImplementation;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ImplementationProfile;
+
+
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 
 class CaseManagementServiceProvider extends ServiceProvider
@@ -144,7 +146,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('view-sla-application', ViewSlaImplementation::class);
         Livewire::component('create-sla-implementation', CreateSlaImplementation::class);
         Livewire::component('customer-summary', CustomerSummary::class);
-        Livewire::component('sla-application-profile', SlaImplementationProfile::class);
+        Livewire::component('sla-implementation-profile', ImplementationProfile::class);
     }
     
     public function registerServices()

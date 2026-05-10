@@ -1,4 +1,5 @@
 <div>
+
     <x-casemanagement::page-elements.modal 
         title="{{ $ui_params['title'] }}" 
         widthsize="{{ $ui_params['widthsize'] }}"
@@ -6,6 +7,7 @@
         confirmText="{{ $ui_params['confirmText'] }}" 
         confirm="{{ $ui_params['confirm'] }}"
     >
+
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <x-casemanagement::form-elements.input-label name="Customer" :required=true />
