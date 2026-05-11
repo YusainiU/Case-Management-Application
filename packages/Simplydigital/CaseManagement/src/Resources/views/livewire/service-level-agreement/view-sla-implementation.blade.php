@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 gap-4 p-4">
 
     @if ($displayCreateModal)
-        <livewire:create-sla-implementation />
+        <livewire:create-sla-implementation :customerId="$customerId"/>
     @endif
 
     @if($displaySLAProfileModal)

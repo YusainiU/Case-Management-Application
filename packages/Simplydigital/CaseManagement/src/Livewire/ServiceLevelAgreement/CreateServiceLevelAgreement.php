@@ -2,7 +2,6 @@
 
 namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement;
 
-use Exception;
 use LivewireUI\Modal\ModalComponent;
 use Illuminate\Validation\Rules\Enum;
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;

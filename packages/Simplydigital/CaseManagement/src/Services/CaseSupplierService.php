@@ -49,7 +49,7 @@ class CaseSupplierService
         $items = [];
         foreach ($supplier->getAttributes() as $key => $value) {
 
-            if ($this->checkIfDate($value)) {
+            if ($value && $this->checkIfDate($value)) {
                 $value = Carbon::parse($value)->format('d/m/Y h:i:s');
             }
             if ($key == 'active') {

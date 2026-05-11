@@ -53,10 +53,10 @@ class CaseCustomerServices
             if($key ==  'primary_type') {
                 $value = $customer->primary_type->label();
             }
-            if($key == 'child_type') {
+            if($key == 'child_type' && $value) {
                 $value = $customer->child_type->label();
             }
-            if($key == 'parent_company') {
+            if($key == 'parent_company' && $value) {
                 $value = $customer->parentCompany->name;
             }
             if($key == 'active' || $key == 'portal_enabled') {

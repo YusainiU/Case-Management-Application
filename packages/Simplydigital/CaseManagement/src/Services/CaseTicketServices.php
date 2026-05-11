@@ -27,6 +27,11 @@ class CaseTicketServices
         $this->caseTicketUtilityServices = app()->make(CaseTicketUtilityServices::class);
     }
 
+    public function setCustomer(int $customerId)
+    {
+        $this->query->where('customer_id', $customerId);
+    }
+
     public function getAllOpenCases()
     {
         $this->query->where('closed_datetime', '=', null);
@@ -34,6 +39,16 @@ class CaseTicketServices
 
         return $this->query;
     }
+
+    public function getOutstandingCases()
+    {
+        $this->query
+            ->where('closed_datetime', '=', null)
+            ->where('resolved_datetime','=', null);
+        $this->buildFilter();
+
+        return $this->query;          
+    }    
 
     public function getAllClosedCases()
     {

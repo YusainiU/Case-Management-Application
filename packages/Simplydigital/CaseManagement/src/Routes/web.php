@@ -10,6 +10,7 @@ use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewServiceLevel
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewSlaImplementation;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
+use Simplydigital\CaseManagement\Livewire\Case\ViewCases;
 
 
 Route::middleware([
@@ -26,4 +27,5 @@ Route::middleware([
             Route::get('/casemanagement/view-suppliers', ViewSuppliers::class)->name('casemanagement.suppliers.view');
             Route::get('/casemanagement/view-service-level-agreement', ViewServiceLevelAgreement::class)->name('casemanagement.serviceLevelAgreement.view');
             Route::get('/casemanagement/view-sla-application/{customerId?}', ViewSlaImplementation::class)->name('casemanagement.slaapplication.view');
+            Route::get('/casemanagement/view-cases/{customerId?}', ViewCases::class)->name('casemanagement.cases.view');
     });

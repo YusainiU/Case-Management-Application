@@ -6,9 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Database\Query\Builder;
-use Simplydigital\CaseManagement\Database\Factories\ImplementationProfile as FactoriesImplementationProfile;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\CreateSlaImplementation;
-use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
@@ -26,6 +24,7 @@ use Simplydigital\CaseManagement\Livewire\Customer\UpdateCustomerContact;
 use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
 use Simplydigital\CaseManagement\Livewire\Asset\AssetProfile;
 use Simplydigital\CaseManagement\Livewire\Asset\CreateAsset;
+use Simplydigital\CaseManagement\Livewire\Case\ViewCases;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerSummary;
 use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
 use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
@@ -55,7 +54,6 @@ class CaseManagementServiceProvider extends ServiceProvider
         $this->loadMigrations();
         $this->publishConfig();
         $this->publishResources();
-        $this->registerBladeComponents();
         $this->registerLivewireComponents();
         $this->addCustomeHelper();
         
@@ -116,12 +114,7 @@ class CaseManagementServiceProvider extends ServiceProvider
             __DIR__.'/../Resources/icons' => resource_path('Simplydigital/CaseManagement/icons')
         ], 'simplydigital-casemanagement-resources');        
     }
-    
-    public function registerBladeComponents()
-    {
-    
-    }
-    
+        
     public function registerLivewireComponents()
     {
         Livewire::component('create-customer', CreateCustomer::class);
@@ -147,6 +140,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('create-sla-implementation', CreateSlaImplementation::class);
         Livewire::component('customer-summary', CustomerSummary::class);
         Livewire::component('sla-implementation-profile', ImplementationProfile::class);
+        Livewire::component('view-cases', ViewCases::class);
     }
     
     public function registerServices()

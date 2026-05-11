@@ -50,6 +50,7 @@ return [
         'assets' => 'Assets',
         'contacts' => 'Contacts',
         'childs' => 'Child Companies',
+        'sla' => 'Service Level Agreement',
     ],
 
     /*

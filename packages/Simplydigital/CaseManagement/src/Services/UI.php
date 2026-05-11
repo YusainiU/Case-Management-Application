@@ -12,5 +12,12 @@ class UI
     public const IMPORTANT_ICON_FILL = 'text-red-700 border-red-700';
     public const INFORMATION_ICON_FILL = 'text-blue-500 border-blue-500';
     public const WARNING_ICON_FILL = 'text-yellow-500 border-yellow-500';
+    public const OPEN_CASE = 'Open';
+    public const OUTSTANDING_CASE = 'Outstanding';
+    public const RESOLVED_CASE = 'Resolved';
+    public const CLOSED_CASE = 'closed';
+    public const OUTSTANDING_CASE_FLAG = 'bg-amber-300';
+    public const RESOLVED_CASE_FLAG = 'bg-blue-300';
+    public const CLOSED_CASE_FLAG = 'bg-stone-300';
 
 }

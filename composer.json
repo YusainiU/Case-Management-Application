@@ -19,7 +19,7 @@
         "simplydigital/casemanagement": "dev-main",
         "simplydigital/engineermanagement": "dev-main",
         "simplydigital/usermanagement": "dev-main",
-        "spatie/laravel-activitylog": "^4.12",
+        "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-permission": "^6.24",
         "wire-elements/modal": "^3.0"
     },
