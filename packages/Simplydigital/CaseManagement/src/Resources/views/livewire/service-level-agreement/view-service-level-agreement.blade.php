@@ -11,7 +11,7 @@
     @if ($displayUpdateModal)
         <livewire:create-sla :slaId="$slaId"/>
     @endif
-
+     
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="{{ $ui_params['title'] }}"
             description="Manage Service Level Agreement." aside="what is this" />
