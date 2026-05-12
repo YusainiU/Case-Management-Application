@@ -51,7 +51,19 @@ class CaseAssetServices
         }
         $this->buildFilter($query);
         return $query;
-    }    
+    }
+    
+    public function buildOptionsForAssetSelect(?int $customerId = null)
+    {
+        $opts = Asset::query();
+        if($customerId){
+            $opts->where('customer_id', $customerId);
+        }
+        return $opts->where('active', true)
+            ->orderBy('short_description', 'asc')
+            ->pluck('short_description', 'id')
+            ->toArray();
+    }
 
     public function buildProfileItems(Asset $asset)
     {

@@ -19,7 +19,6 @@ class CreateSlaImplementation extends ModalComponent
     public array $customers = [];
     public array $slas = [];
     public array $priorities = [];
-    public array $mult = [];
     public string $closureEvent = 'closeCreateSLAPModal';
 
     protected $validationAttributes = [

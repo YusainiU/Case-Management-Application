@@ -10,25 +10,25 @@ use Simplydigital\CaseManagement\Models\Customer;
 class CreateCustomer extends ModalComponent
 {
 
-    public $customerId;
-    public $customer;
-    public $title = "Create New Customer";
-    public $confirmText = "Create";
-    public $name;
-    public $primaryType;
-    public $childType;
-    public $parentCompany;
-    public $address_1;
-    public $address_2;
-    public $address_3;
-    public $telephone_1;
-    public $url;
-    public $description;
-    public $active = true;
-    public $portalEnabled = false;
-    public $primaryTypes = [];
-    public $childTypes = [];
-    public $customers = [];
+    public ?int $customerId = null;
+    public ?Customer $customer = null;
+    public ?string $title = "Create New Customer";
+    public ?string $confirmText = "Create";
+    public ?string $name;
+    public ?string $primaryType = null;
+    public ?string $childType = null;
+    public ?string $parentCompany = null;
+    public ?string $address_1 = null;
+    public ?string $address_2 = null;
+    public ?string $address_3 = null;
+    public ?string $telephone_1 = null;
+    public ?string $url = null;
+    public ?string $description = null;
+    public bool $active = true;
+    public ?bool $portalEnabled = false;
+    public array $primaryTypes = [];
+    public array $childTypes = [];
+    public array $customers = [];
 
     protected $rules = [
         'name' => 'required|min:3|max:255',

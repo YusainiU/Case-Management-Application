@@ -2,17 +2,20 @@
 
 namespace Simplydigital\CaseManagement\Services;
 
-use Simplydigital\CaseManagement\Models\slaApplication;
-use Simplydigital\CaseManagement\Models\Customer;
 use Illuminate\Database\Eloquent\Builder;
+use Simplydigital\CaseManagement\Models\Customer;
+use Simplydigital\CaseManagement\Models\slaApplication;
 
 class CaseSLAPService
 {
-
     private ?Builder $query = null;
+
     private ?Customer $customer = null;
+
     private ?string $sortBy = null;
+
     private string $sortByDirection = 'asc';
+
     private string|int|null $filter = null;
 
     public function __construct()
@@ -36,23 +39,22 @@ class CaseSLAPService
         $this->sortBy = $field;
         $this->sortByDirection = $direction ?? 'asc';
     }
-    
-    public function buildOptionsForSLAPSelect()
-    {
-        if($this->customer) {
-            $opts = $this->customer;
-            $opts->where('active', true);
-        }else{
-            $opts = slaApplication::where('active', true);
-        }
-        
-        $opts->orderBy('name', 'asc')
-        ->pluck('name', 'id')
-        ->toArray();
 
-        return $opts;
+    public function buildOptionsForSLAPSelect(?int $customerId = null)
+    {
+        $query = slaApplication::query();
+
+        if ($customerId) {
+            $query->where('customer_id', $customerId);
+        }
+
+        return $query->where('active', true)
+            ->orderBy('name')
+            ->pluck('name', 'id')
+            ->toArray();
+
     }
-    
+
     public function buildProfileItems(slaApplication $slap)
     {
         $items = [];
@@ -62,14 +64,13 @@ class CaseSLAPService
             if ($utility::checkIfDate($value)) {
                 $value = $utility::displayDateValue($value);
             }
-            if($key == 'customer_id') {
+            if ($key == 'customer_id') {
                 $value = $slap->customer->name;
             }
-            if($key == 'service_level_agreement_id') {
+            if ($key == 'service_level_agreement_id') {
                 $value = $slap->serviceLevelAgreement->name;
             }
-            if($key == 'priority')
-            {
+            if ($key == 'priority') {
                 $value = $slap->priority->label();
             }
             $items[] = [
@@ -77,12 +78,13 @@ class CaseSLAPService
                 'value' => $value,
             ];
         }
+
         return $items;
     }
-    
+
     public function buildFilter()
     {
-        if($this->customer) {
+        if ($this->customer) {
             $this->query->where('customer_id', $this->customer->id);
         }
 
@@ -93,10 +95,10 @@ class CaseSLAPService
                     ->orWhere('number', 'like', $filterValue)
                     ->orWhere('short_description', 'like', $filterValue)
                     ->orWhere('priority', 'like', $filterValue)
-                    ->orWhereHas('customer',function($q) use ($filterValue) {
+                    ->orWhereHas('customer', function ($q) use ($filterValue) {
                         $q->where('name', 'like', $filterValue);
                     })
-                    ->orWhereHas('serviceLevelAgreement', function($qq) use ($filterValue) {
+                    ->orWhereHas('serviceLevelAgreement', function ($qq) use ($filterValue) {
                         $qq->where('name', 'like', $filterValue);
                     });
             });
@@ -105,17 +107,19 @@ class CaseSLAPService
             $this->query->orderBy($this->sortBy, $this->sortByDirection);
         }
     }
-    
+
     public function getActiveSLAP()
     {
         $this->query->where('active', true);
         $this->buildFilter();
+
         return $this->query;
     }
 
     public function getAllSLAP()
     {
         $this->buildFilter();
+
         return $this->query;
     }
 
@@ -133,5 +137,4 @@ class CaseSLAPService
     {
         return slaApplication::create($data);
     }
-
 }
