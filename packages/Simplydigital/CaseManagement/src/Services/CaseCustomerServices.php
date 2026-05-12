@@ -50,7 +50,7 @@ class CaseCustomerServices
             if ($utility::checkIfDate($value)) {
                 $value = $utility::displayDateValue($value);
             }
-            if($key ==  'primary_type') {
+            if($key ==  'primary_type' && $value) {
                 $value = $customer->primary_type->label();
             }
             if($key == 'child_type' && $value) {

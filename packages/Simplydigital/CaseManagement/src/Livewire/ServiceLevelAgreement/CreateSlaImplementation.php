@@ -8,7 +8,6 @@ use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Services\CaseServiceLevelAgreement;
 use Simplydigital\CaseManagement\Services\CaseSLAPService;
 use Simplydigital\CaseManagement\Enums\slaAppPriorities;
-use Illuminate\Validation\ValidationException;
 
 class CreateSlaImplementation extends ModalComponent
 {
@@ -20,6 +19,7 @@ class CreateSlaImplementation extends ModalComponent
     public array $customers = [];
     public array $slas = [];
     public array $priorities = [];
+    public array $mult = [];
     public string $closureEvent = 'closeCreateSLAPModal';
 
     protected $validationAttributes = [
@@ -124,6 +124,7 @@ class CreateSlaImplementation extends ModalComponent
         $this->customers = app()->make(CaseCustomerServices::class)->buildOptionsForCustomerSelect();
         $this->slas = $this->slaService()->buildOptionsForSLASelect();
         $this->priorities = slaAppPriorities::options();
+        $mult = $this->priorities;        
     }
 
     public function save()

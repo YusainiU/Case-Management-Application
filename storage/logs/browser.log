@@ -1,0 +1,1261 @@
+[2026-05-12 09:10:12] local.WARNING: Alpine Expression Error: Illegal invocation
+
+Expression: "open" null null 664 null {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.319Z"} 
+[2026-05-12 09:10:12] local.WARNING: Alpine Expression Error: multiselect is not defined
+
+Expression: "multiselect({
+        options: JSON.parse('{\u00221\u0022:\u0022Urgent\u0022,\u00222\u0022:\u0022Not Urgent\u0022}'),
+        selected: window.Livewire.find('k8YNAQ8fT8WhYOAACyEf').entangle(''),
+    })" null 660 null null null null null selected.length ? '' : 'Select Priorities' false 663 null null null null null     null null null  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.320Z"} 
+[2026-05-12 09:10:12] local.WARNING: Alpine Expression Error: selectedOptions is not defined
+
+Expression: "selectedOptions" null null item.value false 662 item.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.320Z"} 
+[2026-05-12 09:10:12] local.WARNING: Alpine Expression Error: selected is not defined
+
+Expression: "selected.length ? '' : 'Select Priorities'" null null null null null selected.length ? '' : 'Select Priorities' false 663 null null null null null     {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.320Z"} 
+[2026-05-12 09:10:12] local.WARNING: Alpine Expression Error: search is not defined
+
+Expression: "search" null null null null null selected.length ? '' : 'Select Priorities' false 663 null null null null null     {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.321Z"} 
+[2026-05-12 09:10:12] local.WARNING: Alpine Expression Error: filteredOptions is not defined
+
+Expression: "filteredOptions" null null option.value false 665 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.321Z"} 
+[2026-05-12 09:10:12] local.WARNING: Alpine Expression Error: filteredOptions is not defined
+
+Expression: "filteredOptions.length === 0" null 666 null  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.321Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught TypeError: Illegal invocation http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError Illegal invocation TypeError: Illegal invocation
+    at runIfTypeOfFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1270:26)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1258:11
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.328Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught TypeError: Illegal invocation http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError Illegal invocation TypeError: Illegal invocation
+    at runIfTypeOfFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1270:26)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1258:11
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.328Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: multiselect is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError multiselect is not defined ReferenceError: multiselect is not defined
+    at [Alpine] multiselect({
+        options: JSON.parse('{\u00221\u0022:\u0022Urgent\u0022,\u00222\u0022:\u0022Not Urgent\u0022}'),
+        selected: window.Livewire.find('k8YNAQ8fT8WhYOAACyEf').entangle(''),
+    }) (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:16)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at evaluate (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1191:34)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3723:17)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48)
+    at stopDeferring (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1372:7)
+    at deferHandlingDirectives (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1375:5)
+    at initTree (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1571:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1510:23 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.328Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: multiselect is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError multiselect is not defined ReferenceError: multiselect is not defined
+    at [Alpine] multiselect({
+        options: JSON.parse('{\u00221\u0022:\u0022Urgent\u0022,\u00222\u0022:\u0022Not Urgent\u0022}'),
+        selected: window.Livewire.find('k8YNAQ8fT8WhYOAACyEf').entangle(''),
+    }) (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:16)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at evaluate (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1191:34)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3723:17)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48)
+    at stopDeferring (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1372:7)
+    at deferHandlingDirectives (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1375:5)
+    at initTree (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1571:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1510:23 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.328Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: selectedOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError selectedOptions is not defined ReferenceError: selectedOptions is not defined
+    at [Alpine] selectedOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.328Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: selectedOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError selectedOptions is not defined ReferenceError: selectedOptions is not defined
+    at [Alpine] selectedOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.329Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: selected is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError selected is not defined ReferenceError: selected is not defined
+    at [Alpine] selected.length ? '' : 'Select Priorities' (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at handler2 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.329Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: selected is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError selected is not defined ReferenceError: selected is not defined
+    at [Alpine] selected.length ? '' : 'Select Priorities' (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at handler2 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.329Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at getValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3460:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3569:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3568:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.329Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at getValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3460:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3569:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3568:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.329Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: filteredOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError filteredOptions is not defined ReferenceError: filteredOptions is not defined
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.329Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: filteredOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError filteredOptions is not defined ReferenceError: filteredOptions is not defined
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.329Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: filteredOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError filteredOptions is not defined ReferenceError: filteredOptions is not defined
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.329Z"} 
+[2026-05-12 09:10:12] local.ERROR: Uncaught ReferenceError: filteredOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError filteredOptions is not defined ReferenceError: filteredOptions is not defined
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:13.329Z"} 
+[2026-05-12 09:10:32] local.WARNING: Alpine Expression Error: search is not defined
+
+Expression: "search" null null null null null selected.length ? '' : 'Select Priorities' false 663 null null null null null    null {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:33.325Z"} 
+[2026-05-12 09:10:32] local.WARNING: Alpine Expression Error: search is not defined
+
+Expression: "search" null null null null null selected.length ? '' : 'Select Priorities' false 663 null null null null null    null {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:33.325Z"} 
+[2026-05-12 09:10:32] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at getValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3460:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3520:50
+    at HTMLInputElement.handler4 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3277:27) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:33.326Z"} 
+[2026-05-12 09:10:32] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at getValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3460:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3520:50
+    at HTMLInputElement.handler4 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3277:27) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:33.326Z"} 
+[2026-05-12 09:10:32] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at setValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3465:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3520:9
+    at HTMLInputElement.handler4 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3277:27) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:33.326Z"} 
+[2026-05-12 09:10:32] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at setValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3465:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3520:9
+    at HTMLInputElement.handler4 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3277:27) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:10:33.326Z"} 
+[2026-05-12 09:19:51] local.WARNING: Alpine Expression Error: Illegal invocation
+
+Expression: "open" null null 458 null {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.569Z"} 
+[2026-05-12 09:19:51] local.WARNING: Alpine Expression Error: multiselect is not defined
+
+Expression: "multiselect({
+        options: JSON.parse('{\u00221\u0022:\u0022Urgent\u0022,\u00222\u0022:\u0022Not Urgent\u0022}'),
+        selected: window.Livewire.find('ozgQTG2NrbEOKnMSLC2Z').entangle('form.priority'),
+    })" null 454 null null null null null selected.length ? '' : 'Select assets...' false 457 null null null null null     null null null  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.571Z"} 
+[2026-05-12 09:19:51] local.WARNING: Alpine Expression Error: selectedOptions is not defined
+
+Expression: "selectedOptions" null null item.value false 456 item.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.572Z"} 
+[2026-05-12 09:19:51] local.WARNING: Alpine Expression Error: selected is not defined
+
+Expression: "selected.length ? '' : 'Select assets...'" null null null null null selected.length ? '' : 'Select assets...' false 457 null null null null null     {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.572Z"} 
+[2026-05-12 09:19:51] local.WARNING: Alpine Expression Error: search is not defined
+
+Expression: "search" null null null null null selected.length ? '' : 'Select assets...' false 457 null null null null null     {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.572Z"} 
+[2026-05-12 09:19:51] local.WARNING: Alpine Expression Error: filteredOptions is not defined
+
+Expression: "filteredOptions" null null option.value false 459 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.573Z"} 
+[2026-05-12 09:19:51] local.WARNING: Alpine Expression Error: filteredOptions is not defined
+
+Expression: "filteredOptions.length === 0" null 460 null  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.573Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught TypeError: Illegal invocation http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError Illegal invocation TypeError: Illegal invocation
+    at runIfTypeOfFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1270:26)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1258:11
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.585Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught TypeError: Illegal invocation http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError Illegal invocation TypeError: Illegal invocation
+    at runIfTypeOfFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1270:26)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1258:11
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.585Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: multiselect is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError multiselect is not defined ReferenceError: multiselect is not defined
+    at [Alpine] multiselect({
+        options: JSON.parse('{\u00221\u0022:\u0022Urgent\u0022,\u00222\u0022:\u0022Not Urgent\u0022}'),
+        selected: window.Livewire.find('ozgQTG2NrbEOKnMSLC2Z').entangle('form.priority'),
+    }) (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:16)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at evaluate (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1191:34)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3723:17)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48)
+    at stopDeferring (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1372:7)
+    at deferHandlingDirectives (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1375:5)
+    at initTree (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1571:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1510:23 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.586Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: multiselect is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError multiselect is not defined ReferenceError: multiselect is not defined
+    at [Alpine] multiselect({
+        options: JSON.parse('{\u00221\u0022:\u0022Urgent\u0022,\u00222\u0022:\u0022Not Urgent\u0022}'),
+        selected: window.Livewire.find('ozgQTG2NrbEOKnMSLC2Z').entangle('form.priority'),
+    }) (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:16)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at evaluate (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1191:34)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3723:17)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48)
+    at stopDeferring (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1372:7)
+    at deferHandlingDirectives (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1375:5)
+    at initTree (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1571:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1510:23 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.586Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: selectedOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError selectedOptions is not defined ReferenceError: selectedOptions is not defined
+    at [Alpine] selectedOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.586Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: selectedOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError selectedOptions is not defined ReferenceError: selectedOptions is not defined
+    at [Alpine] selectedOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.586Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: selected is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError selected is not defined ReferenceError: selected is not defined
+    at [Alpine] selected.length ? '' : 'Select assets...' (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at handler2 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.587Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: selected is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError selected is not defined ReferenceError: selected is not defined
+    at [Alpine] selected.length ? '' : 'Select assets...' (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at handler2 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.587Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at getValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3460:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3569:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3568:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.587Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at getValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3460:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3569:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3568:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.587Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: filteredOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError filteredOptions is not defined ReferenceError: filteredOptions is not defined
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.587Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: filteredOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError filteredOptions is not defined ReferenceError: filteredOptions is not defined
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:5) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.587Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: filteredOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError filteredOptions is not defined ReferenceError: filteredOptions is not defined
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.587Z"} 
+[2026-05-12 09:19:51] local.ERROR: Uncaught ReferenceError: filteredOptions is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError filteredOptions is not defined ReferenceError: filteredOptions is not defined
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:51.587Z"} 
+[2026-05-12 09:19:58] local.WARNING: Alpine Expression Error: search is not defined
+
+Expression: "search" null null null null null selected.length ? '' : 'Select assets...' false 457 null null null null null    null {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:58.653Z"} 
+[2026-05-12 09:19:58] local.WARNING: Alpine Expression Error: search is not defined
+
+Expression: "search" null null null null null selected.length ? '' : 'Select assets...' false 457 null null null null null    null {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:58.654Z"} 
+[2026-05-12 09:19:58] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at getValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3460:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3520:50
+    at HTMLInputElement.handler4 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3277:27) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:58.655Z"} 
+[2026-05-12 09:19:58] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at getValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3460:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3520:50
+    at HTMLInputElement.handler4 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3277:27) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:58.655Z"} 
+[2026-05-12 09:19:58] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at setValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3465:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3520:9
+    at HTMLInputElement.handler4 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3277:27) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:58.655Z"} 
+[2026-05-12 09:19:58] local.ERROR: Uncaught ReferenceError: search is not defined http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 ReferenceError search is not defined ReferenceError: search is not defined
+    at [Alpine] search (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at setValue (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3465:7)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3520:9
+    at HTMLInputElement.handler4 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3277:27) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:19:58.655Z"} 
+[2026-05-12 09:21:51] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "selectedOptions" null null item.value false 456 item.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:50.942Z"} 
+[2026-05-12 09:21:51] local.WARNING: Alpine Expression Error: Cannot read properties of null (reading 'length')
+
+Expression: "selected.length ? '' : 'Select assets...'" null null null null null selected.length ? '' : 'Select assets...' false 457 null null null null null    null {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:50.943Z"} 
+[2026-05-12 09:21:51] local.WARNING: Alpine Expression Error: Cannot read properties of null (reading 'includes')
+
+Expression: "selected.includes(option.value)" null 478 null  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:50.943Z"} 
+[2026-05-12 09:21:51] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get selectedOptions (http://127.0.0.1:5173/resources/js/app.js:11:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] selectedOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:50.962Z"} 
+[2026-05-12 09:21:51] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get selectedOptions (http://127.0.0.1:5173/resources/js/app.js:11:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] selectedOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:50.962Z"} 
+[2026-05-12 09:21:51] local.ERROR: Uncaught TypeError: Cannot read properties of null (reading 'length') http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError Cannot read properties of null (reading 'length') TypeError: Cannot read properties of null (reading 'length')
+    at [Alpine] selected.length ? '' : 'Select assets...' (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:41)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at handler2 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:50.962Z"} 
+[2026-05-12 09:21:51] local.ERROR: Uncaught TypeError: Cannot read properties of null (reading 'length') http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError Cannot read properties of null (reading 'length') TypeError: Cannot read properties of null (reading 'length')
+    at [Alpine] selected.length ? '' : 'Select assets...' (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:41)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at handler2 (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3692:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:50.962Z"} 
+[2026-05-12 09:21:51] local.ERROR: Uncaught TypeError: Cannot read properties of null (reading 'includes') http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError Cannot read properties of null (reading 'includes') TypeError: Cannot read properties of null (reading 'includes')
+    at [Alpine] selected.includes(option.value) (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:41)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:50.962Z"} 
+[2026-05-12 09:21:51] local.ERROR: Uncaught TypeError: Cannot read properties of null (reading 'includes') http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError Cannot read properties of null (reading 'includes') TypeError: Cannot read properties of null (reading 'includes')
+    at [Alpine] selected.includes(option.value) (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:41)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18)
+    at Object.effect2 [as effect] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2501:7)
+    at effect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:782:35)
+    at wrappedEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:798:29)
+    at Function.<anonymous> (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:5)
+    at flushHandlers (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1367:48) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:50.962Z"} 
+[2026-05-12 09:21:54] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.376Z"} 
+[2026-05-12 09:21:54] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.376Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.379Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.379Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.379Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.379Z"} 
+[2026-05-12 09:21:54] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.983Z"} 
+[2026-05-12 09:21:54] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.984Z"} 
+[2026-05-12 09:21:54] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.986Z"} 
+[2026-05-12 09:21:54] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.987Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.989Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.989Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.989Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.989Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.990Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.990Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.990Z"} 
+[2026-05-12 09:21:54] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:53.991Z"} 
+[2026-05-12 09:21:55] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.153Z"} 
+[2026-05-12 09:21:55] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.154Z"} 
+[2026-05-12 09:21:55] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.155Z"} 
+[2026-05-12 09:21:55] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.156Z"} 
+[2026-05-12 09:21:55] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.158Z"} 
+[2026-05-12 09:21:55] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.158Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.160Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.160Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.161Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.161Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.161Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.161Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.161Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.161Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.162Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.162Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.162Z"} 
+[2026-05-12 09:21:55] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.162Z"} 
+[2026-05-12 09:21:56] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.812Z"} 
+[2026-05-12 09:21:56] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.812Z"} 
+[2026-05-12 09:21:56] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.813Z"} 
+[2026-05-12 09:21:56] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.813Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.817Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.817Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.817Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.817Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.818Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.818Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.818Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.818Z"} 
+[2026-05-12 09:21:56] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.839Z"} 
+[2026-05-12 09:21:56] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.840Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.844Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.844Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.845Z"} 
+[2026-05-12 09:21:56] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:55.845Z"} 
+[2026-05-12 09:21:57] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.567Z"} 
+[2026-05-12 09:21:57] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.568Z"} 
+[2026-05-12 09:21:57] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.570Z"} 
+[2026-05-12 09:21:57] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.570Z"} 
+[2026-05-12 09:21:57] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.570Z"} 
+[2026-05-12 09:21:57] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.570Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.744Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.744Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.747Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.747Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.748Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.748Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.904Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.904Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.906Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.906Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.906Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:57.907Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.095Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.095Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.097Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.097Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.097Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.097Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.728Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.728Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.729Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.729Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.730Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.730Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions" null null option.value false 460 option.value null null   {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.872Z"} 
+[2026-05-12 09:21:58] local.WARNING: Alpine Expression Error: this.options.filter is not a function
+
+Expression: "filteredOptions.length === 0" null 461 null false  {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.873Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.875Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at loop (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3817:5)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3800:19 {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.875Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.876Z"} 
+[2026-05-12 09:21:58] local.ERROR: Uncaught TypeError: this.options.filter is not a function http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6 1178 7 TypeError this.options.filter is not a function TypeError: this.options.filter is not a function
+    at get filteredOptions (http://127.0.0.1:5173/resources/js/app.js:21:33)
+    at Reflect.get (<anonymous>)
+    at Object.get3 [as get] (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2708:27)
+    at Reflect.get (<anonymous>)
+    at Object.get (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1049:22)
+    at [Alpine] filteredOptions.length === 0 (eval at safeAsyncFunction (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1234:21), <anonymous>:3:32)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1256:28
+    at tryCatch (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:1160:14)
+    at http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:3785:19
+    at Array.reactiveEffect (http://127.0.0.1:8000/vendor/livewire/livewire.js?id=a60c5ee6:2526:18) {"url":"http://127.0.0.1:8000/casemanagement/view-sla-application","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36","timestamp":"2026-05-12T09:21:58.876Z"} 

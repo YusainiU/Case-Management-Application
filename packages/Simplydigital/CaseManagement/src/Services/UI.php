@@ -20,4 +20,28 @@ class UI
     public const RESOLVED_CASE_FLAG = 'bg-blue-300';
     public const CLOSED_CASE_FLAG = 'bg-stone-300';
 
+    public static function createArrayforMultiselect(array $options)
+    {
+        /*
+            Convert ...
+            [
+                key1 => value1, 
+                key2 => value2
+            ] 
+            to
+            [
+                {'key' => key1, 'value' => value1}, 
+                {'key' => key2, 'value' => value2}
+            ]
+        */
+        $result = collect($options)->map(function ($label, $value) {
+            return [
+                'value' => $value,
+                'label' => $label,
+            ];
+        })->values()->toArray();
+        return $result;
+    }
+
+
 }
