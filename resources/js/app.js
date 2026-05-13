@@ -7,9 +7,7 @@ document.addEventListener('alpine:init', () => {
             ? config.options
             : [],
 
-        selected: Array.isArray(config.selected)
-            ? config.selected
-            : [],
+        selected: config.selected ?? [],
 
         get selectedOptions() {
             return this.options.filter(option =>
@@ -27,14 +25,12 @@ document.addEventListener('alpine:init', () => {
 
         toggle(option) {
             if (this.selected.includes(option.value)) {
-                this.remove(option.value)
-                return
+                this.selected = this.selected.filter(
+                    value => value !== option.value
+                )
+            } else {
+                this.selected = [...this.selected, option.value]
             }
-
-            this.selected = [
-                ...this.selected,
-                option.value
-            ]
         },
 
         remove(value) {

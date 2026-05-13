@@ -41,6 +41,17 @@ class CaseCustomerServices
         return $options;
     }
 
+    public function buildOptionsForCustomerContacts(int $customerId)
+    {
+        $options = CustomerContacts::with('customerUser')
+                        ->get()
+                        ->mapWithKeys(fn ($contact) => [
+                                $contact->id => $contact->customerUser->name
+                        ])
+                        ->toArray();
+        return $options;
+    }
+
     public function buildProfileItems(Customer $customer)
     {
         $items = [];

@@ -25,6 +25,7 @@ use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
 use Simplydigital\CaseManagement\Livewire\Asset\AssetProfile;
 use Simplydigital\CaseManagement\Livewire\Asset\CreateAsset;
 use Simplydigital\CaseManagement\Livewire\Case\ViewCases;
+use Simplydigital\CaseManagement\Livewire\Case\CreateCase;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerSummary;
 use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
 use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
@@ -141,6 +142,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('customer-summary', CustomerSummary::class);
         Livewire::component('sla-implementation-profile', ImplementationProfile::class);
         Livewire::component('view-cases', ViewCases::class);
+        Livewire::component('create-case', CreateCase::class);
     }
     
     public function registerServices()

@@ -7,6 +7,7 @@ use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\CaseSLAPService;
 use Simplydigital\CaseManagement\Services\CaseAssetServices;
+use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Services\UI;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
@@ -16,20 +17,23 @@ class CreateCase extends ModalComponent
 {
     public ?int $caseId = null;
     public ?tickets $case = null;
+    public ?int $customerId = null;
     public array $ui = [];
     public array $form = [];
     public array $slapOptions = [];
     public array $assetOptions = [];
     public array $categoryOptions = [];
-    public array $sourceOtions = [];
+    public array $sourceOptions = [];
+    public array $contactOptions = [];
+    public array $customerOptions = [];
     public string $closureEvent = 'closeCreateCaseModal';
+    public bool $displayForm = false;
 
     protected $validationAttributes = [
-        'form.number' => 'Number',
-        'form.customer_id' => 'Customer',
         'form.sla_applications_id' => 'SLA',
         'form.customer_reference' => 'Customer Referennce',
         'form.category' => 'Case Category',
+        'form.source' => 'Source',
         'form.list_of_assets' => 'Assets',
         'form.description' => 'Case Description',
         'form.customer_contact_user' => 'Customer Contact (User)',
@@ -41,33 +45,73 @@ class CreateCase extends ModalComponent
     protected function rules()
     {
         return [
-            'form.customer_id' => 'required',
             'form.sla_applications_id' => 'required',
             'form.customer_reference' => 'nullable',
             'form.category' => 'required',
+            'form.source' => 'required',
             'form.list_of_assets' => 'nullable',
             'form.description' => 'required',
-            'form.customer_contact_user' => 'nullable|int|required_without:form.customer_noncontact',
-            'form.customer_noncontact' => 'nullable|string|required_without:form.customer_contact',
+            'form.customer_contact_user' => 'nullable|int|required_without:form.customer_contact_nonuser',
+            'form.customer_contact_nonuser' => 'nullable|string|required_without:form.customer_contact_user',
             'form.contact_telephone' => 'required',
             'form.contact_email' => 'required|email',
         ];
     }
 
+    public function mount()
+    {
+        $this->declareFormProperties();
+        $this->displayForm = (bool) $this->customerId || (bool) $this->caseId;
+        if($this->displayForm){
+            $this->loadOptions();
+            if($this->caseId) {
+                $this->loadCase();
+                $this->loadCaseForm();
+            }
+        }else{
+            $this->loadCustomerOptions();
+        }
+        
+        $this->ui = [
+            'title' => 'Create Case',
+            'confirmText' => 'Create',
+            'widthsize' => '6xl',
+            'cancelThisWith' => 'closeThisModal',
+            'confirm' => 'save',
+        ];        
+    }
+
     public function loadCaseForm()
     {
         $this->form = [
-            'customer_id' => $this->case->customer_id,
             'sla_applications_id' => $this->case->sla_application_id,
             'customer_reference' => $this->case->customer_reference,
             'category' => $this->case->category,
+            'source' => $this->source,
             'list_of_assets' => $this->case->list_of_assets,
             'description' => $this->case->description,
-            'customer_contact' => $this->case->customer_contact,
+            'customer_contact_user' => $this->case->raised_by_user,
+            'customer_contact_nonuser' => $this->case->raised_by_nonuser,
             'contact_telephone' => $this->case->contact_telephone,
             'contact_email' => $this->case->contact_email,
         ];
     }
+
+    public function declareFormProperties()
+    {
+        $this->form = [
+            'sla_applications_id' => null,
+            'customer_reference' => null,
+            'category' => null,
+            'source' => null,
+            'list_of_assets' => [],
+            'description' => null,
+            'customer_contact_user' => null,
+            'customer_contact_nonuser' => null,
+            'contact_telephone' => null,
+            'contact_email' => null,
+        ];
+    }       
     
     protected function ticketServices(): CaseTicketServices
     {
@@ -84,6 +128,11 @@ class CreateCase extends ModalComponent
         return app(CaseAssetServices::class);
     }
 
+    protected function customerServices(): CaseCustomerServices
+    {
+        return app(CaseCustomerServices::class);
+    }    
+
     public function loadCase()
     {
         $service = $this->ticketServices();
@@ -99,6 +148,7 @@ class CreateCase extends ModalComponent
     {
         $this->reset([
             'form',
+            'displayForm',
         ]);
     }
 
@@ -107,7 +157,13 @@ class CreateCase extends ModalComponent
         $this->resetAll();
         $this->dispatch($this->closureEvent);
     }
-    
+
+    public function loadCustomerOptions()
+    {
+        $service = $this->customerServices();
+        $this->customerOptions = $service->buildOptionsForCustomerSelect();
+    }
+
     public function loadOptions()
     {
         //SlAP Options
@@ -121,12 +177,28 @@ class CreateCase extends ModalComponent
 
         //Category && Source
         $this->categoryOptions = CaseCategory::options();
-        $this->sourceOtions = CaseSource::options();
+        $this->sourceOptions = CaseSource::options();
+
+        //Options for Contacts
+        $customerService = $this->customerServices();
+        $this->contactOptions = $customerService->buildOptionsForCustomerContacts($this->customerId);
+    }
+
+    public function selectCustomer()
+    {
+        $id = (int) $this->customerId;
+        $this->customerId = $id;
+        $this->displayForm = true;
+        $this->loadOptions();
     }
 
     public function save()
     {
-        
+        dd($this->form);
+        // $this->validate();
+        // $this->form['customer_id'] = $this->customerId;
+        // $service = $this->ticketServices();
+        // $service->createNewTicket($this->form);        
     }
 
     public function render()

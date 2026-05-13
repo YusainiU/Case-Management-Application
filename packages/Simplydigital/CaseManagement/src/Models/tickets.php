@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity; 
 use Spatie\Activitylog\Support\LogOptions;
+use Simplydigital\CaseManagement\Enums\CaseCategory;
+use Simplydigital\CaseManagement\Enums\CaseSource;
 
 class tickets extends Model
 {
@@ -63,6 +65,8 @@ class tickets extends Model
     {
         return [
             'currently_working' => 'boolean',
+            'category' => CaseCategory::class,
+            'source' => CaseSource::class,
         ];
     }
 }

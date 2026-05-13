@@ -436,6 +436,12 @@ class CaseTicketUtilityServices
 
         return $result;
     }
+
+
+    public function cleanCreateInputData(array $data)
+    {
+        
+    }
     
     public function createNewTicket(array $data)
     {
