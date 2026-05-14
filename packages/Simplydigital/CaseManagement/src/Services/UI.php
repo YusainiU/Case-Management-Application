@@ -20,7 +20,7 @@ class UI
     public const RESOLVED_CASE_FLAG = 'bg-blue-300';
     public const CLOSED_CASE_FLAG = 'bg-stone-300';
 
-    public static function createArrayforMultiselect(array $options)
+    public static function createArrayforMultiselect(array $options, ?string $keyName1 = 'value', ?string $keyName2 = 'label')
     {
         /*
             Convert ...
@@ -34,10 +34,13 @@ class UI
                 {'key' => key2, 'value' => value2}
             ]
         */
-        $result = collect($options)->map(function ($label, $value) {
+
+
+
+        $result = collect($options)->map(function ($label, $value) use ($keyName1, $keyName2) {
             return [
-                'value' => $value,
-                'label' => $label,
+                $keyName1 => $value,
+                $keyName2 => $label,
             ];
         })->values()->toArray();
         return $result;

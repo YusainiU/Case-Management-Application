@@ -7,12 +7,16 @@
             >
                 <div class="grid grid-cols-3 gap-4">
                     <div>
+                        <x-casemanagement::form-elements.input-label name="Customer Selected" :required=false />
+                        <x-casemanagement::form-elements.input-text value="{{ $customerSelected->name }}" disabled :required=false />
+                    </div>
+                    <div>
                         <x-casemanagement::form-elements.input-label name="Select SLA" :required=true />
                         <x-casemanagement::form-elements.select model="form.sla_application_id"
                             name="Service Level Agreement" placeholder="Service Level Agreement" :options=$slapOptions 
                         />
                         <x-casemanagement::form-elements.input-error field="form.sla_application_id" />
-                    </div>
+                    </div>               
                     <div>
                         <x-casemanagement::form-elements.input-label name="Category" :required=true />
                         <x-casemanagement::form-elements.select model="form.category"
@@ -72,17 +76,20 @@
             <x-casemanagement::page-elements.modal title="{{ $ui_params['title'] }}" widthsize="{{ $ui_params['widthsize'] }}"
                 cancelThisWith="{{ $ui_params['cancelThisWith'] }}" :showFooter=false
             >
-        
-                <div class="grid grid-rows">
-                    <div>
-                        <x-casemanagement::form-elements.input-label name="Select Site" :required=true />
-                        <x-casemanagement::form-elements.select model="customerId"
-                            name="customer" placeholder="Customer" :options=$customerOptions 
-                        />
-                        <x-casemanagement::form-elements.button-primary label="Next" action="selectCustomer"/>
-                    </div>
-                </div>
-            </x-casemanagement::page-elements.modal>
+                <div class="grid grid-rows gap-5">
+                    <x-casemanagement::form-elements.searchable-select
+                        name="Customer"
+                        :required="true"
+                        :options="$customerOptions"
+                        wireModel="customerId"
+                    />
+                    <x-casemanagement::form-elements.button-primary label="Next" action="selectCustomer"/>
+                    <div>&nbsp;</div>
+                    <div>&nbsp;</div>
+                    <div>&nbsp;</div>
+                </div>                
+            </x-casemanagement::page-elements.modal>            
+            
         @endif
     
     

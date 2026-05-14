@@ -11,7 +11,7 @@ use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Services\UI;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
-
+use Simplydigital\CaseManagement\Models\Customer;
 
 class CreateCase extends ModalComponent
 {
@@ -28,6 +28,7 @@ class CreateCase extends ModalComponent
     public array $customerOptions = [];
     public string $closureEvent = 'closeCreateCaseModal';
     public bool $displayForm = false;
+    public ?Customer $customerSelected = null;
 
     protected $validationAttributes = [
         'form.sla_applications_id' => 'SLA',
@@ -161,7 +162,9 @@ class CreateCase extends ModalComponent
     public function loadCustomerOptions()
     {
         $service = $this->customerServices();
-        $this->customerOptions = $service->buildOptionsForCustomerSelect();
+        //$this->customerOptions = $service->buildOptionsForCustomerSelect();
+        $options = $service->buildOptionsForCustomerSelect();
+        $this->customerOptions = UI::createArrayforMultiselect($options, 'id', 'name'); 
     }
 
     public function loadOptions()
@@ -189,13 +192,13 @@ class CreateCase extends ModalComponent
         $id = (int) $this->customerId;
         $this->customerId = $id;
         $this->displayForm = true;
+        $this->customerSelected = $this->customerServices()->getCustomer($id);
         $this->loadOptions();
     }
 
     public function save()
     {
-        dd($this->form);
-        // $this->validate();
+        $this->validate();
         // $this->form['customer_id'] = $this->customerId;
         // $service = $this->ticketServices();
         // $service->createNewTicket($this->form);        

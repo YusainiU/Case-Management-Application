@@ -4,8 +4,8 @@ namespace Simplydigital\UserManagement\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Concerns\LogsActivity; 
+use Spatie\Activitylog\Support\LogOptions;
 
 class UsersDetails extends Model
 {
@@ -27,10 +27,10 @@ class UsersDetails extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->useLogName('user_details')
+            ->useLogName('ticket')
             ->logAll()
             ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
+            ->dontLogIfAttributesChangedOnly([]);
     }
 
     public function getAddress()

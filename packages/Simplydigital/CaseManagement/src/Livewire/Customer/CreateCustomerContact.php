@@ -4,35 +4,45 @@ namespace Simplydigital\CaseManagement\Livewire\Customer;
 
 use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
+use Simplydigital\CaseManagement\Services\UI;
+use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 
 class CreateCustomerContact extends ModalComponent
 {
  
-    public $customerId;
-    public $customerContactId;
-    public $contact;
-    public $customers = [];
-    public $customer;
-    public $contactRoles;
-    public $contactRole;
-    public $isUpdate = false;
-    public $title = 'Create Customer Contact';
-    public $confirmText = 'Create';
-    public $name;
-    public $email;
-    public $address_1;
-    public $address_2;
-    public $county;
-    public $postcode;
-    public $country='United Kingdom';
-    public $phone;
-    public $description;
-    public $active = true;
-    public $hasPortalAccess = false;
+    public int|string|null $customerId = null;
+    public int|string|null $customerContactId = null;
+    public ?string $contact = null;
+    public array $customers = [];
+    public int|string|null $customer = null;
+    public array  $contactRoles = [];
+    public ?string $contactRole;
+    public bool $isUpdate = false;
+    public string $title = 'Create Customer Contact';
+    public string $confirmText = 'Create';
+    public ?string $name = null;
+    public ?string $email = null;
+    public ?string $address_1 = null;
+    public ?string $address_2 = null;
+    public ?string $county = null;
+    public ?string $postcode = null;
+    public string $country='United Kingdom';
+    public ?string $phone = null;
+    public ?string $description = null;
+    public bool $active = true;
+    public bool $hasPortalAccess = false;
+
+    public function customerService(): CaseCustomerServices
+    {
+        return app(CaseCustomerServices::class);
+    }
 
     public function mount()
     {
-        $this->customers = $this->getAllActiveCustomers();
+        $this->customers = $this->customerService()->buildOptionsForCustomerSelect();
+        if(\sizeof($this->customers)){
+            $this->customers = UI::createArrayforMultiselect($this->customers,'id','name');
+        }
         $this->contactRoles = CustomerContactRoles::options();
         if ($this->customerContactId) {
             $this->getCustomerContact();
@@ -75,7 +85,7 @@ class CreateCustomerContact extends ModalComponent
             'customer' => 'required',
             'contactRole' => 'required',
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'address_1' => 'required',
             'address_2' => 'nullable',
             'county' => 'nullable',

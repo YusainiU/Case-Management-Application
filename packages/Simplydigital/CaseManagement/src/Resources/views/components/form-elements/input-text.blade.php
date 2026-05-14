@@ -36,6 +36,11 @@
         {{ isset($pattern) ? "pattern='$pattern'":null }}        
         {{ isset($xmodel) ? "x-model='$xmodel'" : '' }}
         {{ isset($inputmode) ? "inputmode='$inputmode'" : null }}
+
+        @if(isset($disabled))
+            disabled
+        @endif
+
     />
     @if ($hint ?? null)
         <p class="text-xs text-gray-500">{{ $hint }}</p>

@@ -10,8 +10,13 @@
         <div class="grid grid-cols-2 gap-4">
             <div>
                 <x-casemanagement::form-elements.input-label name="Customer" :required=true />
-                <x-casemanagement::form-elements.searchable-dropdown :options=$customers property="customerId" />
-                <x-casemanagement::form-elements.input-error field="customer" />
+                <x-casemanagement::form-elements.searchable-select
+                    name="Customer"
+                    :required="true"
+                    :options="$customers"
+                    wireModel="customerId"
+                />                 
+                <x-casemanagement::form-elements.input-error field="customerId" />
             </div>
 
             <div>

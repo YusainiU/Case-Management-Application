@@ -44,6 +44,7 @@ class CaseCustomerServices
     public function buildOptionsForCustomerContacts(int $customerId)
     {
         $options = CustomerContacts::with('customerUser')
+                        ->where('customer_id', $customerId)
                         ->get()
                         ->mapWithKeys(fn ($contact) => [
                                 $contact->id => $contact->customerUser->name
@@ -231,6 +232,7 @@ class CaseCustomerServices
             return null;
         }
 
+        $contact->customer_id = $input['customer_id'];
         $contact->description = $input['description'];
         $contact->active = $input['active'];
         $contact->customerRole = $input['customerRole'];

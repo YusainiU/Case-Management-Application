@@ -4,21 +4,23 @@ namespace Simplydigital\CaseManagement\Livewire\Customer;
 
 use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
+use Simplydigital\CaseManagement\Models\CustomerContacts;
+use Simplydigital\CaseManagement\Services\UI;
 
 class UpdateCustomerContact extends ModalComponent
 {
 
-    public $title = 'Update Customer Contact';
-    public $confirmText = 'Update';
-    public $customerContactId;
-    public $customerContact;
-    public $contactRole;
-    public $customers = [];
-    public $contactRoles = [];
-    public $customerId;
-    public $description;
-    public $active = true;
-    public $hasPortalAccess = false;
+    public string $title = 'Update Customer Contact';
+    public string $confirmText = 'Update';
+    public ?int $customerContactId = null;
+    public CustomerContacts|null $customerContact = null;
+    public ?String $contactRole = null;
+    public array $customers = [];
+    public array $contactRoles = [];
+    public ?int $customerId = null;
+    public ?string $description = null;
+    public bool $active = true;
+    public bool $hasPortalAccess = false;
 
     public function rules()
     {
@@ -59,7 +61,9 @@ class UpdateCustomerContact extends ModalComponent
     public function loadCustomers()
     {
         $caseCustomerServices = app('case-customer-services');
-        $this->customers = $caseCustomerServices->getAllActiveCustomers_id_name();
+        //$this->customers = $caseCustomerServices->getAllActiveCustomers_id_name();
+        $customers = $caseCustomerServices->buildOptionsForCustomerSelect();
+        $this->customers = UI::createArrayforMultiselect($customers,'id','name');
     }
 
     public function save()
