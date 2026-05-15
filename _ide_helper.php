@@ -24402,6 +24402,17 @@ namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement {
      */
     class ViewServiceLevelAgreement extends \Livewire\Component {
             }
+    /**
+     */
+    class ViewSlaImplementation extends \Livewire\Component {
+            }
+    }
+
+namespace Simplydigital\CaseManagement\Livewire\Case {
+    /**
+     */
+    class ViewCases extends \Livewire\Component {
+            }
     }
 
 namespace Illuminate\Database\Query {

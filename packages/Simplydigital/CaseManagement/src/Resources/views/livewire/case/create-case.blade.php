@@ -12,10 +12,10 @@
                     </div>
                     <div>
                         <x-casemanagement::form-elements.input-label name="Select SLA" :required=true />
-                        <x-casemanagement::form-elements.select model="form.sla_application_id"
+                        <x-casemanagement::form-elements.select model="form.sla_applications_id"
                             name="Service Level Agreement" placeholder="Service Level Agreement" :options=$slapOptions 
                         />
-                        <x-casemanagement::form-elements.input-error field="form.sla_application_id" />
+                        <x-casemanagement::form-elements.input-error field="form.sla_applications_id" />
                     </div>               
                     <div>
                         <x-casemanagement::form-elements.input-label name="Category" :required=true />

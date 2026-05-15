@@ -12,6 +12,7 @@ use Simplydigital\CaseManagement\Services\UI;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
 use Simplydigital\CaseManagement\Models\Customer;
+use Simplydigital\CaseManagement\Models\CustomerContacts;
 
 class CreateCase extends ModalComponent
 {
@@ -85,7 +86,7 @@ class CreateCase extends ModalComponent
     public function loadCaseForm()
     {
         $this->form = [
-            'sla_applications_id' => $this->case->sla_application_id,
+            'sla_applications_id' => $this->case->sla_applications_id,
             'customer_reference' => $this->case->customer_reference,
             'category' => $this->case->category,
             'source' => $this->source,
@@ -96,6 +97,15 @@ class CreateCase extends ModalComponent
             'contact_telephone' => $this->case->contact_telephone,
             'contact_email' => $this->case->contact_email,
         ];
+    }
+
+    public function updatedFormCustomerContactUser(int|string|null $value)
+    {
+        $user = CustomerContacts::find($value);
+        if($user) {
+            $this->form['contact_telephone'] = $user->customerUserDetails->phone;
+            $this->form['contact_email'] = $user->customerUser->email;
+        }
     }
 
     public function declareFormProperties()
@@ -199,9 +209,10 @@ class CreateCase extends ModalComponent
     public function save()
     {
         $this->validate();
-        // $this->form['customer_id'] = $this->customerId;
-        // $service = $this->ticketServices();
-        // $service->createNewTicket($this->form);        
+        $this->form['customer_id'] = $this->customerId;
+        $service = $this->ticketServices();
+        $service->createNewTicket($this->form);
+        $this->closeThisModal();        
     }
 
     public function render()

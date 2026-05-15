@@ -440,12 +440,18 @@ class CaseTicketUtilityServices
 
     public function cleanCreateInputData(array $data)
     {
+        //Check if list_of_assets is an array
         
+        if(\is_array($data['list_of_assets']) && !empty($data['list_of_arrays'])){
+            $data['list_of_arrays'] = implode(',', $data['list_of_arrays']);
+        }
+        return $data;
     }
     
     public function createNewTicket(array $data)
     {
         //dd($data);
+        $data = $this->cleanCreateInputData($data);
         $ticket = tickets::create($data);
         if ($ticket) {            
             //Create Log for ticket
@@ -571,7 +577,7 @@ class CaseTicketUtilityServices
         $currentUserName = Auth::user()->name;
         $logType = config('case-management.logs.type.site_visit');
         $ticket = $siteVisit->ticket;
-        $currentAssignedTo = $siteVisit->assignedTo->name;
+        $currentAssignedTo = $siteVisit->assignedTo->name;        
         $objAssignedTo = User::find($data['assigned_to']);
         $newAssignedTo = $objAssignedTo->name;
 
