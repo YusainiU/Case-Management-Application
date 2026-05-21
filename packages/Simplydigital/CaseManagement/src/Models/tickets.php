@@ -67,6 +67,7 @@ class tickets extends Model
             'currently_working' => 'boolean',
             'category' => CaseCategory::class,
             'source' => CaseSource::class,
+            'list_of_assets' => 'array',
         ];
     }
 }

@@ -12,6 +12,7 @@ use Simplydigital\CaseManagement\Notifications\DefaultNotification;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CasePublicHolidayService;
 use Simplydigital\CaseManagement\Services\CaseLogAdministrationService;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -169,7 +170,7 @@ class CaseTicketUtilityServices
                 //Check whether the date is a public holiday if SLA specifies
                 if($this->includePublicHoliday){
                     $dmy = date('d-m-Y', $initDate);
-                    if(in_array($dmy, $this->holidays)){
+                    if(\in_array($dmy, $this->holidays)){
 
                         //DIAGNOSTIC
                         // $logs["Public Holiday"] = 'Yes'; 
@@ -282,17 +283,17 @@ class CaseTicketUtilityServices
     public function createNewTicketSlaTask(Tickets $ticket, string $respondBy, string $fixBy)
     {
         //dd($data);
-        $taskType = config('case-management.taskManagement.type');
+        $taskType = config('case-management.taskManagement.type.sla');
         $data = [
             'number' => null,
             'name' => $ticket->short_description,
-            'task_type' => $taskType['sla'],
+            'task_type' =>  $taskType,
             'short_description' => $ticket->short_description,
             'ticket_id' => $ticket->id,
             'sla_applications_id' => $ticket->sla_applications_id,
             'respond_by' => $respondBy,
             'fix_by' => $fixBy,
-            'state' => 'open',
+            'state' => CaseState::Open->value,
             'active' => true,
         ];
         $task = slaTask::create($data);
@@ -352,7 +353,7 @@ class CaseTicketUtilityServices
             
             $result['resolved'] = $ticket->resolved_datetime ? date('d-m-Y H:i', $ticket->resolved_datetime) : null;
             $result['currentlyWorking'] = $ticket->currently_working;
-            $result['closed'] = $ticket->state == 'Closed';
+            $result['closed'] = $ticket->state == CaseState::Cancelled->value;
             
             if ($first && $first->count()) {
                 //$result["lastUrgentLog"] = $first;
@@ -419,8 +420,7 @@ class CaseTicketUtilityServices
         //slaTask->completed_at
         //slaTask->state = completed
         $logAdmin = $this->caseLogAdministrationService;
-        $stateTicket = config('case-management.ticketManagement.state.closed');
-        $stateTask = config('case-management.taskManagement.state.Completed');
+        $stateTicket = CaseState::Closed->value;
         $logType = config('case-management.logs.type.completed');
         $closedAt = $data["date"] . " " . $data["time"];
         $closedAtTS = strtotime($closedAt);
@@ -428,7 +428,7 @@ class CaseTicketUtilityServices
         $ticket->state = $stateTicket;
         $result = $ticket->save();
         $slaTask->completed_at = $closedAt;
-        $slaTask->state = $stateTask;
+        $slaTask->state = caseState::Completed->value;
         $slaTask->save();
         
         $logText = $logAdmin->buildCompletedText($closedAt);
@@ -440,17 +440,15 @@ class CaseTicketUtilityServices
 
     public function cleanCreateInputData(array $data)
     {
-        //Check if list_of_assets is an array
-        
-        if(\is_array($data['list_of_assets']) && !empty($data['list_of_arrays'])){
-            $data['list_of_arrays'] = implode(',', $data['list_of_arrays']);
-        }
-        return $data;
+        $currentUserName = Auth::getName(); //auth()->user()->name;
+        $data['created_by'] = Auth::id();
+        $data['state'] = CaseState::Open->value;
+        $data['ticket_number'] = null;
+        return $data;        
     }
     
     public function createNewTicket(array $data)
     {
-        //dd($data);
         $data = $this->cleanCreateInputData($data);
         $ticket = tickets::create($data);
         if ($ticket) {            
@@ -458,6 +456,8 @@ class CaseTicketUtilityServices
             $logAdmin = $this->caseLogAdministrationService;
             $logText = $logAdmin->buildTicketCreatedText($ticket);
             $logAdmin->createSystemLog($ticket, $logText);
+            
+
             //Get Respond/Fix By DateTime
             $respondby = $this->getRespondByDateTime($ticket);
             $fixby = $this->getFixByDateTime($ticket);
@@ -489,7 +489,7 @@ class CaseTicketUtilityServices
             'list_of_assets' => $ticket->list_of_assets,
             'short_description' => $ticket->short_description,
             'description' => $ticket->description,
-            'state' => config('case-management.ticketManagement.state.open'),
+            'state' => CaseState::Open->value,
             'raised_by_user' => $raisedByUserId,
             'raised_by_nonuser' => $ticket->raised_by_nonuser,
             'contact_telephone' => $ticket->contact_telephone,
@@ -575,10 +575,11 @@ class CaseTicketUtilityServices
     {
         $logAdmin = $this->caseLogAdministrationService;
         $currentUserName = Auth::user()->name;
+        $assignedTo = $data["assigned_to"];
         $logType = config('case-management.logs.type.site_visit');
         $ticket = $siteVisit->ticket;
         $currentAssignedTo = $siteVisit->assignedTo->name;        
-        $objAssignedTo = User::find($data['assigned_to']);
+        $objAssignedTo = User::find($assignedTo,'*');
         $newAssignedTo = $objAssignedTo->name;
 
         if ($siteVisit->visit_scheduled_at != $data['visit_scheduled_at']) {
@@ -663,8 +664,8 @@ class CaseTicketUtilityServices
             ticket->resolved_datetime
         */
 
-        $stateTicket = config('case-management.ticketManagement.state.resolved');
-        $stateTask = config('case-management.taskManagement.state.Resolved');
+        $stateTicket = CaseState::Resolved->value;
+        $stateTask = CaseState::Resolved->value;
         $logType = config('case-management.logs.type.resolution');
         $logType = config('case-management.logs.type.resolution');
         $resolvedBy = json_decode($data["resolvedBy"]);

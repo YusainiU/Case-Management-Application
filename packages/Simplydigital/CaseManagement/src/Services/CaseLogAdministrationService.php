@@ -16,7 +16,8 @@ class CaseLogAdministrationService
         $source = $ext ? config('case-management.logs.source.external') : $source = config('case-management.logs.source.internal');
         $type = $logType ?? config('case-management.logs.type.system');
 
-        $currentUserId = auth()->id();
+        $currentUserId =  Auth::id(); //auth()->id();
+        $currentUserName = Auth::getName(); //auth()->user()->name;
         $name = $ticket->ticket_number;
         $ticket_id = $ticket->id;
 
@@ -60,6 +61,7 @@ class CaseLogAdministrationService
     
     public function buildVisitUpdatedEnroute(array $data)
     {
+        $searchFor = [];
         if ($data['action'] == 'update') {
             $phrase = config('case-management.siteVisit.enrouteUpdated');
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
@@ -76,6 +78,7 @@ class CaseLogAdministrationService
     
     public function buildVisitUpdatedOnsite(array $data)
     {
+        $searchFor = [];
         if ($data['action'] == 'update') {
             $phrase = config('case-management.siteVisit.onsiteUpdate');
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
@@ -92,6 +95,7 @@ class CaseLogAdministrationService
 
     public function buildVisitUpdatedOffsite(array $data)
     {
+        $searchFor = [];
         if ($data['action'] == 'update') {
             $phrase = config('case-management.siteVisit.offsiteUpdate');
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
@@ -180,7 +184,7 @@ class CaseLogAdministrationService
         return $logString;
     }
     
-    public function buildProgressEmailLog(taskLogs $taskLog, $receiver)
+    public function buildProgressEmailLog(taskLogs $taskLog, string $receiver)
     {
         $phrase = config('case-management.ProgressLogs.email');
         $searchFor = ['%LOGNUMBER%', '%RECEIVER%'];
