@@ -61,6 +61,11 @@ class tickets extends Model
         });
     }
 
+    public function slaApplication()
+    {
+        return $this->belongsTo(slaApplication::class, 'sla_applications_id');
+    }
+
     protected function casts()
     {
         return [

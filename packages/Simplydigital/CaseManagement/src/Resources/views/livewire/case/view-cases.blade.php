@@ -1,6 +1,7 @@
 @php
     
     use Simplydigital\CaseManagement\Services\UI;
+    use Simplydigital\CaseManagement\Enums\CaseState;
 
 @endphp
 
@@ -17,6 +18,7 @@
 
     <x-casemanagement::page-elements.seperator margin="2" />
     <x-casemanagement::form-elements.button-primary label="Create New Case" action="openCreateModal" />
+    {{-- <x-casemanagement::form-elements.button-primary label="Open Cases" action="openTab('{{ CaseState::Open }}')" /> --}}
     <x-casemanagement::form-elements.input-filter />
 
      {{ $cases?->links() }}

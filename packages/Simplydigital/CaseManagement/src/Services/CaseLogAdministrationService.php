@@ -7,9 +7,18 @@ use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\tickets;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Simplydigital\CaseManagement\Repositories\CaseRepository;
 
 class CaseLogAdministrationService
 {
+
+    private ?CaseRepository $caseRepository;
+
+    public function __construct(?CaseRepository $caseRepository = null)
+    {
+        $this->caseRepository = $caseRepository ?? app()->make(CaseRepository::class);
+    }
+
     public function createSystemLog(tickets $ticket, string $logText, string $logType = null)
     {
         $ext = $ticket->raised_by_nonuser;
@@ -37,7 +46,8 @@ class CaseLogAdministrationService
             $data['sla_tasks_id'] = $sla->id;
         }
         
-        $log = taskLogs::create($data);
+        //$log = taskLogs::create($data);
+        $log = $this->caseRepository->createTaskLog($data);
         return $log;        
     }
 

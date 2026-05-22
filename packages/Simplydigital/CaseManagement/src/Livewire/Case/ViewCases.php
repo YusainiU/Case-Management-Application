@@ -5,6 +5,7 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Services\UI;
 class ViewCases extends Component
 {
@@ -30,7 +31,7 @@ class ViewCases extends Component
 
     public function mount()
     {
-        $this->displayCaseStatus = UI::OUTSTANDING_CASE;
+        $this->displayCaseStatus = CaseState::Open->value;
     }
 
     protected function ticketService(): CaseTicketServices
@@ -45,6 +46,17 @@ class ViewCases extends Component
             'displayCreateModal',
             'displayUpdateModal',
         ]);
+    }
+
+    public function resetAllFiltersAndSorting()
+    {
+        $this->reset([
+            'filter',
+            'sortField',
+            'sortDirection',
+            'displayCaseStatus',
+        ]);
+        $this->resetAllModal();
     }
     
     public function closeCreateModal()
@@ -104,6 +116,12 @@ class ViewCases extends Component
         $this->displayCaseStatus = $status;   
     }
     
+    public function openTab(CaseState $status)
+    {
+        $this->resetAllFiltersAndSorting();
+        $this->displayCaseStatus = $status->value;
+    }
+
     public function loadCases()
     {
         $service = $this->ticketService();
@@ -120,21 +138,29 @@ class ViewCases extends Component
             $service->setCustomer($this->customerId);
         }
 
-        if($this->displayCaseStatus == UI::OPEN_CASE) {
+        if($this->displayCaseStatus == CaseState::Open->value) {
             return $query = $service->getAllOpenCases();
         }
         
-        if($this->displayCaseStatus === UI::OUTSTANDING_CASE) {
-            return $query = $service->getAllOpenCases();
+        if($this->displayCaseStatus === CaseState::In_Progress->value) {
+            return $query = $service->getOutstandingCases();
         }
 
-        if($this->displayCaseStatus === UI::OPEN_CASE) {
-            return $query = $service->getAllOpenCases();
+        if($this->displayCaseStatus === CaseState::Resolved->value) {
+            return $query = $service->getAllOpenResolvedCases();
         }
         
-        if($this->displayCaseStatus === UI::RESOLVED_CASE) {
-            return $query = $service->getAllOpenResolvedCases();
-        }        
+        if($this->displayCaseStatus === CaseState::Completed->value) {
+            return $query = $service->getAllClosedResolvedCases();
+        }
+
+        if($this->displayCaseStatus === CaseState::Closed->value) {
+            return $query = $service->getAllClosedCases();
+        }
+
+        if($this->displayCaseStatus === CaseState::Paused->value) {
+            return $query = $service->getAllPausedCases();
+        }
         
     }
 

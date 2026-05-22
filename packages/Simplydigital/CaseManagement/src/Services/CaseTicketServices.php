@@ -8,6 +8,7 @@ use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
 use Illuminate\Database\Eloquent\Collection;
+use Simplydigital\CaseManagement\Enums\CaseState;
 
 class CaseTicketServices
 {
@@ -77,6 +78,15 @@ class CaseTicketServices
 
         return $this->query;
     }
+
+    public function getAllPausedCases()
+    {
+        $this->query->where('type', '=', CaseState::Paused->value)
+            ->where('closed_datetime', '=', null);
+        $this->buildFilter();
+
+        return $this->query;
+     }
 
     public function getCaseById(int $caseId)
     {

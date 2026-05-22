@@ -13,6 +13,7 @@ use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CasePublicHolidayService;
 use Simplydigital\CaseManagement\Services\CaseLogAdministrationService;
 use Simplydigital\CaseManagement\Enums\CaseState;
+use Simplydigital\CaseManagement\Repositories\CaseRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -29,14 +30,21 @@ class CaseTicketUtilityServices
     private $createdDay = '';
     private $includePublicHoliday = false;
     private CasePublicHolidayService $casePublicHolidayService;
-    private CaseLogAdministrationService $caseLogAdministrationService;
-    
+    private CaseLogAdministrationService $caseLogAdministrationService;    
     private array $holidays = [];
+    protected CaseRepository $caseRepository;
 
-    public function __construct()
+    public function __construct(?CaseRepository $caseRepository = null)
     {
         $this->casePublicHolidayService = app()->make(CasePublicHolidayService::class);
         $this->holidays = $this->casePublicHolidayService->getPublicHolidays();
+        $this->caseRepository = $caseRepository ?? app()->make(CaseRepository::class);
+        $this->setCaseLogAdministrationService(app()->make(CaseLogAdministrationService::class));
+    }
+
+    public function setCaseLogAdministrationService(CaseLogAdministrationService $service)
+    {
+        $this->caseLogAdministrationService = $service;
     }
 
     public function getRespondByDateTime(tickets $ticket)
@@ -449,8 +457,10 @@ class CaseTicketUtilityServices
     
     public function createNewTicket(array $data)
     {
+        $service = $this->caseRepository;
         $data = $this->cleanCreateInputData($data);
-        $ticket = tickets::create($data);
+        $ticket = $service->createNewTicket($data);
+
         if ($ticket) {            
             //Create Log for ticket
             $logAdmin = $this->caseLogAdministrationService;

@@ -2,6 +2,7 @@
 
 namespace Simplydigital\CaseManagement\Enums;
 
+use Simplydigital\CaseManagement\Services\UI;
 enum CaseState: string
 {
     case Completed = 'Completed';
@@ -99,13 +100,13 @@ enum CaseState: string
     public function color(): string
     {
         return match($this) {
-            self::Completed => 'green',
-            self::Paused => 'yellow',
-            self::In_Progress => 'blue',
-            self::Open => 'gray',
-            self::Resolved => 'green',
-            self::Cancelled => 'red',
-            self::Closed => 'black',
+            self::Completed => UI::COMPLETED_STATE_CLASS,
+            self::Paused => UI::PAUSED_STATE_CLASS,
+            self::In_Progress => UI::IN_PROGRESS_STATE_CLASS,
+            self::Open => UI::OPEN_STATE_CLASS,
+            self::Resolved => UI::RESOLVED_STATE_CLASS,
+            self::Cancelled => UI::CANCELLED_STATE_CLASS,
+            self::Closed => UI::CLOSED_STATE_CLASS,
         };
     }
 

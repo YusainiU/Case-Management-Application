@@ -12,13 +12,13 @@ class UI
     public const IMPORTANT_ICON_FILL = 'text-red-700 border-red-700';
     public const INFORMATION_ICON_FILL = 'text-blue-500 border-blue-500';
     public const WARNING_ICON_FILL = 'text-yellow-500 border-yellow-500';
-    public const OPEN_CASE = 'Open';
-    public const OUTSTANDING_CASE = 'Outstanding';
-    public const RESOLVED_CASE = 'Resolved';
-    public const CLOSED_CASE = 'closed';
-    public const OUTSTANDING_CASE_FLAG = 'bg-amber-300';
-    public const RESOLVED_CASE_FLAG = 'bg-blue-300';
-    public const CLOSED_CASE_FLAG = 'bg-stone-300';
+    public const OPEN_STATE_CLASS = 'bg-green-300 text-green-800';
+    public const CLOSED_STATE_CLASS = 'bg-gray-300 text-gray-800';
+    public const RESOLVED_STATE_CLASS = 'bg-blue-300 text-blue-800';
+    public const IN_PROGRESS_STATE_CLASS = 'bg-yellow-300 text-yellow-800';
+    public const PAUSED_STATE_CLASS = 'bg-orange-300 text-orange-800';
+    public const CANCELLED_STATE_CLASS = 'bg-red-300 text-red-800';
+    public const COMPLETED_STATE_CLASS = 'bg-green-300 text-green-800';
 
     public static function createArrayforMultiselect(array $options, ?string $keyName1 = 'value', ?string $keyName2 = 'label')
     {
