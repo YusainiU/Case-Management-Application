@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Simplydigital\CaseManagement\Enums\DaysOfWeek;
 use Simplydigital\CaseManagement\Enums\slaTypes;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class serviceLevelAgreements extends Model
 {
@@ -38,6 +39,22 @@ class serviceLevelAgreements extends Model
         });
     }
 
+    protected function responseTime(): Attribute
+    {
+        return Attribute::make(
+            // When saving to DB
+            set: fn ($value) => $value * 3600,
+        );
+    }
+    
+    public function fixedTime(): Attribute
+    {
+        return Attribute::make(
+            // When saving to DB
+            set: fn ($value) => $value * 3600,
+        );
+    }
+
     public function utilityService(): CaseManagementUtilityServices
     {
         return app(CaseManagementUtilityServices::class);
@@ -65,7 +82,7 @@ class serviceLevelAgreements extends Model
     {
         $rpt = $this->response_time;
         if($rpt){
-            return app(CaseManagementUtilityServices::class)->buildResponseTimeResult($rpt);       
+            return app(CaseManagementUtilityServices::class)->buildResponseTimeResult($rpt)['hours'];       
         };
         return null;        
     }
@@ -74,7 +91,7 @@ class serviceLevelAgreements extends Model
     {
         $rpx = $this->fixed_time;
         if($rpx) {
-            return app(CaseManagementUtilityServices::class)->buildResponseTimeResult($rpx);
+            return app(CaseManagementUtilityServices::class)->buildResponseTimeResult($rpx)['hours'];
         };
         return null;
     }

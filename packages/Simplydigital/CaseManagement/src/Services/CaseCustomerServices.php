@@ -47,7 +47,7 @@ class CaseCustomerServices
                         ->where('customer_id', $customerId)
                         ->get()
                         ->mapWithKeys(fn ($contact) => [
-                                $contact->id => $contact->customerUser->name
+                                $contact->user_id => $contact->customerUser->name
                         ])
                         ->toArray();
         return $options;

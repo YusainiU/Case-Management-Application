@@ -54,19 +54,27 @@ class CaseTicketUtilityServices
         return $respondBy;
     }
 
-    private function buildCalcData(tickets $ticket, string $field)
+    public function buildCalcData(tickets $ticket, string $field)
     {
-
+        
         $rpt = $ticket->slaApplication->serviceLevelAgreement->response_time;
         $fxt = $ticket->slaApplication->serviceLevelAgreement->fixed_time;
-        $stt = $ticket->slaApplication->serviceLevelAgreement->service_start_time;
+        $stt = $ticket->slaApplication->serviceLevelAgreement->getServiceStartTime();
         $pub = $ticket->slaApplication->serviceLevelAgreement->include_public_holiday;
-        $set = $this->serviceEndAt = $ticket->slaApplication->serviceLevelAgreement->service_end_time;
+        $set = $this->serviceEndAt = $ticket->slaApplication->serviceLevelAgreement->getServiceEndTime();
 
-        $response_time = $rpt['seconds'];
-        $service_start_time = $stt['seconds'];
-        $service_end_time = $set['seconds'];
-        $fixed_time = $fxt['seconds'];
+        $response_time = CaseManagementUtilityServices::buildResponseTimeResult($rpt)['seconds'];
+        $service_start_time = CaseManagementUtilityServices::HMSToSeconds($stt);
+        $service_end_time = CaseManagementUtilityServices::HMStoSeconds($set);
+        $fixed_time = CaseManagementUtilityServices::buildResponseTimeResult($fxt)['seconds'];
+
+        // return $data = [
+        //     'response_time' => $response_time,
+        //     'fixed_time' => $fixed_time,
+        //     'service_start_time' => $service_start_time,
+        //     'service_end_time' => $service_end_time,
+        //     'include_public_holiday' => $pub,           
+        // ];
 
         if ($field == 'response_time') {
             $this->responseTime = $response_time;
@@ -83,6 +91,18 @@ class CaseTicketUtilityServices
         $this->serviceEndAt = $service_end_time;
         $this->createdDay = strtolower(date('l', strtotime($ticket->created_at)));
         $this->includePublicHoliday = $pub;
+
+        // return $data = [
+        //     'response_time' => $response_time,
+        //     'fixed_time' => $fixed_time,
+        //     'service_start_time' => $service_start_time,
+        //     'service_end_time' => $service_end_time,
+        //     'startDate' => $this->startDate,
+        //     'startDay' => $this->startDay,
+        //     'endDay' => $this->endDay,
+        //     'createdDay' => $this->createdDay,
+        //     'includePublicHoliday' => $this->includePublicHoliday,
+        // ];
 
     }
 
@@ -485,8 +505,8 @@ class CaseTicketUtilityServices
     {
         
         //Recreate a new ticket using the closed one
-        $raisedBy = $ticket->raisedByUser();
-        $raisedByUserId = $raisedBy? $raisedBy->id:null;
+        $raisedBy = $ticket->raisedByUser()->first();
+        $raisedByUserId = $raisedBy?->user_id;
         $createdBy = Auth::id();
         $data = [
             'ticket_number' => null,

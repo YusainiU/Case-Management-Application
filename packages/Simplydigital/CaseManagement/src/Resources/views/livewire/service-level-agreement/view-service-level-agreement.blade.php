@@ -76,10 +76,10 @@
                             {{ $sla->getServiceEndTime() }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{ $sla->response_time }}
+                            {{ $sla->getResponseTime() }} hours
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{ $sla->fixed_time }}
+                            {{ $sla->getFixedTime() }} hours
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             {{ $sla->include_public_holiday ? 'Yes' : 'No' }}

@@ -33,14 +33,14 @@ class CaseServiceTest extends TestCase
             'description' => 'The customer is experiencing technical issues with the product.',
             'short_description' => 'Technical Issue with Product',
             'sla_applications_id' => 1,
-            'customer_contact_user' => null,
-            'customer_contact_nonuser' => 'John Doe',
+            'raised_by_user' => null,
+            'raised_by_nonuser' => 'John Doe',
             'contact_telephone' => '123-456-7890',
             'contact_email' => 'john.doe@example.com',
             'created_by' => 6,
             'created_at' => now(),
             'state' => CaseState::Open->value,
-            'ticket_number' => 'CASE-2024-0001',            
+            'number' => 'CASE-2024-0001',            
         ];
     }
 
@@ -65,8 +65,8 @@ class CaseServiceTest extends TestCase
         $this->assertEquals($createdNewCase['description'], $createdNewCase['description']);
         $this->assertEquals($createdNewCase['short_description'], $createdNewCase['short_description']);
         $this->assertEquals($createdNewCase['sla_applications_id'], $createdNewCase['sla_applications_id']);
-        $this->assertEquals($createdNewCase['customer_contact_user'], $createdNewCase['customer_contact_user']);
-        $this->assertEquals($createdNewCase['customer_contact_nonuser'], $createdNewCase['customer_contact_nonuser']);
+        $this->assertEquals($createdNewCase['raised_by_user'], $createdNewCase['raised_by_user']);
+        $this->assertEquals($createdNewCase['raised_by_nonuser'], $createdNewCase['raised_by_nonuser']);
         $this->assertEquals($createdNewCase['contact_telephone'], $createdNewCase['contact_telephone']);
         $this->assertEquals($createdNewCase['contact_email'], $createdNewCase['contact_email']);
         $this->assertEquals($createdNewCase['created_by'], $createdNewCase['created_by']);
@@ -77,6 +77,8 @@ class CaseServiceTest extends TestCase
 
     public function test_create_case_log(): void
     {
+
+        //Create a case first to get the necessary data for the log
         $fakeCaseData = $this->createFakeCaseData();
         $repoMock = Mockery::mock(CaseRepository::class);
         $repoMock->shouldReceive('createNewTicket')
@@ -86,10 +88,13 @@ class CaseServiceTest extends TestCase
         $logService = new CaseLogAdministrationService();
         $createdNewCase = $ServiceUtility->createNewTicket($fakeCaseData);        
         $this->assertNotNull($createdNewCase);
+
+        // Now create a log text for the created case
         $logText = $logService->buildTicketCreatedText($createdNewCase);
         dump($logText);
         $this->assertEquals($logText, $logText);
 
+        // Prepare fake log data based on the created case and log text
         $fakeLogdata = [
             'number' => null,
             'name' => $createdNewCase['ticket_number'],
@@ -101,6 +106,7 @@ class CaseServiceTest extends TestCase
             'description' => $logText,
         ];            
 
+        // Mock the CaseRepository to return a TaskLogs instance when createTaskLog is called
         $logMock = Mockery::mock(CaseRepository::class);
         $logMock->shouldReceive('createTaskLog')
             ->once()

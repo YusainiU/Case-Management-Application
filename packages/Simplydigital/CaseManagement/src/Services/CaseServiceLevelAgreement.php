@@ -64,6 +64,9 @@ class CaseServiceLevelAgreement
             if($key == 'service_start_time' || $key == 'service_end_time') {
                 $value = $utility->secondsToHMS($value);
             }
+            if($key == 'response_time' || $key == 'fixed_time') {
+                $value = $utility->buildResponseTimeResult($value)['hours'] . ' hours';
+            }
             $items[] = [
                 'label' => ucfirst(str_replace('_', ' ', $key)),
                 'value' => $value,

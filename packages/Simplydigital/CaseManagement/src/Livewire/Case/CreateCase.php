@@ -39,8 +39,8 @@ class CreateCase extends ModalComponent
         'form.list_of_assets' => 'Assets',
         'form.description' => 'Case Description',
         'form.short_description' => 'Case Title',
-        'form.customer_contact_user' => 'Customer Contact (User)',
-        'form.customer_contact_nonuser' => 'Customer Contact (Non-User)',        
+        'form.raised_by_user' => 'Customer Contact (User)',
+        'form.raised_by_nonuser' => 'Customer Contact (Non-User)',        
         'form.contact_telephone' => 'Contact Telephone',
         'form.contact_email' => 'Contact Email',
     ];
@@ -55,8 +55,8 @@ class CreateCase extends ModalComponent
             'form.list_of_assets' => 'nullable',
             'form.description' => 'required',
             'form.short_description' => 'required|max:50',
-            'form.customer_contact_user' => 'nullable|int|required_without:form.customer_contact_nonuser',
-            'form.customer_contact_nonuser' => 'nullable|string|required_without:form.customer_contact_user',
+            'form.raised_by_user' => 'nullable|int|required_without:form.raised_by_nonuser',
+            'form.raised_by_nonuser' => 'nullable|string|required_without:form.raised_by_user',
             'form.contact_telephone' => 'required',
             'form.contact_email' => 'required|email',
         ];
@@ -95,16 +95,16 @@ class CreateCase extends ModalComponent
             'list_of_assets' => $this->case->list_of_assets,
             'description' => $this->case->description,
             'short_description' => $this->case->short_description,
-            'customer_contact_user' => $this->case->raised_by_user,
-            'customer_contact_nonuser' => $this->case->raised_by_nonuser,
+            'raised_by_user' => $this->case->raised_by_user,
+            'raised_by_nonuser' => $this->case->raised_by_nonuser,
             'contact_telephone' => $this->case->contact_telephone,
             'contact_email' => $this->case->contact_email,
         ];
     }
 
-    public function updatedFormCustomerContactUser(int|string|null $value)
+    public function updatedFormRaisedByUser(int|string|null $userId)
     {
-        $user = CustomerContacts::find($value);
+        $user = CustomerContacts::where('user_id', $userId)->first();
         if($user) {
             $this->form['contact_telephone'] = $user->customerUserDetails->phone;
             $this->form['contact_email'] = $user->customerUser->email;
@@ -121,8 +121,8 @@ class CreateCase extends ModalComponent
             'list_of_assets' => [],
             'description' => null,
             'short_description' => null,
-            'customer_contact_user' => null,
-            'customer_contact_nonuser' => null,
+            'raised_by_user' => null,
+            'raised_by_nonuser' => null,
             'contact_telephone' => null,
             'contact_email' => null,
         ];

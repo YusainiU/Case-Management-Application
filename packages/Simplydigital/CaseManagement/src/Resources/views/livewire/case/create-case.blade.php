@@ -42,15 +42,15 @@
                     </div>  
                     <div>
                         <x-casemanagement::form-elements.input-label name="Customer Contact (User)" :required=false />
-                        <x-casemanagement::form-elements.select model="form.customer_contact_user"
+                        <x-casemanagement::form-elements.select model="form.raised_by_user"
                             name="Customer Contact User" placeholder="Customer Contact (User)" :options=$contactOptions 
                         />
-                        <x-casemanagement::form-elements.input-error field="form.customer_contact_user" />
+                        <x-casemanagement::form-elements.input-error field="form.raised_by_user" />
                     </div>
                     <div>
                         <x-casemanagement::form-elements.input-label name="Customer Contact (Non-User)" :required=false />
-                        <x-casemanagement::form-elements.input-text model="form.customer_contact_nonuser" placeholder="Customer Contact (Non-User)" :required=false />
-                        <x-casemanagement::form-elements.input-error field="form.customer_contact_nonuser" />
+                        <x-casemanagement::form-elements.input-text model="form.raised_by_nonuser" placeholder="Customer Contact (Non-User)" :required=false />
+                        <x-casemanagement::form-elements.input-error field="form.raised_by_nonuser" />
                     </div>
                     <div>
                         <x-casemanagement::form-elements.input-label name="Telephone" :required=true />

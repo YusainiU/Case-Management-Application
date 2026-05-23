@@ -66,6 +66,11 @@ class tickets extends Model
         return $this->belongsTo(slaApplication::class, 'sla_applications_id');
     }
 
+    public function raisedByUser()
+    {
+        return $this->belongsTo(CustomerContacts::class, 'raised_by_user', 'user_id');
+    }
+
     protected function casts()
     {
         return [

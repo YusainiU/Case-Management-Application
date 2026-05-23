@@ -53,7 +53,7 @@ class CaseLogAdministrationService
 
     public function buildVisitUpdatedScheduledLog(string $newSchedule, string $oldSchedule, string $user)
     {
-        $phrase = config('case-management.siteVisit.scheduledUpdated');
+        $phrase = config('case-management.siteVisit.scheduledUpdated') ?? '';
         $searchFor = ['%SCHEDULED%', '%DATETIME%', '%USER%'];
         $replaceWith = [$newSchedule, $oldSchedule, $user];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -62,7 +62,7 @@ class CaseLogAdministrationService
     
     public function buildVisitUpdatedAssignedTo(string $oldAssignee, string $newAssignee, string $user)
     {
-        $phrase = config('case-management.siteVisit.assignedToUpdated');
+        $phrase = config('case-management.siteVisit.assignedToUpdated') ?? '';
         $searchFor = ['%CURRENT%', '%NEW%', '%USER%'];
         $replaceWith = [$oldAssignee, $newAssignee, $user];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -73,12 +73,12 @@ class CaseLogAdministrationService
     {
         $searchFor = [];
         if ($data['action'] == 'update') {
-            $phrase = config('case-management.siteVisit.enrouteUpdated');
+            $phrase = config('case-management.siteVisit.enrouteUpdated') ?? '';
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
             $replaceWith = [$data['assignee'], $data['datetime'], $data['user']];
         }
         if($data['action'] == 'remove'){
-            $phrase = config('case-management.siteVisit.enrouteRemoved');
+            $phrase = config('case-management.siteVisit.enrouteRemoved') ?? '';
             $searchFor = '%USER%';
             $replaceWith = $data['user'];
         }
@@ -90,12 +90,12 @@ class CaseLogAdministrationService
     {
         $searchFor = [];
         if ($data['action'] == 'update') {
-            $phrase = config('case-management.siteVisit.onsiteUpdate');
+            $phrase = config('case-management.siteVisit.onsiteUpdate') ?? '';
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
             $replaceWith = [$data['assignee'], $data['datetime'], $data['user']];
         }
         if($data['action'] == 'remove'){
-            $phrase = config('case-management.siteVisit.onsiteRemoved');
+            $phrase = config('case-management.siteVisit.onsiteRemoved') ?? '';
             $searchFor = '%USER%';
             $replaceWith = $data['user'];
         }
@@ -107,12 +107,12 @@ class CaseLogAdministrationService
     {
         $searchFor = [];
         if ($data['action'] == 'update') {
-            $phrase = config('case-management.siteVisit.offsiteUpdate');
+            $phrase = config('case-management.siteVisit.offsiteUpdate') ?? '';
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
             $replaceWith = [$data['assignee'], $data['datetime'], $data['user']];
         }
         if($data['action'] == 'remove'){
-            $phrase = config('case-management.siteVisit.offsiteRemoved');
+            $phrase = config('case-management.siteVisit.offsiteRemoved') ?? '';
             $searchFor = '%USER%';
             $replaceWith = $data['user'];
         }
@@ -222,7 +222,7 @@ class CaseLogAdministrationService
         $createdByName = $ticket->raised_by_nonuser;
         $created = date('d-m-Y H:i', strtotime($ticket->created_at));
         if (!$createdByName) {
-            $createdByName = $ticket->raised_by_user;
+            $createdByName = $ticket->raisedByUser->customerUser->name ?? 'Unknown User';
         }
         $phrase = config('case-management.ticket.create');
         $searchFor = ['%CREATED%', '%BY%'];

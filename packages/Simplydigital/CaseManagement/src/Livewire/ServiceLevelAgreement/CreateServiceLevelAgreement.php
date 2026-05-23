@@ -129,8 +129,8 @@ class CreateServiceLevelAgreement extends ModalComponent
             'include_public_holiday' => $this->sla->include_public_holiday,
             'cover_details' => $this->sla->cover_details,
             'active' => $this->sla->active,
-            'response_time' => $this->sla->response_time,
-            'fixed_time' => $this->sla->fixed_time,
+            'response_time' => $this->sla->getResponseTime(),
+            'fixed_time' => $this->sla->getFixedTime() ,
             'type' => $this->sla->type,
         ];
     }
