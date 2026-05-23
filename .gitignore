@@ -23,3 +23,7 @@ yarn-error.log
 /.zed
 /browser.log
 browser.log
+/laravel.log
+laravel.log
+
+
