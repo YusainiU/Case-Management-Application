@@ -42,8 +42,8 @@ class CaseLogAdministrationService
         ];
         
         if ($type == config('case-management.logs.type.sla_tasks')) {
-            $sla = $ticket->slaTasks->first();
-            $data['sla_tasks_id'] = $sla->id;
+            $sla = $ticket->slaTasks()->first();
+            $data['sla_tasks_id'] = $sla?->id;
         }
         
         //$log = taskLogs::create($data);
@@ -72,6 +72,7 @@ class CaseLogAdministrationService
     public function buildVisitUpdatedEnroute(array $data)
     {
         $searchFor = [];
+        $phrase = '';
         if ($data['action'] == 'update') {
             $phrase = config('case-management.siteVisit.enrouteUpdated') ?? '';
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
@@ -89,6 +90,7 @@ class CaseLogAdministrationService
     public function buildVisitUpdatedOnsite(array $data)
     {
         $searchFor = [];
+        $phrase = '';
         if ($data['action'] == 'update') {
             $phrase = config('case-management.siteVisit.onsiteUpdate') ?? '';
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
@@ -106,6 +108,7 @@ class CaseLogAdministrationService
     public function buildVisitUpdatedOffsite(array $data)
     {
         $searchFor = [];
+        $phrase = '';
         if ($data['action'] == 'update') {
             $phrase = config('case-management.siteVisit.offsiteUpdate') ?? '';
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
@@ -126,7 +129,7 @@ class CaseLogAdministrationService
             assignee -- person to visit
             scheduler -- person who arranged the visit
         */
-        $phrase = config('case-management.siteVisit.visitCreated');
+        $phrase = config('case-management.siteVisit.visitCreated') ?? '';
         $searchFor = ['%ASSIGNEE%', '%SCHEDULER%', '%DATETIME%'];
         $replaceWith = [$assignee, $scheduler, $datetime];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -135,7 +138,7 @@ class CaseLogAdministrationService
 
     public function buildVisitNote(string $createdBy, string $visitNote)
     {
-        $phrase = config('case-management.siteVisit.VisitNote');
+        $phrase = config('case-management.siteVisit.VisitNote') ?? '';
         $searchFor = ['%CREATEDBY%', '%NOTE%'];
         $replaceWith = [$createdBy, $visitNote];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -145,7 +148,7 @@ class CaseLogAdministrationService
     public function buildVisitDeletion(string $shortDescription, string $user)
     {
         $now = date('d-m-Y H:i', time());
-        $phrase = config('case-management.siteVisit.delete');
+        $phrase = config('case-management.siteVisit.delete') ?? '';
         $searchFor = ['%DESCRIPTION%','%DATETIME%', '%USER%'];
         $replaceWith = [$shortDescription, $now, $user];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -154,7 +157,7 @@ class CaseLogAdministrationService
 
     public function buildResolveText(string $user, string $datetime)
     {
-        $phrase = config('case-management.ProgressLogs.resolve');
+        $phrase = config('case-management.ProgressLogs.resolve') ?? '';
         $searchFor = ['%USER%', '%DATETIME%'];
         $replaceWith = [$user, $datetime];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -164,7 +167,7 @@ class CaseLogAdministrationService
     public function buildCompletedText(string $dateCompleted)
     {
         $user = Auth::user()->name;
-        $phrase = config('case-management.ProgressLogs.complete');
+        $phrase = config('case-management.ProgressLogs.complete') ?? '';
         $searchFor = '%USER%';
         $replaceWith = $user;
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -175,7 +178,7 @@ class CaseLogAdministrationService
     {
         $user = Auth::user()->name;
         $now = date('d-m-Y H:i', time());
-        $phrase = config('case-management.ProgressLogs.assignedTo');
+        $phrase = config('case-management.ProgressLogs.assignedTo') ?? '';
         $searchFor = ['%USER%', '%ASSIGNEE%', '%DATETIME%'];
         $replaceWith = [$user, $assignedTo->name, $now];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -187,7 +190,7 @@ class CaseLogAdministrationService
         $user = Auth::user()->name;
         $now = date('d-m-Y H:i', time());
         $assignee = $ticket->assignedTo->name;
-        $phrase = config('case-management.ProgressLogs.unassigned');
+        $phrase = config('case-management.ProgressLogs.unassigned') ?? '';
         $searchFor = ['%USER%', '%ASSIGNEE%', '%DATETIME%'];
         $replaceWith = [$user, $assignee, $now];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -196,7 +199,7 @@ class CaseLogAdministrationService
     
     public function buildProgressEmailLog(taskLogs $taskLog, string $receiver)
     {
-        $phrase = config('case-management.ProgressLogs.email');
+        $phrase = config('case-management.ProgressLogs.email') ?? '';
         $searchFor = ['%LOGNUMBER%', '%RECEIVER%'];
         $replaceWith = [$taskLog->number, $receiver];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -207,9 +210,9 @@ class CaseLogAdministrationService
     {
         $user = Auth::user()->name;
         if ($ticket->currently_working) {
-            $phrase = config('case-management.ProgressLogs.working');
+            $phrase = config('case-management.ProgressLogs.working') ?? '';
         } else {
-            $phrase = config('case-management.ProgressLogs.unsetWorking');
+            $phrase = config('case-management.ProgressLogs.unsetWorking') ?? '';
         }
         $searchFor = '%USER%';
         $replaceWith = $user;
@@ -224,7 +227,7 @@ class CaseLogAdministrationService
         if (!$createdByName) {
             $createdByName = $ticket->raisedByUser->customerUser->name ?? 'Unknown User';
         }
-        $phrase = config('case-management.ticket.create');
+        $phrase = config('case-management.ticket.create') ?? '';
         $searchFor = ['%CREATED%', '%BY%'];
         $replaceWith = [$created, $createdByName];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -234,7 +237,7 @@ class CaseLogAdministrationService
     public function buildSlaTaskCreatedText(slaTask $slaTask)
     {
         $created = date('d-m-Y H:i', strtotime($slaTask->created_at));
-        $phrase = config('case-management.slaTask.create');
+        $phrase = config('case-management.slaTask.create') ?? '';
         $searchFor = '%CREATED%';
         $replaceWith = $created;
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -243,7 +246,7 @@ class CaseLogAdministrationService
 
     public function buildProgressLogText(string $logText, string $logInfo, string $logExtraInfo)
     {
-        $phrase = config('case-management.ProgressLogs.create');
+        $phrase = config('case-management.ProgressLogs.create') ?? '';
         $searchFor = ['%INFO%', '%NOTE%', '%EXTRAINFO%'];
         $replaceWith = [$logInfo, $logText, $logExtraInfo];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -252,7 +255,7 @@ class CaseLogAdministrationService
 
     public function buildRemoteResponseLogText(string $remoteResponseDateTime, string $respondedBy)
     {
-        $phrase = config('case-management.ProgressLogs.remoteResponse');
+        $phrase = config('case-management.ProgressLogs.remoteResponse') ?? '';
         $searchFor = ['%RESPONSE%', '%BY%'];
         $replaceWith = [$remoteResponseDateTime, $respondedBy];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -261,7 +264,7 @@ class CaseLogAdministrationService
     
    public function buildFixedAtLogText(string $fixedAtDateTime, string $fixedBy)
     {
-        $phrase = config('case-management.ProgressLogs.fixedAt');
+        $phrase = config('case-management.ProgressLogs.fixedAt') ?? '';
         $searchFor = ['%FIX%', '%BY%'];
         $replaceWith = [$fixedAtDateTime, $fixedBy];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
@@ -270,7 +273,7 @@ class CaseLogAdministrationService
     
     public function buildBreachLogText(string $breachDateTime)
     {
-        $phrase = config('case-management.ProgressLogs.breach');
+        $phrase = config('case-management.ProgressLogs.breach') ?? '';
         $searchFor = '%BREACH%';
         $replaceWith = $breachDateTime;
         $logString = str_replace($searchFor, $replaceWith, $phrase);

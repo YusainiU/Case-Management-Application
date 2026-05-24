@@ -54,6 +54,13 @@ class CaseTicketUtilityServices
         return $respondBy;
     }
 
+    public function getFixByDateTime(tickets $ticket)
+    {
+        $this->buildCalcData($ticket, 'fix_time');
+        $fixBy = $this->calcRespondByTime();
+        return $fixBy;
+    }      
+
     public function buildCalcData(tickets $ticket, string $field)
     {
         
@@ -85,65 +92,57 @@ class CaseTicketUtilityServices
         }
 
         $this->startDate = strtotime($ticket->created_at);
-        $this->startDay = $ticket->slaApplication->serviceLevelAgreement->start_day;
-        $this->endDay = $ticket->slaApplication->serviceLevelAgreement->end_day;
+        $this->startDay = $ticket->slaApplication->serviceLevelAgreement->start_day->value;
+        $this->endDay = $ticket->slaApplication->serviceLevelAgreement->end_day->value;
         $this->serviceStartAt = $service_start_time;
         $this->serviceEndAt = $service_end_time;
         $this->createdDay = strtolower(date('l', strtotime($ticket->created_at)));
         $this->includePublicHoliday = $pub;
 
-        // return $data = [
-        //     'response_time' => $response_time,
-        //     'fixed_time' => $fixed_time,
-        //     'service_start_time' => $service_start_time,
-        //     'service_end_time' => $service_end_time,
-        //     'startDate' => $this->startDate,
-        //     'startDay' => $this->startDay,
-        //     'endDay' => $this->endDay,
-        //     'createdDay' => $this->createdDay,
-        //     'includePublicHoliday' => $this->includePublicHoliday,
-        // ];
+        return $data = [
+            'response_time' => $response_time,
+            'fixed_time' => $fixed_time,
+            'service_start_time' => $service_start_time,
+            'service_end_time' => $service_end_time,
+            'startDate' => $this->startDate,
+            'startDay' => $this->startDay,
+            'endDay' => $this->endDay,
+            'createdDay' => $this->createdDay,
+            'includePublicHoliday' => $this->includePublicHoliday,
+        ];
 
     }
-
-    public function getFixByDateTime(tickets $ticket)
-    {
-        $this->buildCalcData($ticket, 'fix_time');
-        $fixBy = $this->calcRespondByTime();
-        return $fixBy;
-    }    
     
     public function calcRespondByTime()
     {
 
         $serviceTime = $this->serviceEndAt - $this->serviceStartAt;
 
+        //----------------------------------------
         //DIAGNOSTIC
-        // $logs = [];
-        // $logs["startDate"] = $this->startDate;
-        // $logs["startDay"] = $this->startDay;
-        // $logs["Service End At"] = $this->serviceEndAt;
-        // $logs["Service Start At"] = $this->serviceStartAt;
-        // $logs["Service Start At"] = $this->serviceStartAt;
-        // $logs["StartDay"] = $this->startDay;
-        // $logs["EndtDay"] = $this->endDay;
-        // $logs["createdDay"] = $this->createdDay;
+        $logs = [];
+        $logs["startDate"] = $this->startDate;
+        $logs["startDay"] = $this->startDay;
+        $logs["Service End At"] = $this->serviceEndAt;
+        $logs["Service Start At"] = $this->serviceStartAt;
+        $logs["Service Start At"] = $this->serviceStartAt;
+        $logs["StartDay"] = $this->startDay;
+        $logs["EndtDay"] = $this->endDay;
+        $logs["createdDay"] = $this->createdDay;
         //dd($logs);
+        //----------------------------------------
 
         //Check Start Day and get the initialised start date
         $weekdays = CaseManagementUtilityServices::daysOfWeek();
         $nextday = $this->startDate;
         $initDate = 0;
 
-        // while(!$this->isDayInsideSla($nextday, $this->startDay, $this->endDay, $this->createdDay))
-        // {
-        //     $nextday = date(strtotime('+1 day', $nextday));
-        // }
-
         $initDate = $nextday;
 
+        //---------------------------------------------
         //DIAGNOSTIC
-        // $logs["initDate"] = date('l',$initDate);
+        $logs["initDate"] = date('l',$initDate);
+        //----------------------------------------------
 
         //check the initialised date time is inside the sla service time
         $totalSeconds = 0;
@@ -159,20 +158,26 @@ class CaseTicketUtilityServices
         if ($initDate) {
             $counter = 0;
 
+            //---------------------------------------
             //DIAGNOSTIC
-            // $logs["----- Start While Loop ------- "] = 'WHILE';
+            $logs["----- Start While Loop ------- "] = 'WHILE';
+            //---------------------------------------
 
             while ($counter < $limit) {
                 $counter++;
             
+                //-------------------------------------------
                 //DIAGNOSTIC
-                // $logs["WHILE LOOP COUNTER $counter"] = $counter;
+                $logs["WHILE LOOP COUNTER $counter"] = $counter;
+                //--------------------------------------------
             
                 $responserCounter = 0;
                 $initDay = strtolower(date('l', $initDate));
             
+                //------------------------------------
                 //DIAGNOSTIC
-                // $logs["initDay $counter"] = $initDay;
+                $logs["initDay $counter"] = $initDay;
+                //------------------------------------
                 
                 $isIncluded = CaseManagementUtilityServices::isDayInsideSla(
                     $initDate, 
@@ -182,14 +187,18 @@ class CaseTicketUtilityServices
                     $this->startDay
                 );
 
+                //---------------------------------------------
                 //DIAGNOSTIC
-                // $logs["IsIncluded $counter"] = $isIncluded; 
-                // $logs["Total Seconds $counter"] = $totalSeconds;
+                $logs["IsIncluded $counter"] = $isIncluded; 
+                $logs["Total Seconds $counter"] = $totalSeconds;
+                //----------------------------------------------
 
                 if (!$isIncluded) {
 
+                    //------------------------------------
                     //DIAGNOSTIC
-                    // $logs["Exclude the date"] = 'Yes'; 
+                    $logs["Exclude the date"] = 'Yes'; 
+                    //-------------------------------------
                     
                     $initDate = strtotime('+1 day', $initDate);
                     continue;
@@ -200,22 +209,28 @@ class CaseTicketUtilityServices
                     $dmy = date('d-m-Y', $initDate);
                     if(\in_array($dmy, $this->holidays)){
 
+                        //----------------------------------
                         //DIAGNOSTIC
-                        // $logs["Public Holiday"] = 'Yes'; 
+                        $logs["Public Holiday"] = 'Yes'; 
+                        //----------------------------------
                         
                         $initDate = strtotime('+1 day', $initDate);
                         continue;
                     }
                 }
 
+                //------------------------------------
                 //DIAGNOSTIC
-                // $logs["----- if total seconds is more than 0 $counter ------- "] = 'IF';
+                $logs["----- if total seconds is more than 0 $counter ------- "] = 'IF';
+                //--------------------------------------
 
                 if ($totalSeconds > 0) {
                     $initSeconds = $this->serviceStartAt + $totalSeconds;
 
+                    //--------------------------------------
                     //DIAGNOSTIC
-                    // $logs["initSeconds $counter"] = $initSeconds;
+                    $logs["initSeconds $counter"] = $initSeconds;
+                    //---------------------------------------
 
                     if ($initSeconds <= $this->serviceEndAt) {
                         $toRespondByTime = $initSeconds;
@@ -227,31 +242,41 @@ class CaseTicketUtilityServices
 
                 } else {
 
+                    //----------------------------------------
                     //DIAGNOSTIC
-                    // $logs["----- if total seconds is 0 $counter ------- "] = 'ELSE';
-                    // $logs["initDate $counter"] = $initDate;
+                    $logs["----- if total seconds is 0 $counter ------- "] = 'ELSE';
+                    $logs["initDate $counter"] = $initDate;
+                    //-----------------------------------------
 
                     $initTime = CaseManagementUtilityServices::parseTimeStampToSeconds($initDate);
 
+                    //--------------------------------
                     //DIAGNOSTIC
-                    // $logs["initTime $counter"] = $initTime;
+                    $logs["initTime $counter"] = $initTime;
+                    //---------------------------------
 
                     $initSeconds = $initTime;
 
+                    //-----------------------------------
                     //DIAGNOSTIC
-                    // $logs["initSeconds $counter"] = $initSeconds;
+                    $logs["initSeconds $counter"] = $initSeconds;
+                    //------------------------------------
 
                     if ($initSeconds < $this->serviceEndAt) {
                     
+                        //----------------------------------
                         //DIAGNOSTIC
-                        // $logs["condition 1 $counter"] = "$initSeconds < $this->serviceEndAt";
+                        $logs["condition 1 $counter"] = "$initSeconds < $this->serviceEndAt";
+                        //----------------------------------
 
                         $responserCounter = $initSeconds;
                         //Ticket is created before the service end time
                         if ($initSeconds < $this->serviceStartAt) {
 
+                            //----------------------------------
                             //DIAGNOSTIC
-                            // $logs["condition 2 $counter"] = "$initSeconds < $this->serviceStartAt";
+                            $logs["condition 2 $counter"] = "$initSeconds < $this->serviceStartAt";
+                            //----------------------------------
 
                             $responserCounter = $this->serviceStartAt;
 
@@ -259,8 +284,10 @@ class CaseTicketUtilityServices
 
                         $responserCounter += $this->responseTime;
 
+                        //------------------------------------
                         //DIAGNOSTIC
-                        // $logs["responseCounter $counter"] = $responserCounter;
+                        $logs["responseCounter $counter"] = $responserCounter;
+                        //------------------------------------
 
                         if ($responserCounter > $this->serviceEndAt) {
                             $totalSeconds = $responserCounter - $this->serviceEndAt;
@@ -278,30 +305,41 @@ class CaseTicketUtilityServices
                         $iYMD = date('Y-m-d', $initDate);
                         $initDate = strtotime($iYMD." ".$iHIS['hours'].":".$iHIS['mins'].":".$iHIS['seconds']);
                         
+                        //----------------------------------------------
                         //DIAGNOSTIC
                         $logs["Total Seconds is 0 $counter"] = $initDate;
+                        //---------------------------------------------
                     
                     }
                 }
 
+                //--------------------------------------------
                 //DIAGNOSTIC
-                // $logs["----- END IF $counter ------- "] = 'END';
-                // $logs["Total Seconds End $counter"] = $totalSeconds;
+                $logs["----- END IF $counter ------- "] = 'END';
+                $logs["Total Seconds End $counter"] = $totalSeconds;
+                //--------------------------------------------
 
-                $initDate = strtotime('+1 day', $initDate);
+                //$initDate = strtotime('+1 day', $initDate);
 
             }
 
+            //---------------------------------------------
             //DIAGNOSTIC
-            // $logs["Respond By Time"] = $this->parseSeconds($toRespondByTime);
-            // $logs["Respond By Date"] = date('d-m-Y', $toRespondByDate);
-            // dd($logs);
+            $logs["Respond By Time"] = CaseManagementUtilityServices::parseSeconds($toRespondByTime);
+            $logs["Respond By Date"] = date('d-m-Y', $toRespondByDate);
+            //----------------------------------------------
 
             $rde = date('Y-m-d', $toRespondByDate);
             $rte = CaseManagementUtilityServices::parseSeconds($toRespondByTime);
             $resulttime = $rte['hours'] . ":" . $rte['mins'] . ":" . $rte['seconds'];
             $resultDateTime = "$rde $resulttime";
 
+            //---------------------------------------------
+            //DIAGNOSTIC
+            $logs["Result Date Time"] = $resultDateTime;
+            //return  $logs;
+            //----------------------------------------------            
+            
             return $resultDateTime;
 
         }
@@ -324,7 +362,7 @@ class CaseTicketUtilityServices
             'state' => CaseState::Open->value,
             'active' => true,
         ];
-        $task = slaTask::create($data);
+        $task = $this->caseRepository->createSlaTask($data);
         return $task;
     }
 
@@ -384,12 +422,10 @@ class CaseTicketUtilityServices
             $result['closed'] = $ticket->state == CaseState::Cancelled->value;
             
             if ($first && $first->count()) {
-                //$result["lastUrgentLog"] = $first;
                 $result["numberOfUrgetLogs"] = $urgents->count();
                 $result["lastUrgentLogCreatedAt"] = date('d-m-Y H:i', strtotime($first->created_at));
             }
             if ($lastCustomerLog && $lastCustomerLog->count()) {
-                //$result["lastCustomerLog"] = $lastCustomerLog;
                 $result["lastCustomerLogCreatedAt"] = date('d-m-Y H:i', strtotime($lastCustomerLog->created_at));
             }
         }
@@ -733,8 +769,8 @@ class CaseTicketUtilityServices
         $usr = '';
         if ($ticket->raised_by_user) {
             $usr = $ticket->raised_by_user;
-            $user = $ticket->raisedByUser();
-            $email = $user->email;
+            $user = $ticket->raisedByUser;
+            $email = $user->customerUser->email;
             $message["from"] = "From: $from";
             $message["title"] = "Subject: $title";
             $message["greeting"] = "For attention: $usr";

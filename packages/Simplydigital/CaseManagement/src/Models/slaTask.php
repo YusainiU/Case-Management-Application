@@ -4,8 +4,8 @@ namespace Simplydigital\CaseManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use spatie\Activitylog\Traits\LogsActivity;
-use spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Concerns\LogsActivity; 
+use Spatie\Activitylog\Support\LogOptions;
 
 class slaTask extends Model
 {
@@ -33,10 +33,10 @@ class slaTask extends Model
     {
         return LogOptions::defaults()
             ->useLogName('ticket')
-            ->logAll() //or ->logOnly(['field1', 'field2'])
+            ->logAll()
             ->logOnlyDirty()
-            ->dontSubmitEmptyLogs();
-    }    
+            ->dontLogIfAttributesChangedOnly([]);
+    } 
 
     protected function casts(): array
     {

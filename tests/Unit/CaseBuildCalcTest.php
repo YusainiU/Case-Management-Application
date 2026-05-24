@@ -6,7 +6,7 @@ use Tests\TestCase;
 use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
 use Simplydigital\CaseManagement\Models\tickets;
 
-class CaseBuidCalcTest extends TestCase
+class CaseBuildCalcTest extends TestCase
 {
     /**
      * A basic unit test example.
@@ -22,5 +22,8 @@ class CaseBuidCalcTest extends TestCase
 
         $calcData = $ServiceUtility->buildCalcData($sampleCase, $fieldToCheck);
         dump($calcData);
+
+        $calc = $ServiceUtility->calcRespondByTime();
+        dump($calc);
     }
 }

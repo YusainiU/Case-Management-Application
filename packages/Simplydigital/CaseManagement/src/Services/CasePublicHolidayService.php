@@ -22,7 +22,7 @@ class CasePublicHolidayService
     public array $listByDescription = [];
 
 
-    public function getPublicHolidays(string $date = null, bool $getAll = true)
+    public function getPublicHolidays(?string $date = null, bool $getAll = true)
     {
         // $date in dd-mm-YYYY in format
 
@@ -75,6 +75,9 @@ class CasePublicHolidayService
     {
 
         $bankHols = [];
+        $dmy=[];
+        $des = [];
+        $description = [];
         switch (date("w", strtotime("$year-01-01 12:00:00"))) {
             case 6:
                 $bankHols[] = $ddate = "$year-01-03";

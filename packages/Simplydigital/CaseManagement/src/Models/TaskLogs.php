@@ -2,6 +2,7 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
@@ -35,7 +36,7 @@ class TaskLogs extends Model
         });
     }
 
-    public function getUserIdAttribute($value)
+    public function getUserIdAttribute(int $value)
     {
         if($value) {
             $u = User::find($value,['name']);
@@ -56,14 +57,14 @@ class TaskLogs extends Model
    public function internalUser()
     {
         $u = $this->attributes()['user_id'];
-        return User::find($u)->get();
+        return User::find($u,'*');
     }
-    public function logNumber($value)
+    public function logNumber(string $value)
     {
         return $this->where('number','=',$value)->first();
     }
 
-    public function scopeUnrespondedComment($query)
+    public function scopeUnrespondedComment(Builder $query)
     {
         return $query->where('source','=','external')
             ->where('response_to_external_comment','=',null)

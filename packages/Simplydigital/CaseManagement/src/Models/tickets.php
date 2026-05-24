@@ -2,6 +2,7 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity; 
@@ -69,6 +70,26 @@ class tickets extends Model
     public function raisedByUser()
     {
         return $this->belongsTo(CustomerContacts::class, 'raised_by_user', 'user_id');
+    }
+
+    public function slaTasks()
+    {
+        return $this->hasMany(slaTask::class, 'ticket_id');
+    }
+
+     public function taskLogs()
+    {
+        return $this->hasMany(TaskLogs::class, 'ticket_id');
+    }
+
+     public function assignedToUser()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+     public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     protected function casts()
