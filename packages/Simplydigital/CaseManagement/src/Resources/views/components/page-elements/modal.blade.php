@@ -7,14 +7,28 @@
     'confirmText' => 'Confirm',
     'showFooter' => true,
     'showConfirm' => true,
+    'bgColor' => 'bg-gray-100',
+    'borderColor' => 'border-gray-400',
+    'border' => 'border rounded-lg shadow-xl',
+    'width' => 'w-full',
+    'mx' => 'mx-4'
 ])
 
 <div>
 
 
 
-        <div class="fixed inset-0 bg-opacity-75 flex items-center justify-center z-50 overflow-y-auto">
-            <div class="bg-gray-200 border border-gray-400 rounded-lg shadow-xl max-w-{{ $widthsize ?? 'md' }} w-full mx-4">
+        <div class="fixed inset-0 bg-opacity-75 flex items-center justify-center z-50 overflow-y-auto scrollable-area">
+            <div 
+                @class([
+                    "max-w-$widthsize",
+                    $bgColor,
+                    $borderColor,
+                    $border,
+                    $width,
+                    $mx,
+                ])
+            >
                 <!-- Header -->
                 <div class="flex items-center justify-between p-6 border-b border-gray-200">
                     <h3 class="text-lg font-medium text-gray-900 uppercase">

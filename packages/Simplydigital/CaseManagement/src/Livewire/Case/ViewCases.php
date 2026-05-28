@@ -18,6 +18,7 @@ class ViewCases extends Component
     public bool $displayCreateModal = false;
     public bool $displayUpdateModal = false;
     public bool $displayProfileModal = false;
+    public bool $displaySummaryModal = false;
     public ?string $displayCaseStatus = null;    
 
     /**
@@ -27,6 +28,7 @@ class ViewCases extends Component
         'closeCreateCaseModal' => 'closeCreateModal',
         'closeUpdateCaseModal' => 'closeUpdateModal',
         'closeProfileModal' => 'closeProfileModal',
+        'closeSummaryModal' => 'closeSummaryModal',
     ];
 
     public function mount()
@@ -45,6 +47,7 @@ class ViewCases extends Component
             'displayProfileModal',
             'displayCreateModal',
             'displayUpdateModal',
+            'displaySummaryModal',
         ]);
     }
 
@@ -74,6 +77,11 @@ class ViewCases extends Component
         $this->resetAllModal();
     }
     
+    public function closeSummaryModal()
+    {        
+        $this->resetAllModal();
+    }
+
     public function buildUI()
     {
         return [
@@ -104,6 +112,13 @@ class ViewCases extends Component
         $this->displayUpdateModal = true;
     }
     
+    public function openSummaryModal(int $caseId)
+    {
+        $this->resetAllModal();
+        $this->caseId = $caseId;
+        $this->displaySummaryModal = true;
+    }
+
     public function openProfileModal(int $caseId)
     {
         $this->resetAllModal();

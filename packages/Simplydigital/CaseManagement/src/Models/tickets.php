@@ -9,6 +9,7 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
+use Simplydigital\CaseManagement\Enums\CaseState;
 
 class tickets extends Model
 {
@@ -87,9 +88,24 @@ class tickets extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    public function resolvedBy()
+    {
+        return $this->belongsTo(User::class, 'resolved_by');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
      public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function siteVisits()
+    {
+        return $this->hasMany(TaskSiteVisit::class, 'ticket_id');
     }
 
     protected function casts()
@@ -98,6 +114,7 @@ class tickets extends Model
             'currently_working' => 'boolean',
             'category' => CaseCategory::class,
             'source' => CaseSource::class,
+            'state' => CaseState::class,
             'list_of_assets' => 'array',
         ];
     }

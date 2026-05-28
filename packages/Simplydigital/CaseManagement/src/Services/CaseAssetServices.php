@@ -65,6 +65,11 @@ class CaseAssetServices
             ->toArray();
     }
 
+    public static function getAssetsFromArrayOfIds(array $ids)
+    {
+        return Asset::whereIn('id', $ids)->get();
+    }
+
     public function buildProfileItems(Asset $asset)
     {
         $items = [];

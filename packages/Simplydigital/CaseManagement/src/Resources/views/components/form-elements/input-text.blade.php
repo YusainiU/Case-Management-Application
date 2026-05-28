@@ -1,8 +1,16 @@
 <div class="">
     <input
-    
+
         @class([
-            'appearance-none text-black block border border-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500',
+            $appearance ?? 'appearance-none',
+            $border ?? 'block border rounded leading-tight focus:outline-none',
+            $textcolor ?? 'text-black',
+            $bordercolor ?? 'border-gray-700',
+            $bordercolorfocus ?? 'focus:border-gray-500',
+            $py ?? 'py-3',
+            $px ?? 'px-4',
+            $mb ?? 'mb-3',
+            $bgfocus ?? 'focus:bg-white',
             $width ?? 'w-full',
         ])
 
@@ -42,7 +50,9 @@
         @endif
 
     />
+
     @if ($hint ?? null)
         <p class="text-xs text-gray-500">{{ $hint }}</p>
-    @endif    
+    @endif
+    
 </div>

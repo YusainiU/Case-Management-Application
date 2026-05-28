@@ -204,10 +204,15 @@ class CreateCase extends ModalComponent
     public function selectCustomer()
     {
         $id = (int) $this->customerId;
-        $this->customerId = $id;
-        $this->displayForm = true;
-        $this->customerSelected = $this->customerServices()->getCustomer($id);
-        $this->loadOptions();
+        if(!$id) {
+            $this->addError('customerId', 'Please select a customer');
+            return;
+        }else {
+            $this->customerId = $id;
+            $this->displayForm = true;
+            $this->customerSelected = $this->customerServices()->getCustomer($id);
+            $this->loadOptions();
+        }
     }
 
     public function save()

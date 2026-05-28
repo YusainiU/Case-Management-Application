@@ -31,6 +31,12 @@ class CaseManagementUtilityServices
         return Carbon::parse($value)->format('d/m/Y h:i:s');
     }
 
+    public static function reverseYMDToDMY(string $date)
+    {
+        $d = Carbon::createFromFormat('Y-m-d H:i:s', $date);
+        return $d->format('d/m/Y H:i:s');
+    }
+
     public static function daysOfWeek()
     {
         $timestamp = strtotime('next Sunday');

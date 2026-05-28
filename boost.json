@@ -1,11 +1,12 @@
 {
     "agents": [
-        "copilot"
+        "copilot",
+        "opencode"
     ],
     "cloud": false,
     "guidelines": true,
-    "herd_mcp": false,
     "mcp": true,
+    "nightwatch": false,
     "sail": false,
     "skills": [
         "fortify-development",

@@ -38,6 +38,7 @@ use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewServiceLevel
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ServiceLevelAgreementProfile;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewSlaImplementation;
 use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ImplementationProfile;
+use Simplydigital\CaseManagement\Livewire\Case\CaseSummary;
 
 
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
@@ -143,6 +144,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         Livewire::component('sla-implementation-profile', ImplementationProfile::class);
         Livewire::component('view-cases', ViewCases::class);
         Livewire::component('create-case', CreateCase::class);
+        Livewire::component('case-summary', CaseSummary::class);
     }
     
     public function registerServices()

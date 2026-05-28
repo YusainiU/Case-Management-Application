@@ -9,6 +9,8 @@ use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
 use Illuminate\Database\Eloquent\Collection;
 use Simplydigital\CaseManagement\Enums\CaseState;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
+use Simplydigital\CaseManagement\Services\CaseAssetServices;
 
 class CaseTicketServices
 {
@@ -101,10 +103,39 @@ class CaseTicketServices
         return $this->query;
     }
 
-    public function buildProfileItems(tickets $ticket)
+    public function buildSummaryItems(tickets $ticket)
     {
         $items = [];
         foreach ($ticket->getAttributes() as $key => $value) {
+            if($key === 'customer_id' && $value) {
+                $value = $ticket->customer?->name;
+            } elseif ($value && CaseManagementUtilityServices::checkIfDate($value)) {
+                $value = CaseManagementUtilityServices::displayDateValue($value);
+            } elseif ($value && ($key === 'assigned_to' || $key == 'raised_by_user' || $key == 'resolved_by' || $key == 'created_by')) {
+                $value = match ($key) {
+                    'assigned_to' => $ticket->assignedTo?->name,
+                    'raised_by_user' => $ticket->raisedByUser?->customerUser?->name,
+                    'resolved_by' => $ticket->resolvedBy?->name,
+                    'created_by' => $ticket->createdBy?->name,
+                    default => $value,
+                };
+            } elseif ($key === 'sla_applications_id' && $value) {
+                $value = $ticket->slaApplication->name;
+            } elseif ($key === 'category' && $value) {
+                $value = $ticket->category->label();
+            } elseif ($key === 'source' && $value) {
+                $value = $ticket->source->label();
+            } elseif ($key === 'state' && $value) {
+                $value = $ticket->state;
+            } elseif ($key === 'list_of_assets' && $value) {
+                $value = is_array($value) ? $value : json_decode($value, true);
+                $value = CaseAssetServices::getAssetsFromArrayOfIds($value)->pluck('short_description')->toArray();
+                $value = implode(', ', $value);
+            } elseif ($key === 'type' && $value) {
+                $value = $ticket->type->label();
+            } else {
+                $value ??= 'N/A';
+            }
             $items[] = [
                 'label' => ucfirst(str_replace('_', ' ', $key)),
                 'value' => $value,

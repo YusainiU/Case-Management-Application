@@ -59,3 +59,22 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+/* scrollabel css */
+.scrollable-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.scrollable-area::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.scrollable-area::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
