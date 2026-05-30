@@ -3,6 +3,7 @@
 namespace Simplydigital\CaseManagement\Models;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity; 
@@ -106,6 +107,11 @@ class tickets extends Model
     public function siteVisits()
     {
         return $this->hasMany(TaskSiteVisit::class, 'ticket_id');
+    }
+
+    public function scopeOpenCases(Builder $query): Builder
+    {
+        return $query->whereNull('closed_datetime');
     }
 
     protected function casts()

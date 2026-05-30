@@ -25,11 +25,9 @@
     {{-- <x-casemanagement::form-elements.button-primary label="Open Cases" action="openTab('{{ CaseState::Open }}')" /> --}}
     <x-casemanagement::form-elements.input-filter />
 
-
-    <x-casemanagement::page-elements.case-status-panel-large />
-
-
-     {{ $cases?->links() }}
+    <livewire:case-status />
+    
+    {{ $cases?->links() }}
 
     <x-casemanagement::table-elements.table>
         <thead>

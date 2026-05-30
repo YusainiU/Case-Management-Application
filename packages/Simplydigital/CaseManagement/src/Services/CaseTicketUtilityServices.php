@@ -159,12 +159,23 @@ class CaseTicketUtilityServices
     {
         $tickets = tickets::where('state','!=', CaseState::Completed->value)
                             ->orWhere('state','!=', CaseState::Cancelled->value)
+                            ->orWhereNull('closed_datetime')
                             ->get();
         return $this->caseRetrieveTicketStatus->retrieveStatuses($tickets);
     }
 
-    public function retrieveTicketStatus(tickets $ticket)
+    public function getTotalOpenCases()
     {
+        return tickets::where('state','!=', CaseState::Completed->value)
+                    ->orWhere('state','!=', CaseState::Cancelled->value)
+                    ->orWhereNull('closed_datetime')
+                    ->count();    
+    }
+
+    public function retrieveTicketStatus(int $caseId)
+    {
+        
+        $ticket = tickets::find($caseId);
         return $this->caseRetrieveTicketStatus->retrieveStatus($ticket);
     }
 
@@ -356,19 +367,7 @@ class CaseTicketUtilityServices
         }
         return false;    
     }
-    
-    public function checkStatusForMultipleTickets(Collection $tickets)
-    {
-        $result = [];
-        foreach ($tickets as $ticket) {
-            $r = $this->retrieveTicketStatus($ticket);
-            if($r) {
-                $result[$ticket->id] = $r;
-            }
-        }
-        return $result;
-    }
-    
+        
     public function setSiteVisit(tickets $ticket, array $data)
     {
         $visits = $ticket->siteVisits;

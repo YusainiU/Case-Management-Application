@@ -92,6 +92,8 @@ class CaseRetrieveTicketStatus
             ->latest('created_at')
             ->first(['created_at']);
 
+        $noUpdate = !$ticket::doesntHave('taskLogs')->count() ?? 1;
+
         /*
         |--------------------------------------------------------------------------
         | SLA Tasks
@@ -105,12 +107,28 @@ class CaseRetrieveTicketStatus
             ->count();
 
         $hasFixByBreach = $ticket->slaTasks()
-            ->whereNotNull('fix_by_breach_at')
-            ->exists();
+            ->fixBreached()
+            ->count();
 
         $hasRespondByBreach = $ticket->slaTasks()
             ->whereNotNull('respond_by_breach_at')
             ->exists();
+
+        $paused = $ticket->slaTasks()
+            ->paused()
+            ->count();
+
+        $unassigned = !$ticket->assigned ? 1:0;
+
+        /*
+        |--------------------------------------------------------------------------
+        | SLA Warning
+        |--------------------------------------------------------------------------
+        */
+        
+        $breachWarning = $ticket->slaTasks()
+            ->showWarningFlag()
+            ->count();
 
         /*
         |--------------------------------------------------------------------------
@@ -181,6 +199,8 @@ class CaseRetrieveTicketStatus
             |--------------------------------------------------------------------------
             */
 
+            'noUpdate' => $noUpdate,
+
             'respondBy' => $this->formatDate(optional($task)->respond_by),
 
             'fixBy' => $this->formatDate(optional($task)->fix_by),
@@ -202,6 +222,12 @@ class CaseRetrieveTicketStatus
             | Ticket Status
             |--------------------------------------------------------------------------
             */
+
+            'unassigned' => $unassigned,
+
+            'paused' => $paused,
+
+            'closeToBreachWarning' => $breachWarning,
 
             'resolved' => $this->formatDate($ticket->resolved_datetime),
 

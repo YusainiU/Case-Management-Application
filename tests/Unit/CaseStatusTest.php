@@ -20,7 +20,8 @@ class CaseStatusTest extends TestCase
         //$status = $service->retrieveStatuses($tickets);
         $status = $util->retrieveTicketStatuses();
         dump($status);
+        dump(collect($status)->sum('taskBreached'));
         $this->assertIsArray($status);
-
+        $this->assertIsInt(collect($status)->sum('taskBreached'));
     }
 }

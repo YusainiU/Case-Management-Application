@@ -12,7 +12,7 @@ class slaTask extends Model
 {
     use LogsActivity;
     use SoftDeletes;
-
+    protected $warningTimerCount = 3;
     protected $fillable = [
         'number',
         'name',
@@ -30,6 +30,12 @@ class slaTask extends Model
         'breached_at',
         'active',
     ];
+
+
+    protected function getWarningTimer()
+    {
+        return config('case-management.CLOSE_TO_BREACH_WARNING');
+    }
 
     protected static function getActivitylogOptions(): LogOptions
     {
@@ -86,12 +92,12 @@ class slaTask extends Model
 
     /**
      * Example usage
-     * $task->is_paused;
-     * $task->is_breached;
+     * $task->paused;
+     * $task->breached;
      * $breached = SlaTask::breached()->get();
-     * $task->show_warning_flag;
-     * $task->sla_severity;
-        switch (task.sla_severity) {
+     * $task->showWarningFlag;
+     * $task->slaSeverity;
+        switch (task.slaSeverity) {
             case 'critical':
                 // red pulse
                 break;
@@ -129,17 +135,27 @@ class slaTask extends Model
     /**
      * Is SLA currently paused?
      */
-    public function getIsPausedAttribute(): bool
+    public function getPausedAttribute(): bool
     {
         return $this->activePause()->exists();
+    }
+
+    public function scopeNotPaused(Builder $query): Builder
+    {
+        return $query->whereDoesntHave('activePause');
+    }
+
+    public function scopePaused(Builder $query): Builder
+    {
+        return $query->whereHas('activePause');
     }
 
     /**
      * Has SLA breached?
      */
-    public function getIsBreachedAttribute(): bool
+    public function getBreachedAttribute(): bool
     {
-        if ($this->is_paused) {
+        if ($this->paused) {
             return false;
         }
 
@@ -168,33 +184,88 @@ class slaTask extends Model
     public function scopeBreached(Builder $query): Builder
     {
         return $query
-            ->whereNull('responded_at')
-            ->where('respond_by', '<', now())
-            ->whereDoesntHave('activePause');
+            ->notPaused()
+            ->where(function (Builder $query) {
+
+                // Response SLA breached
+                $query->where(function (Builder $query) {
+                    $query->whereNotNull('respond_by')
+                        ->where('respond_by', '<', now())
+                        ->where(function (Builder $query) {
+                            $query->whereNull('responded_at')
+                                ->orWhereColumn('responded_at', '>', 'respond_by');
+                        });
+                })
+
+                // OR Fix SLA breached
+                    ->orWhere(function (Builder $query) {
+                        $query->whereNotNull('fix_by')
+                            ->where('fix_by', '<', now())
+                            ->where(function (Builder $query) {
+                                $query->whereNull('fixed_at')
+                                    ->orWhereColumn('fixed_at', '>', 'fix_by');
+                            });
+                    });
+            });
+    }
+
+    public function scopeNotBreached(Builder $query): Builder
+    {
+        return $query->whereNot(function (Builder $query) {
+            $query->breached();
+        });
+    }
+
+    public function scopeFixBreached(Builder $query): Builder
+    {
+        return $query
+            ->notPaused()
+            // OR Fix SLA breached
+            ->orWhere(function (Builder $query) {
+                $query->whereNotNull('fix_by')
+                    ->where('fix_by', '<', now())
+                    ->where(function (Builder $query) {
+                        $query->whereNull('fixed_at')
+                            ->orWhereColumn('fixed_at', '>', 'fix_by');
+                    });
+            });
     }
 
     public function getShowWarningFlagAttribute(): bool
     {
         if (
             $this->responded_at !== null ||
-            $this->is_paused ||
-            $this->is_breached ||
+            $this->paused ||
+            $this->breached ||
             $this->respond_by === null
         ) {
             return false;
         }
 
-        return now()->diffInHours($this->respond_by, false) <= 3
+        return now()->diffInHours($this->respond_by, false) <= $this->getWarningTimer()
             && $this->respond_by->isFuture();
+    }
+
+    public function scopeShowWarningFlag(Builder $query): Builder
+    {
+        return $query
+            ->whereNull('responded_at')
+            ->notPaused()
+            ->notBreached()
+            ->whereNotNull('respond_by')
+            ->whereBetween('respond_by', [
+                now(),
+                now()->copy()->addHours($this->getWarningTimer()),
+            ]);
     }
 
     public function getSlaSeverityAttribute(): string
     {
-        if ($this->is_breached) {
+        if ($this->isBreached) {
             return 'breached';
         }
 
-        if ($this->is_paused) {
+        if ($this->activePause) {
             return 'paused';
         }
 
