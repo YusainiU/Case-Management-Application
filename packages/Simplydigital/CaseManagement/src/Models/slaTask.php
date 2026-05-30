@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
+use Simplydigital\CaseManagement\Services\UI;
 
 class slaTask extends Model
 {
@@ -259,14 +260,14 @@ class slaTask extends Model
             ]);
     }
 
-    public function getSlaSeverityAttribute(): string
+    public function getSlaSeverityAttribute(): ?string
     {
-        if ($this->isBreached) {
-            return 'breached';
+        if ($this->breached) {
+            return null;
         }
 
         if ($this->activePause) {
-            return 'paused';
+            return null;
         }
 
         $minutes = now()->diffInMinutes(
@@ -275,10 +276,35 @@ class slaTask extends Model
         );
 
         return match (true) {
-            $minutes <= 60 => 'critical',
-            $minutes <= 180 => 'warning',
-            $minutes <= 360 => 'caution',
-            default => 'normal',
+            $minutes <= 60 => UI::CRITICAL_STATE_TEXT,
+            $minutes <= 180 => UI::WARNING_STATE_TEXT,
+            $minutes <= 360 => UI::CAUTION_STATE_TEXT,
+            default => null,
         };
     }
+
+    public function getSlaFlagAttribute(): ?string
+    {
+        $flag = null;
+        if($this->breached) {
+            $flag = UI::BREACHED_STATE_CLASS;
+        }
+        if($this->sla_severity) {
+            $flag = UI::CLOSE_TO_BREACH_CLASS;
+        }
+        return $flag;
+    }
+    
+    public function getSlaFlagTextAttribute(): ?string
+    {
+        $flag = 'Normal';
+        if($this->breached) {
+            $flag = UI::BREACHED_STATE_TEXT;
+        }
+        if($this->sla_severity) {
+            $flag = $this->sla_severity;
+        }        
+        return $flag;
+    }
+
 }

@@ -76,7 +76,7 @@ class tickets extends Model
 
     public function slaTasks()
     {
-        return $this->hasMany(slaTask::class, 'ticket_id');
+        return $this->hasOne(slaTask::class, 'ticket_id');
     }
 
      public function taskLogs()

@@ -142,7 +142,24 @@ class CaseTicketServices
             ];
         }
 
-        return $items;
+        $sla = $this->buildTicketSLASummary($ticket);
+        $summary = array_merge($items, $sla);
+
+        return $summary;
+    }
+
+    public function buildTicketSLASummary(tickets $ticket)
+    {
+        $items = [];
+         foreach ($ticket->slaTasks->getAttributes() as $key => $value) {
+            $items[] = [
+                'label' => ucfirst(str_replace('_', ' ', $key)),
+                'value' => $value,
+            ];
+         }
+
+         return $items;
+
     }
 
     private function buildFilter()

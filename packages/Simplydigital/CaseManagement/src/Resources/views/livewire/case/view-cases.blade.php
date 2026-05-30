@@ -47,6 +47,9 @@
                 Assigned To
             </x-casemanagement::table-elements.table-th>
             <x-casemanagement::table-elements.table-th>
+                SLA
+            </x-casemanagement::table-elements.table-th>            
+            <x-casemanagement::table-elements.table-th>
                 Status
             </x-casemanagement::table-elements.table-th>
             <x-casemanagement::table-elements.table-th>
@@ -71,6 +74,9 @@
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             {{ $case->assignedToUser?->name }}
+                        </x-casemanagement::table-elements.table-td>
+                        <x-casemanagement::table-elements.table-td textcolor="{{ $case->slaTasks?->sla_flag }}">
+                            {{ $case->slaTasks?->sla_flag_text }}
                         </x-casemanagement::table-elements.table-td>                        
                         <x-casemanagement::table-elements.table-td textcolor="{{ $case->state->color() }}">
                             {{ $case->state?->label() }}

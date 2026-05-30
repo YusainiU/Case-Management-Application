@@ -100,7 +100,7 @@ class CaseRetrieveTicketStatus
         |--------------------------------------------------------------------------
         */
 
-        $task = $ticket->slaTasks->first();
+        $task = $ticket->slaTasks;
 
         $taskBreachedCount = $ticket->slaTasks()
             ->breached()
@@ -245,4 +245,5 @@ class CaseRetrieveTicketStatus
 
         return Carbon::parse($date)->format('d-m-Y H:i');
     }
+
 }

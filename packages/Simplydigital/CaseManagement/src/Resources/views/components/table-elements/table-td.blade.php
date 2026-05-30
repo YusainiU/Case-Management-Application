@@ -1,13 +1,20 @@
-<td 
+@props([
+    'textcolor' => 'text-gray-600 border-t border-gray-100',
+    'px' => 'px-6',
+    'py' => 'py-3',
+    'whitespace' => 'whitespace-nowrap',
+    'align' => 'text-left',
+])
+
+<td
     @class([
-        $textcolor ?? 'text-gray-600',
-        $px ?? 'px-6',
-        $py ?? 'py-3',
-        $border ?? 'border-t border-gray-100',
-        $whitespace ?? 'whitespace-nowrap',
-        $align ?? 'text-left',
+        $textcolor,
+        $px,
+        $py,
+        $whitespace,
+        $align,
     ])
-    {{ $attributes->except(['align', 'class']) }}
+    {{ $attributes }}
 >
     {{ $slot }}
 </td>

@@ -16,7 +16,6 @@ use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Repositories\CaseRepository;
 use Simplydigital\CaseManagement\Services\SLACalculationService;
 use Simplydigital\CaseManagement\Services\CaseRetrieveTicketStatus;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 

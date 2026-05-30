@@ -14,11 +14,19 @@ class UI
     public const WARNING_ICON_FILL = 'text-yellow-500 border-yellow-500';
     public const OPEN_STATE_CLASS = 'bg-green-300 text-green-800';
     public const CLOSED_STATE_CLASS = 'bg-gray-300 text-gray-800';
-    public const RESOLVED_STATE_CLASS = 'bg-blue-300 text-blue-800';
-    public const IN_PROGRESS_STATE_CLASS = 'bg-yellow-300 text-yellow-800';
-    public const PAUSED_STATE_CLASS = 'bg-orange-300 text-orange-800';
-    public const CANCELLED_STATE_CLASS = 'bg-red-300 text-red-800';
-    public const COMPLETED_STATE_CLASS = 'bg-green-300 text-green-800';
+    public const RESOLVED_STATE_CLASS = 'border border-green-100 bg-green-50 text-green-900 font-bold';
+    public const IN_PROGRESS_STATE_CLASS = 'border border-yellow-100 bg-yellow-50 text-yellow-900 font-bold';
+    public const PAUSED_STATE_CLASS = 'border border-green-100 bg-green-50 text-green-900 font-bold';
+    public const CANCELLED_STATE_CLASS = 'border border-red-100 bg-red-50 text-red-900 font-bold';
+    public const COMPLETED_STATE_CLASS = 'border border-green-100 bg-green-50 text-green-900 font-bold';
+    public const BREACHED_STATE_CLASS = "border border-red-100 bg-red-50 text-red-900 font-bold"; 
+    public const CLOSE_TO_BREACH_CLASS = "border border-yellow-100 bg-yellow-50 text-yellow-900 font-bold";
+    public const UNASSIGNED_STATE_CLASS = "border border-blue-100 bg-blue-50 text-blue-900 font-bold";
+    public const NOUPDATE_STATE_CLASS = "border border-gray-200 bg-gray-50 text-gray-900 font-bold";
+    public const BREACHED_STATE_TEXT = 'Breached';
+    public const CRITICAL_STATE_TEXT = "Critical";
+    public const WARNING_STATE_TEXT = "Warning";
+    public const CAUTION_STATE_TEXT = "Caution";
 
     public static function createArrayforMultiselect(array $options, ?string $keyName1 = 'value', ?string $keyName2 = 'label')
     {
