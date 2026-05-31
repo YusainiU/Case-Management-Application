@@ -5,15 +5,17 @@ namespace Simplydigital\CaseManagement\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Simplydigital\CaseManagement\Services\UI;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
-use Simplydigital\CaseManagement\Services\UI;
 
 class slaTask extends Model
 {
     use LogsActivity;
     use SoftDeletes;
+
     protected $warningTimerCount = 3;
+
     protected $fillable = [
         'number',
         'name',
@@ -31,7 +33,6 @@ class slaTask extends Model
         'breached_at',
         'active',
     ];
-
 
     protected function getWarningTimer()
     {
@@ -285,26 +286,38 @@ class slaTask extends Model
 
     public function getSlaFlagAttribute(): ?string
     {
-        $flag = null;
-        if($this->breached) {
+        $flag = UI::DEFAULT_STATE_CLASS;
+        if ($this->breached) {
             $flag = UI::BREACHED_STATE_CLASS;
         }
-        if($this->sla_severity) {
+        if ($this->sla_severity) {
             $flag = UI::CLOSE_TO_BREACH_CLASS;
         }
-        return $flag;
-    }
-    
-    public function getSlaFlagTextAttribute(): ?string
-    {
-        $flag = 'Normal';
-        if($this->breached) {
-            $flag = UI::BREACHED_STATE_TEXT;
-        }
-        if($this->sla_severity) {
-            $flag = $this->sla_severity;
-        }        
+
         return $flag;
     }
 
+    public function getSlaFlagTextAttribute(): ?string
+    {
+        $flag = 'Normal';
+        if ($this->breached) {
+            $flag = UI::BREACHED_STATE_TEXT;
+        }
+        if ($this->sla_severity) {
+            $flag = $this->sla_severity;
+        }
+
+        return $flag;
+    }
+
+    public function getSlaStatusInfoAttribute(): ?string
+    {
+
+        $hours = now()->diffInHours($this->respond_by, false);
+        $rounded = round($hours,2);
+        return $hours >= 0
+            ? "{$rounded} hours remaining"
+            : abs($rounded).' hours overdue';
+
+    }
 }

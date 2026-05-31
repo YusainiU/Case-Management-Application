@@ -4,14 +4,17 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Collection;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Enums\CaseState;
-use Simplydigital\CaseManagement\Services\UI;
+use Simplydigital\CaseManagement\Models\tickets;
 class ViewCases extends Component
 {
     use WithPagination;
     public ?int $customerId = null;
     public ?int $caseId = null;
+    public ?Collection $tickets = null;
+    public ?tickets $ticket = null;
     public ?string $filter = null;
     public ?string $sortField = null;
     public ?string $sortDirection = null;    
@@ -19,6 +22,9 @@ class ViewCases extends Component
     public bool $displayUpdateModal = false;
     public bool $displayProfileModal = false;
     public bool $displaySummaryModal = false;
+    public bool $displayDescription = false;
+    public bool $displaySlaStatus = false; 
+    public array $descriptionDetails = []; 
     public ?string $displayCaseStatus = null;    
 
     /**
@@ -48,6 +54,8 @@ class ViewCases extends Component
             'displayCreateModal',
             'displayUpdateModal',
             'displaySummaryModal',
+            'displayDescription',
+            'displaySlaStatus',
         ]);
     }
 
@@ -58,6 +66,8 @@ class ViewCases extends Component
             'sortField',
             'sortDirection',
             'displayCaseStatus',
+            'displayDescription',
+            'descriptionDetails',
         ]);
         $this->resetAllModal();
     }
@@ -82,6 +92,11 @@ class ViewCases extends Component
         $this->resetAllModal();
     }
 
+    public function closeDescriptionModal()
+    {
+        $this->resetAllModal(); 
+    }
+
     public function buildUI()
     {
         return [
@@ -97,6 +112,28 @@ class ViewCases extends Component
             $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
+    }
+
+    public function openDescription(int|string $caseId)
+    {
+        $this->resetAllModal();
+        $caseId = (int) $caseId;
+        $ticket = $this->tickets->firstWhere('id', $caseId);
+        $siteName = $ticket?->customer?->name;
+        $description = $ticket?->description;
+        $this->descriptionDetails = [
+            'name' => $siteName,
+            'description' => $description,
+        ];
+        $this->displayDescription = true;
+    }
+
+    public function openSlaStatus(int|string $caseId)
+    {
+        $this->resetAllModal();
+        $caseId = (int) $caseId;
+        $this->ticket = $this->tickets->firstWhere('id', $caseId);
+        $this->displaySlaStatus = true;
     }
     
     public function openCreateModal()
@@ -140,7 +177,7 @@ class ViewCases extends Component
     public function loadCases()
     {
         $service = $this->ticketService();
-
+        
         if($this->sortField){
             $service->sortByField($this->sortField, $this->sortDirection);
         }
@@ -154,35 +191,43 @@ class ViewCases extends Component
         }
 
         if($this->displayCaseStatus == CaseState::Open->value) {
-            return $query = $service->getAllOpenCases();
+            $query = $service->getAllOpenCases();
         }
         
         if($this->displayCaseStatus === CaseState::In_Progress->value) {
-            return $query = $service->getOutstandingCases();
+            $query = $service->getOutstandingCases();
         }
 
         if($this->displayCaseStatus === CaseState::Resolved->value) {
-            return $query = $service->getAllOpenResolvedCases();
+            $query = $service->getAllOpenResolvedCases();
         }
         
         if($this->displayCaseStatus === CaseState::Completed->value) {
-            return $query = $service->getAllClosedResolvedCases();
+            $query = $service->getAllClosedResolvedCases();
         }
 
         if($this->displayCaseStatus === CaseState::Closed->value) {
-            return $query = $service->getAllClosedCases();
+            $query = $service->getAllClosedCases();
         }
 
         if($this->displayCaseStatus === CaseState::Paused->value) {
-            return $query = $service->getAllPausedCases();
+            $query = $service->getAllPausedCases();
         }
+
+        if(isset($query)){
+            $this->tickets = $query->get();
+            return $query;
+        }
+
+        return null;
         
     }
 
     public function render()
     {
+        $cases = null;
         $ui = $this->buildUI();
-        $cases = $this->loadCases()->paginate(10);
+        $cases = $this->loadCases()?->paginate(10);
         return view('casemanagement::livewire.case.view-cases',[
             'ui_params' => $ui,
             'cases' => $cases,

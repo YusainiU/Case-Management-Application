@@ -15,6 +15,22 @@
         <livewire:case-summary :caseId="$caseId" />
     @endif
 
+    @if($displayDescription)
+        <x-casemanagement::page-elements.modal-simple 
+            title="{{ $descriptionDetails['name'] }}" 
+            cancelThisWith="closeDescriptionModal"
+        >
+            <h4 class="font-bold mb-4">Case Description:</h4>
+            {{ $descriptionDetails['description'] }}
+        </x-casemanagement::page-elements.modal-simple>
+    @endif
+
+    @if($displaySlaStatus)
+        <livewire:case-sla :case="$ticket" />
+    @endif
+
+    
+
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="{{ $ui_params['title'] }}"
             description="Cases Management: List" aside="what is this" />
@@ -57,7 +73,7 @@
             </x-casemanagement::table-elements.table-th>            
         </thead>
         <tbody>
-            @if($cases?->isNotEmpty())
+            @if($cases && $cases?->isNotEmpty())
                 @foreach ($cases as $case)
                     <tr>
                         <x-casemanagement::table-elements.table-td>
@@ -70,13 +86,18 @@
                             {{ $case->customer?->name }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{ Str::of($case->description)->limit(30) }}
+                            <x-casemanagement::page-elements.href 
+                                label="{{ Str::of($case->description)->limit(30) }}" 
+                                action="openDescription({{ $case->id }})"
+                            />
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{ $case->assignedToUser?->name }}
+                            {{ $case->assignedToUser?->name ?? '?'}}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td textcolor="{{ $case->slaTasks?->sla_flag }}">
-                            {{ $case->slaTasks?->sla_flag_text }}
+                            <button wire:click="openSlaStatus({{ $case->id }})" class="hover:underline hover:text-blue-500 cursor-pointer">
+                                <x-casemanagement::table-elements.table-td-content-sla :case="$case" />
+                            </button>
                         </x-casemanagement::table-elements.table-td>                        
                         <x-casemanagement::table-elements.table-td textcolor="{{ $case->state->color() }}">
                             {{ $case->state?->label() }}

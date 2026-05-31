@@ -4,13 +4,11 @@ namespace Simplydigital\CaseManagement\Services;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
-use Illuminate\Database\Eloquent\Collection;
-use Simplydigital\CaseManagement\Enums\CaseState;
-use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
-use Simplydigital\CaseManagement\Services\CaseAssetServices;
 
 class CaseTicketServices
 {
@@ -47,11 +45,11 @@ class CaseTicketServices
     {
         $this->query
             ->where('closed_datetime', '=', null)
-            ->where('resolved_datetime','=', null);
+            ->where('resolved_datetime', '=', null);
         $this->buildFilter();
 
-        return $this->query;          
-    }    
+        return $this->query;
+    }
 
     public function getAllClosedCases()
     {
@@ -88,7 +86,7 @@ class CaseTicketServices
         $this->buildFilter();
 
         return $this->query;
-     }
+    }
 
     public function getCaseById(int $caseId)
     {
@@ -107,7 +105,7 @@ class CaseTicketServices
     {
         $items = [];
         foreach ($ticket->getAttributes() as $key => $value) {
-            if($key === 'customer_id' && $value) {
+            if ($key === 'customer_id' && $value) {
                 $value = $ticket->customer?->name;
             } elseif ($value && CaseManagementUtilityServices::checkIfDate($value)) {
                 $value = CaseManagementUtilityServices::displayDateValue($value);
@@ -151,14 +149,19 @@ class CaseTicketServices
     public function buildTicketSLASummary(tickets $ticket)
     {
         $items = [];
-         foreach ($ticket->slaTasks->getAttributes() as $key => $value) {
-            $items[] = [
-                'label' => ucfirst(str_replace('_', ' ', $key)),
-                'value' => $value,
-            ];
-         }
 
-         return $items;
+        if ($ticket?->slaTasks) {
+
+            foreach ($ticket->slaTasks->getAttributes() as $key => $value) {
+                $items[] = [
+                    'label' => ucfirst(str_replace('_', ' ', $key)),
+                    'value' => $value,
+                ];
+            }
+
+        }
+
+        return $items;
 
     }
 
@@ -211,16 +214,16 @@ class CaseTicketServices
         return $this->caseTicketUtilityServices->retrieveTicketStatus($ticket);
     }
 
-     public function checkStatusForMultipleTickets(Collection $tickets)
-     {
+    public function checkStatusForMultipleTickets(Collection $tickets)
+    {
         return $this->caseTicketUtilityServices->checkStatusForMultipleTickets($tickets);
-     }
+    }
 
     public function setSiteVisit(tickets $ticket, array $data)
     {
         return $this->caseTicketUtilityServices->setSiteVisit($ticket, $data);
     }
-    
+
     public function updateSiteVisit(TaskSiteVisit $siteVisit, array $data)
     {
         return $this->caseTicketUtilityServices->updateSiteVisit($siteVisit, $data);
@@ -240,6 +243,4 @@ class CaseTicketServices
     {
         $this->caseTicketUtilityServices->slaBreachUpdate($tasks);
     }
-    
-
 }

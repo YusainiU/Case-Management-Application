@@ -19,14 +19,15 @@ class UI
     public const PAUSED_STATE_CLASS = 'border border-green-100 bg-green-50 text-green-900 font-bold';
     public const CANCELLED_STATE_CLASS = 'border border-red-100 bg-red-50 text-red-900 font-bold';
     public const COMPLETED_STATE_CLASS = 'border border-green-100 bg-green-50 text-green-900 font-bold';
-    public const BREACHED_STATE_CLASS = "border border-red-100 bg-red-50 text-red-900 font-bold"; 
+    public const BREACHED_STATE_CLASS = "border border-red-100 bg-red-100 text-red-900 font-bold"; 
     public const CLOSE_TO_BREACH_CLASS = "border border-yellow-100 bg-yellow-50 text-yellow-900 font-bold";
     public const UNASSIGNED_STATE_CLASS = "border border-blue-100 bg-blue-50 text-blue-900 font-bold";
-    public const NOUPDATE_STATE_CLASS = "border border-gray-200 bg-gray-50 text-gray-900 font-bold";
+    public const NOUPDATE_STATE_CLASS = "border border-gray-100 bg-gray-50 text-gray-900 font-bold";
     public const BREACHED_STATE_TEXT = 'Breached';
     public const CRITICAL_STATE_TEXT = "Critical";
     public const WARNING_STATE_TEXT = "Warning";
     public const CAUTION_STATE_TEXT = "Caution";
+    public const DEFAULT_STATE_CLASS = 'border border-gray-100 bg-gray-100 text-gray-900';
 
     public static function createArrayforMultiselect(array $options, ?string $keyName1 = 'value', ?string $keyName2 = 'label')
     {
