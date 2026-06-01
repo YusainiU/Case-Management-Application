@@ -3,7 +3,6 @@
 namespace Simplydigital\CaseManagement\Livewire\Case;
 
 use LivewireUI\Modal\ModalComponent;
-use Illuminate\Support\Collection;
 use Simplydigital\CaseManagement\Models\tickets;
 
 class CaseSla extends ModalComponent
@@ -15,6 +14,11 @@ class CaseSla extends ModalComponent
         return [
             'title' => 'SLA Status',
         ];
+    }
+
+    public function closeThisModal()
+    {
+        $this->dispatch('closeSummaryModal');
     }
 
     public function render()

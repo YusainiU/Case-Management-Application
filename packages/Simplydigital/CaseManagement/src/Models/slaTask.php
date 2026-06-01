@@ -83,7 +83,7 @@ class slaTask extends Model
 
     public function slaApplication()
     {
-        return $this->belongsTo(SlaApplication::class, 'sla_applications_id');
+        return $this->belongsTo(slaApplication::class, 'sla_applications_id');
     }
 
     /**

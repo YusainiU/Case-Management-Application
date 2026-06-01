@@ -25,6 +25,10 @@
         </x-casemanagement::page-elements.modal-simple>
     @endif
 
+    @if ($displayProfileModal)
+        <livewire:manage-case :case="$ticket" />
+    @endif
+        
     @if($displaySlaStatus)
         <livewire:case-sla :case="$ticket" />
     @endif
@@ -104,8 +108,8 @@
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             <div class="flex flex-row gap-4">
-                                <x-casemanagement::form-elements.button-secondary label="View Summary" action="openSummaryModal({{ $case->id }})" />
-                                <x-casemanagement::form-elements.button-secondary label="View Profile" action="openProfileModal({{ $case->id }})" />
+                                <x-casemanagement::form-elements.button-secondary label="Summary" action="openSummaryModal({{ $case->id }})" />
+                                <x-casemanagement::form-elements.button-secondary label="Manage" action="openProfileModal({{ $case->id }})" />
                             </div>
                         </x-casemanagement::table-elements.table-td>
                     </tr>

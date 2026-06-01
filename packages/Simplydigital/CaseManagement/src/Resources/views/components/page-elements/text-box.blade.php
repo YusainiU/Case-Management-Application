@@ -1,6 +1,6 @@
 @props([
     'text',
-    'textCss' => 'border bg-blue-100 border-gray-100 text-gray-900',
+    'textCss' => 'border    bg-gray-100 border-gray-100 text-gray-900',
 ])
 
 <div 

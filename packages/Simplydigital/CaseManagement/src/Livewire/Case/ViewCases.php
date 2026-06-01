@@ -159,7 +159,8 @@ class ViewCases extends Component
     public function openProfileModal(int $caseId)
     {
         $this->resetAllModal();
-        $this->caseId = $caseId;
+        $caseId = (int) $caseId;
+        $this->ticket = $this->tickets->firstWhere('id', $caseId);        
         $this->displayProfileModal = true;
     }
 

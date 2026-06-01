@@ -1,5 +1,6 @@
 @props([
     'title' => 'Modal Title',
+    'description' => null,
     'widthsize' => 'md',
     'cancelThisWith' => 'closeThisModal',
     'confirm' => null,
@@ -33,6 +34,11 @@
                 <div class="flex items-center justify-between p-6 border-b border-gray-200">
                     <h3 class="text-lg font-medium text-gray-900 uppercase">
                         {{ $title ?? 'Modal' }}
+                        @if ($description)
+                            <p class="text-sm text-gray-500 normal-case">
+                                {{ $description }}
+                            </p>
+                        @endif
                     </h3>
                     <button wire:click="{{ $cancelThisWith ?? 'closeModal' }}" class="text-gray-400 hover:text-gray-600">
                         <span class="text-2xl">&times;</span>
