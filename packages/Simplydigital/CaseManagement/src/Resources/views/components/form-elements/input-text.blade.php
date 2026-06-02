@@ -4,12 +4,13 @@
         @class([
             $appearance ?? 'appearance-none',
             $border ?? 'block border rounded leading-tight focus:outline-none',
-            $textcolor ?? 'text-black',
+            $textcolor ?? 'text-gray-900',
             $bordercolor ?? 'border-gray-700',
             $bordercolorfocus ?? 'focus:border-gray-500',
             $py ?? 'py-3',
             $px ?? 'px-4',
             $mb ?? 'mb-3',
+            $bgcolor ?? 'bg-gray-100',
             $bgfocus ?? 'focus:bg-white',
             $width ?? 'w-full',
         ])

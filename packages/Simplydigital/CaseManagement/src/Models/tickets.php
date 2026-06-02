@@ -79,19 +79,41 @@ class tickets extends Model
         return $this->hasOne(slaTask::class, 'ticket_id');
     }
 
-     public function taskLogs()
+    public function taskLogs()
     {
         return $this->hasMany(TaskLogs::class, 'ticket_id');
     }
 
-     public function assignedToUser()
+    public function getHasInternalUpdateAttribute()
+    {
+        return $this->taskLogs()->where('type', 'internal_update_log')->exists();
+    }
+
+    public function latestInternalUpdate()
+    {
+        return $this->hasOne(TaskLogs::class)
+            ->where('type', 'internal_update')
+            ->latestOfMany();
+    }
+
+    public function assignedToUser()
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function getUnassignedAttribute()
+    {
+        return $this->assigned_to === null;
     }
 
     public function resolvedBy()
     {
         return $this->belongsTo(User::class, 'resolved_by');
+    }
+
+    public function getIsResolvedAttribute()
+    {
+        return $this->resolved_datetime !== null;
     }
 
     public function createdBy()

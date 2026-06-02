@@ -123,6 +123,8 @@ return [
         'type' => [
             'system' => 'system_log',
             'error' => 'error_log',
+            'internal_update' => 'internal_update_log',
+            'external_update' => 'external_update_log',
             'sla_tasks' => 'sla_tasks_log',
             'ticket' => 'ticket_log',
             'resolution' => 'resolution',

@@ -49,4 +49,16 @@ class UsersDetails extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function isCustomer()
+    {
+        return $this->identification === 'customer';
+    }
+
+    public function isInternal()
+    {
+        return $this->identification === 'internal';
+    }
+
+
 }

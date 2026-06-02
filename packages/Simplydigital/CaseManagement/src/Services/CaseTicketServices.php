@@ -211,12 +211,7 @@ class CaseTicketServices
 
     public function retrieveTicketStatus(tickets $ticket)
     {
-        return $this->caseTicketUtilityServices->retrieveTicketStatus($ticket);
-    }
-
-    public function checkStatusForMultipleTickets(Collection $tickets)
-    {
-        return $this->caseTicketUtilityServices->checkStatusForMultipleTickets($tickets);
+        return $this->caseTicketUtilityServices->retrieveTicketStatus($ticket->id);
     }
 
     public function setSiteVisit(tickets $ticket, array $data)

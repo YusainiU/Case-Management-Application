@@ -19,7 +19,7 @@ class CaseLogAdministrationService
         $this->caseRepository = $caseRepository ?? app()->make(CaseRepository::class);
     }
 
-    public function createSystemLog(tickets $ticket, string $logText, string $logType = null)
+    public function createSystemLog(tickets $ticket, string $logText, ?string $logType = null)
     {
         $ext = $ticket->raised_by_nonuser;
         $source = $ext ? config('case-management.logs.source.external') : $source = config('case-management.logs.source.internal');

@@ -4,9 +4,10 @@
         description="{{ $ui['description'] }}" 
         widthsize="6xl" 
         cancelThisWith="closeThisModal" 
-        :showConfirm="false" 
+        :showFooter="false" 
         cancelText="Close"
     >
+        <x-casemanagement::page-elements.case-status-panel-small :case="$case" />
         <x-casemanagement::page-elements.paragraph>
             <span class="font-bold block mb-4">Case Description:</span>
             {{ $case->description }}
@@ -20,9 +21,11 @@
             tabBgColorInactiveHover="hover:bg-300"
             tabBgHover="hover:bg-300 hover:text-gray-900"
         >
-            <x-slot name="tabSelectedComponent">
-                Selected Tab
-            </x-slot>
+            
+            @if ($tabHeaders[$this->selectedTab] == $tabHeaders['sla'])                    
+                <livewire:manage-case-sla :case="$case" />
+            @endif
+            
         </x-casemanagement::page-elements.tab>
 
     </x-casemanagement::page-elements.modal>    

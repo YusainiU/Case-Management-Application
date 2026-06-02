@@ -20,7 +20,7 @@ class ManageCase extends ModalComponent
      * @var array<string, string>
      */
     protected $listeners = [
-        'closeProfileModal' => 'closeThisModal',
+        'closeManageSlaModal' => 'closeManageSlaModal',
     ];
 
     public function resetTabs()
@@ -28,6 +28,11 @@ class ManageCase extends ModalComponent
         $this->reset([
             'selectedTab',
         ]);
+    }
+
+    public function closeManageSlaModal()
+    {
+        $this->resetTabs();
     }
 
     public function selectTab(string $tabKey)
