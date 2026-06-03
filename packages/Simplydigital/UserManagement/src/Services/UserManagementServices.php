@@ -2,21 +2,19 @@
 
 namespace Simplydigital\UserManagement\Services;
 
-use Simplydigital\UserManagement\Model\UsersDetails;
-use Illuminate\Support\Str;
 use App\Models\User;
+use Illuminate\Support\Str;
+use Simplydigital\UserManagement\Model\UsersDetails;
 
 class UserManagementServices
 {
-
-
     // Service class for User Management functionalities
 
     public function resetUserPassword(User $user, $newPassword)
     {
 
         $user->forcefill([
-            'password' => bcrypt($newPassword)
+            'password' => bcrypt($newPassword),
         ])->save();
     }
 
@@ -28,9 +26,9 @@ class UserManagementServices
             numbers: true,
             symbols: true
         );
+
         return $password;
     }
-
 
     public function checkUserDetails($userId)
     {
@@ -41,6 +39,7 @@ class UserManagementServices
     {
         $user = User::create($input);
         $this->createDefaultUserDetails($user->id);
+
         return $user;
     }
 
@@ -57,14 +56,31 @@ class UserManagementServices
     public function createDefaultUserDetails($userId)
     {
         $exist = UsersDetails::where('user_id', $userId)->exists();
-        if (!$exist) {
+        if (! $exist) {
             $input = [
                 'user_id' => $userId,
                 'address_1' => 'Unavailable',
             ];
+
             return UsersDetails::create($input);
         } else {
             return UsersDetails::where('user_id', $userId)->first();
         }
+    }
+
+    public static function getAllInternalUsers()
+    {
+        $internals = UsersDetails::query()
+            ->join('users', 'users.id', '=', 'users_details.user_id')
+            ->whereHas('user.roles', function ($query) {
+                $query->where('name', 'Internal User');
+            })
+            ->select(
+                'users_details.*',
+                'users.name as user_name'
+            )
+            ->get();
+
+        return $internals;
     }
 }

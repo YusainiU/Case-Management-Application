@@ -1,58 +1,91 @@
+@props([
+    'id' => null,
+    'name' => null,
+    'type' => 'text',
+    'placeholder' => '',
+    'required' => false,
+    'autofocus' => false,
+    'disabled' => false,
+    'maxlength' => null,
+    'min' => null,
+    'max' => null,
+    'steps' => null,
+    'pattern' => null,
+    'inputmode' => null,
+    'model' => null,
+    'xmodel' => null,
+    'appearance' =>  'appearance-none',
+    'border' => 'block border rounded leading-tight focus:outline-none',
+    'textcolor' => 'text-gray-900',
+    'bordercolor' => 'border-gray-700',
+    'bordercolorfocus' => 'focus:border-gray-500',
+    'py' => 'py-3',
+    'px' => 'px-4',
+    'mb' => 'mb-3',
+    'bgcolor' => 'bg-gray-100',
+    'bgfocus' => 'focus:bg-white',
+    'width' => 'w-full',
+    'webkit' => null,
+    'hint' => null,
+])
+
+
+
 <div class="">
     <input
 
         @class([
-            $appearance ?? 'appearance-none',
-            $border ?? 'block border rounded leading-tight focus:outline-none',
-            $textcolor ?? 'text-gray-900',
-            $bordercolor ?? 'border-gray-700',
-            $bordercolorfocus ?? 'focus:border-gray-500',
-            $py ?? 'py-3',
-            $px ?? 'px-4',
-            $mb ?? 'mb-3',
-            $bgcolor ?? 'bg-gray-100',
-            $bgfocus ?? 'focus:bg-white',
-            $width ?? 'w-full',
+            $appearance,
+            $border,
+            $textcolor,
+            $bordercolor,
+            $bordercolorfocus,
+            $py,
+            $px,
+            $mb,
+            $bgcolor,
+            $bgfocus,
+            $width,
+            ($webkit ? $webkit : null),
         ])
 
         {{ $attributes
-            ->except(['model',])
+            ->except(['model', 'xmodel'])
             ->merge([
-            'id' => $id ?? null,
-            'name' => $name ?? null,
-            'type' => $type ?? 'text',
-            'placeholder' => $placeholder ?? '',
-            'required' => $required ?? false,
-            'autofocus' => $autofocus ?? false,
-            'disabled' => $disabled ?? false,
-            'maxlength' => $maxlength ?? null,
+            'id' => $id,
+            'name' => $name,
+            'type' => $type,
+            'placeholder' => $placeholder,
+            'required' => $required,
+            'autofocus' => $autofocus,
+            'maxlength' => $maxlength,
         ])}}
 
-        @if(isset($model))
+        @if(isset($model) && $model)
             wire:model.live="{{ $model }}"
         @endif
 
-        @if(isset($value))
+        @if(isset($value) && $value)
              value="$value"   
         @endif
         
         @if(isset($type) && $type == 'number')
-            {{ isset($min) ? "min='$min'" : null }}
-            {{ isset($max) ? "max='$max'" : null }}
-            {{ isset($steps) ? "steps='$steps'" : null }}
+            {{ isset($min) && $min ? "min='$min'" : null }}
+            {{ isset($max) && $max ? "max='$max'" : null }}
+            {{ isset($steps) && $steps ? "steps='$steps'" : null }}
         @endif
 
-        {{ isset($pattern) ? "pattern='$pattern'":null }}        
-        {{ isset($xmodel) ? "x-model='$xmodel'" : '' }}
-        {{ isset($inputmode) ? "inputmode='$inputmode'" : null }}
+        {{ isset($pattern) && $pattern ? "pattern='$pattern'":null }}        
+        {{ isset($xmodel) && $xmodel ? "x-model='$xmodel'" : '' }}
+        {{ isset($inputmode) && $inputmode ? "inputmode='$inputmode'" : null }}
 
-        @if(isset($disabled))
+        @if(isset($disabled) && $disabled === true)
             disabled
         @endif
 
     />
 
-    @if ($hint ?? null)
+    @if ($hint)
         <p class="text-xs text-gray-500">{{ $hint }}</p>
     @endif
     

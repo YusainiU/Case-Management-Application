@@ -238,4 +238,25 @@ class CaseTicketServices
     {
         $this->caseTicketUtilityServices->slaBreachUpdate($tasks);
     }
+
+    public function updateCaseSLADetails(tickets $ticket, array $data)
+    {
+        /*
+            $data  = [
+                "responded_at"
+                "fixed_at"
+                "assigned_to"
+                "completed_at"
+                "log"
+            ]
+        */
+
+        $respondedAt = $data['responded_at'] ?? null;
+        $fixedAt = $data['fixed_at'] ?? null;
+        $assignedTo = $data['assigned_to'] ?? null;
+        $completedAt = $data['completed_at'] ?? null;
+        $log = trim($data['log']) ?? null;
+
+    }
+    
 }
