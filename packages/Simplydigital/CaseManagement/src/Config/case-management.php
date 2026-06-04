@@ -145,7 +145,7 @@ return [
     'ProgressLogs' => [
 
         'create' => 'New Comment Created [%INFO%]: %NOTE% -- [%EXTRAINFO%]',
-        'remoteResponse' => 'Remote Response at %RESPONSE% by %BY%',
+        'respondAt' => 'Responded at %RESPONSE% by %BY%',
         'fixedAt' => 'Fixed at %FIX% by %BY%',
         'breach' => 'The service level agreement has been breached at %BREACH%',
         'working' => '%USER% is currently working on the '.env('TICKET_MONIKER'),

@@ -13,6 +13,7 @@ class ManageCaseSLA extends ModalComponent
     public array $forms = [];
     public array $internals = [];
     public $isPaused = false;
+    public ?string $message = null;
 
     protected $validationAttributes = [
         'forms.responded_at' => 'Responded At',
@@ -35,9 +36,14 @@ class ManageCaseSLA extends ModalComponent
 
     public function mount()
     {
+        $this->callData();
+    }
+
+    public function callData()
+    {
         $this->loadSLAData();
         $this->loadSelections();
-        $this->checkPause();
+        $this->checkPause();        
     }
 
     public function loadSLAData()
@@ -66,11 +72,33 @@ class ManageCaseSLA extends ModalComponent
         return new CaseTicketServices();
     }
 
+    public function resetToastMessage()
+    {
+        $this->reset([
+            'message',
+        ]);
+    }
+
     public function updateSla()
     {
         $this->validate();
-        $this->ticketService()->updateCaseSLADetails($this->case, $this->forms);
+        $result = $this->ticketService()->updateCaseSLADetails($this->case, $this->forms);
+        $this->callData();
+        $this->message = $result 
+                ? "These have been updated: " . implode(", ", $result)
+                : "Nothing was updated";
+        
+        $this->dispatch('reloadCaseStatus');
+        
 
+    }
+
+    public function unassign()
+    {
+        $this->ticketService()->unassignedUser($this->case);
+        $this->callData();
+        $this->message = "Case has been unassigned";
+        $this->dispatch('reloadCaseStatus');
     }
 
     public function render()

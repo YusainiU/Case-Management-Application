@@ -21,6 +21,7 @@ class ManageCase extends ModalComponent
      */
     protected $listeners = [
         'closeManageSlaModal' => 'closeManageSlaModal',
+        'reloadCaseStatus' => '$refresh',
     ];
 
     public function resetTabs()

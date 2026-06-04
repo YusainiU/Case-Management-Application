@@ -21,7 +21,8 @@ class CaseUserServices
 
     public static function getAllInternalUserIds(): array
     {
-        return UserManagementServices::getAllInternalUsers()->pluck('user_name','id')->toArray();
+        $result = UserManagementServices::getAllInternalUsers()->pluck('user_name','user_id')->toArray();
+        return $result;
     }
 
 }

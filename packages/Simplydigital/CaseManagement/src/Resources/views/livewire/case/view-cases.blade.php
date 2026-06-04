@@ -1,6 +1,5 @@
 @php
     
-    use Simplydigital\CaseManagement\Enums\CaseState;
     use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
     
 @endphp

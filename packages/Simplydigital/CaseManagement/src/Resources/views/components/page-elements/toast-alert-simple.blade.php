@@ -1,6 +1,8 @@
 {{-- 
     How To use ..
     <x-casemanagement::page-elements.banner-simple header="Information" message="Hello" mode="important" /> 
+    IMPORTANT --
+    it requires a resetToastMessage() in the controller
 --}}
 
 
@@ -21,7 +23,7 @@
 <div 
     x-data="{ open: true }" 
     x-show="open" 
-    x-init="setTimeout(() => open = false, 6000)" 
+    x-init="setTimeout(() => { open = false; @this.resetToastMessage(); }, 6000)" 
     x-transition:enter="transition ease-out duration-500"
     x-transition:enter-start="opacity-0 translate-y-2" 
     x-transition:enter-end="opacity-100 translate-y-0"
@@ -42,6 +44,9 @@
       py-3 
       shadow-lg 
       rounded"
+
+      
+
     role="alert"
 >
     {{-- Close Button --}}

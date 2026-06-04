@@ -582,13 +582,16 @@ class CaseTicketUtilityServices
         return false;
     }
 
-    public function setAssignedTo(tickets $ticket, User $assigned_to)
+    public function setAssignedTo(tickets $ticket, int|string|null $userId)
     {
-        $ticket->assigned_to = $assigned_to->id;
-        $result = $ticket->save();
-        $logAdmin = $this->caseLogAdministrationService;
-        $logText = $logAdmin->buildAssignedToText($assigned_to);
-        $logAdmin->createSystemLog($ticket, $logText);
+        if($userId && \is_string(trim($userId))) (int) $userId;
+        $user = user::find($userId,'*');        
+        $result = $this->caseRepository->updateAssignedTo($ticket, $user);
+        if($result) {
+            $logAdmin = $this->caseLogAdministrationService;
+            $logText = $logAdmin->buildAssignedToText($ticket,  $user);
+            $logAdmin->createSystemLog($ticket, $logText);
+        }
         return $result;
     }
     
@@ -698,6 +701,37 @@ class CaseTicketUtilityServices
         return $result;
 
     }    
+
+    public function updateRespondAt(tickets $ticket, ?string $respondedAt)
+    {
+        $currentUser = Auth::user()->name;
+        $slaTask = $ticket->slaTasks;
+        $saved = $this->caseRepository->updateRespondAt($slaTask, $respondedAt);
+        if($saved) {
+            //Create progress Log
+            $service = $this->caseLogAdministrationService;
+            $type = config('case-management.logs.type.sla_tasks');
+            $rt = $respondedAt ? date_format(date_create($respondedAt), 'd-m-Y H:i') : null;
+            $logText = $service->buildRespondAtLogText($rt, $currentUser);
+            $service->createSystemLog($ticket, $logText, $type);
+        }
+        return $saved;
+    }
+
+    public function updateFixedAt(tickets $ticket, ?string $fixedAt)
+    {
+        $currentUser = Auth::user()->name;
+        $slaTask = $ticket->slaTasks;
+        $saved = $this->caseRepository->updateFixedAt($slaTask, $fixedAt);
+        if($saved) {
+            $service = $this->caseLogAdministrationService;
+            $type = config('case-management.logs.type.sla_tasks');
+            $rt = date_format(date_create($fixedAt), 'd-m-Y H:i');
+            $logText = $service->buildFixedAtLogText($rt, $currentUser);
+            $service->createSystemLog($ticket, $logText, $type);
+        }
+        return $saved;
+    }
     
 
 }

@@ -7,6 +7,10 @@ use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
 
 class CaseStatus extends Component
 {
+
+    protected $listeners = [
+        'reloadCaseStatus' => '$refresh',
+    ];
     public function buildStatus()
     {
         $status = [];

@@ -80,7 +80,7 @@ class UserManagementServices
                 'users.name as user_name'
             )
             ->get();
-
+            
         return $internals;
     }
 }

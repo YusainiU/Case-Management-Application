@@ -174,8 +174,11 @@ class CaseLogAdministrationService
         return $logString;
     }
     
-    public function buildAssignedToText(User $assignedTo)
+    public function buildAssignedToText(tickets $ticket, ?User $assignedTo)
     {
+        if(!$assignedTo){
+            return $this->buildUnassignedText($ticket);
+        }        
         $user = Auth::user()->name;
         $now = date('d-m-Y H:i', time());
         $phrase = config('case-management.ProgressLogs.assignedTo') ?? '';
@@ -189,7 +192,7 @@ class CaseLogAdministrationService
     {
         $user = Auth::user()->name;
         $now = date('d-m-Y H:i', time());
-        $assignee = $ticket->assignedTo->name;
+        $assignee = $ticket->assignedToUser?->name ?? 'case';
         $phrase = config('case-management.ProgressLogs.unassigned') ?? '';
         $searchFor = ['%USER%', '%ASSIGNEE%', '%DATETIME%'];
         $replaceWith = [$user, $assignee, $now];
@@ -253,17 +256,19 @@ class CaseLogAdministrationService
         return $logString;
     }
 
-    public function buildRemoteResponseLogText(string $remoteResponseDateTime, string $respondedBy)
+    public function buildRespondAtLogText(?string $responseDateTime, string $respondedBy)
     {
-        $phrase = config('case-management.ProgressLogs.remoteResponse') ?? '';
+        $responseDateTime ?? 'has been reset'; 
+        $phrase = config('case-management.ProgressLogs.respondAt') ?? '';
         $searchFor = ['%RESPONSE%', '%BY%'];
-        $replaceWith = [$remoteResponseDateTime, $respondedBy];
+        $replaceWith = [$responseDateTime, $respondedBy];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
         return $logString;
     }
     
-   public function buildFixedAtLogText(string $fixedAtDateTime, string $fixedBy)
+    public function buildFixedAtLogText(?string $fixedAtDateTime, string $fixedBy)
     {
+        $fixedDateTime ?? 'has been reset';
         $phrase = config('case-management.ProgressLogs.fixedAt') ?? '';
         $searchFor = ['%FIX%', '%BY%'];
         $replaceWith = [$fixedAtDateTime, $fixedBy];

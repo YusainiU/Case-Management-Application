@@ -35,6 +35,7 @@ class ViewCases extends Component
         'closeUpdateCaseModal' => 'closeUpdateModal',
         'closeProfileModal' => 'closeProfileModal',
         'closeSummaryModal' => 'closeSummaryModal',
+        'reloadCaseStatus' => '$refresh',
     ];
 
     public function mount()

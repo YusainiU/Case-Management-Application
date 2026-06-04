@@ -15,7 +15,7 @@
             w-full 
             border 
             border-gray-700 
-            rounded 
+            rounded
             py-3 
             px-4 
             mb-3 

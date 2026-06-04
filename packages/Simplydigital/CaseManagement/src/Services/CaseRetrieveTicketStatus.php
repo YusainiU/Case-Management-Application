@@ -118,7 +118,7 @@ class CaseRetrieveTicketStatus
             ->paused()
             ->count();
 
-        $unassigned = !$ticket->assigned ? 1:0;
+        $unassigned = !$ticket->assigned_to ? 1:0;
 
         /*
         |--------------------------------------------------------------------------

@@ -4,11 +4,13 @@ namespace Simplydigital\CaseManagement\Services;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Repositories\CaseRepository;
+use Simplydigital\CaseManagement\Services\CaseLogAdministrationService;
 
 class CaseTicketServices
 {
@@ -21,11 +23,15 @@ class CaseTicketServices
     private string|int|null $filter = null;
 
     private CaseTicketUtilityServices $caseTicketUtilityServices;
+    private CaseRepository $caseRepository; 
+    private CaseLogAdministrationService $caseLogService;
 
     public function __construct()
     {
         $this->query = tickets::query();
         $this->caseTicketUtilityServices = app()->make(CaseTicketUtilityServices::class);
+        $this->caseRepository = app()->make(CaseRepository::class);
+        $this->caseLogService = app()->make(CaseLogAdministrationService::class);
     }
 
     public function setCustomer(int $customerId)
@@ -224,7 +230,7 @@ class CaseTicketServices
         return $this->caseTicketUtilityServices->updateSiteVisit($siteVisit, $data);
     }
 
-    public function setAssignedTo(tickets $ticket, User $assigned_to)
+    public function setAssignedTo(tickets $ticket, string|int|null $assigned_to)
     {
         return $this->caseTicketUtilityServices->setAssignedTo($ticket, $assigned_to);
     }
@@ -251,12 +257,24 @@ class CaseTicketServices
             ]
         */
 
+        $result = [];
         $respondedAt = $data['responded_at'] ?? null;
         $fixedAt = $data['fixed_at'] ?? null;
         $assignedTo = $data['assigned_to'] ?? null;
         $completedAt = $data['completed_at'] ?? null;
         $log = trim($data['log']) ?? null;
 
+        $savedRespondedAt = $this->caseTicketUtilityServices->updateRespondAt($ticket, $respondedAt);
+        $savedFixedAt = $this->caseTicketUtilityServices->updateFixedAt($ticket, $fixedAt);
+        $savedAssignedTo = $this->setAssignedTo($ticket, $assignedTo);
+
+        
+        $savedRespondedAt && $result[] = 'Responded At';
+        $savedAssignedTo && $result[] = 'Assigned To';
+
+        return $result;
+        
     }
+
     
 }

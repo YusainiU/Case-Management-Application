@@ -21,7 +21,6 @@
             tabBgColorInactiveHover="hover:bg-300"
             tabBgHover="hover:bg-300 hover:text-gray-900"
         >
-            
             @if ($tabHeaders[$this->selectedTab] == $tabHeaders['sla'])                    
                 <livewire:manage-case-sla :case="$case" />
             @endif

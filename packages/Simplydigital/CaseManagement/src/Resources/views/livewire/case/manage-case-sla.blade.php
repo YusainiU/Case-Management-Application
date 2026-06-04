@@ -1,8 +1,20 @@
 <div>
-
+    <div>
+        @if($this->message)
+            <x-casemanagement::page-elements.toast-alert-simple 
+                header="Changes Made"
+                mode="information"
+                message="{{ $message }}"
+            />
+        @endif
+    </div>
     <div class="grid grid-cols-3 gap-4 mb-4">     
         <div>
             <x-casemanagement::form-elements.input-label name="Assign To" :required=false />
+            @if($forms['assigned_to'])
+            <x-casemanagement::form-elements.input-text value="{{ $case->assignedToUser->name }}" :disabled=true />
+            <x-casemanagement::form-elements.input-text model="forms.assigned_to" type="hidden"/>
+            @else            
             <x-casemanagement::form-elements.select 
                 model="forms.assigned_to"
                 :notlive=true
@@ -11,7 +23,8 @@
                 placeholder="Assigned To"
                 hint="Case Assigned To ... "
             />
-             <x-casemanagement::form-elements.input-error field="forms.assigned_to" />
+            @endif
+            <x-casemanagement::form-elements.input-error field="forms.assigned_to" />
         </div>           
         <div>
             <x-casemanagement::form-elements.input-label name="Responded At" :required=false />
@@ -61,7 +74,10 @@
             <x-casemanagement::form-elements.input-error field="forms.log" />
         </div>
     </div>
-    <div>
+    <div class="flex flex-row gap-4">
         <x-casemanagement::form-elements.button-primary action="updateSla" label="Update" />
+        @if($forms['assigned_to'])
+            <x-casemanagement::form-elements.button-danger action="unassign" label="Unassigned Case" />
+        @endif
     </div>      
 </div>
