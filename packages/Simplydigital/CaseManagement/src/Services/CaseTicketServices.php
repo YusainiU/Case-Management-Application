@@ -252,7 +252,6 @@ class CaseTicketServices
                 "responded_at"
                 "fixed_at"
                 "assigned_to"
-                "completed_at"
                 "log"
             ]
         */
@@ -261,16 +260,17 @@ class CaseTicketServices
         $respondedAt = $data['responded_at'] ?? null;
         $fixedAt = $data['fixed_at'] ?? null;
         $assignedTo = $data['assigned_to'] ?? null;
-        $completedAt = $data['completed_at'] ?? null;
         $log = trim($data['log']) ?? null;
 
         $savedRespondedAt = $this->caseTicketUtilityServices->updateRespondAt($ticket, $respondedAt);
         $savedFixedAt = $this->caseTicketUtilityServices->updateFixedAt($ticket, $fixedAt);
         $savedAssignedTo = $this->setAssignedTo($ticket, $assignedTo);
-
+        $savedLog = $this->caseTicketUtilityServices->buildProgressLog($ticket, $log);
         
         $savedRespondedAt && $result[] = 'Responded At';
         $savedAssignedTo && $result[] = 'Assigned To';
+        $savedFixedAt && $result[] = 'Fixed At';
+        $savedLog && $result[] = 'Progress Log';
 
         return $result;
         

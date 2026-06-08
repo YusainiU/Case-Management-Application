@@ -283,7 +283,13 @@ class CaseLogAdministrationService
         $replaceWith = $breachDateTime;
         $logString = str_replace($searchFor, $replaceWith, $phrase);
         return $logString;
-    }    
+    }
+
+    public function retrieveProgressLog(?tickets $ticket)
+    {
+        if(!$ticket) return false;
+        return $ticket->taskLogs();
+    }
 
     
 }

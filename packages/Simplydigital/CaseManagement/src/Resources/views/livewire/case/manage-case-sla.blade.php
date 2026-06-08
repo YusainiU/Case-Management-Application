@@ -12,17 +12,17 @@
         <div>
             <x-casemanagement::form-elements.input-label name="Assign To" :required=false />
             @if($forms['assigned_to'])
-            <x-casemanagement::form-elements.input-text value="{{ $case->assignedToUser->name }}" :disabled=true />
-            <x-casemanagement::form-elements.input-text model="forms.assigned_to" type="hidden"/>
+                <x-casemanagement::form-elements.input-text value="{{ $case->assignedToUser->name }}" :disabled=true />
+                <x-casemanagement::form-elements.input-text model="forms.assigned_to" type="hidden"/>
             @else            
-            <x-casemanagement::form-elements.select 
+                <x-casemanagement::form-elements.select 
                 model="forms.assigned_to"
                 :notlive=true
                 :options=$internals 
                 name="Assigned To" 
                 placeholder="Assigned To"
                 hint="Case Assigned To ... "
-            />
+                />
             @endif
             <x-casemanagement::form-elements.input-error field="forms.assigned_to" />
         </div>           
@@ -52,21 +52,7 @@
                 [&::-webkit-calendar-picker-indicator]:rounded"
                 hint="The date and time when the case was fixed."
             />
-        </div>
-         <x-casemanagement::form-elements.input-error field="forms.fixed_at" />        
-        <div>
-            <x-casemanagement::form-elements.input-label name="Completed At" :required=false />
-            <x-casemanagement::form-elements.input-text 
-                type="datetime-local"
-                model="forms.completed_at"
-                name="Completed At"
-                webkit="
-                [&::-webkit-calendar-picker-indicator]:bg-gray-400 
-                [&::-webkit-calendar-picker-indicator]:p-1 
-                [&::-webkit-calendar-picker-indicator]:rounded"
-                hint="The date and time when the case was completed."
-            />
-             <x-casemanagement::form-elements.input-error field="forms.completed_at" />
+            <x-casemanagement::form-elements.input-error field="forms.fixed_at" />
         </div>
         <div>
             <x-casemanagement::form-elements.input-label name="Progress Note" />

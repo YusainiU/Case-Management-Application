@@ -19,18 +19,16 @@ class ManageCaseSLA extends ModalComponent
         'forms.responded_at' => 'Responded At',
         'forms.fixed_at' => 'Fixed At',
         'forms.assigned_to' => 'Assigned To',
-        'forms.completed_at' => 'Completed At',
         'forms.log' => 'Progress Note',
     ];
 
     protected function rules()
     {
         return [
-            'forms.assigned_to' => 'required|exists:users,id|required_with:forms.responded_at,forms.completed_at,forms.fixed_at',
+            'forms.assigned_to' => 'required|exists:users,id|required_with:forms.responded_at,forms.fixed_at',
             'forms.responded_at' => 'nullable|date|required_with:forms.completed_at',
             'forms.fixed_at' => 'nullable|date',            
-            'forms.completed_at' => 'nullable|date',
-            'forms.log' => 'nullable|required_with:forms.completed_at,forms.fixed_at,forms.responded_at',
+            'forms.log' => 'nullable|required_with:forms.fixed_at,forms.responded_at',
         ];
     }
 
@@ -52,7 +50,6 @@ class ManageCaseSLA extends ModalComponent
             'responded_at' => $this->case->slaTasks->responded_at ? $this->case->slaTasks->responded_at->format('Y-m-d\TH:i') : null,
             'fixed_at' => $this->case->slaTasks->fixed_at ? $this->case->slaTasks->fixed_at->format('Y-m-d\TH:i') : null,
             'assigned_to' => (string) $this->case->assigned_to,
-            'completed_at' => $this->case->slaTasks->completed_at ? $this->case->slaTasks->completed_at->format('Y-m-d\TH:i') : null,
             'log' => null,
         ];
     }

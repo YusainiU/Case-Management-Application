@@ -732,6 +732,17 @@ class CaseTicketUtilityServices
         }
         return $saved;
     }
+
+    public function buildProgressLog(tickets $ticket, ?string $logText)
+    {
+        if(!$logText) return false;
+        $currentUser = Auth::user()->name;
+        $currentDate = now()->format('d-m-y H:i');
+        $service = $this->caseLogAdministrationService;
+        $logText = $service->buildProgressLogText($logText, $currentDate, $currentUser);
+        return $service->createSystemLog($ticket, $logText);        
+
+    }
     
 
 }

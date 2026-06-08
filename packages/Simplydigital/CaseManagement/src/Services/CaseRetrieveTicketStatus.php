@@ -92,7 +92,7 @@ class CaseRetrieveTicketStatus
             ->latest('created_at')
             ->first(['created_at']);
 
-        $noUpdate = !$ticket::doesntHave('taskLogs')->count() ?? 1;
+        $noUpdate = $ticket::doesntHave('taskLogs')->count() ? 1:0;
 
         /*
         |--------------------------------------------------------------------------

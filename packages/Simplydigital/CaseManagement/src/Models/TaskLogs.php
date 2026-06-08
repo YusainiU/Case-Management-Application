@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 
-
 class TaskLogs extends Model
 {
     use SoftDeletes;
@@ -36,16 +35,13 @@ class TaskLogs extends Model
         });
     }
 
-    public function getUserIdAttribute(int $value)
+    public function getUserNameAttribute()
     {
-        if($value) {
-            $u = User::find($value,['name']);
-            return $u->name;
-        }
-        return null;
+        $u = $this->user()->first();
+        return $u->name;
     }
 
-    public function getUser()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -54,14 +50,29 @@ class TaskLogs extends Model
     {
         return $this->belongsTo(tickets::class, 'ticket_id');
     }
-   public function internalUser()
+
+    public function isInternal()
     {
-        $u = $this->attributes()['user_id'];
-        return User::find($u,'*');
+        return $this->user_id !== null;
     }
+
+    public function getLogCreatorAttribute()
+    {
+        if($this->user_id) {
+            return $this->user()->first()->name;
+        }else{
+            return $this->external_user;
+        }
+    }
+
     public function logNumber(string $value)
     {
         return $this->where('number','=',$value)->first();
+    }
+
+    public function slaTask()
+    {
+        return $this->belongsTo(TaskLogs::class,'task_log_id');
     }
 
     public function scopeUnrespondedComment(Builder $query)
