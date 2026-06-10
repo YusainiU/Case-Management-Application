@@ -178,103 +178,6 @@ class CaseTicketUtilityServices
         return $this->caseRetrieveTicketStatus->retrieveStatus($ticket);
     }
 
-    // public function retrieveTicketStatus(tickets $ticket)
-    // {
-    //     //Check breach status
-    //     //Check ticket status
-    //     //Check urgent log
-    //     //Check Site Visit
-    //     //Get response time
-    //     //get Fix Time
-    //     //Check latest note in the logs
-
-    //     $taskLogs = $ticket->taskLogs;
-    //     $tasks = $ticket->slaTasks;
-    //     $visits = $ticket->siteVisits;
-    //     $result = [];
-    //     if ($taskLogs && $taskLogs->count()) {
-    //         //check urgent log
-    //         //check latest Urgent log update
-    //         $desc = $taskLogs->sortByDesc('created_at');
-    //         $customerLogs = $desc->where('source', '=', 'external');
-    //         $lastCustomerLog = $customerLogs->first();
-    //         $urgents = $taskLogs->where('require_attention', '=', true)->sortByDesc('created_at');
-    //         $first = $urgents->first();
-    //         $result["numberOfUrgetLogs"] = 0;
-    //         $result["lastUrgentLog"] = null;
-    //         $result["lastUrgentLogCreatedAt"] = null;
-    //         $result["lastCustomerLog"] = null;
-    //         $result["lastCustomerLogCreatedAt"] = null;
-    //         $result["totalVisits"] = 0;
-    //         $result["totalVisited"] = 0;
-    //         $result['currentlyEnroute'] = 0;
-    //         $result['currentlyOnsite'] = 0;
-    //         $result['respondBy'] = 'Not Available';
-    //         $result['fixBy'] = 'Not Available';
-    //         $result['respondedAt'] = 'Not Available';
-    //         $result['fixedAt'] = 'Not Available'; 
-    //         $result['visitScheduled'] = false;
-            
-    //         $result['resolved'] = $ticket->resolved_datetime ? date('d-m-Y H:i', $ticket->resolved_datetime) : null;
-    //         $result['currentlyWorking'] = $ticket->currently_working;
-    //         $result['closed'] = $ticket->state == CaseState::Cancelled->value;
-            
-    //         if ($first && $first->count()) {
-    //             $result["numberOfUrgetLogs"] = $urgents->count();
-    //             $result["lastUrgentLogCreatedAt"] = date('d-m-Y H:i', strtotime($first->created_at));
-    //         }
-    //         if ($lastCustomerLog && $lastCustomerLog->count()) {
-    //             $result["lastCustomerLogCreatedAt"] = date('d-m-Y H:i', strtotime($lastCustomerLog->created_at));
-    //         }
-    //     }
-    //     if ($tasks && $tasks->count()) {
-    //         $tasksDesc = $tasks->sortByDesc('created_at');
-    //         $taskBreached = $tasksDesc->where('breached_at', '!=', null);
-    //         $fixBreach = $tasks->where('fix_by_breach_at',"!=", null);
-    //         $respondByBreach = $tasks->where('respond_by_breach_at',"!=", null);
-    //         $firstTask = $tasks->first();
-    //         $respondBy = $firstTask->respond_by;
-    //         $fixBy = $firstTask->fix_by;
-    //         $respondedAt = $firstTask->responded_at;
-    //         $fixedAt = $firstTask->fixed_at;
-    //         $respondByInfo = $respondBy ? date('d-m-Y H:i', strtotime($respondBy)) : 'Not Available';
-    //         $fixByInfo = $fixBy ? date('d-m-Y H:i', strtotime($fixBy)) : 'Not Available';
-    //         $respondedAtInfo = $respondedAt ? date('d-m-Y H:i', strtotime($respondedAt)) : 'Not Available';
-    //         $fixedAtInfo = $fixedAt ? date('d-m-Y H:i', strtotime($fixedAt)) : 'Not Available';
-    //         $result["taskBreached"] = 0;
-    //         $result['breachType'] = '';
-    //         if ($taskBreached && $taskBreached->count()) {
-    //             $result["taskBreached"] = $taskBreached->count();
-    //             if($fixBreach && $fixBreach->count()){
-    //                 $result['breachType'] = 'Fix By Breach';   
-    //             }
-    //             if($respondByBreach && $respondByBreach->count()){
-    //                 $result['breachType'] = 'Respond By Breach';   
-    //             }                
-    //         }
-    //         $result['respondBy'] = $respondByInfo;
-    //         $result['fixBy'] = $fixByInfo;
-    //         $result['respondedAt'] = $respondedAtInfo;
-    //         $result['fixedAt'] = $fixedAtInfo;
-    //     }
-    //     if($visits && $visits->count()){
-    //         //Total Visits
-    //         $visited = $visits->where('onsite_at','!=',null)->count();
-    //         $enroute = $visits->where('onsite_at','=', null)
-    //             ->where('enroute_at','!=', null)
-    //             ->count();
-    //         $onsite = $visits->where('onsite_at','!=', null)
-    //             ->where('offsite_at','=', null)
-    //             ->count();                
-    //         $result['totalVisits'] = $visits->count();
-    //         $result['totalVisited'] = $visited;
-    //         $result['currentlyEnroute'] = $enroute;
-    //         $result['currentlyOnsite'] = $onsite;
-    //         $result['visitScheduled'] = true;
-    //     }
-    //     return $result;
-    // }
-
     public function closeTicket(tickets $ticket, slaTask $slaTask, array $data)
     {
         //ticket->closed_datetime
@@ -744,5 +647,10 @@ class CaseTicketUtilityServices
 
     }
     
+    public function requireAttention(TaskLogs $taskLogs, bool $urgentAttention)
+    {
+        $taskLogs->require_attention = $urgentAttention;
+        return $taskLogs->save();
+    }
 
 }

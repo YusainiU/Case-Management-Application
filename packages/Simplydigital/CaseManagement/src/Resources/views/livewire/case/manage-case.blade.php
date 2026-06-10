@@ -24,6 +24,10 @@
             @if ($tabHeaders[$this->selectedTab] == $tabHeaders['sla'])                    
                 <livewire:manage-case-sla :case="$case" />
             @endif
+
+            @if($tabHeaders[$this->selectedTab] == $tabHeaders['progress'])
+                <livewire:case-progress-log :case="$case" />
+            @endif
             
         </x-casemanagement::page-elements.tab>
 

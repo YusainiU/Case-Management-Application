@@ -1,5 +1,12 @@
 <div>
     <div class="flow-root">
+    
+        <div class="flex flex-col gap-3">
+            <x-casemanagement::form-elements.textarea model="logText" hint="Create New Progress Log" />
+            <x-casemanagement::form-elements.checkbox label="Urgent Attention" model="urgentAttention" name="Urgent Attention"/>
+            <x-casemanagement::form-elements.button-primary action="createLog" label="Create" />
+        </div>
+        <x-casemanagement::page-elements.seperator />                
         <ul role="list" class="-mb-8">
 
             @foreach ($taskLogs as $log)
@@ -37,6 +44,11 @@
                                             <p class="text-sm text-gray-500">
                                                 {{ $log->user?->name ?? 'System' }}
                                             </p>
+
+                                            <p class="text-sm text-gray-500">
+                                                Log Number # {{ $log->number }}
+                                            </p>
+
                                         </div>
 
                                         <time class="text-sm text-gray-500">
@@ -50,19 +62,25 @@
                                         </div>
                                     @endif
 
-                                    @if ($log->old_value || $log->new_value)
-                                        <div class="mt-4 rounded bg-gray-50 p-3 text-sm">
-                                            <div>
-                                                <span class="font-medium text-red-600">From:</span>
-                                                {{ $log->old_value }}
-                                            </div>
+                                    <div class="mt-4 rounded bg-gray-50 p-3 text-sm">
 
-                                            <div class="mt-1">
-                                                <span class="font-medium text-green-600">To:</span>
-                                                {{ $log->new_value }}
-                                            </div>
+                                        <div>
+                                            <x-casemanagement::form-elements.button-secondary action="respondLog" label="Respond" size="small" />
                                         </div>
-                                    @endif
+
+                                        <div>
+                                            <span class="font-medium text-red-600">Source:</span>
+                                            <span class="text-gray-900">{{ ucwords($log->source) }}</span>
+                                        </div>
+
+                                        @if ($log->sla_task_id)
+                                            <div>
+                                                <span class="font-medium text-red-600">SlA Task:</span>
+                                                <span
+                                                    class="text-gray-900">{{ $log->slaTask?->short_description }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
 
                                 </div>
                             </div>
@@ -73,5 +91,9 @@
             @endforeach
 
         </ul>
+        @if($this->message)
+            <x-casemanagement::page-elements.toast-alert-simple mode="information" message="{{ $message }}" header="Information"/>
+        @endif
     </div>
 </div>
+x
