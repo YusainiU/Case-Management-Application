@@ -54,6 +54,13 @@ class CaseProgressLog extends ModalComponent
 
     }
 
+    public function removeRequireAttention(int|string $logId)
+    {
+        $logId - (int) $logId;
+        $this->utilityService()->removeRequireAttention($logId);
+        $this->case->refresh();
+    }
+
     public function getLogs()
     {
         return $this->logService()->retrieveProgressLog($this->case);

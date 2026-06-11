@@ -1,3 +1,7 @@
+@php
+    use Simplydigital\CaseManagement\Services\UI;
+@endphp
+
 <div>
     <div class="flow-root">
     
@@ -10,6 +14,13 @@
         <ul role="list" class="-mb-8">
 
             @foreach ($taskLogs as $log)
+                @php
+                    $attention = null;
+                    if($log->require_attention){
+                        $attention = UI::ALERT_WARNING;
+                    }
+
+                @endphp
                 <li>
                     <div class="relative pb-8">
 
@@ -51,6 +62,17 @@
 
                                         </div>
 
+                                        @if($attention)
+                                            {{-- <div class="{{ $attention }} px-2 py-2 rounded-md text-xs">Require Attention</div> --}}
+                                            <x-casemanagement::form-elements.button-hover-change-action 
+                                                size="small"
+                                                hover_on_label="Remove Require Attention"
+                                                hover_off_label="Require Attention"
+                                                hover_off="{{ $attention }}"
+                                                action_hover_on="removeRequireAttention({{ $log->id }})"
+                                            />
+                                        @endif
+
                                         <time class="text-sm text-gray-500">
                                             {{ $log->created_at->format('d M Y H:i') }}
                                         </time>
@@ -66,6 +88,7 @@
 
                                         <div>
                                             <x-casemanagement::form-elements.button-secondary action="respondLog" label="Respond" size="small" />
+                                            
                                         </div>
 
                                         <div>

@@ -84,6 +84,11 @@ class tickets extends Model
         return $this->hasMany(TaskLogs::class, 'ticket_id');
     }
 
+    public function requiresAttention(): bool
+    {
+        return $this->taskLogs()->where('require_attention', true)->exists();
+    }
+    
     public function getHasInternalUpdateAttribute()
     {
         return $this->taskLogs()->where('type', 'internal_update_log')->exists();

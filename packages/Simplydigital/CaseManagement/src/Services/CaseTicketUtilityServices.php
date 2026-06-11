@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Services;
 
 use Simplydigital\CaseManagement\Mail\DefaultEmail;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
@@ -651,6 +652,45 @@ class CaseTicketUtilityServices
     {
         $taskLogs->require_attention = $urgentAttention;
         return $taskLogs->save();
+    }
+
+    public function getCasesRequiringAttentions(tickets $ticket)
+    {
+        return $ticket->taskLogs()->requiringAttention()->get();
+    }
+
+    public function getCaseLatestRequiringAttention(tickets $ticket)
+    {
+        return $ticket->taskLogs()->requiringAttention()->latest()->first();
+    }
+
+    public function getTaskLogsRequiringAttentions()
+    {
+        return taskLogs::requiringAttention()->get();
+    }
+
+    public function checkHasRequiringAttention(tickets $ticket): bool
+    {
+        return TaskLogs::where('ticket_id', $ticket->id)->whereNotNull('require_attention')->exists();
+    }
+
+    public function removeRequireAttention(int $logId)
+    {
+        try {
+            $log = TaskLogs::findOrFail($logId);
+            if(!$log) return false;
+            $log->require_attention = false;
+            $updated = $log->update();
+            if($updated){
+                $logText = $this->caseLogAdministrationService->buildRemoveRequireAttentionText();
+                $this->caseLogAdministrationService->createSystemLog($log->ticket, $logText);
+            }
+            return true;
+        }catch(ModelNotFoundException $e) {
+            return false;
+        }
+
+        
     }
 
 }

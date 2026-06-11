@@ -24,6 +24,8 @@ class TaskLogs extends Model
         "notification_sent_at",
         "require_attention",
         "task_site_visit_id",
+        "response_to_external_comment",
+        "response_to_internal_comment",
     ];
 
     protected static function booted()
@@ -73,6 +75,41 @@ class TaskLogs extends Model
     public function slaTask()
     {
         return $this->belongsTo(TaskLogs::class,'task_log_id');
+    }
+
+    public function scopeRequiringAttention(Builder $query): Builder
+    {
+        return $query->where('require_attention', true);
+    }
+
+    public function parentInternalComment()
+    {
+        return $this->belongsTo(TaskLogs::class, 'response_to_internal_comment');
+    }
+
+    public function repliesToInternalComment()
+    {
+        return $this->hasMany(TaskLogs::class, 'response_to_internal_comment');        
+    }
+
+    public function checkInternalRepliesExist()
+    {
+        return $this->repliesToInternalComment()->exists();
+    }
+
+    public function parentExternalComment()
+    {
+        return $this->belongsTo(TaskLogs::class, 'response_to_external_comment');
+    }
+
+    public function repliesToExternalComment()
+    {
+        return $this->hasMany(TaskLogs::class, 'response_to_external_comment');
+    }
+
+    public function checkExternalRepliseExist()
+    {
+        return $this->repliesToExternalComment()->exists();
     }
 
     public function scopeUnrespondedComment(Builder $query)

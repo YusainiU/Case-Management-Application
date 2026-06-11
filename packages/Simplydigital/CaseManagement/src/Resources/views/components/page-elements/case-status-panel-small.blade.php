@@ -1,3 +1,8 @@
+@php
+    use Simplydigital\CaseManagement\Services\UI;
+    $important = UI::ALERT_WARNING;
+@endphp
+
 @props(['case'])
 
 <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 mb-4">
@@ -57,5 +62,17 @@
                 </div>
             </div>
         @endif
+        
+        <!-- Require Attention -->
+        @if($case->requiresAttention())
+            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
+                <span class="w-3 h-3 rounded-full {{ $important }}"></span>
+                <div>
+                    <p class="text-xs text-gray-500">Require Attention</p>
+                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
+                </div>
+            </div>
+        @endif
+
     </div>
 </div>
