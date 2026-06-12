@@ -655,8 +655,12 @@ class CaseTicketUtilityServices
         $taskLog = TaskLogs::find($logId);
         $text = $this->caseLogAdministrationService->buildResponseToCommentText($respond);
         $log = $this->caseLogAdministrationService->createSystemLog($taskLog->ticket, $text);
-        $log->response_to_internal_comment = $log->id;
-        return $log->update();
+        if($log) {
+            $log->response_to_internal_comment = $logId;
+            $log->update();
+            return $log;
+        }
+        return false;
         
     }
     
@@ -694,7 +698,7 @@ class CaseTicketUtilityServices
             $log->require_attention = false;
             $updated = $log->update();
             if($updated){
-                $logText = $this->caseLogAdministrationService->buildRemoveRequireAttentionText();
+                $logText = $this->caseLogAdministrationService->buildRemoveRequireAttentionText($log->number);
                 $this->caseLogAdministrationService->createSystemLog($log->ticket, $logText);
             }
             return true;

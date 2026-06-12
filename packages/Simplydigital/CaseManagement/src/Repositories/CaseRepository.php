@@ -53,5 +53,10 @@ class CaseRepository
         return false;        
     }
 
+    public function deleteLog(int $logId)
+    {
+        return TaskLogs::destroy($logId);    
+    }
+
 }
 

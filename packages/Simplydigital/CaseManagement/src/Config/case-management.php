@@ -155,7 +155,7 @@ return [
         'email' => 'Progress Log %LOGNUMBER% has been emailed to %RECEIVER%',
         'complete' => env('TICKET_MONIKER').' closed by %USER%',
         'resolve' => '%USER% has resolved the case at %DATETIME%',
-        'removeRequireAttention' => '%USER% removed required attention',
+        'removeRequireAttention' => '%USER% removed required attention from %FROM%',
         'respondToComment' => '%USER% responded to the comment: %RESPONSE%',
 
     ],

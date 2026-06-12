@@ -285,12 +285,12 @@ class CaseLogAdministrationService
         return $logString;
     }
 
-    public function buildRemoveRequireAttentionText()
+    public function buildRemoveRequireAttentionText(string $removeFrom)
     {
         $phrase = config('case-management.ProgressLogs.removeRequireAttention') ?? '';
         $user = Auth::user()->name;
-        $searchFor = '%USER%';
-        $replaceWith = $user;
+        $searchFor = ['%USER%', '%FROM%'];
+        $replaceWith = [$user, $removeFrom];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
         return $logString;
     }

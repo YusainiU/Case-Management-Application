@@ -8,6 +8,7 @@ use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseLogAdministrationService;
+use Simplydigital\CaseManagement\Repositories\CaseRepository;    
 class CaseProgressLog extends ModalComponent
 {
 
@@ -18,6 +19,7 @@ class CaseProgressLog extends ModalComponent
     public ?string $message = null;
     public bool $respondToComment = false;
     public ?TaskLogs $respondToLog = null; 
+    public ?int $logToDelete = null;
 
     public function logService(): CaseLogAdministrationService
     {
@@ -27,6 +29,11 @@ class CaseProgressLog extends ModalComponent
     public function utilityService(): CaseTicketUtilityServices
     {
         return new CaseTicketUtilityServices();
+    }
+
+    public function repoUtility(): CaseRepository
+    {
+        return new CaseRepository();
     }
 
     public function createLog()
@@ -46,10 +53,29 @@ class CaseProgressLog extends ModalComponent
 
     }
 
+    public function deleteLog(int|string $logId)
+    {
+        $logId = (int) $logId;
+        $this->logToDelete = $logId;
+    }
+
+    public function deleteThisLog()
+    {
+        if($this->logToDelete) {
+            $this->repoUtility()->deleteLog($this->logToDelete);
+        }
+        $this->case->refresh();
+        $this->closeDeleteModal();        
+    }
+
+    public function closeDeleteModal()
+    {
+        $this->cancelRespond();
+    }
+
     public function resetToastMessage()
     {
-        $this->message = null;
-        $this->logText = null;
+        $this->cancelRespond();
     }
 
     public function respondLog(int|string $logId)
@@ -64,7 +90,11 @@ class CaseProgressLog extends ModalComponent
     {
         if(!trim($this->logText)) return false;
         $logId = (int) $logId;
-        $this->utilityService()->respondToComment($logId, $this->logText);
+        $util = $this->utilityService();
+        $respond = $util->respondToComment($logId, $this->logText);
+        if($respond && $this->urgentAttention) {
+            $util->requireAttention($respond, $this->urgentAttention);
+        }
         $this->cancelRespond();
         $this->case->refresh();
     }
@@ -74,7 +104,10 @@ class CaseProgressLog extends ModalComponent
         $this->reset([
             'respondToLog',
             'respondToComment',
-            'logText'
+            'logText',
+            'urgentAttention',
+            'message',
+            'logToDelete',
         ]);
     }
 

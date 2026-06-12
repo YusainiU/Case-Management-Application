@@ -1,14 +1,15 @@
 @php
     use Simplydigital\CaseManagement\Services\UI;
-    $action = "createLog";
-    $label = "Create";
-    if($respondToComment) {
+    $action = 'createLog';
+    $label = 'Create';
+    if ($respondToComment) {
         $action = "createRespond($respondToLog->id)";
-        $label = "Create Respond";
+        $label = 'Create Respond';
     }
 @endphp
 
 <div x-data x-on:modal-scroll-top.window="$refs.modalBody.scrollTo({ top: 0, behavior: 'smooth' })">
+
     <div class="max-h-[80vh] overflow-y-auto pr-4" x-ref="modalBody">
 
         @if ($respondToComment)
@@ -29,8 +30,9 @@
             <x-casemanagement::form-elements.checkbox label="Urgent Attention" model="urgentAttention"
                 name="Urgent Attention" />
             <div class="flex flex-row gap-3">
-                <x-casemanagement::form-elements.button-primary action="{{ $action }}" label="{{ $label }}" />
-                @if($respondToComment)
+                <x-casemanagement::form-elements.button-primary action="{{ $action }}"
+                    label="{{ $label }}" />
+                @if ($respondToComment)
                     <x-casemanagement::form-elements.button-secondary action="cancelRespond" label="Cancel" />
                 @endif
             </div>
@@ -47,6 +49,11 @@
                     }
 
                 @endphp
+
+                @if($logToDelete == $log->id)
+                    <x-casemanagement::page-elements.confirm-delete recordToDelete="{{  $log->number }}" action="deleteThisLog" deleteText="Delete this Log"/>
+                @endif
+
                 <li>
                     <div class="relative pb-8">
 
@@ -105,36 +112,32 @@
                                     @if ($log->description)
                                         <div class="mt-3 text-sm text-gray-700">
                                             {{ $log->description }}
-                                            @if($log->response_to_internal_comment)
+                                            @if ($log->response_to_internal_comment)
                                                 <p class="flex flex-col gap-1 mt-2 p-2 rounded-2xl bg-amber-100">
-                                                    <span class="font-extrabold">This is a Response to log # {{ $log->parentInternalComment->number }}...</span>
-                                                    <span class="italic">{{ $log->parentInternalComment->description }}</span>
+                                                    <span class="font-extrabold">This is a response to log #
+                                                        {{ $log->parentInternalComment->number }}...</span>
+                                                    <span
+                                                        class="italic">{{ $log->parentInternalComment->description }}</span>
                                                 </p>
                                             @endif
                                         </div>
                                     @endif
 
-                                    <div class="mt-4 rounded bg-gray-50 p-3 text-sm">
+                                    <div class="flex flex-col gap-2 mt-4 rounded bg-gray-50 p-3 text-sm">
 
-                                        <div>
+                                        <div class="flex flex-row gap-3">
                                             <x-casemanagement::form-elements.button-secondary
                                                 action="respondLog({{ $log->id }})" label="Respond"
                                                 size="small" />
-
+                                            <x-casemanagement::form-elements.button-danger
+                                                action="deleteLog({{ $log->id }})" label="Delete"
+                                                size="small" />
                                         </div>
 
                                         <div>
                                             <span class="font-medium text-red-600">Source:</span>
                                             <span class="text-gray-900">{{ ucwords($log->source) }}</span>
                                         </div>
-
-                                        @if ($log->sla_task_id)
-                                            <div>
-                                                <span class="font-medium text-red-600">SlA Task:</span>
-                                                <span
-                                                    class="text-gray-900">{{ $log->slaTask?->short_description }}</span>
-                                            </div>
-                                        @endif
                                     </div>
 
                                 </div>

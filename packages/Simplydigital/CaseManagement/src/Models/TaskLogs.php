@@ -35,6 +35,7 @@ class TaskLogs extends Model
             $utilityService = app('case-management-utility-services');
             $model->number = $utilityService::generateRecordNumber($prefix);
         });
+
     }
 
     public function getUserNameAttribute()

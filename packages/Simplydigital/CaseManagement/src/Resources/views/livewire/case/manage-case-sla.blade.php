@@ -12,7 +12,7 @@
         <div>
             <x-casemanagement::form-elements.input-label name="Assign To" :required=false />
             @if($forms['assigned_to'])
-                <x-casemanagement::form-elements.input-text value="{{ $case->assignedToUser->name }}" :disabled=true />
+                <x-casemanagement::form-elements.input-text value="{{ $case->assignedToUser?->name }}" :disabled=true />
                 <x-casemanagement::form-elements.input-text model="forms.assigned_to" type="hidden"/>
             @else            
                 <x-casemanagement::form-elements.select 
