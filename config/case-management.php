@@ -157,6 +157,7 @@ return [
         'complete' => env('TICKET_MONIKER').' closed by %USER%',
         'resolve' => '%USER% has resolved the case at %DATETIME%',
         'removeRequireAttention' => '%USER% removed required attention',
+        'respondToComment' => '%USER% responded to the comment: %RESPONSE%',
 
     ],
     'siteVisit' => [

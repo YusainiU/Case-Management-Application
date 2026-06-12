@@ -295,6 +295,16 @@ class CaseLogAdministrationService
         return $logString;
     }
 
+    public function buildResponseToCommentText(string $response)
+    {
+        $phrase = config('case-management.ProgressLogs.respondToComment') ?? '';
+        $user = Auth::user()->name;
+        $searchFor = ['%USER%','%RESPONSE%'];
+        $replaceWith = [$user, $response];
+        $logString = str_replace($searchFor, $replaceWith, $phrase);
+        return $logString;
+    }
+
     public function retrieveProgressLog(?tickets $ticket)
     {
         if(!$ticket) return false;

@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 
 use LivewireUI\Modal\ModalComponent;
 use Illuminate\Database\Eloquent\Collection;
+use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseLogAdministrationService;
@@ -15,6 +16,8 @@ class CaseProgressLog extends ModalComponent
     public bool $urgentAttention = false;
     public ?Collection $taskLogs = null;
     public ?string $message = null;
+    public bool $respondToComment = false;
+    public ?TaskLogs $respondToLog = null; 
 
     public function logService(): CaseLogAdministrationService
     {
@@ -49,9 +52,30 @@ class CaseProgressLog extends ModalComponent
         $this->logText = null;
     }
 
-    public function respondLog()
+    public function respondLog(int|string $logId)
     {
+        $logId = (int) $logId;
+        $this->respondToLog = $this->taskLogs->find($logId);
+        $this->respondToComment = true;
+        $this->dispatch('modal-scroll-top');
+    }
 
+    public function createRespond(int|string $logId)
+    {
+        if(!trim($this->logText)) return false;
+        $logId = (int) $logId;
+        $this->utilityService()->respondToComment($logId, $this->logText);
+        $this->cancelRespond();
+        $this->case->refresh();
+    }
+
+    public function cancelRespond()
+    {
+        $this->reset([
+            'respondToLog',
+            'respondToComment',
+            'logText'
+        ]);
     }
 
     public function removeRequireAttention(int|string $logId)

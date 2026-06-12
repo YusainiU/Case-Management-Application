@@ -1,22 +1,48 @@
 @php
     use Simplydigital\CaseManagement\Services\UI;
+    $action = "createLog";
+    $label = "Create";
+    if($respondToComment) {
+        $action = "createRespond($respondToLog->id)";
+        $label = "Create Respond";
+    }
 @endphp
 
-<div>
-    <div class="flow-root">
-    
+<div x-data x-on:modal-scroll-top.window="$refs.modalBody.scrollTo({ top: 0, behavior: 'smooth' })">
+    <div class="max-h-[80vh] overflow-y-auto pr-4" x-ref="modalBody">
+
+        @if ($respondToComment)
+            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm mb-3">
+                <div>
+                    <p class="font-medium text-gray-900">
+                        Responding to ..
+                    </p>
+                    <div class="mt-3 text-sm text-gray-700">
+                        {{ $respondToLog->description }}
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <div class="flex flex-col gap-3">
-            <x-casemanagement::form-elements.textarea model="logText" hint="Create New Progress Log" />
-            <x-casemanagement::form-elements.checkbox label="Urgent Attention" model="urgentAttention" name="Urgent Attention"/>
-            <x-casemanagement::form-elements.button-primary action="createLog" label="Create" />
+            <x-casemanagement::form-elements.textarea model="logText" hint="Progress Log" />
+            <x-casemanagement::form-elements.checkbox label="Urgent Attention" model="urgentAttention"
+                name="Urgent Attention" />
+            <div class="flex flex-row gap-3">
+                <x-casemanagement::form-elements.button-primary action="{{ $action }}" label="{{ $label }}" />
+                @if($respondToComment)
+                    <x-casemanagement::form-elements.button-secondary action="cancelRespond" label="Cancel" />
+                @endif
+            </div>
         </div>
-        <x-casemanagement::page-elements.seperator />                
+
+        <x-casemanagement::page-elements.seperator />
         <ul role="list" class="-mb-8">
 
             @foreach ($taskLogs as $log)
                 @php
                     $attention = null;
-                    if($log->require_attention){
+                    if ($log->require_attention) {
                         $attention = UI::ALERT_WARNING;
                     }
 
@@ -25,7 +51,8 @@
                     <div class="relative pb-8">
 
                         @if (!$loop->last)
-                            <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
+                            <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"
+                                aria-hidden="true"></span>
                         @endif
 
                         <div class="relative flex space-x-3">
@@ -62,15 +89,12 @@
 
                                         </div>
 
-                                        @if($attention)
+                                        @if ($attention)
                                             {{-- <div class="{{ $attention }} px-2 py-2 rounded-md text-xs">Require Attention</div> --}}
-                                            <x-casemanagement::form-elements.button-hover-change-action 
-                                                size="small"
+                                            <x-casemanagement::form-elements.button-hover-change-action size="small"
                                                 hover_on_label="Remove Require Attention"
-                                                hover_off_label="Require Attention"
-                                                hover_off="{{ $attention }}"
-                                                action_hover_on="removeRequireAttention({{ $log->id }})"
-                                            />
+                                                hover_off_label="Require Attention" hover_off="{{ $attention }}"
+                                                action_hover_on="removeRequireAttention({{ $log->id }})" />
                                         @endif
 
                                         <time class="text-sm text-gray-500">
@@ -81,14 +105,22 @@
                                     @if ($log->description)
                                         <div class="mt-3 text-sm text-gray-700">
                                             {{ $log->description }}
+                                            @if($log->response_to_internal_comment)
+                                                <p class="flex flex-col gap-1 mt-2 p-2 rounded-2xl bg-amber-100">
+                                                    <span class="font-extrabold">This is a Response to log # {{ $log->parentInternalComment->number }}...</span>
+                                                    <span class="italic">{{ $log->parentInternalComment->description }}</span>
+                                                </p>
+                                            @endif
                                         </div>
                                     @endif
 
                                     <div class="mt-4 rounded bg-gray-50 p-3 text-sm">
 
                                         <div>
-                                            <x-casemanagement::form-elements.button-secondary action="respondLog" label="Respond" size="small" />
-                                            
+                                            <x-casemanagement::form-elements.button-secondary
+                                                action="respondLog({{ $log->id }})" label="Respond"
+                                                size="small" />
+
                                         </div>
 
                                         <div>
@@ -114,8 +146,9 @@
             @endforeach
 
         </ul>
-        @if($this->message)
-            <x-casemanagement::page-elements.toast-alert-simple mode="information" message="{{ $message }}" header="Information"/>
+        @if ($this->message)
+            <x-casemanagement::page-elements.toast-alert-simple mode="information" message="{{ $message }}"
+                header="Information" />
         @endif
     </div>
 </div>

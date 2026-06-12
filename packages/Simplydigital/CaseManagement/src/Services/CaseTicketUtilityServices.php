@@ -647,6 +647,18 @@ class CaseTicketUtilityServices
         return $service->createSystemLog($ticket, $logText);        
 
     }
+
+    public function respondToComment(int $logId, string $respond)
+    {
+        $respond = trim($respond);
+        if(!$respond) return false;
+        $taskLog = TaskLogs::find($logId);
+        $text = $this->caseLogAdministrationService->buildResponseToCommentText($respond);
+        $log = $this->caseLogAdministrationService->createSystemLog($taskLog->ticket, $text);
+        $log->response_to_internal_comment = $log->id;
+        return $log->update();
+        
+    }
     
     public function requireAttention(TaskLogs $taskLogs, bool $urgentAttention)
     {
