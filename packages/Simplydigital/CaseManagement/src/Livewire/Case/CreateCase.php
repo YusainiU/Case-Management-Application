@@ -30,6 +30,7 @@ class CreateCase extends ModalComponent
     public string $closureEvent = 'closeCreateCaseModal';
     public bool $displayForm = false;
     public ?Customer $customerSelected = null;
+    public bool $modeUpdate = false;
 
     protected $validationAttributes = [
         'form.sla_applications_id' => 'SLA',
@@ -91,7 +92,7 @@ class CreateCase extends ModalComponent
             'sla_applications_id' => $this->case->sla_applications_id,
             'customer_reference' => $this->case->customer_reference,
             'category' => $this->case->category,
-            'source' => $this->source,
+            'source' => $this->case->source,
             'list_of_assets' => $this->case->list_of_assets,
             'description' => $this->case->description,
             'short_description' => $this->case->short_description,
@@ -152,6 +153,7 @@ class CreateCase extends ModalComponent
     {
         $service = $this->ticketServices();
         $this->case = $service->getCaseById($this->caseId);
+        $this->customerSelected = $this->case?->customer;
         $this->ui['title'] = 'Update Case';
         $this->ui['confirmText'] = 'Update';
         $this->closureEvent = 'closeUpdateCaseModal';

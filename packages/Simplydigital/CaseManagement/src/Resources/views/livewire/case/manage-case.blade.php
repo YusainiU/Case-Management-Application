@@ -28,6 +28,10 @@
             @if($tabHeaders[$this->selectedTab] == $tabHeaders['progress'])
                 <livewire:case-progress-log :case="$case" />
             @endif
+
+            @if($tabHeaders[$this->selectedTab] == $tabHeaders['update'])
+                <livewire:create-case :caseId="$case->id" :customerId="$case->customer_id" :modeUpdate="true"/>
+            @endif
             
         </x-casemanagement::page-elements.tab>
 
