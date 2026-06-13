@@ -53,6 +53,15 @@ class CaseRepository
         return false;        
     }
 
+    public function updateLog(TaskLogs $taskLog, string $logText)
+    {
+        $taskLog->description = $logText;
+        if($taskLog->isDirty('description')) {
+            return $taskLog->update();
+        }
+        return false;
+    }
+
     public function deleteLog(int $logId)
     {
         return TaskLogs::destroy($logId);    

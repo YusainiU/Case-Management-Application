@@ -20,6 +20,7 @@ class CaseProgressLog extends ModalComponent
     public bool $respondToComment = false;
     public ?TaskLogs $respondToLog = null; 
     public ?int $logToDelete = null;
+    public ?TaskLogs $logToEdit = null;
 
     public function logService(): CaseLogAdministrationService
     {
@@ -68,6 +69,28 @@ class CaseProgressLog extends ModalComponent
         $this->closeDeleteModal();        
     }
 
+    public function editLog(int|string $logId)
+    {
+        $logId = (int) $logId;
+        $this->logToEdit = $this->taskLogs->find($logId);
+        $this->logText = $this->logToEdit->description;
+        $this->dispatch('modal-scroll-top');
+    }
+
+    public function editThisLog()
+    {
+        if($this->logToEdit && trim($this->logText)) {
+            $logText = trim($this->logText);
+            $edited = $this->repoUtility()->updateLog($this->logToEdit, $logText);
+            if($this->urgentAttention) {
+                $util = $this->utilityService();
+                $util->requireAttention($this->logToEdit, $this->urgentAttention);
+            }            
+        }
+        $this->case->refresh();
+        $this->cancelRespond();
+    }
+
     public function closeDeleteModal()
     {
         $this->cancelRespond();
@@ -108,6 +131,7 @@ class CaseProgressLog extends ModalComponent
             'urgentAttention',
             'message',
             'logToDelete',
+            'logToEdit',
         ]);
     }
 

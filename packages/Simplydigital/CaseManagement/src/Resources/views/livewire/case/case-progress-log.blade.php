@@ -2,9 +2,16 @@
     use Simplydigital\CaseManagement\Services\UI;
     $action = 'createLog';
     $label = 'Create';
+    $enableCancel = false;
     if ($respondToComment) {
         $action = "createRespond($respondToLog->id)";
         $label = 'Create Respond';
+        $enableCancel = true;
+    }
+    if($logToEdit) {
+        $action = "editThisLog";
+        $label = "Edit Log";
+        $enableCancel = true;
     }
 @endphp
 
@@ -25,6 +32,16 @@
             </div>
         @endif
 
+        @if($logToEdit)
+            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm mb-3">
+                <div>
+                    <p class="font-medium text-gray-900">
+                        Editing Log # {{ $logToEdit->number }} ..
+                    </p>
+                </div>
+            </div>
+        @endif
+
         <div class="flex flex-col gap-3">
             <x-casemanagement::form-elements.textarea model="logText" hint="Progress Log" />
             <x-casemanagement::form-elements.checkbox label="Urgent Attention" model="urgentAttention"
@@ -32,7 +49,7 @@
             <div class="flex flex-row gap-3">
                 <x-casemanagement::form-elements.button-primary action="{{ $action }}"
                     label="{{ $label }}" />
-                @if ($respondToComment)
+                @if ($enableCancel)
                     <x-casemanagement::form-elements.button-secondary action="cancelRespond" label="Cancel" />
                 @endif
             </div>
@@ -132,6 +149,9 @@
                                             <x-casemanagement::form-elements.button-danger
                                                 action="deleteLog({{ $log->id }})" label="Delete"
                                                 size="small" />
+                                            <x-casemanagement::form-elements.button-secondary
+                                                action="editLog({{ $log->id }})" label="Edit"
+                                                size="small" />                                                
                                         </div>
 
                                         <div>
