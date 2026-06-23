@@ -15,6 +15,11 @@ class CaseRepository
         return tickets::create($data);
     }
 
+    public function updateTicket(tickets $ticket, array $data)
+    {
+        return $ticket->update($data); 
+    }
+
     public function createTaskLog(array $data)
     {
         return TaskLogs::create($data);

@@ -1,3 +1,14 @@
+@props([
+    'disabled' => isset($disabled) && $disabled,
+    'required' => false,
+    'model' => $model,
+    'name' => $name ?? null,
+    'multiple' => $multiple ?? '',
+    'placeholder' => $placeholder ?? 'Select an option',
+    'options' => $options ?? [],
+    'hint' => $hint ?? null,
+])
+
 <div>
     <select
         @if(isset($notlive) && $notlive)
@@ -7,7 +18,7 @@
         @endif
         id="{{ $name }}"
         name="{{ $name }}"
-        {{  $multiple ?? ''  }}
+        {{  $multiple }}
         class="
             appearance-none 
             text-black 
@@ -23,8 +34,9 @@
             focus:outline-none 
             focus:bg-white 
             focus:border-gray-500"
+        @disabled($disabled)
     >
-        <option value="">-- {{ $placeholder ?? 'Select an option' }} --</option>
+        <option value="">-- {{ $placeholder }} --</option>
         @foreach($options as $key => $value)
             <option value="{{ $key }}">{{ $value }}</option>
         @endforeach

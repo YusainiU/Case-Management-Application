@@ -5,9 +5,13 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
+
 class ManageCase extends ModalComponent
 {
     public ?tickets $case = null;
+
+    public ?string $message = null;
+
     public array $tabHeaders = [
         'sla' => 'SLA',
         'update' => 'Update',
@@ -15,20 +19,35 @@ class ManageCase extends ModalComponent
         'visit' => 'Visit',
         'closure' => 'Closure',
     ];
+
     public string $selectedTab = 'sla';
 
-     /**
+    /**
      * @var array<string, string>
      */
     protected $listeners = [
         'closeManageSlaModal' => 'closeManageSlaModal',
         'reloadCaseStatus' => '$refresh',
+        'caseUpdated' => 'caseUpdated',
     ];
 
     public function resetTabs()
     {
         $this->reset([
             'selectedTab',
+        ]);
+    }
+
+    public function caseUpdated()
+    {
+        $this->case->refresh();
+        $this->message = 'Case has been updated';
+    }
+
+    public function resetToastMessage()
+    {
+        $this->reset([
+            'message',
         ]);
     }
 
@@ -57,16 +76,19 @@ class ManageCase extends ModalComponent
     public function buildUI()
     {
         $caseNumber = $this->case->number ?? null;
-        $title = $caseNumber ? "Manage Case - {$caseNumber}" : "Manage Case";
+        $title = $caseNumber ? "Manage Case - {$caseNumber}" : 'Manage Case';
+
         return [
             'title' => $title,
             'description' => $this->case->customer()->first()->name ?? null,
         ];
     }
+
     public function render()
     {
         $ui = $this->buildUI();
-        return view('casemanagement::livewire.case.manage-case',[
+
+        return view('casemanagement::livewire.case.manage-case', [
             'ui' => $ui,
         ]);
     }

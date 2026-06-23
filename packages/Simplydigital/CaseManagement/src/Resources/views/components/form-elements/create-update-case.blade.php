@@ -6,15 +6,19 @@
                     </div>
                     <div>
                         <x-casemanagement::form-elements.input-label name="Case Title" :required=false />
-                        <x-casemanagement::form-elements.input-text model="form.short_description"
-                            placeholder="Case Title" maxlength="50" :required=true />
+                        <x-casemanagement::form-elements.input-text 
+                            model="form.short_description"
+                            placeholder="Case Title" 
+                            maxlength="50" 
+                            :required=true 
+                        />
                         <x-casemanagement::form-elements.input-error field="form.short_description" />
                     </div>
                     <div>
                         <x-casemanagement::form-elements.input-label name="Select SLA" :required=true />
                         <x-casemanagement::form-elements.select model="form.sla_applications_id"
                             name="Service Level Agreement" placeholder="Service Level Agreement"
-                            :options=$slapOptions />
+                            :options=$slapOptions :disabled="$modeUpdate" />
                         <x-casemanagement::form-elements.input-error field="form.sla_applications_id" />
                     </div>
                     <div>
@@ -68,8 +72,16 @@
                     <div>&nbsp;</div>
                     <div>
                         <x-casemanagement::form-elements.input-label name="Case Description" :required=true />
-                        <x-casemanagement::form-elements.textarea model="form.description" placeholder="Case Descriptin"
+                        <x-casemanagement::form-elements.textarea model="form.description" placeholder="Case Description"
                             :required=true hint="Case Description" />
                         <x-casemanagement::form-elements.input-error field="form.description" />
                     </div>
+
+                    @if(isset($modeUpdate) && $modeUpdate)
+                        <div>&nbsp;</div>
+                        <div>&nbsp;</div>                    
+                        <div>
+                            <x-casemanagement::form-elements.button-primary action="updateCase" label="Update" />
+                        </div>
+                    @endif
     </div>

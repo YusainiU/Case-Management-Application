@@ -119,7 +119,8 @@ class ViewCases extends Component
     {
         $this->resetAllModal();
         $caseId = (int) $caseId;
-        $ticket = $this->tickets->firstWhere('id', $caseId);
+        $column = 'id';
+        $ticket = $this->tickets->firstWhere($column, $caseId);
         $siteName = $ticket?->customer?->name;
         $description = $ticket?->description;
         $this->descriptionDetails = [
@@ -133,7 +134,8 @@ class ViewCases extends Component
     {
         $this->resetAllModal();
         $caseId = (int) $caseId;
-        $this->ticket = $this->tickets->firstWhere('id', $caseId);
+        $column = "id";
+        $this->ticket = $this->tickets->firstWhere($column, $caseId);
         $this->displaySlaStatus = true;
     }
     
@@ -161,7 +163,8 @@ class ViewCases extends Component
     {
         $this->resetAllModal();
         $caseId = (int) $caseId;
-        $this->ticket = $this->tickets->firstWhere('id', $caseId);        
+        $column = "id";
+        $this->ticket = $this->tickets->firstWhere($column, $caseId);        
         $this->displayProfileModal = true;
     }
 

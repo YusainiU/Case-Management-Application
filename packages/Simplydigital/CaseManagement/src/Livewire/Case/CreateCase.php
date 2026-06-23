@@ -13,6 +13,7 @@ use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
 use Simplydigital\CaseManagement\Models\Customer;
 use Simplydigital\CaseManagement\Models\CustomerContacts;
+use Simplydigital\CaseManagement\Repositories\CaseRepository;
 
 class CreateCase extends ModalComponent
 {
@@ -105,7 +106,8 @@ class CreateCase extends ModalComponent
 
     public function updatedFormRaisedByUser(int|string|null $userId)
     {
-        $user = CustomerContacts::where('user_id', $userId)->first();
+        $column = 'user_id';
+        $user = CustomerContacts::where($column, $userId)->first();
         if($user) {
             $this->form['contact_telephone'] = $user->customerUserDetails->phone;
             $this->form['contact_email'] = $user->customerUser->email;
@@ -147,7 +149,12 @@ class CreateCase extends ModalComponent
     protected function customerServices(): CaseCustomerServices
     {
         return app(CaseCustomerServices::class);
-    }    
+    }
+    
+    protected function repoService(): CaseRepository
+    {
+        return app(CaseRepository::class);
+    }
 
     public function loadCase()
     {
@@ -224,6 +231,14 @@ class CreateCase extends ModalComponent
         $service = $this->ticketServices();
         $service->createNewTicket($this->form);
         $this->closeThisModal();        
+    }
+
+    public function updateCase()
+    {
+        $this->validate();
+        $this->repoService()->updateTicket($this->case, $this->form);
+        $this->dispatch('caseUpdated');
+        
     }
 
     public function render()
