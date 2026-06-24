@@ -30,8 +30,9 @@ class CaseRepository
         return slaTask::create($data);
     }
 
-    public function updateRespondAt(slaTask $slaTask, ?string $respondedAt)
+    public function updateRespondAt(?slaTask $slaTask, ?string $respondedAt)
     {
+        if(!$slaTask) return false;
         $slaTask->responded_at = $respondedAt ?? null;
         if($slaTask->isDirty('responded_at')) {            
             return $slaTask->save();
@@ -49,8 +50,9 @@ class CaseRepository
         return false;
     }
 
-    public function updateFixedAt(slaTask $slaTask, ?string $fixedAt)
+    public function updateFixedAt(?slaTask $slaTask, ?string $fixedAt)
     {
+        if(!$slaTask) return false;
         $slaTask->fixed_at = $fixedAt ?? null;
         if($slaTask->isDirty('fixed_at')) {            
             return $slaTask->save();

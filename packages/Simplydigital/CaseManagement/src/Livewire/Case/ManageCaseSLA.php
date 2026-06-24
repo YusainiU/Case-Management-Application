@@ -47,9 +47,9 @@ class ManageCaseSLA extends ModalComponent
     public function loadSLAData()
     {
         $this->forms = [
-            'responded_at' => $this->case->slaTasks->responded_at ? $this->case->slaTasks->responded_at->format('Y-m-d\TH:i') : null,
-            'fixed_at' => $this->case->slaTasks->fixed_at ? $this->case->slaTasks->fixed_at->format('Y-m-d\TH:i') : null,
-            'assigned_to' => (string) $this->case->assigned_to,
+            'responded_at' => $this->case->slaTasks?->responded_at ? $this->case->slaTasks->responded_at->format('Y-m-d\TH:i') : null,
+            'fixed_at' => $this->case->slaTasks?->fixed_at ? $this->case->slaTasks->fixed_at->format('Y-m-d\TH:i') : null,
+            'assigned_to' => (string) $this->case?->assigned_to,
             'log' => null,
         ];
     }
@@ -61,7 +61,7 @@ class ManageCaseSLA extends ModalComponent
 
     public function checkPause()
     {
-        $this->isPaused = $this->case->slaTasks->paused;
+        $this->isPaused = $this->case->slaTasks?->paused;
     }
 
     public function ticketService():CaseTicketServices

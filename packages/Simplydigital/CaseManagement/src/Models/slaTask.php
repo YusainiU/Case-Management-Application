@@ -8,6 +8,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Simplydigital\CaseManagement\Services\UI;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Activitylog\Models\Activity;
+
+/**
+ * @property \Illuminate\Support\Carbon|null $responded_at
+ * @property \Illuminate\Support\Carbon|null $respond_by
+ * @property \Illuminate\Support\Carbon|null $fixed_at
+ * @property \Illuminate\Support\Carbon|null $fix_by
+ */
 
 class slaTask extends Model
 {
@@ -42,11 +51,16 @@ class slaTask extends Model
     protected static function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->useLogName('ticket')
+            ->useLogName('task')
             ->logAll()
             ->logOnlyDirty()
             ->dontLogIfAttributesChangedOnly([]);
     }
+
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(Activity::class,'subject');        
+    }     
 
     protected function casts(): array
     {
@@ -157,6 +171,9 @@ class slaTask extends Model
      */
     public function getBreachedAttribute(): bool
     {
+
+        //dd(get_debug_type($this->fixed_at));
+                
         if ($this->paused) {
             return false;
         }

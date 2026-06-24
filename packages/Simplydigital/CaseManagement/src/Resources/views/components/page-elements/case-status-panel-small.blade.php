@@ -9,7 +9,7 @@
     <div class="flex flex-wrap items-center gap-3">
 
         <!-- Expired -->
-        @if ($case->slaTasks->breached)
+        @if ($case->slaTasks?->breached)
             <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
                 <span class="w-3 h-3 rounded-full bg-red-600"></span>
                 <div>
@@ -20,7 +20,7 @@
         @endif
 
         <!-- Warning -->
-        @if ($case->slaTasks->sla_severity)
+        @if ($case->slaTasks?->sla_severity)
             <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-50 border border-amber-100">
                 <span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
                 <div>
