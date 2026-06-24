@@ -12,27 +12,8 @@ use Simplydigital\CaseManagement\Services\CaseTableSpatieLogService;
 class CaseFieldChanges extends Component
 {
     use WithPagination;
-
     public ?tickets $case;
-
     public ?slaTask $slaTask;
-
-    // public function tableActivities()
-    // {
-    //     $activities = new Collection();
-    //     $service = app(CaseTableSpatieLogService::class);
-    //     if($this->case){
-    //         $activities =  $service->tableActivities($this->case)->get();
-    //     }
-    //     if($this->slaTask){
-    //         $activities =  $service->tableActivities($this->slaTask)->get();
-    //     }
-    //     if(!$activities->isEmpty()) {
-    //         return $service->flattenActivities($activities);
-    //     }
-    //     return $activities;
-    // }
-
     public function tableActivities()
     {
         $service = app(CaseTableSpatieLogService::class);

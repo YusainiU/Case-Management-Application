@@ -6,6 +6,7 @@ use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseUserServices;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
+use Livewire\Attributes\On;
 
 class ManageCaseSLA extends ModalComponent
 {
@@ -14,6 +15,7 @@ class ManageCaseSLA extends ModalComponent
     public array $internals = [];
     public $isPaused = false;
     public ?string $message = null;
+    public bool $noSlaTask = false;
 
     protected $validationAttributes = [
         'forms.responded_at' => 'Responded At',
@@ -34,6 +36,9 @@ class ManageCaseSLA extends ModalComponent
 
     public function mount()
     {
+        if(!$this->case->slaTasks){
+            $this->noSlaTask = true;
+        }
         $this->callData();
     }
 
@@ -96,6 +101,15 @@ class ManageCaseSLA extends ModalComponent
         $this->callData();
         $this->message = "Case has been unassigned";
         $this->dispatch('reloadCaseStatus');
+    }
+
+    #[On('activities-changed')]
+    public function createSlaTask()
+    {
+        $this->noSlaTask = false;
+        $this->ticketService()->createSlaTask($this->case);
+        $this->dispatch('reloadCaseStatus');
+        $this->dispatch('$refresh');
     }
 
     public function render()

@@ -238,6 +238,19 @@ class CaseTicketUtilityServices
         return $ticket;
     }
 
+    public function createSlaTask(tickets $ticket)
+    {                
+        //Get Respond/Fix By DateTime
+        $respondby = $this->getRespondByDateTime($ticket);
+        $fixby = $this->getFixByDateTime($ticket);
+        //Create new task Service
+        $logAdmin = $this->caseLogAdministrationService;
+        $task = $this->createNewTicketSlaTask($ticket, $respondby, $fixby);
+        $logText = $logAdmin->buildSlaTaskCreatedText($task);
+        $logType = config('case-management.logs.type.sla_tasks');
+        $logAdmin->createSystemLog($ticket, $logText, $logType);                        
+    }
+
     public  function reopenTicket(tickets $ticket)
     {
         

@@ -7,6 +7,13 @@
                 message="{{ $message }}"
             />
         @endif
+        @if($this->noSlaTask)
+            <x-casemanagement::page-elements.toast-alert-simple 
+                header="WARNING"
+                mode="warning"
+                message="SLA Task is missing"
+            />
+        @endif
     </div>
     <div class="grid grid-cols-3 gap-4 mb-4">     
         <div>
@@ -61,9 +68,13 @@
         </div>
     </div>
     <div class="flex flex-row gap-4">
-        <x-casemanagement::form-elements.button-primary action="updateSla" label="Update" />
-        @if($forms['assigned_to'])
-            <x-casemanagement::form-elements.button-danger action="unassign" label="Unassigned Case" />
+        @if($this->noSlaTask)
+            <x-casemanagement::form-elements.button-danger action="createSlaTask" label="Create SLA Task" />
+        @else
+            <x-casemanagement::form-elements.button-primary action="updateSla" label="Update" />
+            @if($forms['assigned_to'])
+                <x-casemanagement::form-elements.button-danger action="unassign" label="Unassigned Case" />
+            @endif
         @endif
     </div>      
 </div>

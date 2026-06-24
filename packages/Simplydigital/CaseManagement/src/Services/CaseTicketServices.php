@@ -276,5 +276,9 @@ class CaseTicketServices
         
     }
 
+    public function createSlaTask(tickets $ticket)
+    {
+        $this->caseTicketUtilityServices->createSlaTask($ticket);
+    }
     
 }
