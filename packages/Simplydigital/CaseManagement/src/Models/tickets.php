@@ -6,8 +6,10 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Activitylog\Models\Concerns\LogsActivity; 
 use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
 use Simplydigital\CaseManagement\Enums\CaseState;
@@ -26,6 +28,11 @@ class tickets extends Model
             ->logOnlyDirty()
             ->dontLogIfAttributesChangedOnly([]);
     }
+
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(Activity::class,'subject');        
+    }    
     protected $fillable = [
         'number',
         'customer_id',

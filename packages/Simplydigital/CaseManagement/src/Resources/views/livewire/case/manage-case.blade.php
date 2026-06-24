@@ -43,6 +43,10 @@
             @if($tabHeaders[$this->selectedTab] == $tabHeaders['update'])
                 <livewire:create-case :caseId="$case->id" :customerId="$case->customer_id" :modeUpdate="true"/>
             @endif
+
+            @if($tabHeaders[$this->selectedTab] == $tabHeaders['tracker'])
+                <livewire:case-field-changes :case="$case" />
+            @endif
             
         </x-casemanagement::page-elements.tab>
 

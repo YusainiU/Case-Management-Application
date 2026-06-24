@@ -18,6 +18,7 @@ class ManageCase extends ModalComponent
         'progress' => 'Progress',
         'visit' => 'Visit',
         'closure' => 'Closure',
+        'tracker' => 'Changes Tracker'
     ];
 
     public string $selectedTab = 'sla';
