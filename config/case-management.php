@@ -158,7 +158,8 @@ return [
         'resolve' => '%USER% has resolved the case at %DATETIME%',
         'removeRequireAttention' => '%USER% removed required attention from %FROM%',
         'respondToComment' => '%USER% responded to the comment: %RESPONSE%',
-
+        'pause' => '%USER% has paused the case at %DATETIME%',
+        'resume' => '%USER% has rseumed the case at %DATETIME%. Respond By date time has been readjusted',   
     ],
     'siteVisit' => [
         'visitCreated' => 'Site Visit scheduled for %ASSIGNEE% by %SCHEDULER% on %DATETIME%',

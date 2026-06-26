@@ -5,6 +5,8 @@ namespace Simplydigital\CaseManagement\Repositories;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\slaTask;
+use Simplydigital\CaseManagement\Models\SlaTaskPause;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use App\Models\User;
 
 class CaseRepository
@@ -13,6 +15,16 @@ class CaseRepository
     public function createNewTicket(array $data): tickets
     {
         return tickets::create($data);
+    }
+
+    public function createPause(array $data): SlaTaskPause
+    {
+        return SlaTaskPause::create($data);
+    }
+
+    public function updatePause(SlaTaskPause $pause, array $data)
+    {
+        return $pause->update($data);
     }
 
     public function updateTicket(tickets $ticket, array $data)
@@ -30,22 +42,36 @@ class CaseRepository
         return slaTask::create($data);
     }
 
+    public function updateSlaTask(slaTask $slaTask, $data)
+    {
+        $slaTask->update($data);
+    }
+
     public function updateRespondAt(?slaTask $slaTask, ?string $respondedAt)
     {
         if(!$slaTask) return false;
         $slaTask->responded_at = $respondedAt ?? null;
         if($slaTask->isDirty('responded_at')) {            
-            return $slaTask->save();
+            return $slaTask->update();
         }
         return false;
     }
-    
+
     public function updateAssignedTo(tickets $ticket, ?user $user)
     {
         
         $ticket->assigned_to = $user ? $user->id : null;
         if($ticket->isDirty('assigned_to')) {
-            return $ticket->save();
+            return $ticket->update();
+        }
+        return false;
+    }
+
+    public function updateCaseState(tickets $ticket, CaseState $caseState)
+    {
+        $ticket->state = $caseState;
+        if($ticket->isDirty('state')) {
+            return $ticket->update();
         }
         return false;
     }
@@ -55,7 +81,7 @@ class CaseRepository
         if(!$slaTask) return false;
         $slaTask->fixed_at = $fixedAt ?? null;
         if($slaTask->isDirty('fixed_at')) {            
-            return $slaTask->save();
+            return $slaTask->update();
         }
         return false;        
     }

@@ -2,26 +2,153 @@
 
 namespace Simplydigital\CaseManagement\Services;
 
-use Simplydigital\CaseManagement\Services\CasePublicHolidayService;
-use Simplydigital\CaseManagement\Services\SLALoggerService;
+use Carbon\Carbon;
+use Simplydigital\CaseManagement\Models\tickets;
 
 class SLACalculationService
 {
     private CasePublicHolidayService $casePublicHolidayService;
+
     private SLALoggerService $logger;
+
     public array $holidays = [];
 
     public function __construct(?SLALoggerService $logger = null)
     {
-        $this->casePublicHolidayService = new CasePublicHolidayService();
-        $this->logger = $logger ?? new SLALoggerService();
+        $this->casePublicHolidayService = new CasePublicHolidayService;
+        $this->logger = $logger ?? new SLALoggerService;
         $this->holidays = $this->casePublicHolidayService->getPublicHolidays();
+    }
+
+    public function workingMinutesBetween(
+        tickets $ticket,
+        Carbon $from,
+        Carbon $to
+    ): int {
+
+        $data = $this->createSlaData($ticket);
+        $slaStartDay = $data['startDay'];
+        $slaEndDay = $data['endDay'];
+        $service_start_time = $data['service_start_time'];
+        $service_end_time = $data['service_end_time'];
+        $includePublicHoliday = $data['includePublicHoliday'];
+
+        if ($from->gte($to)) {
+            return 0;
+        }
+
+        $minutes = 0;
+        $current = $from->copy();
+
+        while ($current->lt($to)) {
+
+            $current_ts = $current->timestamp;
+            $startDay = $current->dayName;
+
+            // Skip non-business days
+            $isWorkingDay = CaseManagementUtilityServices::isDayInsideSla(
+                $current_ts,
+                $slaStartDay,
+                $slaEndDay,
+                $startDay,
+                $startDay,
+            );
+
+            if (! $isWorkingDay) {
+                $current->addDay()->startOfDay();
+                continue;
+            }
+
+            //check and skip if public holiday
+            if($includePublicHoliday) {
+                if($this->isPublicHoliday($current_ts)){
+                    $current->addDay()->startOfDay();
+                    continue;
+                }                
+            }
+
+
+            $serviceStart = gmdate('H:i:s', $service_start_time);
+            $serviceStart = Carbon::parse(
+                $current->format('Y-m-d').' '.$serviceStart
+            );
+
+            $serviceEnd = gmdate('H:i:s', $service_end_time);
+            $serviceEnd = Carbon::parse(
+                $current->format('Y-m-d').' '.$serviceEnd
+            );
+
+            // Before business hours
+            if ($current->lt($serviceStart)) {
+                $current = $serviceStart;
+            }
+
+            // After business hours
+            if ($current->gte($serviceEnd)) {
+                $current->addDay()->startOfDay();
+
+                continue;
+            }
+
+            $segmentEnd = $to->copy();
+
+            if ($segmentEnd->gt($serviceEnd)) {
+                $segmentEnd = $serviceEnd;
+            }
+
+            if ($segmentEnd->gt($current)) {
+                $minutes += $current->diffInMinutes($segmentEnd);
+            }
+
+            $current = $serviceEnd->addSecond();
+        }
+
+        return $minutes;
+    }
+
+    public function calculatePauseRemainingValue(tickets $ticket, carbon $pausedDate)
+    {
+        $sla = $this->createSlaData($ticket);
+        $response_time = $sla['response_time']; //in secoonds
+        $created_at  = carbon::parse($ticket->created_at);
+        $slaTimeConsumed = $this->workingMinutesBetween($ticket, $created_at, $pausedDate);
+        $slaTimeConsumed = $slaTimeConsumed * 60; // In Seconds
+        $slaTimeRemaining = $response_time - $slaTimeConsumed;
+        return $slaTimeRemaining;
+
+    }
+
+    public function createSlaData(tickets $ticket)
+    {
+        $sla = $ticket->slaApplication->serviceLevelAgreement;
+        $data = [
+            'response_time' => $sla->response_time,
+            'fixed_time' => $sla->fixed_time,
+            'service_start_time' => $sla->service_start_time,
+            'service_end_time' => $sla->service_end_time,
+            'startDay' => $sla->start_day->value,
+            'endDay' => $sla->end_day->value,
+            'includePublicHoliday' => $sla->include_public_holiday,
+        ];
+
+        return $data;
+    }
+
+    public function recalculateRespondByTime(tickets $ticket, int $startDate)
+    {
+        $sla = $ticket->slaApplication->serviceLevelAgreement;
+        $createdDay = strtolower(date('l', $startDate));
+        $data = $this->createSlaData($ticket);
+        $data['startDate'] = $startDate;
+        $data['createdDay'] = $createdDay;
+
+        return $this->calcRespondByTime($data);
     }
 
     public function calcRespondByTime(array $data)
     {
 
-        //Example $data structure:
+        // Example $data structure:
         /*
             array:9 [
             "response_time" => 14400
@@ -36,7 +163,7 @@ class SLACalculationService
             ]
         */
 
-        $this->logger->log('Initial Data', $data);            
+        $this->logger->log('Initial Data', $data);
 
         // Set default service end time if not defined
         $serviceEndAt = $data['service_end_time'] ?: 86400;
@@ -81,6 +208,7 @@ class SLACalculationService
                 $currentDate = $this->rebuildDateTimeUsingTheServiceStart($currentDate, $serviceStartAt);
                 $currentDate = strtotime('+1 day', $currentDate);
                 $this->logger->log("$iteration: Skipping Non-Working Day", date('Y-m-d', $currentDate));
+
                 continue;
             }
 
@@ -89,17 +217,18 @@ class SLACalculationService
                 $currentDate = $this->rebuildDateTimeUsingTheServiceStart($currentDate, $serviceStartAt);
                 $currentDate = strtotime('+1 day', $currentDate);
                 $this->logger->log("$iteration: Skipping Public Holiday", date('Y-m-d', $currentDate));
+
                 continue;
             }
 
-            //Check whether time created is before the service time
-            if($this->checkTimeIsBeforeServiceHours($currentDateSeconds, $serviceStartAt)){
+            // Check whether time created is before the service time
+            if ($this->checkTimeIsBeforeServiceHours($currentDateSeconds, $serviceStartAt)) {
                 $currentDate = $this->rebuildDateTimeUsingTheServiceStart($currentDate, $serviceStartAt);
                 $this->logger->log("$iteration: Adjusting Start Time to Service Start", date('Y-m-d H:i:s', $currentDate));
             }
 
             // Check if current time is after service hours
-            if($this->checkTimeIsAfterServiceHours($currentDateSeconds, $serviceEndAt)){
+            if ($this->checkTimeIsAfterServiceHours($currentDateSeconds, $serviceEndAt)) {
                 $currentDate = $this->rebuildDateTimeUsingTheServiceStart($currentDate, $serviceStartAt);
                 $currentDate = strtotime('+1 day', $currentDate);
                 $this->logger->log("$iteration: Adjusting Start Time to Next Day Service Start", date('Y-m-d H:i:s', $currentDate));
@@ -119,8 +248,9 @@ class SLACalculationService
 
             if ($result['isComplete']) {
                 $this->logger->log("$iteration: Final Result", $result);
+
                 return $this->formatDateTime($result['date'], $result['time']);
-                //return $this->logger->getLogs();
+                // return $this->logger->getLogs();
             }
 
             // Update for next iteration
@@ -152,7 +282,8 @@ class SLACalculationService
     public function rebuildDateTimeUsingTheServiceStart(int $currentDate, int $serviceStartAt): int
     {
         $dateYMD = date('Y-m-d', $currentDate);
-        $newDateTime = strtotime("$dateYMD " . CaseManagementUtilityServices::secondsToHMS($serviceStartAt));
+        $newDateTime = strtotime("$dateYMD ".CaseManagementUtilityServices::secondsToHMS($serviceStartAt));
+
         return $newDateTime;
     }
 
@@ -167,7 +298,7 @@ class SLACalculationService
         int $serviceEndAt,
         int $responseTime)
     {
-        $currentTime = CaseManagementUtilityServices::parseTimeStampToSeconds($currentDate);      
+        $currentTime = CaseManagementUtilityServices::parseTimeStampToSeconds($currentDate);
         $this->logger->log("$iteration: Current Time in Seconds", $currentTime);
 
         // Handle carryover from previous days
@@ -183,6 +314,7 @@ class SLACalculationService
                     'date' => date('Y-m-d', $currentDate),
                     'time' => CaseManagementUtilityServices::secondsToHMS($initSeconds),
                 ]);
+
                 return [
                     'isComplete' => true,
                     'date' => $currentDate,
@@ -193,6 +325,7 @@ class SLACalculationService
                     'currentDate' => date('Y-m-d', $currentDate),
                     'responseTime' => CaseManagementUtilityServices::secondsToHMS($initSeconds),
                 ]);
+
                 return [
                     'isComplete' => false,
                     'carryoverSeconds' => $initSeconds - $serviceEndAt,
@@ -207,6 +340,7 @@ class SLACalculationService
                 'currentTime' => CaseManagementUtilityServices::secondsToHMS($currentTime),
                 'serviceEndAt' => CaseManagementUtilityServices::secondsToHMS($serviceEndAt),
             ]);
+
             return [
                 'isComplete' => false,
                 'carryoverSeconds' => 0,
@@ -223,6 +357,7 @@ class SLACalculationService
                 'responseEndTime' => CaseManagementUtilityServices::secondsToHMS($responseEndTime),
                 'serviceEndAt' => CaseManagementUtilityServices::secondsToHMS($serviceEndAt),
             ]);
+
             return [
                 'isComplete' => false,
                 'carryoverSeconds' => $responseEndTime - $serviceEndAt,
@@ -234,6 +369,7 @@ class SLACalculationService
             'responseEndTime' => CaseManagementUtilityServices::secondsToHMS($responseEndTime),
             'responseDate' => date('Y-m-d', $currentDate),
         ]);
+
         return [
             'isComplete' => true,
             'date' => $currentDate,
@@ -244,7 +380,7 @@ class SLACalculationService
     /**
      * Check if a date is a public holiday
      */
-    private function isPublicHoliday(string $date)
+    private function isPublicHoliday(int $date)
     {
         $dmy = date('d-m-Y', $date);
 

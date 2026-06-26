@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Simplydigital\CaseManagement\Services\UI;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -41,6 +42,7 @@ class slaTask extends Model
         'resumed_at',
         'breached_at',
         'active',
+        'state',
     ];
 
     protected function getWarningTimer()
@@ -74,6 +76,7 @@ class slaTask extends Model
             'breached_at' => 'datetime',
             'respond_by' => 'datetime',
             'fix_by' => 'datetime',
+            'state' => CaseState::class,
         ];
     }
 

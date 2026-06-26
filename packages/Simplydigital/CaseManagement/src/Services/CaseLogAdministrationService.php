@@ -27,7 +27,7 @@ class CaseLogAdministrationService
 
         $currentUserId =  Auth::id(); //auth()->id();
         $currentUserName = Auth::getName(); //auth()->user()->name;
-        $name = $ticket->ticket_number;
+        $name = $ticket->number;
         $ticket_id = $ticket->id;
 
         $data = [
@@ -304,6 +304,26 @@ class CaseLogAdministrationService
         $logString = str_replace($searchFor, $replaceWith, $phrase);
         return $logString;
     }
+
+    public function buildPauseText(string $pauseDateTime)
+    {
+        $phrase = config('case-management.ProgressLogs.pause') ?? '';
+        $user = Auth::user()->name;
+        $searchFor = ['%USER%','%DATETIME%'];
+        $replaceWith = [$user, $pauseDateTime];
+        $logString = str_replace($searchFor, $replaceWith, $phrase);
+        return $logString;              
+    }
+
+    public function buildResumeText(string $resumeDateTime)
+    {
+        $phrase = config('case-management.ProgressLogs.resume') ?? '';
+        $user = Auth::user()->name;
+        $searchFor = ['%USER%','%DATETIME%'];
+        $replaceWith = [$user, $resumeDateTime];
+        $logString = str_replace($searchFor, $replaceWith, $phrase);
+        return $logString;              
+    }    
 
     public function retrieveProgressLog(?tickets $ticket)
     {

@@ -19,7 +19,8 @@ use Simplydigital\CaseManagement\Services\SLACalculationService;
 use Simplydigital\CaseManagement\Services\CaseRetrieveTicketStatus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-
+use Simplydigital\CaseManagement\Models\SlaTaskPause;
+use Carbon\Carbon;
 
 class CaseTicketUtilityServices
 {
@@ -505,6 +506,14 @@ class CaseTicketUtilityServices
         $user = user::find($userId,'*');        
         $result = $this->caseRepository->updateAssignedTo($ticket, $user);
         if($result) {
+            $hasAssignment = $ticket->first_case_assignment;
+            if(!$hasAssignment){
+                $data = [
+                    'state' => CaseState::In_Progress,
+                    'first_case_assignment' => $ticket->updated_at,
+                ];
+                $this->caseRepository->updateTicket($ticket, $data);
+            }
             $logAdmin = $this->caseLogAdministrationService;
             $logText = $logAdmin->buildAssignedToText($ticket,  $user);
             $logAdmin->createSystemLog($ticket, $logText);
@@ -719,6 +728,95 @@ class CaseTicketUtilityServices
             return false;
         }
 
+        
+    }
+
+    public function pauseCaseSla(tickets $ticket)
+    {
+        
+        $slaTask = $ticket->slaTasks;
+        $now = carbon::now();
+
+        if(!$slaTask) return false;
+        
+        //Create Pause
+        $slaTimeRemaining = $this->calcService->calculatePauseRemainingValue($ticket, $now);
+        $data = [
+            'sla_task_id' => $slaTask->id,
+            'paused_at' => $now,
+            'remaining' => $slaTimeRemaining,
+        ];
+        $pause = $this->caseRepository->createPause($data);
+
+        if($pause) {
+
+            // Update Ticket and create log
+            // Change - state, paused_at
+            $tdata = [
+                'state' => CaseState::Paused,
+                'paused_at' => $pause->paused_at,
+            ];
+            $this->caseRepository->updateTicket($ticket, $tdata);
+            $logText = $this->caseLogAdministrationService->buildPauseText($pause->paused_at); 
+            $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
+
+            //Update Task
+            // Change - state
+            $sData = [
+                'state' => CaseState::Paused,
+            ];
+            $this->caseRepository->updateSlaTask($slaTask, $data);
+
+            return $pause;
+
+        }
+
+        return false;
+
+    }
+
+    public function resumeCaseSla(tickets $ticket)
+    {
+
+        //Get sla task
+        $slaTask = $ticket->slaTask;
+        if(!$slaTask) return false;
+
+        //Get Pause
+        $pause = SlaTaskPause::where('sla_task_id', $slaTask->id)
+            ->where('paused_at', $ticket->paused_at)
+            ->whereNull('resumed_at')
+            ->first();
+        if(!$pause) return false;
+
+        //Recalculate Respondby time -- only when resume is triggered
+        $timeResumed = Carbon::now()->timestamp;
+        $slaRemaining = $pause->remaining;
+        $respondBy = $timeResumed + $slaRemaining;
+        $newRespondBy = Carbon::createFromTimestamp($respondBy); 
+        
+        //Update sla_task_pause - resumed_at
+        $pdata = ['resumed_at' => $timeResumed];
+        $resumed = $this->caseRepository->updatePause($pause, $pdata);
+        
+        if($resumed) {
+            //Update ticket - state=In Progress, resumed_at
+            $tdata = [
+                'state' => CaseState::In_Progress,
+                'resumed_at' => $pause->resumed_at,
+            ];
+            $this->caseRepository->updateTicket($ticket, $tdata);
+            $logText = $this->caseLogAdministrationService->buildResumeText($pause->resumed_date->format('d-m-y H:i'));
+            $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
+            //update sla_task - state, respond_by
+            $sData = [
+                'state' => CaseState::In_Progress,
+                'respond_by' => $newRespondBy,
+            ];
+            $this->caseRepository->updateSlaTask($slaTask, $sData);
+        }
+
+        return $resumed;
         
     }
 

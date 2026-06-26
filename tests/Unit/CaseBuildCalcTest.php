@@ -3,10 +3,10 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
 use Simplydigital\CaseManagement\Services\SLACalculationService;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\SLALoggerService;
+use Carbon\Carbon;
 
 class CaseBuildCalcTest extends TestCase
 {
@@ -16,13 +16,20 @@ class CaseBuildCalcTest extends TestCase
     public function test_buildCalcData(): void
     {
 
-        $caseId = 5; // Replace with an actual case ID from your database
-        $fieldToCheck = 'response_time'; // Replace with the field you want to check
-        $ServiceUtility = new CaseTicketUtilityServices();
+        $loggers = new SLALoggerService();
+        $loggers->enable();
+        $SLACalcService = new SLACalculationService($loggers);
+
+        $caseId = 2; // Replace with an actual case ID from your database
         $sampleCase = tickets::find($caseId); // Replace with an actual case ID from your database
+
+        //===============================================================
+        //TEST FUNCTION ONE
+        //$fieldToCheck = 'response_time'; // Replace with the field you want to check
+        //$ServiceUtility = new CaseTicketUtilityServices();        
         // dump($sampleCase);
-        $this->assertEquals($caseId, $sampleCase->id); // Replace with the expected case ID
-        $calcData = $ServiceUtility->buildCalcData($sampleCase, $fieldToCheck);
+        //$this->assertEquals($caseId, $sampleCase->id); // Replace with the expected case ID
+        //$calcData = $ServiceUtility->buildCalcData($sampleCase, $fieldToCheck);
 
         //Example $data structure:
         
@@ -38,16 +45,29 @@ class CaseBuildCalcTest extends TestCase
             //     "includePublicHoliday" => false,
             // ];
         
-
-
-        $loggers = new SLALoggerService();
-        $loggers->enable();
-        $SLACalcService = new SLACalculationService($loggers);
-        $calc = $SLACalcService->calcRespondByTime($calcData);
-        $logs = $loggers->getLogs();
+        //$calc = $SLACalcService->calcRespondByTime($calcData);
+        //$logs = $loggers->getLogs();
         //dump($logs);
-        dump($calc);
+        //dump($calc);
+
+        //===============================================================
+        //TEST FUNCTION 2
+        // $calc = $SLACalcService->recalculateRespondByTime($sampleCase, time());
+        // $logs = $loggers->getLogs();
+        // dump($logs);
+        // dump($calc);
+
+        //===============================================================
+        //TEST FUNCTION THREE        
+        $from = carbon::parse('2026-06-26 12:00:00');
+        $to = carbon::parse('2026-06-29 10:00:00');
+        $calc = $SLACalcService->workingMinutesBetween($sampleCase, $from, $to);
+        // REMEMBER TO CHANGE THE FUNCTION TO PUBLIC !!
+        $pub = $SLACalcService->isPublicHoliday($from->timestamp);
+        dump($calc * 60);
+        dump($pub);
 
         $this->assertNotEmpty($calc);
+
     }
 }
