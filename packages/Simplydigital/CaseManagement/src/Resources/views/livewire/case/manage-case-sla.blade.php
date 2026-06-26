@@ -43,7 +43,12 @@
                 [&::-webkit-calendar-picker-indicator]:bg-gray-400 
                 [&::-webkit-calendar-picker-indicator]:p-1 
                 [&::-webkit-calendar-picker-indicator]:rounded"
-                hint="The date and time when the case was responded to."
+                @if($case->slaTasks->activePause())
+                    :disabled=true
+                    hint="The SLA is Paused. To change unpause first"
+                @else
+                    hint="The date and time when the case was fixed."
+                @endif
             />
              <x-casemanagement::form-elements.input-error field="forms.responded_at" />
         </div>
@@ -57,7 +62,12 @@
                 [&::-webkit-calendar-picker-indicator]:bg-gray-400 
                 [&::-webkit-calendar-picker-indicator]:p-1 
                 [&::-webkit-calendar-picker-indicator]:rounded"
-                hint="The date and time when the case was fixed."
+                @if($case->slaTasks->activePause())
+                    :disabled=true
+                    hint="The SLA is Paused. To change unpause first"
+                @else
+                    hint="The date and time when the case was fixed."
+                @endif
             />
             <x-casemanagement::form-elements.input-error field="forms.fixed_at" />
         </div>
