@@ -33,17 +33,37 @@ class SLACalculationService
         $service_end_time = $data['service_end_time'];
         $includePublicHoliday = $data['includePublicHoliday'];
 
+        // $this->logger->log('WM - initial data', [
+        //     'sla_start_day' => $slaStartDay,
+        //     'sla_end_day' => $slaEndDay,
+        //     'service_start_time' => $service_start_time,
+        //     'service_end_time' => $service_end_time,
+        //     'include_public_holiday' => $includePublicHoliday,
+        //     'from' => $from->format('d-m:Y H:i:s'),
+        //     'to' => $to->format('d-m:Y H:i:s'),
+        // ]);
+
+
         if ($from->gte($to)) {
             return 0;
         }
 
         $minutes = 0;
         $current = $from->copy();
+        $counter = 0;
 
         while ($current->lt($to)) {
 
+            $counter++;
             $current_ts = $current->timestamp;
             $startDay = $current->dayName;
+
+            // $logTitle = "WM - loop $counter";
+            // $this->logger->log($logTitle,[
+            //     'current' => $current->format('d-m-Y H:i:s'),
+            //     'current_timestamp' => $current_ts,
+            //     'start_day' => $startDay,
+            // ]);
 
             // Skip non-business days
             $isWorkingDay = CaseManagementUtilityServices::isDayInsideSla(
@@ -54,19 +74,14 @@ class SLACalculationService
                 $startDay,
             );
 
+            
+            $isWorkingDay = $this->isBusinessWorkingHours($data, $current);
+            //$this->logger->log("$counter - isWorkingDay", $isWorkingDay);
+
             if (! $isWorkingDay) {
                 $current->addDay()->startOfDay();
                 continue;
             }
-
-            //check and skip if public holiday
-            if($includePublicHoliday) {
-                if($this->isPublicHoliday($current_ts)){
-                    $current->addDay()->startOfDay();
-                    continue;
-                }                
-            }
-
 
             $serviceStart = gmdate('H:i:s', $service_start_time);
             $serviceStart = Carbon::parse(
@@ -86,11 +101,12 @@ class SLACalculationService
             // After business hours
             if ($current->gte($serviceEnd)) {
                 $current->addDay()->startOfDay();
-
+                //$this->logger->log("$counter - After Business Hour .. next ..", $current->format('d-m-Y H:i:s'));
                 continue;
             }
 
             $segmentEnd = $to->copy();
+            //$this->logger->log("$counter - segmentEnd ..", $segmentEnd);
 
             if ($segmentEnd->gt($serviceEnd)) {
                 $segmentEnd = $serviceEnd;
@@ -103,6 +119,7 @@ class SLACalculationService
             $current = $serviceEnd->addSecond();
         }
 
+        //$this->logger->log("WM - Working Minutes ..", $minutes);
         return $minutes;
     }
 
@@ -110,10 +127,15 @@ class SLACalculationService
     {
         $sla = $this->createSlaData($ticket);
         $response_time = $sla['response_time']; //in secoonds
+        //$this->logger->log('paused_time', $pausedDate);
+        //$this->logger->log('response_time', $response_time);
         $created_at  = carbon::parse($ticket->created_at);
+        //$this->logger->log('created_at', $created_at);
         $slaTimeConsumed = $this->workingMinutesBetween($ticket, $created_at, $pausedDate);
+        //$this->logger->log('sla_time_consumed', $slaTimeConsumed);
         $slaTimeConsumed = $slaTimeConsumed * 60; // In Seconds
         $slaTimeRemaining = $response_time - $slaTimeConsumed;
+        //$this->logger->log('sla_time_remaining', $slaTimeRemaining);
         return $slaTimeRemaining;
 
     }
@@ -188,7 +210,10 @@ class SLACalculationService
         ]);
 
         for ($iteration = 0; $iteration < $maxIterations; $iteration++) {
+            
             $currentDay = strtolower(date('l', $currentDate));
+            $currentCarbonDate = Carbon::createFromTimestamp($currentDate);
+
             $this->logger->log("Iteration $iteration", [
                 'currentDate' => date('Y-m-d', $currentDate),
                 'currentDay' => $currentDay,
@@ -196,28 +221,12 @@ class SLACalculationService
             ]);
 
             // Check if current day is within SLA working days
-            $isWorkingDay = CaseManagementUtilityServices::isDayInsideSla(
-                $currentDate,
-                $data['startDay'],
-                $data['endDay'],
-                $currentDay,
-                $data['startDay']
-            );
+            $isWorkingDate = $this->isBusinessWorkingHours($data, $currentCarbonDate);
 
-            if (! $isWorkingDay) {
+            if (! $isWorkingDate) {
                 $currentDate = $this->rebuildDateTimeUsingTheServiceStart($currentDate, $serviceStartAt);
                 $currentDate = strtotime('+1 day', $currentDate);
                 $this->logger->log("$iteration: Skipping Non-Working Day", date('Y-m-d', $currentDate));
-
-                continue;
-            }
-
-            // Skip public holidays if required
-            if (! $data['includePublicHoliday'] && $this->isPublicHoliday($currentDate)) {
-                $currentDate = $this->rebuildDateTimeUsingTheServiceStart($currentDate, $serviceStartAt);
-                $currentDate = strtotime('+1 day', $currentDate);
-                $this->logger->log("$iteration: Skipping Public Holiday", date('Y-m-d', $currentDate));
-
                 continue;
             }
 
@@ -380,11 +389,39 @@ class SLACalculationService
     /**
      * Check if a date is a public holiday
      */
-    private function isPublicHoliday(int $date)
+    public function isPublicHoliday(int $date)
     {
         $dmy = date('d-m-Y', $date);
 
         return \in_array($dmy, $this->holidays);
+    }
+
+    /**
+     * Check whether datetime provided is inside SLA
+     */    
+    public function isBusinessWorkingHours(array $data, carbon $datetime)
+    {
+        //Data is from $this->createSlaData()
+        $slaStartDay = $data['startDay'];
+        $slaEndDay = $data['endDay'];
+        $includePublicHoliday = $data['includePublicHoliday'];
+                
+        $isWorkingDay = CaseManagementUtilityServices::isDayInsideSla(
+            $datetime->timestamp,
+            $slaStartDay,
+            $slaEndDay,
+            $datetime->dayName,
+            $datetime->dayName,
+        );
+
+        if($includePublicHoliday){
+            $isPublicHoliday = $this->isPublicHoliday($datetime->timestamp);
+            if($isPublicHoliday){
+                $isWorkingDay = false;
+            }
+        }
+        
+        return $isWorkingDay;
     }
 
     /**

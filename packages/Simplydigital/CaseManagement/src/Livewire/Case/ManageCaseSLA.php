@@ -16,6 +16,7 @@ class ManageCaseSLA extends ModalComponent
     public $isPaused = false;
     public ?string $message = null;
     public bool $noSlaTask = false;
+    public bool $isTodayWorkingDay = true;
 
     protected $validationAttributes = [
         'forms.responded_at' => 'Responded At',
@@ -40,6 +41,7 @@ class ManageCaseSLA extends ModalComponent
             $this->noSlaTask = true;
         }
         $this->callData();
+        $this->isTodayWorkingDay = $this->ticketService()->isTodayBusinessWorkingDay($this->case);
     }
 
     public function callData()
@@ -110,6 +112,22 @@ class ManageCaseSLA extends ModalComponent
         $this->ticketService()->createSlaTask($this->case);
         $this->dispatch('reloadCaseStatus');
         $this->dispatch('$refresh');
+    }
+
+    public function pause()
+    {
+        $this->ticketService()->pauseSla($this->case);
+        $this->dispatch('reloadCaseStatus');
+        $this->dispatch('$refresh');
+        $this->message = 'SLA has been paused';        
+    }
+
+    public function resume()
+    {
+        $this->ticketService()->resumeSla($this->case);
+        $this->dispatch('reloadCaseStatus');
+        $this->dispatch('$refresh');
+        $this->message = 'SLA has been resumed';        
     }
 
     public function render()

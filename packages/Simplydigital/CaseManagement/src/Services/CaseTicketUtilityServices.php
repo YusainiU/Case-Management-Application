@@ -779,41 +779,47 @@ class CaseTicketUtilityServices
     {
 
         //Get sla task
-        $slaTask = $ticket->slaTask;
+        $slaTask = $ticket->slaTasks;
         if(!$slaTask) return false;
 
         //Get Pause
         $pause = SlaTaskPause::where('sla_task_id', $slaTask->id)
-            ->where('paused_at', $ticket->paused_at)
+            ->where('paused_at', $slaTask->paused_at)
             ->whereNull('resumed_at')
             ->first();
         if(!$pause) return false;
 
-        //Recalculate Respondby time -- only when resume is triggered
-        $timeResumed = Carbon::now()->timestamp;
+        //Recalculate Respondby time -- only when resume is triggere
+        $now = Carbon::now();
+        $timeResumed = $now->timestamp;
         $slaRemaining = $pause->remaining;
         $respondBy = $timeResumed + $slaRemaining;
         $newRespondBy = Carbon::createFromTimestamp($respondBy); 
         
         //Update sla_task_pause - resumed_at
-        $pdata = ['resumed_at' => $timeResumed];
+        $pdata = [
+            'resumed_at' => $now,
+        ];
         $resumed = $this->caseRepository->updatePause($pause, $pdata);
         
         if($resumed) {
             //Update ticket - state=In Progress, resumed_at
             $tdata = [
                 'state' => CaseState::In_Progress,
-                'resumed_at' => $pause->resumed_at,
             ];
             $this->caseRepository->updateTicket($ticket, $tdata);
-            $logText = $this->caseLogAdministrationService->buildResumeText($pause->resumed_date->format('d-m-y H:i'));
+            $logText = $this->caseLogAdministrationService->buildResumeText($now->format('d-m-y H:i'));
             $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
             //update sla_task - state, respond_by
+            $from = $slaTask->respond_by->format('d-m-Y H:i:s');
+            $to = $newRespondBy->format('d-m-Y H:i:s');
             $sData = [
                 'state' => CaseState::In_Progress,
                 'respond_by' => $newRespondBy,
             ];
             $this->caseRepository->updateSlaTask($slaTask, $sData);
+            $logText = $this->caseLogAdministrationService->buildChangeRespondByText($from, $to);
+            $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
         }
 
         return $resumed;

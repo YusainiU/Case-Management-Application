@@ -43,12 +43,10 @@
                 [&::-webkit-calendar-picker-indicator]:bg-gray-400 
                 [&::-webkit-calendar-picker-indicator]:p-1 
                 [&::-webkit-calendar-picker-indicator]:rounded"
-                @if($case->slaTasks->activePause())
-                    :disabled=true
-                    hint="The SLA is Paused. To change unpause first"
-                @else
-                    hint="The date and time when the case was fixed."
-                @endif
+                :disabled="$case->slaTasks?->activePause !== null"
+                :hint="$case->slaTasks?->activePause
+                    ? 'The SLA is Paused. To change unpause first'
+                    : 'The date and time when the case was fixed.'"
             />
              <x-casemanagement::form-elements.input-error field="forms.responded_at" />
         </div>
@@ -62,12 +60,10 @@
                 [&::-webkit-calendar-picker-indicator]:bg-gray-400 
                 [&::-webkit-calendar-picker-indicator]:p-1 
                 [&::-webkit-calendar-picker-indicator]:rounded"
-                @if($case->slaTasks->activePause())
-                    :disabled=true
-                    hint="The SLA is Paused. To change unpause first"
-                @else
-                    hint="The date and time when the case was fixed."
-                @endif
+                :disabled="$case->slaTasks?->activePause !== null"
+                :hint="$case->slaTasks?->activePause
+                    ? 'The SLA is Paused. To change unpause first'
+                    : 'The date and time when the case was fixed.'"
             />
             <x-casemanagement::form-elements.input-error field="forms.fixed_at" />
         </div>
@@ -84,6 +80,13 @@
             <x-casemanagement::form-elements.button-primary action="updateSla" label="Update" />
             @if($forms['assigned_to'])
                 <x-casemanagement::form-elements.button-danger action="unassign" label="Unassigned Case" />
+            @endif
+            @if(!$case->slaTasks->breached && $isTodayWorkingDay)
+                @if($case->slaTasks->activePause)
+                    <x-casemanagement::form-elements.button-primary action="resume" label="Resume SLA" />
+                @else
+                    <x-casemanagement::form-elements.button-danger action="pause" label="Pause SLA" />
+                @endif
             @endif
         @endif
     </div>      

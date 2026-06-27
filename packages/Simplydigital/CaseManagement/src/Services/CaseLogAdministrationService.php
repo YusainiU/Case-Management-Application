@@ -315,6 +315,15 @@ class CaseLogAdministrationService
         return $logString;              
     }
 
+    public function buildChangeRespondByText(string $from, string $to)
+    {
+        $phrase = config('case-management.ProgressLogs.respondByTimeChanged') ?? '';
+        $searchFor = ['%FROM%','%TO%'];
+        $replaceWith = [$from, $to];
+        $logString = str_replace($searchFor, $replaceWith, $phrase);
+        return $logString;        
+    }
+
     public function buildResumeText(string $resumeDateTime)
     {
         $phrase = config('case-management.ProgressLogs.resume') ?? '';

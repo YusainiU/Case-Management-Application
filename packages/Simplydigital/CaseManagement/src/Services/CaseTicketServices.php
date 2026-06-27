@@ -2,15 +2,15 @@
 
 namespace Simplydigital\CaseManagement\Services;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Repositories\CaseRepository;
 use Simplydigital\CaseManagement\Services\CaseLogAdministrationService;
+use Simplydigital\CaseManagement\Services\SLACalculationService;
 
 class CaseTicketServices
 {
@@ -25,6 +25,8 @@ class CaseTicketServices
     private CaseTicketUtilityServices $caseTicketUtilityServices;
     private CaseRepository $caseRepository; 
     private CaseLogAdministrationService $caseLogService;
+    private SLACalculationService $calcService;
+
 
     public function __construct()
     {
@@ -32,6 +34,7 @@ class CaseTicketServices
         $this->caseTicketUtilityServices = app()->make(CaseTicketUtilityServices::class);
         $this->caseRepository = app()->make(CaseRepository::class);
         $this->caseLogService = app()->make(CaseLogAdministrationService::class);
+        $this->calcService = app(SLACalculationService::class);
     }
 
     public function setCustomer(int $customerId)
@@ -280,5 +283,21 @@ class CaseTicketServices
     {
         $this->caseTicketUtilityServices->createSlaTask($ticket);
     }
+
+    public function pauseSla(tickets $ticket)
+    {
+        $this->caseTicketUtilityServices->pauseCaseSla($ticket);
+    }
+
+    public function resumeSla(tickets $ticket)
+    {
+        $this->caseTicketUtilityServices->resumeCaseSla($ticket);
+    }
+
+    public function isTodayBusinessWorkingDay(tickets $ticket)
+    {
+        $data = $this->calcService->createSlaData($ticket);
+        return $this->calcService->isBusinessWorkingHours($data, Carbon::now());
+    }    
     
 }
