@@ -9,12 +9,12 @@ use Illuminate\Notifications\Notification;
 class DefaultNotification extends Notification
 {
     use Queueable;
-    private $messages;
+    private array $messages;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($messages)
+    public function __construct(array $messages)
     {
         $this->messages = $messages;
     }

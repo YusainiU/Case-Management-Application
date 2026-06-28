@@ -4,17 +4,18 @@ namespace Simplydigital\CaseManagement\Livewire\Product;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Simplydigital\CaseManagement\Models\Product;
 
 class ViewProducts extends Component
 {
 
     use WithPagination;
-    public $title = 'Products';
-    public $productId;
-    public $product;
-    public $filter;
-    public $sortField;
-    public $sortDirection;
+    public string $title = 'Products';
+    public ?int $productId = null;
+    public ?product $product = null;
+    public ?string $filter = null;
+    public ?string $sortField = null;
+    public ?string $sortDirection = null;
     public $displayCreateModal = false;
     public $displayUpdateModal = false;
     public $displayProfileModal = false;
@@ -52,7 +53,7 @@ class ViewProducts extends Component
         return $query;
     }
 
-    public function sortByField($field)
+    public function sortByField(string $field)
     {
         if ($this->sortField === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
@@ -79,17 +80,17 @@ class ViewProducts extends Component
         $this->displayCreateModal = true;
     }
 
-    public function openUpdateModal($productId)
+    public function openUpdateModal(int|string $productId)
     {
         $this->resetAll();
-        $this->productId = $productId;
+        $this->productId = (int) $productId;
         $this->displayUpdateModal = true;
     }
     
-    public function openProfileModal($productId)
+    public function openProfileModal(int|string $productId)
     {
         $this->resetAll();
-        $this->productId = $productId;
+        $this->productId = (int) $productId;
         $this->displayProfileModal = true;
     }
 

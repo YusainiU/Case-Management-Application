@@ -40,7 +40,7 @@ class CaseManagementUtilityServices
     public static function daysOfWeek()
     {
         $timestamp = strtotime('next Sunday');
-        $days = array();
+        $days = [];
         for ($i = 0; $i < 7; $i++) {
             $days[] = strtolower(date('l', $timestamp));
             $timestamp = strtotime('+1 day', $timestamp);
@@ -49,27 +49,23 @@ class CaseManagementUtilityServices
     }
     
     public static function isDayInsideSla(
-        int $slaStartDate, 
         string $slaStartDay, 
         string $slaEndDay, 
         string $dayToVerify, 
-        string $startDay
     )
     {
         $w = self::daysOfWeek();
         $f = array_flip($w);
         $f['sunday'] = 7;
-        foreach ($w as $key => $day) {
-            if ($day == strtolower($startDay)) {
-                $start = $f[strtolower($slaStartDay)];
-                $end = $f[strtolower($slaEndDay)];
-                $v = $f[strtolower($dayToVerify)];
-                if ($v >= $start && $end >= $v) {
-                    return true;
-                }
-            }
+        $start = $f[strtolower($slaStartDay)];
+        $end = $f[strtolower($slaEndDay)];
+        $verify = $f[strtolower($dayToVerify)];
+        // Normal range (e.g. Monday-Friday)
+        if ($start <= $end) {
+            return $verify >= $start && $verify <= $end;
         }
-        return false;
+        // Wrapped range (e.g. Friday-Tuesday)
+        return $verify >= $start || $verify <= $end;            
     }
 
     public static function parseTimeStampToSeconds(int $timestamp)

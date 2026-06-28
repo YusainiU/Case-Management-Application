@@ -20,18 +20,14 @@ class SLACalculationService
         $this->holidays = $this->casePublicHolidayService->getPublicHolidays();
     }
 
-    public function workingMinutesBetween(
-        tickets $ticket,
-        Carbon $from,
-        Carbon $to
-    ): int {
+    public function workingMinutesBetween(tickets $ticket, Carbon $from, Carbon $to): int 
+    {
 
         $data = $this->createSlaData($ticket);
         $slaStartDay = $data['startDay'];
         $slaEndDay = $data['endDay'];
         $service_start_time = $data['service_start_time'];
         $service_end_time = $data['service_end_time'];
-        $includePublicHoliday = $data['includePublicHoliday'];
 
         // $this->logger->log('WM - initial data', [
         //     'sla_start_day' => $slaStartDay,
@@ -55,7 +51,6 @@ class SLACalculationService
         while ($current->lt($to)) {
 
             $counter++;
-            $current_ts = $current->timestamp;
             $startDay = $current->dayName;
 
             // $logTitle = "WM - loop $counter";
@@ -67,10 +62,8 @@ class SLACalculationService
 
             // Skip non-business days
             $isWorkingDay = CaseManagementUtilityServices::isDayInsideSla(
-                $current_ts,
                 $slaStartDay,
                 $slaEndDay,
-                $startDay,
                 $startDay,
             );
 
@@ -116,7 +109,7 @@ class SLACalculationService
                 $minutes += $current->diffInMinutes($segmentEnd);
             }
 
-            $current = $serviceEnd->addSecond();
+            $current = $current->copy()->addDay()->startOfDay();
         }
 
         //$this->logger->log("WM - Working Minutes ..", $minutes);
@@ -273,11 +266,6 @@ class SLACalculationService
         return $this->formatDateTime($currentDate, $serviceStartAt);
     }
 
-    private function checkTimeIsWithinServiceHours(int $currentTime, int $serviceStartAt, int $serviceEndAt): bool
-    {
-        return $currentTime >= $serviceStartAt && $currentTime <= $serviceEndAt;
-    }
-
     private function checkTimeIsBeforeServiceHours(int $currentTime, int $serviceStartAt): bool
     {
         return $currentTime < $serviceStartAt;
@@ -407,10 +395,8 @@ class SLACalculationService
         $includePublicHoliday = $data['includePublicHoliday'];
                 
         $isWorkingDay = CaseManagementUtilityServices::isDayInsideSla(
-            $datetime->timestamp,
             $slaStartDay,
             $slaEndDay,
-            $datetime->dayName,
             $datetime->dayName,
         );
 

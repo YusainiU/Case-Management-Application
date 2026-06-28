@@ -8,7 +8,7 @@ use Simplydigital\CaseManagement\Enums\ProductTypes;
 class CreateProduct extends ModalComponent
 {
 
-    public $productId;
+    public ?int $productId = null;
     public $ui = [];
     public $name = '';
     public $product_code = '';

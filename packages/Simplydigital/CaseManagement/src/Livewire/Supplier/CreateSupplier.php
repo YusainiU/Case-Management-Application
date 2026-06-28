@@ -3,22 +3,23 @@
 namespace Simplydigital\CaseManagement\Livewire\Supplier;
 
 use LivewireUI\Modal\ModalComponent;
+use Simplydigital\CaseManagement\Models\Supplier;
 class CreateSupplier extends ModalComponent
 {
 
-    public $ui = [];
-    public $supplierId;
-    public $supplier;
-    public $name;
-    public $email;
-    public $telephone;
-    public $address_1;
-    public $address_2;
-    public $address_3;
-    public $address_4;
-    public $short_description;
-    public $url;
-    public $active = true;
+    public array $ui = [];
+    public int|string|null $supplierId = null;
+    public ?Supplier $supplier = null;
+    public ?string $name = null;
+    public ?string $email = null;
+    public ?string $telephone = null;
+    public ?string $address_1 = null;
+    public ?string $address_2 = null;
+    public ?string $address_3 = null;
+    public ?string $address_4 = null;
+    public ?string $short_description = null;
+    public ?string $url = null;
+    public bool $active = true;
 
 
     protected $rules = [

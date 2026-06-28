@@ -3,13 +3,14 @@
 namespace Simplydigital\CaseManagement\Livewire\Customer;
 
 use LivewireUI\Modal\ModalComponent;
+use Simplydigital\CaseManagement\Models\Customer;
 
 class DeleteCustomer extends ModalComponent
 {
 
-    public $customerId;
-    public $customer;
-    public $deleteText;
+    public int|string|null $customerId = null;
+    public ?customer $customer = null;
+    public ?string $deleteText = null;
 
     public function mount()
     {

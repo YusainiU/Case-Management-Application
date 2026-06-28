@@ -5,19 +5,20 @@ namespace Simplydigital\CaseManagement\Livewire\Customer;
 use Illuminate\Queue\Listener;
 use Livewire\Component;
 use PSpell\Config;
+use Simplydigital\CaseManagement\Models\Customer;
 
 class CustomerProfile extends Component
 {
 
-    public $customerId;
-    public $customer;
+    public int|string|null $customerId = null;
+    public ?customer $customer = null;
     public $tabHeaders = [];
-    public $selectedTab;
-    PUBLIC $customerIdToDelete;
-    public $customerAddress;
+    public ?string $selectedTab = null;
+    PUBLIC int|string|null $customerIdToDelete = null;
+    public ?string $customerAddress = null;
     public $showUpdateModal = false;
     public $showConfirmDelete = false;
-    public $navigateToComponent;
+    public ?string $navigateToComponent = null;
     protected $listeners = [
         'closeCreateModal',
         'closeDeleteModal',
@@ -30,7 +31,7 @@ class CustomerProfile extends Component
         $this->getTabHeaders();        
     }
 
-    public function navigateTo($componentName)
+    public function navigateTo(string $componentName)
     {
         if($componentName === 'parentCompany'){
             $this->redirectRoute('casemanagement.customer.profile', ['customerId' => $this->customer->parentCompany->id]);
@@ -72,7 +73,7 @@ class CustomerProfile extends Component
         $this->showConfirmDelete = false;
     }
 
-    public function selectTab($selectedTab)
+    public function selectTab(string $selectedTab)
     {
         $this->selectedTab = $selectedTab;
     }

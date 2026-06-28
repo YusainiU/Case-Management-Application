@@ -3,16 +3,17 @@
 namespace Simplydigital\CaseManagement\Livewire\Supplier;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Simplydigital\CaseManagement\Models\Supplier;
 
 class ViewSuppliers extends Component
 {
     use WithPagination;
-    public $title = 'Suppliers';
-    public $supplierId;
-    public $supplier;
-    public $filter;
-    public $sortField;
-    public $sortDirection;
+    public string $title = 'Suppliers';
+    public int|string|null $supplierId = null;
+    public ?supplier $supplier = null;
+    public ?string $filter = null;
+    public ?string $sortField = null;
+    public ?string $sortDirection = null;
     public $displayCreateModal = false;
     public $displayUpdateModal = false;
     public $displayProfileModal = false;
@@ -52,7 +53,7 @@ class ViewSuppliers extends Component
         return $query;
     }
 
-    public function sortByField($field)
+    public function sortByField(string $field)
     {
         if ($this->sortField === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
@@ -80,17 +81,17 @@ class ViewSuppliers extends Component
         $this->displayCreateModal = true;
     }
 
-    public function openUpdateModal($supplierId)
+    public function openUpdateModal(int|string $supplierId)
     {
         $this->resetAll();
-        $this->supplierId = $supplierId;
+        $this->supplierId = (int) $supplierId;
         $this->displayUpdateModal = true;
     }
 
-    public function openProfileModal($supplierId)
+    public function openProfileModal(int|string $supplierId)
     {
         $this->resetAll();
-        $this->supplierId = $supplierId;
+        $this->supplierId = (int) $supplierId;
         $this->displayProfileModal = true;
     }
 

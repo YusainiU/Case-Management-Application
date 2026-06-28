@@ -8,14 +8,14 @@ use Livewire\WithPagination;
 class ViewCustomers extends Component
 {
     use WithPagination;
-    public $title = "Customers";
-    public $viewChildCompanies; 
-    public $customerId;
+    public string $title = "Customers";
+    public ?int $viewChildCompanies = null; 
+    public ?int $customerId = null;
     public $displayCreateModal = false;
     public $displayUpdateModal = false;
-    public $sortField;
-    public $sortDirection = null;
-    public $filter;
+    public ?string $sortField = null;
+    public ?string $sortDirection = null;
+    public ?string $filter = null;
     protected $listeners = ['closeCreateModal'];
 
     public function mount()
@@ -26,7 +26,7 @@ class ViewCustomers extends Component
         }
     }
 
-    public function sortByField($fieldName, $direction)
+    public function sortByField(string $fieldName, string $direction)
     {
         if($this->sortField == $fieldName)
         {
@@ -74,7 +74,7 @@ class ViewCustomers extends Component
         $this->displayCreateModal = true;
     }
 
-    public function openUpdateModal($customerId)
+    public function openUpdateModal(int|string $customerId)
     {
         $this->resetAll();
         $this->customerId = $customerId;

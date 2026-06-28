@@ -3,16 +3,16 @@
 namespace Simplydigital\CaseManagement\Livewire\Product;
 
 use LivewireUI\Modal\ModalComponent;
+use Simplydigital\CaseManagement\Models\Product;
 class ProductProfile extends ModalComponent
 {
-    public $title = 'Product Profile';
-    public $productId;
-    public $product;
-    public $productItems = [];
+    public string $title = 'Product Profile';
+    public ?int $productId = null;
+    public ?product $product;
+    public array $productItems = [];
 
-    public function mount($productId)
+    public function mount()
     {
-        $this->productId = $productId;
         $caseProductServices = app('case-product-services');
         $this->product = $caseProductServices->getProductById($this->productId);
         $this->buildProfileItems();

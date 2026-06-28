@@ -220,7 +220,7 @@ class ViewCases extends Component
         }
 
         if(isset($query)){
-            $this->tickets = $query->get();
+            $this->tickets = $query->orderByDesc('created_at')->get();
             return $query;
         }
 

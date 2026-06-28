@@ -10,11 +10,11 @@ class CustomerContacts extends Component
 {
 
     use WithPagination;
-    public $customerContactId;
-    public $userProfileId;
-    public $customerId;
-    public $filter;
-    public $sortBy;
+    public int|string|null $customerContactId = null;
+    public int|string|null $userProfileId = null;
+    public int|string|null $customerId = null;
+    public ?string $filter = null;
+    public ?string $sortBy = null;
     public $sortDirection = 'asc';
     public $showCreateContactModal = false;
     public $showContactProfileModal = false;
@@ -55,14 +55,14 @@ class CustomerContacts extends Component
         $this->showCreateContactModal = true;
     }
 
-    public function openContactProfileModal($userId)
+    public function openContactProfileModal(int|string $userId)
     {
         $this->resetAllModals();
         $this->showContactProfileModal = true;
         $this->userProfileId = $userId;
     }
 
-    public function openUpdateContactModal($contactId)
+    public function openUpdateContactModal(int|string $contactId)
     {
         $this->resetAllModals();
         $this->showContactUpdateModal = true;

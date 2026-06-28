@@ -3,19 +3,19 @@
 namespace Simplydigital\CaseManagement\Livewire\Supplier;
 
 use LivewireUI\Modal\ModalComponent;
+use Simplydigital\CaseManagement\Models\Supplier;
 class SupplierProfile extends ModalComponent
 {
-    public $supplierId;
-    public $supplier;
-    public $supplierItems = [];
-    public $title = 'Supplier Profile';
+    public int|string|null $supplierId = null;
+    public ?supplier $supplier = null;
+    public array $supplierItems = [];
+    public string $title = 'Supplier Profile';
 
 
-    public function mount($supplierId)
+    public function mount()
     {
-        $this->supplierId = $supplierId;
         $caseSupplierServices = app('case-supplier-services');
-        $this->supplier = $caseSupplierServices->getSupplierById($supplierId);
+        $this->supplier = $caseSupplierServices->getSupplierById($this->supplierId);
         $this->buildProfileItems();
     }
 
