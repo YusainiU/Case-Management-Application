@@ -87,6 +87,9 @@
         @if('sla' === $selectedTab)
             <livewire:view-sla-application :customerId="$customerId" />
         @endif
+        @if('outstandingCases' === $selectedTab)
+            <livewire:view-cases :customerId="$customerId" />
+        @endif
 
     </div>
 

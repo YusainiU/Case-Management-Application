@@ -7,7 +7,7 @@
 <div class="grid grid-cols-1 gap-4 p-4">
 
     @if($displayCreateModal)
-        <livewire:create-case />
+        <livewire:create-case :customerId="$customerId"/>
     @endif
 
     @if($displaySummaryModal)
@@ -44,7 +44,9 @@
     {{-- <x-casemanagement::form-elements.button-primary label="Open Cases" action="openTab('{{ CaseState::Open }}')" /> --}}
     <x-casemanagement::form-elements.input-filter />
 
-    <livewire:case-status />
+    @if(!$ViewSelectedCustomerCases)
+        <livewire:case-status />
+    @endif
     
     {{ $cases?->links() }}
 

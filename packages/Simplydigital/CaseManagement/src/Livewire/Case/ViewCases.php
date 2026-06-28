@@ -24,7 +24,7 @@ class ViewCases extends Component
     public bool $displaySummaryModal = false;
     public bool $displayDescription = false;
     public bool $displaySlaStatus = false; 
-    public array $descriptionDetails = []; 
+    public array $descriptionDetails = [];
     public ?string $displayCaseStatus = null;    
 
     /**
@@ -233,9 +233,11 @@ class ViewCases extends Component
         $cases = null;
         $ui = $this->buildUI();
         $cases = $this->loadCases()?->paginate(10);
+        $viewSelectedCustomerCases = $this->customerId ?? false;
         return view('casemanagement::livewire.case.view-cases',[
             'ui_params' => $ui,
             'cases' => $cases,
+            'ViewSelectedCustomerCases' => $viewSelectedCustomerCases,
         ]);
                
     }

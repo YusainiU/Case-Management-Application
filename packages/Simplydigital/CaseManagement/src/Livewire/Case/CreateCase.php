@@ -84,7 +84,11 @@ class CreateCase extends ModalComponent
             'widthsize' => '6xl',
             'cancelThisWith' => 'closeThisModal',
             'confirm' => 'save',
-        ];        
+        ];
+        
+        if($this->customerId) {
+            $this->selectCustomer();
+        }
     }
 
     public function loadCaseForm()
