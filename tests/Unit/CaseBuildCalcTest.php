@@ -20,7 +20,7 @@ class CaseBuildCalcTest extends TestCase
         $loggers->enable();
         $SLACalcService = new SLACalculationService($loggers);
 
-        $caseId = 8; // Replace with an actual case ID from your database
+        $caseId = 9; // Replace with an actual case ID from your database
         $sampleCase = tickets::find($caseId); // Replace with an actual case ID from your database
 
         //===============================================================
@@ -62,12 +62,12 @@ class CaseBuildCalcTest extends TestCase
         $from = carbon::parse('2026-06-26 12:00:00');
         $to = carbon::parse('2026-06-29 10:00:00');
         $calc = $SLACalcService->workingMinutesBetween($sampleCase, $from, $to);
-        //$remaining = $SLACalcService->calculatePauseRemainingValue($sampleCase, carbon::now());
+        $remaining = $SLACalcService->calculatePauseRemainingValue($sampleCase, carbon::now());
         // REMEMBER TO CHANGE THE FUNCTION TO PUBLIC !!
         //$pub = $SLACalcService->isPublicHoliday($from->timestamp);
         $logs = $loggers->getLogs();
         dump($calc * 60);
-        //dump($pub);
+        dump("REMAINING: $remaining");
         dump($logs);
 
         $this->assertNotEmpty($calc);

@@ -17,6 +17,7 @@ class SlaTaskPause extends Model
         'sla_task_id',
         'paused_at',
         'resumed_at',
+        'remaining',
     ];
 
     public function slaTask()

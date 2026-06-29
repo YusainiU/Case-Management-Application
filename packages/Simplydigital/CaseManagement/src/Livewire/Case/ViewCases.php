@@ -182,13 +182,11 @@ class ViewCases extends Component
     public function loadCases()
     {
         $service = $this->ticketService();
+        $filterString = $this->filter ?? null;
+        $query = null;
         
         if($this->sortField){
             $service->sortByField($this->sortField, $this->sortDirection);
-        }
-
-        if($this->filter){
-            $service->filterResult($this->filter);
         }
 
         if($this->customerId) {
@@ -196,27 +194,27 @@ class ViewCases extends Component
         }
 
         if($this->displayCaseStatus == CaseState::Open->value) {
-            $query = $service->getAllOpenCases();
+            $query = $service->getAllOpenCases($filterString);
         }
         
         if($this->displayCaseStatus === CaseState::In_Progress->value) {
-            $query = $service->getOutstandingCases();
+            $query = $service->getOutstandingCases($filterString);
         }
 
         if($this->displayCaseStatus === CaseState::Resolved->value) {
-            $query = $service->getAllOpenResolvedCases();
+            $query = $service->getAllOpenResolvedCases($filterString);
         }
         
         if($this->displayCaseStatus === CaseState::Completed->value) {
-            $query = $service->getAllClosedResolvedCases();
+            $query = $service->getAllClosedResolvedCases($filterString);
         }
 
         if($this->displayCaseStatus === CaseState::Closed->value) {
-            $query = $service->getAllClosedCases();
+            $query = $service->getAllClosedCases($filterString);
         }
 
         if($this->displayCaseStatus === CaseState::Paused->value) {
-            $query = $service->getAllPausedCases();
+            $query = $service->getAllPausedCases($filterString);
         }
 
         if(isset($query)){

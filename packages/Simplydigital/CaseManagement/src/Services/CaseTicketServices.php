@@ -20,7 +20,7 @@ class CaseTicketServices
 
     private string $sortDirection = 'asc';
 
-    private string|int|null $filter = null;
+    public string|int|null $filter = null;
 
     private CaseTicketUtilityServices $caseTicketUtilityServices;
     private CaseRepository $caseRepository; 
@@ -42,58 +42,64 @@ class CaseTicketServices
         $this->query->where('customer_id', $customerId);
     }
 
-    public function getAllOpenCases()
+    public function getAllOpenCases(?string $filter)
     {
         $this->query->where('closed_datetime', '=', null);
-        $this->buildFilter();
-
+        if($filter){
+            $this->buildFilter($filter);    
+        }
         return $this->query;
     }
 
-    public function getOutstandingCases()
+    public function getOutstandingCases(?string $filter)
     {
         $this->query
             ->where('closed_datetime', '=', null)
             ->where('resolved_datetime', '=', null);
-        $this->buildFilter();
-
+        if($filter){
+            $this->buildFilter($filter);    
+        }        
         return $this->query;
     }
 
-    public function getAllClosedCases()
+    public function getAllClosedCases(?string $filter)
     {
         $this->query->where('closed_datetime', '!=', null);
-        $this->buildFilter();
-
+        if($filter){
+            $this->buildFilter($filter);    
+        }        
         return $this->query;
     }
 
-    public function getAllOpenResolvedCases()
+    public function getAllOpenResolvedCases(?string $filter)
     {
         $this->query
             ->where('resolved_datetime', '!=', null)
             ->where('closed_datetime', '=', null);
-        $this->buildFilter();
-
+        if($filter){
+            $this->buildFilter($filter);    
+        }
         return $this->query;
     }
 
-    public function getAllClosedResolvedCases()
+    public function getAllClosedResolvedCases(?string $filter)
     {
         $this->query
             ->where('resolved_datetime', '!=', null)
             ->where('closed_datetime', '!=', null);
-        $this->buildFilter();
-
+        if($filter){
+            $this->buildFilter($filter);    
+        }
         return $this->query;
     }
 
-    public function getAllPausedCases()
+    public function getAllPausedCases(?string $filter)
     {
         $this->query->where('type', '=', CaseState::Paused->value)
             ->where('closed_datetime', '=', null);
-        $this->buildFilter();
-
+        if($filter){
+            $this->buildFilter($filter);    
+        }
         return $this->query;
     }
 
@@ -102,11 +108,12 @@ class CaseTicketServices
         return $this->query->find($caseId);
     }
 
-    public function getCasesByCustomerId(int $customerId)
+    public function getCasesByCustomerId(int $customerId, ?string $filter)
     {
         $this->query->where('customer_id');
-        $this->buildFilter();
-
+        if($filter){
+            $this->buildFilter($filter);    
+        }
         return $this->query;
     }
 
@@ -174,14 +181,21 @@ class CaseTicketServices
 
     }
 
-    private function buildFilter()
+    private function buildFilter(string $filter)
     {
-        if ($this->filter) {
-            $filterValue = '%'.$this->filter.'%';
+
+        if ($filter) {
+            $filterValue = "%$filter%";
             $this->query->where(function ($q) use ($filterValue) {
                 $q->orWhere('number', 'like', $filterValue)
                     ->orWhere('short_description', 'like', $filterValue)
-                    ->orWhere('description', 'like', $filterValue);
+                    ->orWhere('description', 'like', $filterValue)
+                    ->orWhereHas('customer', function ($qq) use ($filterValue) {
+                        $qq->where('name', 'like', $filterValue);
+                    })
+                    ->orWhereHas('assignedToUser', function ($qq) use ($filterValue) {
+                        $qq->where('name','like',$filterValue);
+                    });                    
             });
         }
 
