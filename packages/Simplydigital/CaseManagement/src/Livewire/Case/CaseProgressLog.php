@@ -49,7 +49,8 @@ class CaseProgressLog extends ModalComponent
                     $util->requireAttention($result, $this->urgentAttention);
                 }
             }
-            $this->case->refresh(); 
+            $this->case->refresh();
+            $this->dispatch('reloadCaseStatus'); 
         }
 
     }

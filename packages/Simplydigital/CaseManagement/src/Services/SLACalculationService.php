@@ -127,8 +127,11 @@ class SLACalculationService
         $slaTimeConsumed = $this->workingMinutesBetween($ticket, $created_at, $pausedDate);
         //$this->logger->log('sla_time_consumed', $slaTimeConsumed);
         $slaTimeConsumed = $slaTimeConsumed * 60; // In Seconds
+        //$this->logger->log('sla_time_consumed in seconds', $slaTimeConsumed);
         $slaTimeRemaining = $response_time - $slaTimeConsumed;
+        //$this->logger->log('calculation: ', "Seconds Remaining = $response_time - $slaTimeConsumed");
         //$this->logger->log('sla_time_remaining', $slaTimeRemaining);
+
         return $slaTimeRemaining;
 
     }
@@ -157,6 +160,16 @@ class SLACalculationService
         $data['startDate'] = $startDate;
         $data['createdDay'] = $createdDay;
 
+        return $this->calcRespondByTime($data);
+    }
+
+    public function calcCustomRespondByTime(tickets $ticket, int $responsetime, carbon $startDate)
+    {
+        //respondby in seconds
+        $data = $this->createSlaData($ticket);
+        $data['response_time'] = $responsetime;
+        $data['startDate'] = $startDate->timestamp;
+        $data['startDay'] = strtolower($startDate->dayName);
         return $this->calcRespondByTime($data);
     }
 
@@ -196,14 +209,13 @@ class SLACalculationService
         $carryoverSeconds = 0;
         $maxIterations = 20;
         $currentDateYMD = date('Y-m-d', $currentDate);
-        $currentDateSeconds = CaseManagementUtilityServices::parseTimeStampToSeconds($currentDate);
         $this->logger->log('Starting Calculation Loop', [
             'currentDate' => $currentDateYMD,
             'carryoverSeconds' => $carryoverSeconds,
         ]);
 
         for ($iteration = 0; $iteration < $maxIterations; $iteration++) {
-            
+            $currentDateSeconds = CaseManagementUtilityServices::parseTimeStampToSeconds($currentDate);
             $currentDay = strtolower(date('l', $currentDate));
             $currentCarbonDate = Carbon::createFromTimestamp($currentDate);
 

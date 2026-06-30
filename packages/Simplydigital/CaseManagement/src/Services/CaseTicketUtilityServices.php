@@ -666,7 +666,8 @@ class CaseTicketUtilityServices
         $currentDate = now()->format('d-m-y H:i');
         $service = $this->caseLogAdministrationService;
         $logText = $service->buildProgressLogText($logText, $currentDate, $currentUser);
-        return $service->createSystemLog($ticket, $logText);        
+        $logType = Config('case-management.logs.type.internal_update');
+        return $service->createSystemLog($ticket, $logText,$logType);        
 
     }
 
@@ -791,10 +792,9 @@ class CaseTicketUtilityServices
 
         //Recalculate Respondby time -- only when resume is triggere
         $now = Carbon::now();
-        $timeResumed = $now->timestamp;
+        $timeResumed = carbon::now();
         $slaRemaining = $pause->remaining;
-        $respondBy = $timeResumed + $slaRemaining;
-        $newRespondBy = Carbon::createFromTimestamp($respondBy); 
+        $newRespondBy = $this->calcService->calcCustomRespondByTime($ticket, $slaRemaining, $timeResumed);
         
         //Update sla_task_pause - resumed_at
         $pdata = [
@@ -812,7 +812,7 @@ class CaseTicketUtilityServices
             $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
             //update sla_task - state, respond_by
             $from = $slaTask->respond_by->format('d-m-Y H:i:s');
-            $to = $newRespondBy->format('d-m-Y H:i:s');
+            $to = date('d-m-Y H:i:s', strtotime($newRespondBy));
             $sData = [
                 'state' => CaseState::In_Progress,
                 'respond_by' => $newRespondBy,
