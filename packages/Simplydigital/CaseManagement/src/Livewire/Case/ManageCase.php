@@ -15,6 +15,7 @@ class ManageCase extends ModalComponent
     public array $tabHeaders = [
         'sla' => 'SLA',
         'status' => 'SLA Status',
+        'pauses' => 'SLA Pauses',
         'update' => 'Update',
         'progress' => 'Progress',
         'visit' => 'Visit',

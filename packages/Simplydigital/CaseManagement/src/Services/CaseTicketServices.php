@@ -312,6 +312,12 @@ class CaseTicketServices
     {
         $data = $this->calcService->createSlaData($ticket);
         return $this->calcService->isBusinessWorkingHours($data, Carbon::now());
-    }    
+    }
+
+    public function getAllCaseSlaPauses(tickets $ticket)
+    {
+        $pauses = $ticket->slaTasks?->pauses;
+        return $pauses;
+    }
     
 }

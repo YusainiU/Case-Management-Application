@@ -65,6 +65,7 @@ use Simplydigital\CaseManagement\Livewire\Case\{
     ManageCase,
     ManageCaseSLA,
     CaseProgressLog,
+    ViewSlaPause,
 };
 
 class CaseManagementServiceProvider extends ServiceProvider
@@ -103,6 +104,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         'manage-case-sla' => ManageCaseSLA::class,
         'case-progress-log' => CaseProgressLog::class,
         'case-field-changes' => CaseFieldChanges::class,
+        'case-sla-pause' => ViewSlaPause::class,
     ];
 
     private array $services = [

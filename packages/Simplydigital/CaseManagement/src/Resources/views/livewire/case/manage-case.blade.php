@@ -51,7 +51,10 @@
             @if($tabHeaders[$this->selectedTab] == $tabHeaders['status'])
                  <x-casemanagement::page-elements.sla-status :case="$case" />
             @endif
-            
+
+            @if($tabHeaders[$this->selectedTab] == $tabHeaders['pauses'])
+                <livewire:case-sla-pause :case="$case" />
+            @endif
         </x-casemanagement::page-elements.tab>
 
     </x-casemanagement::page-elements.modal>    

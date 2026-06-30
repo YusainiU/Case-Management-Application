@@ -22,7 +22,7 @@ class CaseBuildCalcTest extends TestCase
         $loggers->enable();
         $SLACalcService = new SLACalculationService($loggers);
 
-        $caseId = 10; // Replace with an actual case ID from your database
+        $caseId = 11; // Replace with an actual case ID from your database
         $sampleCase = tickets::find($caseId); // Replace with an actual case ID from your database
 
         //===============================================================
@@ -81,7 +81,8 @@ class CaseBuildCalcTest extends TestCase
         dump($calc * 60);
         dump("REMAINING: ".CarbonInterval::seconds($remaining)->cascade()->forHumans());
         dump("NEW RESPOND BY: $newRespondBy");
-        dump($logs);
+        dump($pause->created_at->format('H:i'));
+        //dump($logs);
 
         $this->assertNotEmpty($calc);
 
