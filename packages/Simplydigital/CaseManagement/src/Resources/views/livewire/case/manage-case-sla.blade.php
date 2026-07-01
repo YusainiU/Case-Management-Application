@@ -84,6 +84,7 @@
             @if(!$case->slaTasks->breached && $isTodayWorkingDay)
                 @if($case->slaTasks->activePause)
                     <x-casemanagement::form-elements.button-primary action="resume" label="Resume SLA" />
+                    <x-casemanagement::form-elements.button-primary action="cancelPause" label="Cancel Pause" />
                 @else
                     <x-casemanagement::form-elements.button-danger action="pause" label="Pause SLA" />
                 @endif

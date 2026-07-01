@@ -130,6 +130,14 @@ class ManageCaseSLA extends ModalComponent
         $this->message = 'SLA has been resumed';        
     }
 
+    public function cancelPause()
+    {
+        $this->ticketService()->cancelPauseSla($this->case);
+        $this->dispatch('reloadCaseStatus');
+        $this->dispatch('$refresh');
+        $this->message = 'SLA pause has been cancelled';        
+    }
+
     public function render()
     {
         return view('casemanagement::livewire.case.manage-case-sla');

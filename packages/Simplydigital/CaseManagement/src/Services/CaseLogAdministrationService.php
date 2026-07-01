@@ -332,7 +332,17 @@ class CaseLogAdministrationService
         $replaceWith = [$user, $resumeDateTime];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
         return $logString;              
-    }    
+    }
+
+    public function buildCancelPauseText(string $cancelPauseDateTime)
+    {
+        $phrase = config('case-management.ProgressLogs.cancelPause') ?? '';
+        $user = Auth::user()->name;
+        $searchFor = ['%USER%','%DATETIME%'];
+        $replaceWith = [$user, $cancelPauseDateTime];
+        $logString = str_replace($searchFor, $replaceWith, $phrase);
+        return $logString;              
+    }
 
     public function retrieveProgressLog(?tickets $ticket)
     {

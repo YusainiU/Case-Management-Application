@@ -160,7 +160,8 @@ return [
         'respondToComment' => '%USER% responded to the comment: %RESPONSE%',
         'pause' => '%USER% has paused the case at %DATETIME%',
         'resume' => '%USER% has rseumed the case at %DATETIME%. Respond By date time has been readjusted',
-        'respondByTimeChanged' => 'Respond by time changed from %FROM% to %TO%', 
+        'respondByTimeChanged' => 'Respond by time changed from %FROM% to %TO%',
+        'cancelPause' => '%USER% has cancelled the pause of the case at %DATETIME%.',
     ],
     'siteVisit' => [
         'visitCreated' => 'Site Visit scheduled for %ASSIGNEE% by %SCHEDULER% on %DATETIME%',

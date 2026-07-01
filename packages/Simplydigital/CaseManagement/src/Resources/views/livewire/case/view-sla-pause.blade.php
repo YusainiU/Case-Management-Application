@@ -31,7 +31,7 @@
                             {{ $pause->paused_at->format('d-m-Y H:i:s') }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{ $pause->resumed_at->format('d-m-Y H:i:s') }}
+                            {{ $pause->resumed_at?->format('d-m-Y H:i:s') }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             {{ $pause->remaining ? CarbonInterval::seconds($pause->remaining)->cascade()->forHumans(): null }}

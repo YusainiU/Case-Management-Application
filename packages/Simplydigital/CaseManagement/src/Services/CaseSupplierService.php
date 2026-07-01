@@ -33,7 +33,7 @@ class CaseSupplierService
 
     public function checkIfDate(string $value)
     {
-        return is_string($value) && Carbon::hasFormat($value, 'Y-m-d');
+        return \is_string($value) && Carbon::hasFormat($value, 'Y-m-d');
     }
 
     public function buildOptionsForSupplierSelect()

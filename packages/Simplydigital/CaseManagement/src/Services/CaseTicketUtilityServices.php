@@ -826,4 +826,40 @@ class CaseTicketUtilityServices
         
     }
 
+    public function cancelPauseSla(tickets $ticket)
+    {
+        //Get sla task
+        $slaTask = $ticket->slaTasks;
+        if(!$slaTask) return false;
+
+        //Get Pause
+        $pause = SlaTaskPause::where('sla_task_id', $slaTask->id)
+            ->where('paused_at', $slaTask->paused_at)
+            ->whereNull('resumed_at')
+            ->first();
+        if(!$pause) return false;
+
+        $deleted = $this->caseRepository->deletePause($pause->id);
+
+        if($deleted) {
+            //Update ticket - state=In Progress, resumed_at
+            $tdata = [
+                'state' => CaseState::In_Progress,
+                'paused_at' => null,
+            ];
+            $this->caseRepository->updateTicket($ticket, $tdata);
+            $now = Carbon::now()->format('d-m-y H:i');
+            $logText = $this->caseLogAdministrationService->buildCancelPauseText($now);
+            $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
+            //update sla_task
+            $sData = [
+                'state' => CaseState::In_Progress,
+                'paused_at' => null,
+            ];
+            $this->caseRepository->updateSlaTask($slaTask, $sData);
+        }
+
+        return $deleted;
+    }
+
 }

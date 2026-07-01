@@ -100,5 +100,10 @@ class CaseRepository
         return TaskLogs::destroy($logId);    
     }
 
+    public function deletePause(int $pauseId)
+    {
+        return SlaTaskPause::destroy($pauseId);
+    }
+
 }
 

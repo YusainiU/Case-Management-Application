@@ -319,5 +319,10 @@ class CaseTicketServices
         $pauses = $ticket->slaTasks?->pauses;
         return $pauses;
     }
+
+    public function cancelPauseSla(tickets $ticket)
+    {
+        $this->caseTicketUtilityServices->cancelPauseSla($ticket);
+    }
     
 }

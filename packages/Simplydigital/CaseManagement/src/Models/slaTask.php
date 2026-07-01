@@ -11,6 +11,7 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Activitylog\Models\Activity;
+use Carbon\CarbonInterval;
 
 /**
  * @property \Illuminate\Support\Carbon|null $responded_at
@@ -333,11 +334,14 @@ class slaTask extends Model
     public function getSlaStatusInfoAttribute(): ?string
     {
 
-        $hours = now()->diffInHours($this->respond_by, false);
-        $rounded = round($hours,2);
-        return $hours >= 0
-            ? "{$rounded} hours remaining"
-            : abs($rounded).' hours overdue';
+        $diff = CarbonInterval::minutes(now()->diffInMinutes($this->respond_by, false))->cascade()->forHumans();
+        return $diff;
+
+        // $hours = now()->diffInHours($this->respond_by, false);
+        // $rounded = round($hours,2);
+        // return $hours >= 0
+        //     ? "{$rounded} hours remaining"
+        //     : abs($rounded).' hours overdue';
 
     }
 }

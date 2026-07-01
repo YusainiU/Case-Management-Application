@@ -4,15 +4,19 @@ namespace Simplydigital\CaseManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use iamfarhad\LaravelAuditLog\Traits\Auditable;
+use Spatie\Activitylog\Models\Concerns\LogsActivity; 
+use Spatie\Activitylog\Support\LogOptions;
+use Spatie\Activitylog\Models\Activity;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Simplydigital\CaseManagement\Models\tickets;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 
 class TaskSiteVisit extends Model
 {
 
     use SoftDeletes;
-    use Auditable;
+     use LogsActivity;
     protected $fillable = [
         'number',
         'short_description' ,
@@ -25,7 +29,34 @@ class TaskSiteVisit extends Model
         'enroute_at' ,
         'onsite_at' ,
         'offsite_at',
+        'active',
     ];
+
+    protected static function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName('task_site_visit')
+            ->logAll()
+            ->logOnlyDirty()
+            ->dontLogIfAttributesChangedOnly([]);
+    }
+
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(Activity::class,'subject');        
+    }      
+
+    public function casts(): array
+    {
+        return [
+            'visit_scheduled_at' => 'datetime',
+            'enroute_at' => 'datetime',
+            'onsite_at' => 'datetime',
+            'offsite_at' => 'datetime',
+            'first_visit' => 'boolean',
+            'active' => 'boolean',
+        ];
+    }
 
     protected static function booted()
     {       
@@ -51,19 +82,19 @@ class TaskSiteVisit extends Model
         return $this->belongsTo(User::class, 'scheduled_by');
     }
 
-    public function scopeVisitEvents($query)
+    public function scopeVisitEvents(Builder $query): Builder
     {
         return $query->whereRelation('ticket','closed_datetime','=', null);
     }
 
-    public function scopeSiteVisit($query)
+    public function scopeSiteVisit(Builder $query): Builder
     {
         return $query->where('onsite_at','=', null)
                 ->where('offsite_at','=',null)
                 ->whereRelation('ticket','closed_datetime','=', null);
     }
 
-    public function scopeCurrentlyOnsite($query)
+    public function scopeCurrentlyOnsite(Builder $query): Builder
     {
         return $query->where('onsite_at','!=', null)
                 ->where('offsite_at','=',null)
@@ -71,7 +102,7 @@ class TaskSiteVisit extends Model
                 ->whereRelation('ticket','closed_datetime','=', null);
     }
 
-    public function scopeCurrentlyEnroute($query)
+    public function scopeCurrentlyEnroute(Builder $query): Builder
     {
         return $query->where('onsite_at','=',null)
                 ->where('offsite_at','=', null)
