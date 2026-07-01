@@ -6,7 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Services\CaseSiteVisitService;
-use Simplydigital\CaseManagement\Models\Customer;
+use Simplydigital\CaseManagement\Models\tickets;
 
 class ViewSiteVisit extends Component
 {
@@ -14,7 +14,7 @@ class ViewSiteVisit extends Component
     use WithPagination;
     public ?TaskSiteVisit $visit = null;
     public ?int $customerId = null;
-    public ?int $caseId = null;
+    public ?tickets $case = null;
     public ?string $filter = null;
     public ?string $sortField = null;
     public string $sortDirection = 'desc';
@@ -104,7 +104,9 @@ class ViewSiteVisit extends Component
             $service->sortByField($this->sortField, $this->sortDirection);
         }
         if($this->customerId){
-            return $service->getSiteVisitsForCustomer($this->customerId);        
+            return $service->getSiteVisitsForCustomer($this->customerId);
+        }elseif($this->case){
+            return $service->getSiteVisitsForCase($this->case->id);
         }else{
             return $service->getAllActiveSiteVisits();
         }
