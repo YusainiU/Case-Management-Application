@@ -17,6 +17,7 @@ class CreateSiteVisit extends ModalComponent
     public bool $modalMode = true;
     public array $caseOptions = [];
     public bool $displayForm = false;
+    public array $form = [];
 
     protected $validationAttributes = [
         'form.ticket_id' => 'Case Description',
@@ -57,23 +58,26 @@ class CreateSiteVisit extends ModalComponent
     }
     
     public function declareFormProperties()
-    {
-        return [
-            'form.assigned_to' => $this->taskSiteVisit?->assigned_to ?? null,
-            'form.visit_scheduled_at' => $this->taskSiteVisit?->visit_scheduled_at ?? null,
-            'form.first_visit' => $this->taskSiteVisit?->first_visit ?? false,
-            'form.scheduled_by' => $this->taskSiteVisit?->scheduled_by ?? null,
-            'form.description' => $this->taskSiteVisit?->description ?? '',
-            'form.enroute_at' => $this->taskSiteVisit?->enroute_at ?? null,
-            'form.onsite_at' => $this->taskSiteVisit?->onsite_at ?? null,
-            'form.offsite_at' => $this->taskSiteVisit?->offsite_at ?? null,
-            'form.active' => $this->taskSiteVisit?->active ?? true,
-            'form.ticket_id' => $this->taskSiteVisit?->ticket_id ?? null,
-        ];
+    {        
+        $this->form = [
+            'assigned_to' => $this->taskSiteVisit?->assigned_to ?? null,
+            'visit_scheduled_at' => $this->taskSiteVisit?->visit_scheduled_at ?? null,
+            'first_visit' => $this->taskSiteVisit?->first_visit ?? false,
+            'scheduled_by' => $this->taskSiteVisit?->scheduled_by ?? null,
+            'description' => $this->taskSiteVisit?->description ?? '',
+            'enroute_at' => $this->taskSiteVisit?->enroute_at ?? null,
+            'onsite_at' => $this->taskSiteVisit?->onsite_at ?? null,
+            'offsite_at' => $this->taskSiteVisit?->offsite_at ?? null,
+            'active' => $this->taskSiteVisit?->active ?? true,
+            'ticket_id' => $this->taskSiteVisit?->ticket_id ?? null,
+        ];                
     }
 
     public function initialize()
     {
+        if($this->caseId){
+            $this->selectCase();
+        }
         $this->updateMode = $this->taskSiteVisit !== null;
         $this->case = $this->taskSiteVisit?->ticket ?? null;
         $this->buildOptions();
@@ -108,8 +112,8 @@ class CreateSiteVisit extends ModalComponent
         if(!$this->caseId){
             return;
         }
+        $form['ticket_id'] = $this->caseId;
         $this->case = tickets::find($this->caseId);
-        $this->form['ticket_id'] = $this->caseId;
         $this->displayForm = true;
     }
 
@@ -124,8 +128,7 @@ class CreateSiteVisit extends ModalComponent
         $this->initialize();
         return view('casemanagement::livewire.case.create-site-visit',[
             'ui_params' => $this->buildUI(),
-            'form' => $this->declareFormProperties(),
-            'case' => $this->case,
+            'form' => $this->form,
             'update' => $this->updateMode,
             'modal' => $this->modalMode,
         ]);

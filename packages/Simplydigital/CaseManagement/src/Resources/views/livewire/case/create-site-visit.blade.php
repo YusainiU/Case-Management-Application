@@ -17,7 +17,7 @@
 
     @else
             @if($displayForm)
-            
+                @include('casemanagement::components.form-elements.create-update-visit');
             @else
                 <div class="grid grid-rows gap-5">
                     <x-casemanagement::form-elements.input-label  name="Select Case" required="true"/>
