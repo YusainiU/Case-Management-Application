@@ -113,6 +113,12 @@ class ViewSiteVisit extends Component
 
     }
 
+    public function scheduleVisit()
+    {
+        $this->resetAllModals();
+        $this->displayCreateModal = true;
+    }
+
     public function render()
     {
         $visits = $this->getSiteVisit();
@@ -121,7 +127,6 @@ class ViewSiteVisit extends Component
 
         return view('casemanagement::livewire.case.view-site-visit',[
             'ui_params' => $this->buildUIParams(),
-            'visits' => $visits,
             'siteVisits' => $siteVisits,
             'viewSelectedCustomerVisit' => $viewSelectedCustomerVisit,
         ]);

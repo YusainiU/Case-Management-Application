@@ -119,7 +119,8 @@ class SLACalculationService
     public function calculatePauseRemainingValue(tickets $ticket, carbon $pausedDate)
     {
         $sla = $this->createSlaData($ticket);
-        $response_time = $sla['response_time']; //in secoonds
+        $response_time = $sla['response_time']; //in seconds
+        $fix_time = $sla['fixed_time']; //in seconds
         //$this->logger->log('paused_time', $pausedDate);
         //$this->logger->log('response_time', $response_time);
         $created_at  = carbon::parse($ticket->created_at);
@@ -129,10 +130,14 @@ class SLACalculationService
         $slaTimeConsumed = $slaTimeConsumed * 60; // In Seconds
         //$this->logger->log('sla_time_consumed in seconds', $slaTimeConsumed);
         $slaTimeRemaining = $response_time - $slaTimeConsumed;
+        $slaFixTimeRemaining = $fix_time - $slaTimeConsumed;
         //$this->logger->log('calculation: ', "Seconds Remaining = $response_time - $slaTimeConsumed");
         //$this->logger->log('sla_time_remaining', $slaTimeRemaining);
 
-        return $slaTimeRemaining;
+        return [
+            'response_time_remaining' => $slaTimeRemaining,
+            'fix_time_remaining' => $slaFixTimeRemaining,
+        ];
 
     }
 

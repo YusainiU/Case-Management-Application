@@ -2,24 +2,24 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
+use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Simplydigital\CaseManagement\Services\UI;
+use Illuminate\Support\Carbon;
 use Simplydigital\CaseManagement\Enums\CaseState;
+use Simplydigital\CaseManagement\Services\UI;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Spatie\Activitylog\Models\Activity;
-use Carbon\CarbonInterval;
 
 /**
- * @property \Illuminate\Support\Carbon|null $responded_at
- * @property \Illuminate\Support\Carbon|null $respond_by
- * @property \Illuminate\Support\Carbon|null $fixed_at
- * @property \Illuminate\Support\Carbon|null $fix_by
+ * @property Carbon|null $responded_at
+ * @property Carbon|null $respond_by
+ * @property Carbon|null $fixed_at
+ * @property Carbon|null $fix_by
  */
-
 class slaTask extends Model
 {
     use LogsActivity;
@@ -62,8 +62,8 @@ class slaTask extends Model
 
     public function activities(): MorphMany
     {
-        return $this->morphMany(Activity::class,'subject');        
-    }     
+        return $this->morphMany(Activity::class, 'subject');
+    }
 
     protected function casts(): array
     {
@@ -176,11 +176,14 @@ class slaTask extends Model
     public function getBreachedAttribute(): bool
     {
 
-        //dd(get_debug_type($this->fixed_at));
-                
+        // dd(get_debug_type($this->fixed_at));
+
         if ($this->paused) {
             return false;
         }
+
+        $responseBreached = false;
+        $fixBreached = false;
 
         $responseBreached =
             $this->respond_by !== null
@@ -335,6 +338,7 @@ class slaTask extends Model
     {
 
         $diff = CarbonInterval::minutes(now()->diffInMinutes($this->respond_by, false))->cascade()->forHumans();
+
         return $diff;
 
         // $hours = now()->diffInHours($this->respond_by, false);

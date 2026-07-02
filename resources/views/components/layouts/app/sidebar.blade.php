@@ -14,8 +14,11 @@
             </a>
 
              <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Case Management')" class="grid" expandable="true" expanded="true">
-                    <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.cases.view')" :current="request()->routeIs('casemanagement.cases.view')" wire:navigate>Cases</flux:navlist.item>
+                <flux:navlist.group :heading="__('Case Management')" class="grid" expandable="true" expanded="true">                    
+                    <flux:navlist.group :heading="__('Case')" class="grid" expandable="true" expanded="true">
+                        <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.cases.view')" :current="request()->routeIs('casemanagement.cases.view')" wire:navigate>View Cases</flux:navlist.item>
+                        <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.sitevisit.view')" :current="request()->routeIs('casemanagement.sitevisit.view')" wire:navigate>View Site Visits</flux:navlist.item>
+                    </flux:navlist.group>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.customers.view')" :current="request()->routeIs('casemanagement.customers.view')" wire:navigate>Customers</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.customer.contacts')" :current="request()->routeIs('casemanagement.customer.contacts')" wire:navigate>Customer Contacts</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.products.view')" :current="request()->routeIs('casemanagement.products.view')" wire:navigate>Products</flux:navlist.item>
@@ -58,7 +61,7 @@
                     data-test="sidebar-menu-button"
                 />
 
-                <flux:menu class="w-[220px]">
+                <flux:menu class="w-55">
                     <flux:menu.radio.group>
                         <div class="p-0 text-sm font-normal">
                             <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">

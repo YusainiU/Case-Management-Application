@@ -745,7 +745,8 @@ class CaseTicketUtilityServices
         $data = [
             'sla_task_id' => $slaTask->id,
             'paused_at' => $now,
-            'remaining' => $slaTimeRemaining,
+            'remaining' => $slaTimeRemaining['response_time_remaining'],
+            'remaining_fix_time' => $slaTimeRemaining['fix_time_remaining'],
         ];
         $pause = $this->caseRepository->createPause($data);
 
@@ -794,7 +795,9 @@ class CaseTicketUtilityServices
         $now = Carbon::now();
         $timeResumed = carbon::now();
         $slaRemaining = $pause->remaining;
+        $fixTimeRemaining = $pause->remaining_fix_time;
         $newRespondBy = $this->calcService->calcCustomRespondByTime($ticket, $slaRemaining, $timeResumed);
+        $newFixBy = $this->calcService->calcCustomRespondByTime($ticket, $fixTimeRemaining, $timeResumed);
         
         //Update sla_task_pause - resumed_at
         $pdata = [
@@ -816,6 +819,7 @@ class CaseTicketUtilityServices
             $sData = [
                 'state' => CaseState::In_Progress,
                 'respond_by' => $newRespondBy,
+                'fix_by' => $newFixBy,
             ];
             $this->caseRepository->updateSlaTask($slaTask, $sData);
             $logText = $this->caseLogAdministrationService->buildChangeRespondByText($from, $to);
