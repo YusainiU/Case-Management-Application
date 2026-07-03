@@ -7,12 +7,13 @@
     'placeholder' => $placeholder ?? 'Select an option',
     'options' => $options ?? [],
     'hint' => $hint ?? null,
+    'notlive' => $notlive ?? false,
 ])
 
 <div>
     <select
-        @if(isset($notlive) && $notlive)
-            wire:model="{{ $model }}""
+        @if($notlive)
+            wire:model="{{ $model }}"
         @else
             wire:model.live="{{ $model }}"
         @endif

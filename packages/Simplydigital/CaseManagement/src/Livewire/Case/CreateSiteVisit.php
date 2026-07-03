@@ -6,6 +6,7 @@ use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\UI;
+use Simplydigital\CaseManagement\Services\CaseUserServices;
 
 class CreateSiteVisit extends ModalComponent
 {
@@ -16,6 +17,7 @@ class CreateSiteVisit extends ModalComponent
     public bool $updateMode = false;
     public bool $modalMode = true;
     public array $caseOptions = [];
+    public array $userOptions = [];
     public bool $displayForm = false;
     public array $form = [];
 
@@ -48,6 +50,12 @@ class CreateSiteVisit extends ModalComponent
         ];
     }
 
+    public function mount()
+    {
+        $this->checkCaseExists();
+        $this->initialize();
+    }
+
     public function resetAll()
     {
         $this->reset([
@@ -75,13 +83,30 @@ class CreateSiteVisit extends ModalComponent
 
     public function initialize()
     {
+        
         if($this->caseId){
-            $this->selectCase();
+            $this->case = tickets::find($this->caseId);
+            $this->displayForm = true;
         }
-        $this->updateMode = $this->taskSiteVisit !== null;
-        $this->case = $this->taskSiteVisit?->ticket ?? null;
+        $this->case ??= $this->taskSiteVisit?->ticket;        
+        $this->updateMode = $this->taskSiteVisit !== null;        
         $this->buildOptions();
         $this->declareFormProperties();
+        $this->form['ticket_id'] ??= $this->case?->id;
+    }
+
+    public function checkCaseExists()
+    {
+        if($this->case){
+            $this->caseId = $this->case->id;
+        }
+
+    }
+
+    public function save()
+    {
+        dd($this->form);
+        
     }
 
     public function buildUI()
@@ -104,6 +129,8 @@ class CreateSiteVisit extends ModalComponent
         if($cOpts){
             $this->caseOptions = UI::createArrayforMultiselect($cOpts, 'id', 'name');
         }
+        //Get All active internal users
+        $this->userOptions = CaseUserServices::getAllInternalUserIds();
         
     }
 
@@ -112,8 +139,6 @@ class CreateSiteVisit extends ModalComponent
         if(!$this->caseId){
             return;
         }
-        $form['ticket_id'] = $this->caseId;
-        $this->case = tickets::find($this->caseId);
         $this->displayForm = true;
     }
 
@@ -125,10 +150,8 @@ class CreateSiteVisit extends ModalComponent
 
     public function render()
     {
-        $this->initialize();
         return view('casemanagement::livewire.case.create-site-visit',[
             'ui_params' => $this->buildUI(),
-            'form' => $this->form,
             'update' => $this->updateMode,
             'modal' => $this->modalMode,
         ]);

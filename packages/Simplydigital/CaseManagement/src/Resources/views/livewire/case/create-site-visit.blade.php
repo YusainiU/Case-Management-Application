@@ -14,7 +14,7 @@
     @endif
 
     @if($updateMode)
-
+        @include('casemanagement::components.form-elements.create-update-visit');
     @else
             @if($displayForm)
                 @include('casemanagement::components.form-elements.create-update-visit');

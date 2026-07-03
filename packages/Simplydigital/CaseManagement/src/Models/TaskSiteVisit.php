@@ -44,7 +44,27 @@ class TaskSiteVisit extends Model
     public function activities(): MorphMany
     {
         return $this->morphMany(Activity::class,'subject');        
-    }      
+    }
+    
+    public function visitScheduled()
+    {
+        return $this->visit_scheduled_at !== null;
+    }
+
+    public function visitEnroute()
+    {
+        return $this->enroute_at !== null;
+    }
+
+    public function visitOnsite()
+    {
+        return $this->onsite_at !== null;
+    }
+
+    public function visitOffsite()
+    {
+        return $this->offsite_at !== null;
+    }
 
     public function casts(): array
     {

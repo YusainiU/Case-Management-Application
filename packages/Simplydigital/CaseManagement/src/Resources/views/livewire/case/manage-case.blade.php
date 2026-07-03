@@ -60,7 +60,6 @@
                 <livewire:view-site-visit :case="$case" />
             @endif
 
-
         </x-casemanagement::page-elements.tab>
 
     </x-casemanagement::page-elements.modal>    

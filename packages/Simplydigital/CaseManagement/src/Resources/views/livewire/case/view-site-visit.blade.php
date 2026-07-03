@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 gap-4 p-4">
 
     @if($this->displayCreateModal)
-        <livewire:create-site-visit :modal="true" />
+        <livewire:create-site-visit :modal="true" :case="$case" />
     @endif
 
     <div class="my-4">
@@ -13,7 +13,7 @@
     </div>
     <x-casemanagement::page-elements.seperator margin="2" />
     <x-casemanagement::form-elements.button-primary label="Schedule a Visit" action="scheduleVisit" />
-    <x-casemanagement::form-elements.input-filter />
+
     {{ $siteVisits?->links() }}
 
     <x-casemanagement::table-elements.table>
