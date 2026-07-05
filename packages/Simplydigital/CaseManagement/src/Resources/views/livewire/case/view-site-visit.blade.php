@@ -4,6 +4,10 @@
         <livewire:create-site-visit :modal="true" :case="$case" />
     @endif
 
+    @if($this->displayProfileModal)
+        <livewire:create-site-visit :modal="true" :taskSiteVisit="$selectedVisit" />
+}   @endif
+
     <div class="my-4">
         <x-casemanagement::page-elements.section-title 
             title="{{ $ui_params['title'] }}"
@@ -18,18 +22,64 @@
 
     <x-casemanagement::table-elements.table>
         <thead>
-            <x-casemanagement::table-elements.table-th>
-                &nbsp;
-            </x-casemanagement::table-elements.table-th>
             <x-casemanagement::table-elements.table-th sortable field="created_at" direction="asc">
                 Created At
             </x-casemanagement::table-elements.table-th>
             <x-casemanagement::table-elements.table-th sortable field="customer_id" direction="asc">
                 Site
             </x-casemanagement::table-elements.table-th>
+            <x-casemanagement::table-elements.table-th sortable field="visit_scheduled_at" direction="asc">
+                Scheduled At
+            </x-casemanagement::table-elements.table-th>
+            <x-casemanagement::table-elements.table-th sortable field="scheduled_by" direction="asc">
+                Scheduled By
+            </x-casemanagement::table-elements.table-th>
+            <x-casemanagement::table-elements.table-th sortable field="enroute_at" direction="asc">
+                Enroute At
+            </x-casemanagement::table-elements.table-th>
+            <x-casemanagement::table-elements.table-th sortable field="onsite_at" direction="asc">
+                Onsite At
+            </x-casemanagement::table-elements.table-th>
+            <x-casemanagement::table-elements.table-th sortable field="offsite_at" direction="asc">
+                Offsite At
+            </x-casemanagement::table-elements.table-th>
+            <x-casemanagement::table-elements.table-th>
+                &nbsp;
+            </x-casemanagement::table-elements.table-th>                             
         </thead>
         <tbody>
-
+            @if($siteVisits)
+                @foreach($siteVisits as $visit)
+                    <tr>
+                        <x-casemanagement::table-elements.table-td>
+                            {{ $visit->created_at->format('d-m-Y H:i') }}
+                        </x-casemanagement::table-elements.table-td>
+                        <x-casemanagement::table-elements.table-td>
+                            {{ $visit->ticket->customer->name }}
+                        </x-casemanagement::table-elements.table-td>
+                        <x-casemanagement::table-elements.table-td>
+                            {{ $visit->visit_scheduled_at?->format('d-m-Y H:i') }}
+                        </x-casemanagement::table-elements.table-td>
+                        <x-casemanagement::table-elements.table-td>
+                            {{ $visit->scheduledBy?->name }}
+                        </x-casemanagement::table-elements.table-td>
+                        <x-casemanagement::table-elements.table-td>
+                            {{ $visit->enroute_at?->format('d-m-Y H:i') }}
+                        </x-casemanagement::table-elements.table-td>
+                        <x-casemanagement::table-elements.table-td>
+                            {{ $visit->onsite_at?->format('d-m-Y H:i') }}
+                        </x-casemanagement::table-elements.table-td>
+                        <x-casemanagement::table-elements.table-td>
+                            {{ $visit->offsite_at?->format('d-m-Y H:i') }}
+                        </x-casemanagement::table-elements.table-td>
+                        <x-casemanagement::table-elements.table-td>
+                            <div class="flex flex-row gap-4">
+                                <x-casemanagement::form-elements.button-secondary label="Manage" action="manageVisit({{ $visit->id }})" />
+                            </div>                            
+                        </x-casemanagement::table-elements.table-td>                        
+                    </tr>
+                @endforeach
+            @endif
         </tbody>
     </x-casemanagement::table-elements.table>   
 

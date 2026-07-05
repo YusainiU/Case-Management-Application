@@ -1,4 +1,16 @@
 <div>
+
+    <div class="grid grid-cols-1 gap-4">
+        <div class="flex flex-col gap-2 col-span-3">
+            <x-casemanagement::form-elements.input-label name="Short Description" :required=true />
+            <x-casemanagement::form-elements.input-text
+                model="form.short_description"
+                name="Short Description"
+                placeholder="Short Description"
+                hint="Title/Short Description ... "
+            />
+        </div>        
+    </div>    
     <div class="grid grid-cols-3 gap-4">
         <div class="flex flex-col gap-2">
             <x-casemanagement::form-elements.input-label name="Case Selected for {{ $case->customer->name }}" :required=false />
@@ -83,4 +95,9 @@
             />
         </div>        
     </div>
+    @if($updateMode)
+        <div class="grid grid-cols-1 gap-4">
+            <x-casemanagement::form-elements.checkbox model="form.active" name="completed" label="Visit Completed"/>
+        </div>
+    @endif
 </div>

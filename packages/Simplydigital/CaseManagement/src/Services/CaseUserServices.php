@@ -25,4 +25,9 @@ class CaseUserServices
         return $result;
     }
 
+    public function getUserById(int $id)
+    {
+        return  UserManagementServices::getUserById($id);
+    }
+
 }

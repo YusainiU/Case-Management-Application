@@ -68,6 +68,11 @@ class UserManagementServices
         }
     }
 
+    public static function getUserById(int $id)
+    {
+        return UsersDetails::find($id);
+    }
+
     public static function getAllInternalUsers()
     {
         $internals = UsersDetails::query()

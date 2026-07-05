@@ -6,6 +6,7 @@ use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\SlaTaskPause;
+use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use App\Models\User;
 
@@ -42,7 +43,7 @@ class CaseRepository
         return slaTask::create($data);
     }
 
-    public function updateSlaTask(slaTask $slaTask, $data)
+    public function updateSlaTask(slaTask $slaTask, array $data)
     {
         $slaTask->update($data);
     }
@@ -103,6 +104,26 @@ class CaseRepository
     public function deletePause(int $pauseId)
     {
         return SlaTaskPause::destroy($pauseId);
+    }
+
+    public function createVisit(array $data)
+    {
+        return TaskSiteVisit::create($data);
+    }
+
+    public function updateVisit(TaskSiteVisit $visit, array $data)
+    {
+        return $visit->update($data);
+    }
+
+    public function trackChangesOnVisit(TaskSiteVisit $visit, array $data)
+    {
+        $hasChanged = [];
+        foreach($data as $column => $value){
+            $visit->$column = $value;
+            $hasChanged[$column] = $visit->isDirty($column);
+        }
+        return $hasChanged;
     }
 
 }

@@ -13,7 +13,7 @@
     <x-casemanagement::page-elements.modal 
         title="{{ $ui['title'] }}"
         description="{{ $ui['description'] }}" 
-        widthsize="6xl" 
+        widthsize="7xl" 
         cancelThisWith="closeThisModal" 
         :showFooter="false" 
         cancelText="Close"

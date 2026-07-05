@@ -13,6 +13,7 @@ class ViewSiteVisit extends Component
 
     use WithPagination;
     public ?TaskSiteVisit $visit = null;
+    public ?TaskSiteVisit $selectedVisit = null;
     public ?int $customerId = null;
     public ?tickets $case = null;
     public ?string $filter = null;
@@ -77,6 +78,7 @@ class ViewSiteVisit extends Component
             'displayCreateModal',
             'displayUpdateModal',
             'displaySummaryModal',
+            'selectedVisit'
         ]);
     }    
 
@@ -118,6 +120,14 @@ class ViewSiteVisit extends Component
         $this->resetAllModals();
         $this->displayCreateModal = true;
     }
+
+    public function manageVisit(int|string $visitId)
+    {
+        $visitId = (int) $visitId;
+        $this->resetAllModals();
+        $this->selectedVisit = TaskSiteVisit::find($visitId);
+        $this->displayProfileModal = true;
+    }    
 
     public function render()
     {

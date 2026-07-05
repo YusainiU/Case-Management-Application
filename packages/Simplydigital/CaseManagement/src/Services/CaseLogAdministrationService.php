@@ -144,6 +144,12 @@ class CaseLogAdministrationService
         $logString = str_replace($searchFor, $replaceWith, $phrase);
         return $logString;
     }
+
+    public function buildVisitUpdateLog(string $phrase, array $toBeReplaced, array $replaceWith)
+    {
+        $logString = str_replace($toBeReplaced, $replaceWith, $phrase);
+        return $logString;
+    }
     
     public function buildVisitDeletion(string $shortDescription, string $user)
     {
