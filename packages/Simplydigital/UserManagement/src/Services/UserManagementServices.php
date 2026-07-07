@@ -70,7 +70,7 @@ class UserManagementServices
 
     public static function getUserById(int $id)
     {
-        return UsersDetails::find($id);
+        return User::find($id,'*');
     }
 
     public static function getAllInternalUsers()

@@ -1,4 +1,11 @@
 <div>
+    @if($this->message)
+        <x-casemanagement::page-elements.toast-alert-simple 
+            header="Changes Made"
+            mode="information"
+            message="{{ $message }}"
+        />
+    @endif    
     @if ($modal)
         <x-casemanagement::page-elements.modal 
             title="{{ $ui_params['title'] }}" 

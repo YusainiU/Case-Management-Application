@@ -5,18 +5,22 @@ namespace Simplydigital\CaseManagement\Services;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Simplydigital\CaseManagement\Repositories\CaseRepository;
+use Simplydigital\CaseManagement\Services\CaseUserServices;
 
 class CaseLogAdministrationService
 {
 
     private ?CaseRepository $caseRepository;
+    private ?CaseUserServices $userServices;
 
     public function __construct(?CaseRepository $caseRepository = null)
     {
         $this->caseRepository = $caseRepository ?? app()->make(CaseRepository::class);
+        $this->userServices = app(CaseUserServices::class);
     }
 
     public function createSystemLog(tickets $ticket, string $logText, ?string $logType = null)
@@ -92,7 +96,7 @@ class CaseLogAdministrationService
         $searchFor = [];
         $phrase = '';
         if ($data['action'] == 'update') {
-            $phrase = config('case-management.siteVisit.onsiteUpdate') ?? '';
+            $phrase = config('case-management.siteVisit.onsiteUpdated') ?? '';
             $searchFor = ['%ASSIGNEE%', '%DATETIME%', '%USER%'];
             $replaceWith = [$data['assignee'], $data['datetime'], $data['user']];
         }
@@ -136,6 +140,14 @@ class CaseLogAdministrationService
         return $logString;
     }
 
+    public function buildVisitCompletionLog()
+    {
+        $completedBy = Auth::user()->name;
+        $phrase = config('case-management.siteVisit.visitCompleted');
+        $logText = str_replace('%USER', $completedBy, $phrase);
+        return $logText;
+    }
+
     public function buildVisitNote(string $createdBy, string $visitNote)
     {
         $phrase = config('case-management.siteVisit.VisitNote') ?? '';
@@ -159,6 +171,104 @@ class CaseLogAdministrationService
         $replaceWith = [$shortDescription, $now, $user];
         $logString = str_replace($searchFor, $replaceWith, $phrase);
         return $logString;        
+    }
+
+    public function visitLogConfig(TaskSiteVisit $visit, array $form): array
+    {
+        $updater = Auth::user()?->name;        
+        $defaultType = config('case-management.logs.type.site_visit');
+        $enrouteType = config('case-management.logs.type.site_visit_enroute');
+        $onsiteType = config('case-management.logs.type.site_visit_onsite');
+        $oldAssignedName = $visit->assignedTo->name;
+        $assignedName = $this->userServices
+            ->getUserById($form['assigned_to'])
+            ?->name ?? 'Unassigned';         
+        return [
+            'visit_scheduled_at' => [
+                'set' => [
+                    'phrase' => config('case-management.siteVisit.scheduleUpdated'),
+                    'tokens' => ['%SCHEDULER%', '%DATETIME%'],
+                    'dateFormat' => true,
+                    'values' => fn ($formatted) => [$updater, $formatted],
+                    'type' => $defaultType,
+                ],
+                'cleared' => [
+                    'phrase' => config('case-management.siteVisit.scheduleRemoved'),
+                    'tokens' => ['%SCHEDULER%'],
+                    'dateFormat' => false,
+                    'values' => fn () => [$updater],
+                    'type' => $defaultType,
+                ],
+            ],
+
+            'assigned_to' => [
+                'set' => [
+                    'phrase' => config('case-management.siteVisit.assignedToUpdated'),
+                    'tokens' => ['%CURRENT%','%NEW%','%USER%'],
+                    'dateFormat' => false,
+                    'values' => fn () => [$oldAssignedName, $assignedName, $updater],
+                    'type' => $defaultType,
+                ],
+                'cleared' => [
+                    'phrase' => config('case-management.siteVisit.assignedToRemove'),
+                    'tokens' => ['%USER%'],
+                    'dateFormat' => false,
+                    'values' => fn () => [$updater],
+                    'type' => $defaultType,
+                ]
+            ],
+
+            'enroute_at' => [
+                'set' => [
+                    'phrase' => config('case-management.siteVisit.enrouteUpdated'),
+                    'tokens' => ['%ASSIGNEE%', '%DATETIME%', '%USER%'],
+                    'dateFormat' => true,
+                    'values' => fn ($formatted) => [$assignedName, $formatted, $updater],
+                    'type' => $enrouteType,
+                ],
+                'cleared' => [
+                    'phrase' => config('case-management.siteVisit.enrouteRemoved'),
+                    'tokens' => ['%ASSIGNEE%', '%USER%'],
+                    'dateFormat' => false,
+                    'values' => fn () => [$assignedName, $updater],
+                    'type' => $enrouteType,
+                ],
+            ],
+
+            'onsite_at' => [
+                'set' => [
+                    'phrase' => config('case-management.siteVisit.onsiteUpdated'),
+                    'tokens' => ['%ASSIGNEE%', '%DATETIME%', '%USER%'],
+                    'dateFormat' => true,
+                    'values' => fn ($formatted) => [$assignedName, $formatted, $updater],
+                    'type' => $onsiteType,
+                ],
+                'cleared' => [
+                    'phrase' => config('case-management.siteVisit.onsiteRemoved'),
+                    'tokens' => ['%ASSIGNEE%', '%USER%'],
+                    'dateFormat' => false,
+                    'values' => fn () => [$assignedName, $updater],
+                    'type' => $onsiteType,
+                ],
+            ],
+
+            'offsite_at' => [
+                'set' => [
+                    'phrase' => config('case-management.siteVisit.offsiteUpdate'),
+                    'tokens' => ['%ASSIGNEE%', '%DATETIME%', '%USER%'],
+                    'dateFormat' => true,
+                    'values' => fn ($formatted) => [$assignedName, $formatted, $updater],
+                    'type' => $onsiteType,
+                ],
+                'cleared' => [
+                    'phrase' => config('case-management.siteVisit.offsiteRemoved'),
+                    'tokens' => ['%ASSIGNEE%', '%USER%'],
+                    'dateFormat' => false,
+                    'values' => fn () => [$assignedName, $updater],
+                    'type' => $onsiteType,
+                ],
+            ],
+        ];
     }
 
     public function buildResolveText(string $user, string $datetime)

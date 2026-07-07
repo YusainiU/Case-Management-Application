@@ -26,6 +26,7 @@ class CreateSiteVisit extends ModalComponent
     public array $userOptions = [];
 
     public bool $displayForm = false;
+    public ?string $message = null;
 
     public array $form = [];
 
@@ -52,9 +53,9 @@ class CreateSiteVisit extends ModalComponent
             'form.scheduled_by' => 'nullable',
             'form.short_description' => 'required|string',
             'form.description' => 'required|string',
-            'form.enroute_at' => 'nullable|datetime',
-            'form.onsite_at' => 'nullable|datetime',
-            'form.offsite_at' => 'nullable|datetime',
+            'form.enroute_at' => 'nullable',
+            'form.onsite_at' => 'nullable',
+            'form.offsite_at' => 'nullable',
             'form.active' => 'nullable|boolean',
         ];
     }
@@ -76,6 +77,7 @@ class CreateSiteVisit extends ModalComponent
             'updateMode',
             'modalMode',
             'displayForm',
+            'message',
         ]);
     }
 
@@ -83,13 +85,13 @@ class CreateSiteVisit extends ModalComponent
     {
         $this->form = [
             'assigned_to' => $this->taskSiteVisit?->assigned_to ?? null,
-            'visit_scheduled_at' => $this->taskSiteVisit?->visit_scheduled_at->format('Y-m-d\TH:i') ?? null,
+            'visit_scheduled_at' => $this->taskSiteVisit?->visit_scheduled_at?->format('Y-m-d\TH:i') ?? null,
             'first_visit' => $this->taskSiteVisit?->first_visit ?? false,
             'scheduled_by' => $this->taskSiteVisit?->scheduled_by ?? null,
             'description' => $this->taskSiteVisit?->description ?? '',
-            'enroute_at' => $this->taskSiteVisit?->enroute_at->format('Y-m-d\TH:i') ?? null,
-            'onsite_at' => $this->taskSiteVisit?->onsite_at->format('Y-m-d\TH:i') ?? null,
-            'offsite_at' => $this->taskSiteVisit?->offsite_at->format('Y-m-d\TH:i') ?? null,
+            'enroute_at' => $this->taskSiteVisit?->enroute_at?->format('Y-m-d\TH:i') ?? null,
+            'onsite_at' => $this->taskSiteVisit?->onsite_at?->format('Y-m-d\TH:i') ?? null,
+            'offsite_at' => $this->taskSiteVisit?->offsite_at?->format('Y-m-d\TH:i') ?? null,
             'active' => $this->taskSiteVisit?->active ?? true,
             'ticket_id' => $this->taskSiteVisit?->ticket_id ?? null,
             'short_description' => $this->taskSiteVisit?->short_description ?? null,
@@ -123,6 +125,7 @@ class CreateSiteVisit extends ModalComponent
         if (! $this->case) {
             return;
         }
+        $this->validate();
         $service = $this->visitService();
         $data = [
             'ticket_id' => $this->case->id,
@@ -134,15 +137,50 @@ class CreateSiteVisit extends ModalComponent
         ];
         if ($this->updateMode && $this->taskSiteVisit) {
             $updated = $service->updateVisit($this->taskSiteVisit, $data, $this->form);
+            $this->message = $updated 
+                        ? "Visit details have been updated"
+                        : null;
         } else {
             $created = $service->createVisit($this->case, $data);
             if ($created) {
                 $this->taskSiteVisit = $created;
+                $this->message ??= 'Visit schedule has been created';
             }
         }
         $this->declareFormProperties();
+        $this->taskSiteVisit->refresh();
         $this->case->refresh();
     }
+
+    public function completeVisit()
+    {
+        $service = $this->visitService();
+        $canComplete = $service->canComplete($this->taskSiteVisit);
+        if($canComplete){
+            $completed = $service->completeVisit($this->TaskSiteVisit);
+            if($completed){
+                $this->message = "The visit has been completed";
+            }
+        }else{
+            $this->message = "Requires Enroute, Onsite and Offsite datetimes";
+        }
+        $this->case->refresh();
+        $this->taskSiteVisit->refresh();
+
+
+    }
+
+    public function removeVisit()
+    {
+
+    }
+
+    public function resetToastMessage()
+    {
+        $this->reset([
+            'message',
+        ]);
+    }    
 
     public function buildUI()
     {

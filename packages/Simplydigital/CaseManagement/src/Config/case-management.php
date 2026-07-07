@@ -176,6 +176,8 @@ return [
         'offsiteUpdate' => '%ASSIGNEE% is off site at %DATETIME% -- [%USER%]',
         'offsiteRemoved' => 'Off site has been removed -- [%USER%]',
         'assignedToUpdated' => 'Visit assignee has been changed from %CURRENT% to %NEW% -- [%USER%]',
+        'assignedToRemove' => '%USER% removed visit assignment',
+        'visitCompleted' => '%USER% has mark the visit as completed',
         'delete' => 'Site visit with a short description "%DESCRIPTION%" has been removed %DATETIME%-- [%USER%]',
     ],
     'ticket' => [

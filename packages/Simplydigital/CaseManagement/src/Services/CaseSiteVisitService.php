@@ -144,70 +144,10 @@ class CaseSiteVisitService
         return $this->query;
     }
 
-    private function logConfig(array $form): array
-    {
-        $updater = Auth::user()?->name;
-        $assignedName = $this->caseUserServices
-            ->getUserById($form['assigned_to'])
-            ?->name ?? 'Unassigned';         
-        return [
-            'visit_scheduled_at' => [
-                'set' => [
-                    'phrase' => config('case-management.siteVisit.scheduleUpdated'),
-                    'tokens' => ['%SCHEDULER%', '%DATETIME%'],
-                    'values' => fn ($formatted) => [$updater, $formatted],
-                ],
-                'cleared' => [
-                    'phrase' => config('case-management.siteVisit.scheduleRemoved'),
-                    'tokens' => ['%SCHEDULER%'],
-                    'values' => fn () => [$updater],
-                ],
-            ],
-
-            'enroute_at' => [
-                'set' => [
-                    'phrase' => config('case-management.siteVisit.enrouteUpdated'),
-                    'tokens' => ['%ASSIGNEE%', '%DATETIME%', '%USER%'],
-                    'values' => fn ($formatted) => [$assignedName, $formatted, $updater],
-                ],
-                'cleared' => [
-                    'phrase' => config('case-management.siteVisit.enrouteRemoved'),
-                    'tokens' => ['%ASSIGNEE%', '%USER%'],
-                    'values' => fn () => [$assignedName, $updater],
-                ],
-            ],
-
-            'onsite_at' => [
-                'set' => [
-                    'phrase' => config('case-management.siteVisit.onsiteUpdated'),
-                    'tokens' => ['%ASSIGNEE%', '%DATETIME%', '%USER%'],
-                    'values' => fn ($formatted) => [$assignedName, $formatted, $updater],
-                ],
-                'cleared' => [
-                    'phrase' => config('case-management.siteVisit.onsiteRemoved'),
-                    'tokens' => ['%ASSIGNEE%', '%USER%'],
-                    'values' => fn () => [$assignedName, $updater],
-                ],
-            ],
-
-            'offsite_at' => [
-                'set' => [
-                    'phrase' => config('case-management.siteVisit.offsiteUpdate'),
-                    'tokens' => ['%ASSIGNEE%', '%DATETIME%', '%USER%'],
-                    'values' => fn ($formatted) => [$assignedName, $formatted, $updater],
-                ],
-                'cleared' => [
-                    'phrase' => config('case-management.siteVisit.offsiteRemoved'),
-                    'tokens' => ['%ASSIGNEE%', '%USER%'],
-                    'values' => fn () => [$assignedName, $updater],
-                ],
-            ],
-        ];
-    }
-
     public function updateVisit(TaskSiteVisit $visit, array $data, array $form): bool
     {
         $case = $visit->ticket;
+        $old = clone $visit;
         $changes = $this->repo->trackChangesOnVisit($visit, $form);
         foreach (['enroute_at', 'onsite_at', 'offsite_at'] as $field) {
             if (\array_key_exists($field, $form)) {
@@ -220,18 +160,16 @@ class CaseSiteVisitService
 
         $updater = Auth::user()?->name;
         $type = config('case-management.logs.type.site_visit');
-        $logConfig = $this->logConfig($form);
+        $logConfig = $this->logService->visitLogConfig($old, $form);
 
         foreach ($logConfig as $field => $config) {
-            if(!$changes[$field]) continue;
-            $isCleared = empty($data['field']);
+            if(!$changes[$field] ?? false) continue;
+            $isCleared = blank($data[$field] ?? null);
             $entry = $config[$isCleared ? 'cleared' :'set'];
-            if ($isCleared) {
-                $replaceWith = $entry['values']();
-            } else {
-                $formatted = Carbon::parse($data[$field])->format('d-m-Y H:i');
-                $replaceWith = $entry['values']($formatted);
-            }
+            $type = $entry['type'];
+            $isDate = $entry['dateFormat'];
+            $formatted = $isDate ? Carbon::parse($data[$field])->format('d-m-Y H:i') : null;
+            $replaceWith = $entry['values']($formatted);            
             $logText = $this->logService->buildVisitUpdateLog(
                 $entry['phrase'],
                 $entry['tokens'],
@@ -266,5 +204,27 @@ class CaseSiteVisitService
         }
 
         return $created;
+    }
+
+    public function canComplete(TaskSiteVisit $visit)
+    {
+        return  $visit->visit_scheduled_at !== null &&
+                $visit->enroute_at !== null &&
+                $visit->onsite_at !== null &&
+                $visit->offsite_at !== null;
+    }
+
+    public function completeVisit(TaskSiteVisit $visit)
+    {
+        $result = false;
+        $data = ['active' => false];
+        $updated = $this->repo->updateVisit($visit, $data);
+        if($updated) {
+            $type = config('case-management.logs.type.completed');
+            $logText = $this->logService->buildVisitCompletionLog();
+            $this->logService->createSystemLog($visit->ticket, $logText, $type);
+        }
+
+        return $updated;
     }
 }
