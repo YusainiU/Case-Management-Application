@@ -12,6 +12,7 @@ enum CaseState: string
     case Resolved = 'Resolved';
     case Cancelled = 'Cancelled';
     case Closed = 'Closed';
+    case Site_Visit = 'Site Visit';
 
     public function label(): string
     {
@@ -23,6 +24,7 @@ enum CaseState: string
             self::Resolved => 'Resolved',
             self::Cancelled => 'Cancelled',
             self::Closed => 'Closed',
+            self::Site_Visit => 'Site Visit',
         };
     }
     
@@ -39,6 +41,7 @@ enum CaseState: string
             self::Open,
             self::In_Progress,
             self::Paused,
+            self::Site_Visit,
         ];
     }
 
@@ -97,6 +100,11 @@ enum CaseState: string
         return self::from($state) === self::Closed;
     }
 
+    public static function isSiteVisit(string $state): bool
+    {
+        return self::from($state) == self::Site_Visit;
+    }
+
     public function color(): string
     {
         return match($this) {
@@ -107,6 +115,7 @@ enum CaseState: string
             self::Resolved => UI::RESOLVED_STATE_CLASS,
             self::Cancelled => UI::CANCELLED_STATE_CLASS,
             self::Closed => UI::CLOSED_STATE_CLASS,
+            self::Site_Visit => UI::IN_PROGRESS_STATE_CLASS,
         };
     }
 

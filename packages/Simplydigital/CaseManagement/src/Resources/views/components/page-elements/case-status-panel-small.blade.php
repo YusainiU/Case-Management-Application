@@ -77,7 +77,7 @@
         @endif
 
         <!-- Paused -->
-        @if($case->slaTasks->activePause)
+        @if ($case->slaTasks->activePause)
             <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
                 <span class="w-3 h-3 rounded-full {{ $information }}"></span>
                 <div>
@@ -91,10 +91,22 @@
         <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
             <span class="w-3 h-3 rounded-full {{ $information }}"></span>
             <div>
-                <p class="text-xs text-gray-500 font-extrabold">Respond By: {{ $case->slaTasks->respond_by->format('d-m-Y H:i') }}</p>
+                <p class="text-xs text-gray-500 font-extrabold">Respond By:
+                    {{ $case->slaTasks->respond_by->format('d-m-Y H:i') }}</p>
                 {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
             </div>
         </div>
+
+        @if ($case->outstandingVisit()->exists())
+            <!-- Visit Scheduled -->
+            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
+                <span class="w-3 h-3 rounded-full {{ $information }}"></span>
+                <div>
+                    <p class="text-xs text-gray-500 font-extrabold">Visit Scheduled</p>
+                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
+                </div>
+            </div>
+        @endif
 
     </div>
 </div>

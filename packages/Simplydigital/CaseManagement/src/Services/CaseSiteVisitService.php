@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Repositories\CaseRepository;
+use Simplydigital\CaseManagement\Enums\CaseState;
 
 class CaseSiteVisitService
 {
@@ -190,6 +191,11 @@ class CaseSiteVisitService
         $data['first_visit'] = $firstVisit;
         $created = $this->repo->createVisit($data);
         if ($created) {
+
+            //Changethe ticket state to progress
+            $caseState = CaseState::Site_Visit;
+            $this->repo->updateCaseState($case, $caseState);
+
             // Create Log
             $scheduled_at = Carbon::parse($data['visit_scheduled_at'])->format('d-m-Y H:i');
             $assigned = $data['assigned_to'];
@@ -216,10 +222,17 @@ class CaseSiteVisitService
 
     public function completeVisit(TaskSiteVisit $visit)
     {
-        $result = false;
         $data = ['active' => false];
+        $case = $visit->ticket;
         $updated = $this->repo->updateVisit($visit, $data);
         if($updated) {
+
+            //Change case state if there is no outstanding visit
+            $visitExists = $case->outstandingVisit()->exists();
+            if(!$visitExists){
+                $this->repo->updateCaseState($case, CaseState::In_Progress);
+            }
+
             $type = config('case-management.logs.type.completed');
             $logText = $this->logService->buildVisitCompletionLog();
             $this->logService->createSystemLog($visit->ticket, $logText, $type);
@@ -236,6 +249,13 @@ class CaseSiteVisitService
         $remover = Auth::user()?->name;
         $deleted = $this->repo->deleteVisit($visit);
         if($deleted){
+
+            //Changed case state
+            $visitExists = $case->outstandingVisit()->exists();
+            if(!$visitExists) {
+                $this->repo->updateCaseState($case, CaseState::In_Progress);
+            }
+
             //Create Log
             $text = "$number - $shortDescription";
             $logText = $this->logService->buildVisitDeletion($shortDescription, $remover);

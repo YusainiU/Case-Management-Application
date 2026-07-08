@@ -111,7 +111,7 @@
             </div>
         </div>
 
-        <!-- Resolved -->
+        <!-- Paused -->
         <div class="rounded-xl border border-green-100 bg-green-50 p-4">
             <div class="flex items-start justify-between">
                 <div>
@@ -125,6 +125,21 @@
                 </div>
             </div>
         </div>
+
+        <!-- Visit Schduled -->
+        <div class="rounded-xl border border-green-100 bg-green-50 p-4">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-sm font-medium text-green-700">
+                        Site Visits
+                    </p>
+                    <h3 class="mt-2 text-3xl font-bold text-green-900">{{ $status['totalVisits'] }}</h3>
+                    <p class="mt-1 text-xs text-green-600">
+                        Site Visits
+                    </p>
+                </div>
+            </div>
+        </div>        
 
 
     </div>

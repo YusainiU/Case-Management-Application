@@ -156,6 +156,7 @@ class CreateSiteVisit extends ModalComponent
         $this->declareFormProperties();
         $this->taskSiteVisit->refresh();
         $this->case->refresh();
+        $this->closeThisModal();
     }
 
     public function completeVisit()
@@ -167,13 +168,13 @@ class CreateSiteVisit extends ModalComponent
             if($completed){
                 $this->message = "The visit has been completed";
             }
+            $this->closeThisModal();
         }else{
             $this->message = "Requires Enroute, Onsite and Offsite datetimes";
         }
         $this->case->refresh();
         $this->taskSiteVisit->refresh();
-
-
+        
     }
 
     public function removeVisit()
@@ -185,6 +186,7 @@ class CreateSiteVisit extends ModalComponent
             $this->message = "Visit $visitNumber has been removed";
         }
         $this->case->refresh();
+        $this->closeThisModal();
         
     }
 

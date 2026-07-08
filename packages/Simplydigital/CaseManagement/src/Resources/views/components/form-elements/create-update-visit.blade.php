@@ -100,7 +100,7 @@
             {{-- <x-casemanagement::form-elements.checkbox model="form.active" name="completed" label="Visit Completed"/> --}}
             <x-casemanagement::form-elements.button-primary label="Update" action="save" />
             <x-casemanagement::form-elements.button-primary label="Complete Visit" action="completeVisit" />
-            <x-casemanagement::form-elements.button-danger label="Cancel Visit" action="cancelVisit" />
+            <x-casemanagement::form-elements.button-danger label="Cancel Visit" action="removeVisit" />
         </div>
     @endif
 </div>

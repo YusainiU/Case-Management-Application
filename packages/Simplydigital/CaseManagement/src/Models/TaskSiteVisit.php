@@ -16,7 +16,7 @@ class TaskSiteVisit extends Model
 {
 
     use SoftDeletes;
-     use LogsActivity;
+    use LogsActivity;
     protected $fillable = [
         'number',
         'short_description' ,

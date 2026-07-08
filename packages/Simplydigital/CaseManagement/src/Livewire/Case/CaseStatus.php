@@ -47,6 +47,7 @@ class CaseStatus extends Component
         $status['currentlyWorking'] = collect($cases)->where('resolved', true)->count();
         $status['responded'] = collect($cases)->pluck('respondedAt')->whereNotNull()->count();
         $status['paused'] = collect($cases)->sum('paused');
+        $status['totalVisits'] = collect($cases)->sum('totalVisits');
 
         return $status;
     }

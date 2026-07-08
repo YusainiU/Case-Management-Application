@@ -143,6 +143,13 @@ class tickets extends Model
         return $this->hasMany(TaskSiteVisit::class, 'ticket_id');
     }
 
+    public function outstandingVisit()
+    {
+        return $this->hasMany(TaskSiteVisit::class, 'ticket_id')
+            ->where('active',true);
+        
+    }
+
     public function scopeOpenCases(Builder $query): Builder
     {
         return $query->whereNull('closed_datetime');
