@@ -26,7 +26,10 @@ class CreateSiteVisit extends ModalComponent
     public array $userOptions = [];
 
     public bool $displayForm = false;
+    
     public ?string $message = null;
+
+    public bool $completed = false;
 
     public array $form = [];
 
@@ -110,6 +113,9 @@ class CreateSiteVisit extends ModalComponent
         $this->buildOptions();
         $this->declareFormProperties();
         $this->form['ticket_id'] ??= $this->case?->id;
+        if($this->updateMode) {
+            $this->completed = $this->taskSiteVisit->offsite_at !== null;
+        }
     }
 
     public function checkCaseExists()
@@ -157,7 +163,7 @@ class CreateSiteVisit extends ModalComponent
         $service = $this->visitService();
         $canComplete = $service->canComplete($this->taskSiteVisit);
         if($canComplete){
-            $completed = $service->completeVisit($this->TaskSiteVisit);
+            $completed = $service->completeVisit($this->taskSiteVisit);
             if($completed){
                 $this->message = "The visit has been completed";
             }
@@ -172,7 +178,14 @@ class CreateSiteVisit extends ModalComponent
 
     public function removeVisit()
     {
-
+        //Cancel and Remove
+        $visitNumber = $this->taskSiteVisit->number;
+        $removed = $this->visitService()->cancelAndRemoveVisit($this->taskSiteVisit);
+        if($removed){
+            $this->message = "Visit $visitNumber has been removed";
+        }
+        $this->case->refresh();
+        
     }
 
     public function resetToastMessage()

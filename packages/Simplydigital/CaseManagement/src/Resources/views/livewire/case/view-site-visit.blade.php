@@ -1,5 +1,13 @@
 <div class="grid grid-cols-1 gap-4 p-4">
 
+    @if($this->message)
+        <x-casemanagement::page-elements.toast-alert-simple 
+            header="Changes Made"
+            mode="information"
+            message="{{ $message }}"
+        />
+    @endif       
+
     @if($this->displayCreateModal)
         <livewire:create-site-visit :modal="true" :case="$case" />
     @endif
@@ -74,7 +82,20 @@
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             <div class="flex flex-row gap-4">
-                                <x-casemanagement::form-elements.button-secondary label="Manage" action="manageVisit({{ $visit->id }})" />
+                                @php
+                                    $completed = $visit->offsite_at !== null;
+                                    $button = "secondary";
+                                    $label = "Manage";
+                                    if($completed) {
+                                        $button = "primary";
+                                        $label = "Completed";
+                                    }
+                                @endphp
+                                <x-dynamic-component
+                                    :component="'casemanagement::form-elements.button-'.$button" 
+                                    label="{{ $label }}" 
+                                    action="manageVisit({{ $visit->id }})" 
+                                />
                             </div>                            
                         </x-casemanagement::table-elements.table-td>                        
                     </tr>

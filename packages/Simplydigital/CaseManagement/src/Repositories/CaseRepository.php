@@ -126,5 +126,10 @@ class CaseRepository
         return $hasChanged;
     }
 
+    public function deleteVisit(TaskSiteVisit $visit)
+    {
+        return $visit->deleteQuietly();
+    }
+
 }
 

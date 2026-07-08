@@ -113,7 +113,7 @@ class CaseSiteVisitService
     public function getSiteVisitsForCase(int $caseId, ?string $filter = null)
     {
         $filter ??= $this->filter;
-        $this->query->where('ticket_id', $caseId)->where('active', true);
+        $this->query->where('ticket_id', $caseId);
         $this->buildFilter($filter);
 
         return $this->query;
@@ -226,5 +226,22 @@ class CaseSiteVisitService
         }
 
         return $updated;
+    }
+
+    public function cancelAndRemoveVisit(TaskSiteVisit $visit)
+    {
+        $shortDescription = $visit->short_description;
+        $number = $visit->number;
+        $case = $visit->ticket;
+        $remover = Auth::user()?->name;
+        $deleted = $this->repo->deleteVisit($visit);
+        if($deleted){
+            //Create Log
+            $text = "$number - $shortDescription";
+            $logText = $this->logService->buildVisitDeletion($shortDescription, $remover);
+            $type = Config('case-management.logs.type.site_visit');
+            $this->logService->createSystemLog($case, $logText, $type);
+        }
+        return $deleted;
     }
 }

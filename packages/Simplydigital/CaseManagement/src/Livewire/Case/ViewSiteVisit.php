@@ -22,7 +22,8 @@ class ViewSiteVisit extends Component
     public bool $displayCreateModal = false;
     public bool $displayUpdateModal = false;
     public bool $displayProfileModal = false;
-    public bool $displaySummaryModal = false;    
+    public bool $displaySummaryModal = false;
+    public ?string $message = null;    
 
 
     /**
@@ -68,6 +69,7 @@ class ViewSiteVisit extends Component
             'filter',
             'sortField',
             'sortDirection',
+            'message',
         ]);
     }
 
@@ -127,7 +129,14 @@ class ViewSiteVisit extends Component
         $this->resetAllModals();
         $this->selectedVisit = TaskSiteVisit::find($visitId);
         $this->displayProfileModal = true;
-    }    
+    }
+
+    public function resetToastMessage()
+    {
+        $this->reset([
+            'message',
+        ]);
+    }        
 
     public function render()
     {

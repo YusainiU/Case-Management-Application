@@ -144,7 +144,7 @@ class CaseLogAdministrationService
     {
         $completedBy = Auth::user()->name;
         $phrase = config('case-management.siteVisit.visitCompleted');
-        $logText = str_replace('%USER', $completedBy, $phrase);
+        $logText = str_replace('%USER%', $completedBy, $phrase);
         return $logText;
     }
 
