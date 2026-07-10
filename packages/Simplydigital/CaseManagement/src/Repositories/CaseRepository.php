@@ -2,17 +2,16 @@
 
 namespace Simplydigital\CaseManagement\Repositories;
 
-use Simplydigital\CaseManagement\Models\tickets;
-use Simplydigital\CaseManagement\Models\TaskLogs;
+use App\Models\User;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\SlaTaskPause;
+use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
-use Simplydigital\CaseManagement\Enums\CaseState;
-use App\Models\User;
+use Simplydigital\CaseManagement\Models\tickets;
 
 class CaseRepository
 {
-
     public function createNewTicket(array $data): tickets
     {
         return tickets::create($data);
@@ -30,7 +29,7 @@ class CaseRepository
 
     public function updateTicket(tickets $ticket, array $data)
     {
-        return $ticket->update($data); 
+        return $ticket->update($data);
     }
 
     public function createTaskLog(array $data)
@@ -50,55 +49,64 @@ class CaseRepository
 
     public function updateRespondAt(?slaTask $slaTask, ?string $respondedAt)
     {
-        if(!$slaTask) return false;
+        if (! $slaTask) {
+            return false;
+        }
         $slaTask->responded_at = $respondedAt ?? null;
-        if($slaTask->isDirty('responded_at')) {            
+        if ($slaTask->isDirty('responded_at')) {
             return $slaTask->update();
         }
+
         return false;
     }
 
-    public function updateAssignedTo(tickets $ticket, ?user $user)
+    public function updateAssignedTo(tickets $ticket, ?User $user)
     {
-        
+
         $ticket->assigned_to = $user ? $user->id : null;
-        if($ticket->isDirty('assigned_to')) {
+        if ($ticket->isDirty('assigned_to')) {
             return $ticket->update();
         }
+
         return false;
     }
 
     public function updateCaseState(tickets $ticket, CaseState $caseState)
     {
         $ticket->state = $caseState;
-        if($ticket->isDirty('state')) {
+        if ($ticket->isDirty('state')) {
             return $ticket->update();
         }
+
         return false;
     }
 
     public function updateFixedAt(?slaTask $slaTask, ?string $fixedAt)
     {
-        if(!$slaTask) return false;
+        if (! $slaTask) {
+            return false;
+        }
         $slaTask->fixed_at = $fixedAt ?? null;
-        if($slaTask->isDirty('fixed_at')) {            
+        if ($slaTask->isDirty('fixed_at')) {
             return $slaTask->update();
         }
-        return false;        
+
+        return false;
     }
 
     public function updateLog(TaskLogs $taskLog, string $logText)
     {
         $taskLog->description = $logText;
-        if($taskLog->isDirty('description')) {
+        if ($taskLog->isDirty('description')) {
             return $taskLog->update();
         }
+
         return false;
     }
 
     public function deleteLog(int $logId)
     {
-        return TaskLogs::destroy($logId);    
+        return TaskLogs::destroy($logId);
     }
 
     public function deletePause(int $pauseId)
@@ -118,18 +126,35 @@ class CaseRepository
 
     public function trackChangesOnVisit(TaskSiteVisit $visit, array $data)
     {
+        $test = clone $visit;
         $hasChanged = [];
-        foreach($data as $column => $value){
-            $visit->$column = $value;
-            $hasChanged[$column] = $visit->isDirty($column);
+        foreach ($data as $column => $value) {
+            $test->$column = $value;
+            $hasChanged[$column] = $test->isDirty($column);
         }
+
         return $hasChanged;
+    }
+
+    public function trackChangesOnVisitFromNull(TaskSiteVisit $visit, array $data): array
+    {
+        //$fields = ['enroute_at', 'onsite_at', 'offsite_at'];
+        $fields = ['enroute_at','onsite_at','offsite_at'];
+
+        $changed = [];
+    
+        foreach ($fields as $field) {
+            
+            if ($visit->$field === null && ($data[$field] ?? null) !== null) {                
+                $changed[] = $field;
+            }
+        }
+        
+        return $changed;
     }
 
     public function deleteVisit(TaskSiteVisit $visit)
     {
         return $visit->deleteQuietly();
     }
-
 }
-

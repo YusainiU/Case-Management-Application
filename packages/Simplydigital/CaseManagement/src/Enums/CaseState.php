@@ -13,6 +13,8 @@ enum CaseState: string
     case Cancelled = 'Cancelled';
     case Closed = 'Closed';
     case Site_Visit = 'Site Visit';
+    case Enroute = 'Enroute To Site';
+    case Onsite = 'Onsite At';
 
     public function label(): string
     {
@@ -25,6 +27,8 @@ enum CaseState: string
             self::Cancelled => 'Cancelled',
             self::Closed => 'Closed',
             self::Site_Visit => 'Site Visit',
+            self::Enroute => 'Enroute to Site',
+            self::Onsite => 'Onsite',
         };
     }
     
@@ -42,6 +46,8 @@ enum CaseState: string
             self::In_Progress,
             self::Paused,
             self::Site_Visit,
+            self::Enroute,
+            self::Onsite,
         ];
     }
 
@@ -105,6 +111,16 @@ enum CaseState: string
         return self::from($state) == self::Site_Visit;
     }
 
+    public static function isEnrouteToSite(string $state): bool
+    {
+        return self::from($state) == self::Enroute;
+    }
+    
+   public static function isOnsite(string $state): bool
+    {
+        return self::from($state) == self::Onsite;
+    }    
+
     public function color(): string
     {
         return match($this) {
@@ -116,6 +132,8 @@ enum CaseState: string
             self::Cancelled => UI::CANCELLED_STATE_CLASS,
             self::Closed => UI::CLOSED_STATE_CLASS,
             self::Site_Visit => UI::IN_PROGRESS_STATE_CLASS,
+            self::Enroute => UI::IN_PROGRESS_STATE_CLASS,
+            self::Onsite => UI::IN_PROGRESS_STATE_CLASS,
         };
     }
 

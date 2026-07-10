@@ -95,12 +95,14 @@
             />
         </div>        
     </div>
-    @if($updateMode && !$completed)
+    @if($updateMode)
         <div class="grid grid-cols-3 gap-4 mt-4">
-            {{-- <x-casemanagement::form-elements.checkbox model="form.active" name="completed" label="Visit Completed"/> --}}
-            <x-casemanagement::form-elements.button-primary label="Update" action="save" />
-            <x-casemanagement::form-elements.button-primary label="Complete Visit" action="completeVisit" />
-            <x-casemanagement::form-elements.button-danger label="Cancel Visit" action="removeVisit" />
+            @if($completed)                
+                <x-casemanagement::form-elements.button-danger label="Cancel/Remove Visit" action="removeVisit" />
+            @else
+                <x-casemanagement::form-elements.button-primary label="Complete Visit" action="completeVisit" />
+                <x-casemanagement::form-elements.button-primary label="Update" action="save" />
+            @endif
         </div>
     @endif
 </div>

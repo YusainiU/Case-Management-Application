@@ -138,14 +138,18 @@ class CaseRetrieveTicketStatus
 
         $visitsQuery = $ticket->siteVisits();
 
-        $totalVisits = (clone $visitsQuery)->count();
+        $totalVisits = (clone $visitsQuery)
+            ->whereNull('offsite_at')
+            ->count();
 
         $totalVisited = (clone $visitsQuery)
             ->whereNotNull('onsite_at')
+            ->whereNull('offsite_at')
             ->count();
 
         $currentlyEnroute = (clone $visitsQuery)
             ->whereNull('onsite_at')
+            ->whereNull('offsite_at')
             ->whereNotNull('enroute_at')
             ->count();
 

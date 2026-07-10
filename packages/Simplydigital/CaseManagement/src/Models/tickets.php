@@ -146,8 +146,8 @@ class tickets extends Model
     public function outstandingVisit()
     {
         return $this->hasMany(TaskSiteVisit::class, 'ticket_id')
-            ->where('active',true);
-        
+            ->where('active',true)
+            ->whereNull('offsite_at');        
     }
 
     public function scopeOpenCases(Builder $query): Builder

@@ -97,6 +97,18 @@
             </div>
         </div>
 
+        @if ($case->slaTasks->responded_at)
+            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
+                <span class="w-3 h-3 rounded-full {{ $information }}"></span>
+                <div>
+                    <p class="text-xs text-gray-500 font-extrabold">Responded At:
+                        {{ $case->slaTasks->responded_at->format('d-m-Y H:i') }}</p>
+                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
+                </div>
+            </div>
+        @endif
+
+
         @if ($case->outstandingVisit()->exists())
             <!-- Visit Scheduled -->
             <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">

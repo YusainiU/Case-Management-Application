@@ -29,6 +29,10 @@ class CaseTableSpatieLogService
         'fixed_at' => Carbon::class,
         'breached_at' => Carbon::class,
         'deleted_at' => Carbon::class,
+        'enroute_at' => Carbon::class,
+        'onsite_at' => Carbon::class,
+        'offsite_at' => Carbon::class,
+        'visit_scheduled_at' => Carbon::class,
     ];
 
     protected function formatValue(string $field, mixed $value): mixed

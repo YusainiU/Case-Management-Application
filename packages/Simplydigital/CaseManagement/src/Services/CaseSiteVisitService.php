@@ -145,21 +145,38 @@ class CaseSiteVisitService
         return $this->query;
     }
 
+    public function visitState(string $fieldName)
+    {
+        $status = [
+            'enroute_at' => CaseState::Enroute,
+            'onsite_at' =>  CaseState::Onsite,
+            'offsite_at' => CaseState::In_Progress,
+        ];
+        return $status[$fieldName];
+    }
+
     public function updateVisit(TaskSiteVisit $visit, array $data, array $form): bool
     {
         $case = $visit->ticket;
         $old = clone $visit;
-        $changes = $this->repo->trackChangesOnVisit($visit, $form);
+        $changes = $this->repo->trackChangesOnVisit($old, $form);
         foreach (['enroute_at', 'onsite_at', 'offsite_at'] as $field) {
             if (\array_key_exists($field, $form)) {
                 $data[$field] = $form[$field];
             }
         }
+            
         if (! $visit->update($data)) {
             return false;
         }
 
-        $updater = Auth::user()?->name;
+        $fromNull = $this->repo->trackChangesOnVisitFromNull($old, $data);
+        if(!empty($fromNull)) {
+            $last = array_key_last($fromNull);
+            $caseState = $this->visitState($fromNull[$last]);
+            $this->repo->updateCaseState($case, $caseState); 
+        }
+
         $type = config('case-management.logs.type.site_visit');
         $logConfig = $this->logService->visitLogConfig($old, $form);
 
