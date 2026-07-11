@@ -102,6 +102,7 @@
             @else
                 <x-casemanagement::form-elements.button-primary label="Complete Visit" action="completeVisit" />
                 <x-casemanagement::form-elements.button-primary label="Update" action="save" />
+                <x-casemanagement::form-elements.button-danger label="Cancel/Remove Visit" action="removeVisit" />
             @endif
         </div>
     @endif

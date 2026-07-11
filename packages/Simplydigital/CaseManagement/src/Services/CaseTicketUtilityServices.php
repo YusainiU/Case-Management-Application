@@ -2,42 +2,43 @@
 
 namespace Simplydigital\CaseManagement\Services;
 
-use Simplydigital\CaseManagement\Mail\DefaultEmail;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Simplydigital\CaseManagement\Models\tickets;
-use Simplydigital\CaseManagement\Models\slaTask;
-use Simplydigital\CaseManagement\Models\TaskSiteVisit;
-use Simplydigital\CaseManagement\Models\TaskLogs;    
-use Simplydigital\CaseManagement\Notifications\DefaultNotification;
-use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
-use Simplydigital\CaseManagement\Services\CasePublicHolidayService;
-use Simplydigital\CaseManagement\Services\CaseLogAdministrationService;
-use Simplydigital\CaseManagement\Enums\CaseState;
-use Simplydigital\CaseManagement\Repositories\CaseRepository;
-use Simplydigital\CaseManagement\Services\SLACalculationService;
-use Simplydigital\CaseManagement\Services\CaseRetrieveTicketStatus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Simplydigital\CaseManagement\Enums\CaseState;
+use Simplydigital\CaseManagement\Mail\DefaultEmail;
+use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\SlaTaskPause;
-use Carbon\Carbon;
+use Simplydigital\CaseManagement\Models\TaskLogs;
+use Simplydigital\CaseManagement\Models\TaskSiteVisit;
+use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Notifications\DefaultNotification;
+use Simplydigital\CaseManagement\Repositories\CaseRepository;
 
 class CaseTicketUtilityServices
 {
-
     private CasePublicHolidayService $casePublicHolidayService;
+
     private CaseLogAdministrationService $caseLogAdministrationService;
-    private SLACalculationService $calcService;    
+
+    private SLACalculationService $calcService;
+
     protected CaseRepository $caseRepository;
+
     protected CaseRetrieveTicketStatus $caseRetrieveTicketStatus;
+
+    private CaseUserServices $userServices;
 
     public function __construct(?CaseRepository $caseRepository = null)
     {
         $this->casePublicHolidayService = app()->make(CasePublicHolidayService::class);
         $this->caseRepository = $caseRepository ?? app()->make(CaseRepository::class);
         $this->caseRetrieveTicketStatus = app()->make(CaseRetrieveTicketStatus::class);
+        $this->userServices = app()->make(CaseUserServices::class);
         $this->setCaseLogAdministrationService(app()->make(CaseLogAdministrationService::class));
-        $this->setSLACalculationService(app()->make(SLACalculationService::class));   
+        $this->setSLACalculationService(app()->make(SLACalculationService::class));
     }
 
     public function setCaseLogAdministrationService(CaseLogAdministrationService $service)
@@ -54,6 +55,7 @@ class CaseTicketUtilityServices
     {
         $data = $this->buildCalcData($ticket, 'response_time');
         $respondBy = $this->calcService->calcRespondByTime($data);
+
         return $respondBy;
     }
 
@@ -61,9 +63,10 @@ class CaseTicketUtilityServices
     {
         $data = $this->buildCalcData($ticket, 'fix_time');
         $fixBy = $this->calcService->calcRespondByTime($data);
+
         return $fixBy;
     }
-    
+
     public function recalculateSlaTimes(tickets $ticket)
     {
         $respondBy = $this->getRespondByDateTime($ticket);
@@ -80,7 +83,7 @@ class CaseTicketUtilityServices
 
     public function buildCalcData(tickets $ticket, string $field)
     {
-        
+
         $rpt = $ticket->slaApplication->serviceLevelAgreement->response_time;
         $fxt = $ticket->slaApplication->serviceLevelAgreement->fixed_time;
         $stt = $ticket->slaApplication->serviceLevelAgreement->getServiceStartTime();
@@ -121,15 +124,15 @@ class CaseTicketUtilityServices
         ];
 
     }
-        
-    public function createNewTicketSlaTask(Tickets $ticket, string $respondBy, string $fixBy)
+
+    public function createNewTicketSlaTask(tickets $ticket, string $respondBy, string $fixBy)
     {
-        //dd($data);
+        // dd($data);
         $taskType = config('case-management.taskManagement.type.sla');
         $data = [
             'number' => null,
             'name' => $ticket->short_description,
-            'task_type' =>  $taskType,
+            'task_type' => $taskType,
             'short_description' => $ticket->short_description,
             'ticket_id' => $ticket->id,
             'sla_applications_id' => $ticket->sla_applications_id,
@@ -139,123 +142,103 @@ class CaseTicketUtilityServices
             'active' => true,
         ];
         $task = $this->caseRepository->createSlaTask($data);
+
         return $task;
     }
 
     public static function deleteTicketRelatedRecords(int $ticketId)
     {
-        slaTask::where('ticket_id','=',$ticketId)->delete();
-        taskLogs::where('ticket_id','=',$ticketId)->delete();
-        TaskSiteVisit::where('ticket_id','=',$ticketId)->delete(); 
+        slaTask::where('ticket_id', '=', $ticketId)->delete();
+        TaskLogs::where('ticket_id', '=', $ticketId)->delete();
+        TaskSiteVisit::where('ticket_id', '=', $ticketId)->delete();
     }
 
     public static function restoreTicketRelatedRecords(int $ticketId)
     {
-        slaTask::withTrashed()->where('ticket_id','=',$ticketId)->restore();
-        taskLogs::withTrashed()->where('ticket_id','=',$ticketId)->restore();
-        taskSiteVisit::withTrashed()->where('ticket_id','=',$ticketId)->restore();      
+        slaTask::withTrashed()->where('ticket_id', '=', $ticketId)->restore();
+        TaskLogs::withTrashed()->where('ticket_id', '=', $ticketId)->restore();
+        TaskSiteVisit::withTrashed()->where('ticket_id', '=', $ticketId)->restore();
     }
 
     public function retrieveTicketStatuses()
     {
-        $tickets = tickets::where('state','!=', CaseState::Completed->value)
-                            ->orWhere('state','!=', CaseState::Cancelled->value)
-                            ->orWhereNull('closed_datetime')
-                            ->get();
+        $tickets = tickets::where('state', '!=', CaseState::Completed->value)
+            ->orWhere('state', '!=', CaseState::Cancelled->value)
+            ->orWhereNull('closed_datetime')
+            ->get();
+
         return $this->caseRetrieveTicketStatus->retrieveStatuses($tickets);
     }
 
     public function getTotalOpenCases()
     {
-        return tickets::where('state','!=', CaseState::Completed->value)
-                    ->orWhere('state','!=', CaseState::Cancelled->value)
-                    ->orWhereNull('closed_datetime')
-                    ->count();    
+        return tickets::where('state', '!=', CaseState::Completed->value)
+            ->orWhere('state', '!=', CaseState::Cancelled->value)
+            ->orWhereNull('closed_datetime')
+            ->count();
     }
 
     public function retrieveTicketStatus(int $caseId)
     {
-        
+
         $ticket = tickets::find($caseId);
+
         return $this->caseRetrieveTicketStatus->retrieveStatus($ticket);
-    }
-
-    public function closeTicket(tickets $ticket, slaTask $slaTask, array $data)
-    {
-        //ticket->closed_datetime
-        //ticket->state = closed
-        //slaTask->completed_at
-        //slaTask->state = completed
-        $logAdmin = $this->caseLogAdministrationService;
-        $stateTicket = CaseState::Closed->value;
-        $logType = config('case-management.logs.type.completed');
-        $closedAt = $data["date"] . " " . $data["time"];
-        $closedAtTS = strtotime($closedAt);
-        $ticket->closed_datetime = $closedAtTS;
-        $ticket->state = $stateTicket;
-        $result = $ticket->save();
-        $slaTask->completed_at = $closedAt;
-        $slaTask->state = caseState::Completed->value;
-        $slaTask->save();
-        
-        $logText = $logAdmin->buildCompletedText($closedAt);
-        $logAdmin->createSystemLog($ticket, $logText, $logType);
-
-        return $result;
     }
 
     public function cleanCreateInputData(array $data)
     {
-        $currentUserName = Auth::getName(); //auth()->user()->name;
+        $currentUserName = Auth::getName(); // auth()->user()->name;
         $data['created_by'] = Auth::id();
         $data['state'] = CaseState::Open->value;
         $data['ticket_number'] = null;
-        return $data;        
+
+        return $data;
     }
-    
+
     public function createNewTicket(array $data)
     {
         $service = $this->caseRepository;
         $data = $this->cleanCreateInputData($data);
         $ticket = $service->createNewTicket($data);
 
-        if ($ticket) {            
-            //Create Log for ticket
+        if ($ticket) {
+            // Create Log for ticket
             $logAdmin = $this->caseLogAdministrationService;
             $logText = $logAdmin->buildTicketCreatedText($ticket);
             $logAdmin->createSystemLog($ticket, $logText);
-            
 
-            //Get Respond/Fix By DateTime
+            // Get Respond/Fix By DateTime
             $respondby = $this->getRespondByDateTime($ticket);
             $fixby = $this->getFixByDateTime($ticket);
-            //Create new task Service
+            // Create new task Service
             $task = $this->createNewTicketSlaTask($ticket, $respondby, $fixby);
-            //Create log for task
+            // Create log for task
             $logText = $logAdmin->buildSlaTaskCreatedText($task);
             $logType = config('case-management.logs.type.sla_tasks');
             $logAdmin->createSystemLog($ticket, $logText, $logType);
         }
+
         return $ticket;
     }
 
     public function createSlaTask(tickets $ticket)
-    {                
-        //Get Respond/Fix By DateTime
+    {
+        // Get Respond/Fix By DateTime
         $respondby = $this->getRespondByDateTime($ticket);
         $fixby = $this->getFixByDateTime($ticket);
-        //Create new task Service
+        // Create new task Service
         $logAdmin = $this->caseLogAdministrationService;
         $task = $this->createNewTicketSlaTask($ticket, $respondby, $fixby);
         $logText = $logAdmin->buildSlaTaskCreatedText($task);
         $logType = config('case-management.logs.type.sla_tasks');
-        $logAdmin->createSystemLog($ticket, $logText, $logType);                        
+        $logAdmin->createSystemLog($ticket, $logText, $logType);
     }
 
-    public  function reopenTicket(tickets $ticket)
+    public function reopenTicket(tickets $ticket)
     {
-        
-        //Recreate a new ticket using the closed one
+
+        // Recreate a new ticket using the closed one
         $raisedBy = $ticket->raisedByUser()->first();
         $raisedByUserId = $raisedBy?->user_id;
         $createdBy = Auth::id();
@@ -277,21 +260,23 @@ class CaseTicketUtilityServices
             'contact_email' => $ticket->contact_email,
         ];
         $newTicket = $this->createNewTicket($data);
-        if($newTicket){
+        if ($newTicket) {
             $newTicket->closed_ticket_id = $ticket->id;
             $newTicket->save();
+
             return $newTicket;
         }
-        return false;    
+
+        return false;
     }
-        
+
     public function setSiteVisit(tickets $ticket, array $data)
     {
         $visits = $ticket->siteVisits;
         $result = false;
         $firstVisit = false;
-        $assin = json_decode($data["assigned_to"]);
-        $dte = date('d-m-Y H:i', strtotime($data["visit_scheduled_at"]));
+        $assin = json_decode($data['assigned_to']);
+        $dte = date('d-m-Y H:i', strtotime($data['visit_scheduled_at']));
         if ($visits->count()) {
             $first = $visits->where('first_visit', '=', true)->first();
             $firstVisit = isset($first->first_visit) ? true : false;
@@ -302,10 +287,10 @@ class CaseTicketUtilityServices
         }
         $data['assigned_to'] = $assin->id;
 
-        //Create Site Visit
+        // Create Site Visit
         $visit = TaskSiteVisit::create($data);
         if ($visit) {
-            //Create Log
+            // Create Log
             $logAdmin = $this->caseLogAdministrationService;
             $currentUserName = Auth::user()->name;
             $logType = config('case-management.logs.type.site_visit');
@@ -316,7 +301,7 @@ class CaseTicketUtilityServices
                 $log->save();
             }
             if (trim($data['description'])) {
-                //Create Log for Visit Note
+                // Create Log for Visit Note
                 $logType = config('case-management.logs.type.site_visit_note');
                 $logText = $logAdmin->buildVisitNote($currentUserName, $data['description']);
                 $visitLog = $logAdmin->createSystemLog($ticket, $logText, $logType);
@@ -324,31 +309,32 @@ class CaseTicketUtilityServices
                 $visitLog->save();
             }
         }
+
         return $result;
     }
-    
+
     public function updateSiteVisit(TaskSiteVisit $siteVisit, array $data)
     {
-        
+
         $siteVisitClone = clone $siteVisit;
-        foreach($data as $k => $v)
-        {
+        foreach ($data as $k => $v) {
             $siteVisit->$k = $v;
-        }        
+        }
         $saved = $siteVisit->save();
         $this->trackVisitChangesForLog($siteVisitClone, $data);
+
         return $saved;
     }
-    
+
     private function trackVisitChangesForLog(TaskSiteVisit $siteVisit, array $data)
     {
         $logAdmin = $this->caseLogAdministrationService;
         $currentUserName = Auth::user()->name;
-        $assignedTo = $data["assigned_to"];
+        $assignedTo = $data['assigned_to'];
         $logType = config('case-management.logs.type.site_visit');
         $ticket = $siteVisit->ticket;
-        $currentAssignedTo = $siteVisit->assignedTo->name;        
-        $objAssignedTo = User::find($assignedTo,'*');
+        $currentAssignedTo = $siteVisit->assignedTo->name;
+        $objAssignedTo = User::find($assignedTo, '*');
         $newAssignedTo = $objAssignedTo->name;
 
         if ($siteVisit->visit_scheduled_at != $data['visit_scheduled_at']) {
@@ -361,21 +347,21 @@ class CaseTicketUtilityServices
             }
         }
         if ($siteVisit->assigned_to != $data['assigned_to']) {
-            //Assigned To has been changed
+            // Assigned To has been changed
             $logText = $logAdmin->buildVisitUpdatedAssignedTo($currentAssignedTo, $newAssignedTo, $currentUserName);
             $asl = $logAdmin->createSystemLog($ticket, $logText, $logType);
             if ($asl) {
                 $asl->task_site_visit_id = $siteVisit->id;
                 $asl->save();
-            }            
+            }
         }
         if ($siteVisit->enroute_at != $data['enroute_at']) {
             $logd['user'] = $currentUserName;
-            if($data['enroute_at']){
+            if ($data['enroute_at']) {
                 $logd['action'] = 'update';
                 $logd['assignee'] = $newAssignedTo;
                 $logd['datetime'] = $data['enroute_at'];
-            }else{
+            } else {
                 $logd['action'] = 'remove';
             }
             $logType = config('case-management.logs.type.site_visit_enroute');
@@ -384,15 +370,15 @@ class CaseTicketUtilityServices
             if ($enl) {
                 $enl->task_site_visit_id = $siteVisit->id;
                 $enl->save();
-            }              
+            }
         }
         if ($siteVisit->offsite_at != $data['offsite_at']) {
             $logf['user'] = $currentUserName;
-            if($data['offsite_at']){
+            if ($data['offsite_at']) {
                 $logf['action'] = 'update';
                 $logf['assignee'] = $newAssignedTo;
                 $logf['datetime'] = $data['offsite_at'];
-            }else{
+            } else {
                 $logf['action'] = 'remove';
             }
             $logType = config('case-management.logs.type.site_visit_offsite');
@@ -401,15 +387,15 @@ class CaseTicketUtilityServices
             if ($ofl) {
                 $ofl->task_site_visit_id = $siteVisit->id;
                 $ofl->save();
-            }                             
+            }
         }
         if ($siteVisit->onsite_at != $data['onsite_at']) {
             $logn['user'] = $currentUserName;
-            if($data['onsite_at']){
+            if ($data['onsite_at']) {
                 $logn['action'] = 'update';
                 $logn['assignee'] = $newAssignedTo;
                 $logn['datetime'] = $data['onsite_at'];
-            }else{
+            } else {
                 $logn['action'] = 'remove';
             }
             $logType = config('case-management.logs.type.site_visit_onsite');
@@ -418,11 +404,11 @@ class CaseTicketUtilityServices
             if ($onl) {
                 $onl->task_site_visit_id = $siteVisit->id;
                 $onl->save();
-            }            
+            }
         }
 
     }
-    
+
     public function setResolution(tickets $ticket, slaTask $slaTask, array $data)
     {
         /*
@@ -437,13 +423,13 @@ class CaseTicketUtilityServices
         $stateTask = CaseState::Resolved->value;
         $logType = config('case-management.logs.type.resolution');
         $logType = config('case-management.logs.type.resolution');
-        $resolvedBy = json_decode($data["resolvedBy"]);
-        $rdate = $data["resolvedDate"] . " " . $data["resolvedTime"];
+        $resolvedBy = json_decode($data['resolvedBy']);
+        $rdate = $data['resolvedDate'].' '.$data['resolvedTime'];
         $rdateTS = strtotime($rdate);
         $ticket->state = $stateTicket;
         $ticket->resolution = $data['resolution'];
         $ticket->resolved_datetime = $rdateTS;
-        $ticket->resolution_details = $data["resolutionNote"];
+        $ticket->resolution_details = $data['resolutionNote'];
         $ticket->resolved_by = $resolvedBy->id;
         $result = $ticket->save();
         if ($result) {
@@ -452,8 +438,8 @@ class CaseTicketUtilityServices
             $logAdmin = $this->caseLogAdministrationService;
             $logText = $logAdmin->buildResolveText($resolvedBy->name, $rdate);
             $log = $logAdmin->createSystemLog($ticket, $logText, $logType);
-            if ($data["emailResolution"]) {
-                //Email Resolution Log to customer
+            if ($data['emailResolution']) {
+                // Email Resolution Log to customer
                 $this->sendProgressNotification($ticket, $log, $logText);
                 $log->notification_sent_at = date('Y-m-d H:i:s', time());
                 $log->save();
@@ -462,10 +448,10 @@ class CaseTicketUtilityServices
 
         return $result;
     }
-    
-    private function sendProgressNotification(tickets $ticket, taskLogs $taskLog, string $log)
+
+    private function sendProgressNotification(tickets $ticket, TaskLogs $taskLog, string $log)
     {
-        
+
         $from = Auth::user()->name;
         $title = "Progress Log ( $ticket->ticket_number ) - $ticket->short_description";
         $email = '';
@@ -474,40 +460,44 @@ class CaseTicketUtilityServices
             $usr = $ticket->raised_by_user;
             $user = $ticket->raisedByUser;
             $email = $user->customerUser->email;
-            $message["from"] = "From: $from";
-            $message["title"] = "Subject: $title";
-            $message["greeting"] = "For attention: $usr";
-            $message["content"] = $log;
-            $message["datetime"] = "Timestamp: " . date('d-m-Y H:s', time());
+            $message['from'] = "From: $from";
+            $message['title'] = "Subject: $title";
+            $message['greeting'] = "For attention: $usr";
+            $message['content'] = $log;
+            $message['datetime'] = 'Timestamp: '.date('d-m-Y H:s', time());
             $user->notify(new DefaultNotification($message));
         }
         if ($ticket->raised_by_nonuser && $ticket->contact_email) {
             $email = $ticket->contact_email;
             $usr = $ticket->raised_by_nonuser;
-            $data["name"] = $usr;
-            $data["subject"] = $title;
-            $data["title"] = $title;
-            $data["message"] = $log;
+            $data['name'] = $usr;
+            $data['subject'] = $title;
+            $data['title'] = $title;
+            $data['message'] = $log;
             Mail::to($email)->send(new DefaultEmail($data));
         }
         if ($email && $usr) {
-            //Create Log
+            // Create Log
             $logAdmin = $this->caseLogAdministrationService;
             $logText = $logAdmin->buildProgressEmailLog($taskLog, $usr);
             $log = $logAdmin->createSystemLog($ticket, $logText);
+
             return true;
         }
+
         return false;
     }
 
     public function setAssignedTo(tickets $ticket, int|string|null $userId)
     {
-        if($userId && \is_string(trim($userId))) (int) $userId;
-        $user = user::find($userId,'*');        
+        if ($userId && \is_string(trim($userId))) {
+            (int) $userId;
+        }
+        $user = User::find($userId, '*');
         $result = $this->caseRepository->updateAssignedTo($ticket, $user);
-        if($result) {
+        if ($result) {
             $hasAssignment = $ticket->first_case_assignment;
-            if(!$hasAssignment){
+            if (! $hasAssignment) {
                 $data = [
                     'state' => CaseState::In_Progress,
                     'first_case_assignment' => $ticket->updated_at,
@@ -515,12 +505,13 @@ class CaseTicketUtilityServices
                 $this->caseRepository->updateTicket($ticket, $data);
             }
             $logAdmin = $this->caseLogAdministrationService;
-            $logText = $logAdmin->buildAssignedToText($ticket,  $user);
+            $logText = $logAdmin->buildAssignedToText($ticket, $user);
             $logAdmin->createSystemLog($ticket, $logText);
         }
+
         return $result;
     }
-    
+
     public function unassignedUser(tickets $ticket)
     {
         $logAdmin = $this->caseLogAdministrationService;
@@ -528,18 +519,19 @@ class CaseTicketUtilityServices
         $logAdmin->createSystemLog($ticket, $logText);
         $ticket->assigned_to = null;
         $result = $ticket->save();
+
         return $result;
     }
 
     public function slaBreachUpdate(slaTask $tasks)
-    {        
+    {
         if ($tasks) {
             foreach ($tasks as $task) {
                 $this->checkATaskBreach($task, $task->ticket);
             }
         }
-    }    
-    
+    }
+
     public function checkATaskBreach(slaTask $task, tickets $ticket)
     {
         $now = date('Y-m-d H:i:s');
@@ -553,17 +545,17 @@ class CaseTicketUtilityServices
             $task->fix_by_breach_at = $now;
             $updateBreach = true;
         }
-        //Only update breached_at if it has no value
-        if ($updateBreach && !$task->breached_at) {
+        // Only update breached_at if it has no value
+        if ($updateBreach && ! $task->breached_at) {
             $task->breached_at = $now;
             $task->save();
-            //Prepare and create Log
+            // Prepare and create Log
             $logAdmin = $this->caseLogAdministrationService;
             $logText = $logAdmin->buildBreachLogText($now);
             $logAdmin->createSystemLog($ticket, $logText);
         }
     }
-    
+
     public function checkSlaBreach(slaTask $slaTask)
     {
         $sla = $slaTask;
@@ -572,26 +564,26 @@ class CaseTicketUtilityServices
         $breach = false;
         $respond_by_breach = false;
         $fix_by_breach = false;
-        //$test = [];
+        // $test = [];
 
         $respondedAt = $sla->responded_at ? strtotime($sla->responded_at) : null;
         $fixedAt = $sla->fixed_at ? strtotime($sla->fixed_at) : null;
         $respby = $sla->respond_by ? strtotime($sla->respond_by) : null;
         $fixby = $sla->fix_by ? strtotime($sla->fix_by) : null;
 
-        //[1] If respondby or fix by have passed current datetime -> breach by default
-        //$test[] = "$now (now) > $respby (respby) && !$respondedAt (respondedAt)";
-        if ($now > $respby && !$respondedAt) {
+        // [1] If respondby or fix by have passed current datetime -> breach by default
+        // $test[] = "$now (now) > $respby (respby) && !$respondedAt (respondedAt)";
+        if ($now > $respby && ! $respondedAt) {
             $respond_by_breach = true;
             $breach = true;
-            //$test[] = "breach is true";
+            // $test[] = "breach is true";
         }
 
-        //$test[] = "$now (now) > $fixby (fixby) && !$respondedAt (respondedAt)";
-        if ($now > $fixby && !$fixedAt) {
+        // $test[] = "$now (now) > $fixby (fixby) && !$respondedAt (respondedAt)";
+        if ($now > $fixby && ! $fixedAt) {
             $fix_by_breach = true;
             $breach = true;
-            //$test[] = "breach is true";
+            // $test[] = "breach is true";
         }
 
         /*
@@ -601,20 +593,20 @@ class CaseTicketUtilityServices
                 - if breached_at is empty
 
         */
-        //[3]
-        //$test[] = "$respondedAt (respondedAt) && $respondedAt (respondedAt) > $respby (respby) && !$sla->breached_at (sla->breached_at)";
-        if ($respondedAt && $respondedAt > $respby && !$sla->breached_at) {
+        // [3]
+        // $test[] = "$respondedAt (respondedAt) && $respondedAt (respondedAt) > $respby (respby) && !$sla->breached_at (sla->breached_at)";
+        if ($respondedAt && $respondedAt > $respby && ! $sla->breached_at) {
             $respond_by_breach = true;
             $breach = true;
-            //$test[] = "breach is true";
+            // $test[] = "breach is true";
         }
 
-        //[4] Check fixed_at
-        //$test[]="$fixedAt (fixedAt && $fixedAt (fixedAt) > $fixby (fixby) && && !$sla->breached_at (sla->breached_at)";
-        if ($fixedAt && $fixedAt > $fixby && !$sla->breached_at) {
+        // [4] Check fixed_at
+        // $test[]="$fixedAt (fixedAt && $fixedAt (fixedAt) > $fixby (fixby) && && !$sla->breached_at (sla->breached_at)";
+        if ($fixedAt && $fixedAt > $fixby && ! $sla->breached_at) {
             $fix_by_breach = true;
             $breach = true;
-            //$test[] = "breach is true";
+            // $test[] = "breach is true";
         }
 
         $result = [
@@ -623,24 +615,25 @@ class CaseTicketUtilityServices
             'fix_by_breach' => $fix_by_breach,
         ];
 
-        //dd($test);
+        // dd($test);
         return $result;
 
-    }    
+    }
 
     public function updateRespondAt(tickets $ticket, ?string $respondedAt)
     {
         $currentUser = Auth::user()->name;
         $slaTask = $ticket->slaTasks;
         $saved = $this->caseRepository->updateRespondAt($slaTask, $respondedAt);
-        if($saved) {
-            //Create progress Log
+        if ($saved) {
+            // Create progress Log
             $service = $this->caseLogAdministrationService;
             $type = config('case-management.logs.type.sla_tasks');
             $rt = $respondedAt ? date_format(date_create($respondedAt), 'd-m-Y H:i') : null;
             $logText = $service->buildRespondAtLogText($rt, $currentUser);
             $service->createSystemLog($ticket, $logText, $type);
         }
+
         return $saved;
     }
 
@@ -649,47 +642,56 @@ class CaseTicketUtilityServices
         $currentUser = Auth::user()->name;
         $slaTask = $ticket->slaTasks;
         $saved = $this->caseRepository->updateFixedAt($slaTask, $fixedAt);
-        if($saved) {
+        if ($saved) {
             $service = $this->caseLogAdministrationService;
             $type = config('case-management.logs.type.sla_tasks');
             $rt = date_format(date_create($fixedAt), 'd-m-Y H:i');
             $logText = $service->buildFixedAtLogText($rt, $currentUser);
             $service->createSystemLog($ticket, $logText, $type);
         }
+
         return $saved;
     }
 
     public function buildProgressLog(tickets $ticket, ?string $logText)
     {
-        if(!$logText) return false;
+        if (! $logText) {
+            return false;
+        }
         $currentUser = Auth::user()->name;
         $currentDate = now()->format('d-m-y H:i');
         $service = $this->caseLogAdministrationService;
         $logText = $service->buildProgressLogText($logText, $currentDate, $currentUser);
         $logType = Config('case-management.logs.type.internal_update');
-        return $service->createSystemLog($ticket, $logText,$logType);        
+
+        return $service->createSystemLog($ticket, $logText, $logType);
 
     }
 
     public function respondToComment(int $logId, string $respond)
     {
         $respond = trim($respond);
-        if(!$respond) return false;
+        if (! $respond) {
+            return false;
+        }
         $taskLog = TaskLogs::find($logId);
         $text = $this->caseLogAdministrationService->buildResponseToCommentText($respond);
         $log = $this->caseLogAdministrationService->createSystemLog($taskLog->ticket, $text);
-        if($log) {
+        if ($log) {
             $log->response_to_internal_comment = $logId;
             $log->update();
+
             return $log;
         }
+
         return false;
-        
+
     }
-    
+
     public function requireAttention(TaskLogs $taskLogs, bool $urgentAttention)
     {
         $taskLogs->require_attention = $urgentAttention;
+
         return $taskLogs->save();
     }
 
@@ -705,7 +707,7 @@ class CaseTicketUtilityServices
 
     public function getTaskLogsRequiringAttentions()
     {
-        return taskLogs::requiringAttention()->get();
+        return TaskLogs::requiringAttention()->get();
     }
 
     public function checkHasRequiringAttention(tickets $ticket): bool
@@ -717,30 +719,34 @@ class CaseTicketUtilityServices
     {
         try {
             $log = TaskLogs::findOrFail($logId);
-            if(!$log) return false;
+            if (! $log) {
+                return false;
+            }
             $log->require_attention = false;
             $updated = $log->update();
-            if($updated){
+            if ($updated) {
                 $logText = $this->caseLogAdministrationService->buildRemoveRequireAttentionText($log->number);
                 $this->caseLogAdministrationService->createSystemLog($log->ticket, $logText);
             }
+
             return true;
-        }catch(ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return false;
         }
 
-        
     }
 
     public function pauseCaseSla(tickets $ticket)
     {
-        
-        $slaTask = $ticket->slaTasks;
-        $now = carbon::now();
 
-        if(!$slaTask) return false;
-        
-        //Create Pause
+        $slaTask = $ticket->slaTasks;
+        $now = Carbon::now();
+
+        if (! $slaTask) {
+            return false;
+        }
+
+        // Create Pause
         $slaTimeRemaining = $this->calcService->calculatePauseRemainingValue($ticket, $now);
         $data = [
             'sla_task_id' => $slaTask->id,
@@ -750,7 +756,7 @@ class CaseTicketUtilityServices
         ];
         $pause = $this->caseRepository->createPause($data);
 
-        if($pause) {
+        if ($pause) {
 
             // Update Ticket and create log
             // Change - state, paused_at
@@ -759,10 +765,10 @@ class CaseTicketUtilityServices
                 'paused_at' => $pause->paused_at,
             ];
             $this->caseRepository->updateTicket($ticket, $tdata);
-            $logText = $this->caseLogAdministrationService->buildPauseText($pause->paused_at); 
+            $logText = $this->caseLogAdministrationService->buildPauseText($pause->paused_at);
             $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
 
-            //Update Task
+            // Update Task
             // Change - state
             $sData = [
                 'state' => CaseState::Paused,
@@ -780,40 +786,44 @@ class CaseTicketUtilityServices
     public function resumeCaseSla(tickets $ticket)
     {
 
-        //Get sla task
+        // Get sla task
         $slaTask = $ticket->slaTasks;
-        if(!$slaTask) return false;
+        if (! $slaTask) {
+            return false;
+        }
 
-        //Get Pause
+        // Get Pause
         $pause = SlaTaskPause::where('sla_task_id', $slaTask->id)
             ->where('paused_at', $slaTask->paused_at)
             ->whereNull('resumed_at')
             ->first();
-        if(!$pause) return false;
+        if (! $pause) {
+            return false;
+        }
 
-        //Recalculate Respondby time -- only when resume is triggere
+        // Recalculate Respondby time -- only when resume is triggere
         $now = Carbon::now();
-        $timeResumed = carbon::now();
+        $timeResumed = Carbon::now();
         $slaRemaining = $pause->remaining;
         $fixTimeRemaining = $pause->remaining_fix_time;
         $newRespondBy = $this->calcService->calcCustomRespondByTime($ticket, $slaRemaining, $timeResumed);
         $newFixBy = $this->calcService->calcCustomRespondByTime($ticket, $fixTimeRemaining, $timeResumed);
-        
-        //Update sla_task_pause - resumed_at
+
+        // Update sla_task_pause - resumed_at
         $pdata = [
             'resumed_at' => $now,
         ];
         $resumed = $this->caseRepository->updatePause($pause, $pdata);
-        
-        if($resumed) {
-            //Update ticket - state=In Progress, resumed_at
+
+        if ($resumed) {
+            // Update ticket - state=In Progress, resumed_at
             $tdata = [
                 'state' => CaseState::In_Progress,
             ];
             $this->caseRepository->updateTicket($ticket, $tdata);
             $logText = $this->caseLogAdministrationService->buildResumeText($now->format('d-m-y H:i'));
             $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
-            //update sla_task - state, respond_by
+            // update sla_task - state, respond_by
             $from = $slaTask->respond_by->format('d-m-Y H:i:s');
             $to = date('d-m-Y H:i:s', strtotime($newRespondBy));
             $sData = [
@@ -827,26 +837,30 @@ class CaseTicketUtilityServices
         }
 
         return $resumed;
-        
+
     }
 
     public function cancelPauseSla(tickets $ticket)
     {
-        //Get sla task
+        // Get sla task
         $slaTask = $ticket->slaTasks;
-        if(!$slaTask) return false;
+        if (! $slaTask) {
+            return false;
+        }
 
-        //Get Pause
+        // Get Pause
         $pause = SlaTaskPause::where('sla_task_id', $slaTask->id)
             ->where('paused_at', $slaTask->paused_at)
             ->whereNull('resumed_at')
             ->first();
-        if(!$pause) return false;
+        if (! $pause) {
+            return false;
+        }
 
         $deleted = $this->caseRepository->deletePause($pause->id);
 
-        if($deleted) {
-            //Update ticket - state=In Progress, resumed_at
+        if ($deleted) {
+            // Update ticket - state=In Progress, resumed_at
             $tdata = [
                 'state' => CaseState::In_Progress,
                 'paused_at' => null,
@@ -855,7 +869,7 @@ class CaseTicketUtilityServices
             $now = Carbon::now()->format('d-m-y H:i');
             $logText = $this->caseLogAdministrationService->buildCancelPauseText($now);
             $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
-            //update sla_task
+            // update sla_task
             $sData = [
                 'state' => CaseState::In_Progress,
                 'paused_at' => null,
@@ -866,4 +880,82 @@ class CaseTicketUtilityServices
         return $deleted;
     }
 
+    public function resolveCase(tickets $ticket, array $data)
+    {
+        /*
+        *   data [
+        *       resolved_datetime   datetime string
+        *       resolved_by         user id
+        *       resolution          string type
+        *       resolution_details  string text
+        *   ]
+        */
+
+        // Update Case
+        $caseState = CaseState::Resolved;
+        $resolved_at = Carbon::parse($data['resolved_datetime'])->timespan;
+        $data['resolved_datetime'] = $resolved_at;
+        $data['state'] = $caseState;
+        $updated = $this->caseRepository->updateTicket($ticket, $data);
+
+        // Create Log
+        if ($updated) {
+
+            // Update Sla Task
+            $slaTask = $ticket->slaTasks;
+            $slaTask->state = $caseState;
+            $this->caseRepository->updateSlaTask($slaTask, ['state' => $caseState]);
+
+            // Create Log
+            $type = Config('case-management.logs.type.resolution');
+            $resolvedBy = $this->userServices->getUserById($data['resolved_by'])->name;
+            $logText = $this->caseLogAdministrationService
+                ->buildResolveText($resolvedBy, Carbon::createFromTimestamp($resolved_at)
+                    ->format('d-m-Y H:i'));
+            $this->caseLogAdministrationService->createSystemLog($ticket, $logText, $type);
+
+        }
+
+        return $updated;
+
+    }
+
+    public function closeTicket(tickets $ticket, array $data)
+    {
+        // ticket->closed_datetime
+        // ticket->state = closed
+        // slaTask->completed_at
+        // slaTask->state = completed
+        $logAdmin = $this->caseLogAdministrationService;
+        $stateTicket = CaseState::Closed->value;
+        $logType = config('case-management.logs.type.completed');
+
+        $closedAt = Carbon::parse($data['closed_at']);
+        $closedAtTS = $closedAt->timestamp;
+
+        //Get the time between open and close
+        //$openAt = Carbon::parse($ticket->created_at);
+        //$openToClose = $this->calcService->workingMinutesBetween($ticket, $openAt, $closedAt);
+
+        $updated = $this->caseRepository->updateTicket($ticket, [
+            'closed_datetime' => $closedAtTS,
+            'state' => $stateTicket,
+        ]);
+
+        if ($updated) {
+            $slaTask = $ticket->slaTasks;
+            $slaTask->completed_at = $closedAt;
+            $slaTask->state = CaseState::Completed->value;
+            $this->caseRepository->updateSlaTask($slaTask, [
+                'completed_at' => $closedAt,
+                'state' => $stateTicket,
+            ]);
+
+            $logText = $logAdmin->buildCompletedText($closedAt);
+            $logAdmin->createSystemLog($ticket, $logText, $logType);
+
+        }
+
+        return $updated;
+    }
 }

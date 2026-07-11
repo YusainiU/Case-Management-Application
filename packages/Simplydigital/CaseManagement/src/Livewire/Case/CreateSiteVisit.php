@@ -186,6 +186,7 @@ class CreateSiteVisit extends ModalComponent
             $this->message = "Visit $visitNumber has been removed";
         }
         $this->case->refresh();
+        $this->taskSiteVisit->refresh();
         $this->closeThisModal();
         
     }

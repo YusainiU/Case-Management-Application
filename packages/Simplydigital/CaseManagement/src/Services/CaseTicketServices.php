@@ -227,11 +227,6 @@ class CaseTicketServices
         return $this->caseTicketUtilityServices->reopenTicket($ticket);
     }
 
-    public function closeTicket(tickets $ticket, slaTask $slaTask, array $data)
-    {
-        return $this->caseTicketUtilityServices->closeTicket($ticket, $slaTask, $data);
-    }
-
     public function retrieveTicketStatus(tickets $ticket)
     {
         return $this->caseTicketUtilityServices->retrieveTicketStatus($ticket->id);
@@ -323,6 +318,16 @@ class CaseTicketServices
     public function cancelPauseSla(tickets $ticket)
     {
         $this->caseTicketUtilityServices->cancelPauseSla($ticket);
+    }
+
+    public function closeCase(tickets $ticket, array $data)
+    {
+        return $this->caseTicketUtilityServices->closeTicket($ticket, $data);
+    }
+
+    public function resolveCase(tickets $ticket, array $data)
+    {
+        return $this->caseTicketUtilityServices->resolveCase($ticket, $data);
     }
     
 }
