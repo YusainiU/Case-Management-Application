@@ -60,6 +60,10 @@
                 <livewire:view-site-visit :case="$case" />
             @endif
 
+            @if($tabHeaders[$this->selectedTab] == $tabHeaders['close'])
+                <livewire:close-and-resolve-case :case="$case" />
+            @endif            
+
         </x-casemanagement::page-elements.tab>
 
     </x-casemanagement::page-elements.modal>    

@@ -93,6 +93,7 @@ return [
             'Technical Support' => 'Technical Support',
             'System Features' => 'System Features',
             'Network Configuration' => 'Network Configuration',
+            'No Resolution' => 'No Resolution',
         ],
     ],    
  

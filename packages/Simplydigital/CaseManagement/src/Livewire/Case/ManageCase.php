@@ -19,7 +19,7 @@ class ManageCase extends ModalComponent
         'update' => 'Update',
         'progress' => 'Progress',
         'visit' => 'Visit',
-        'closure' => 'Closure',
+        'close' => 'Close & Resolve',
         'tracker' => 'Changes Tracker'
     ];
 

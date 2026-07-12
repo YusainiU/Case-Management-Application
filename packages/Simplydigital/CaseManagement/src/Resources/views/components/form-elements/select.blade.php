@@ -8,6 +8,23 @@
     'options' => $options ?? [],
     'hint' => $hint ?? null,
     'notlive' => $notlive ?? false,
+    'borderColor' => "border-gray-700",
+    'borderColorDisabled' => 'border-gray-400',
+    'textColor' => 'text-black',
+    'textColorDisabled' => 'text-gray-400',    
+    'class' => "
+            appearance-none 
+            block 
+            w-full 
+            border 
+            rounded
+            py-3 
+            px-4 
+            mb-3 
+            leading-tight 
+            focus:outline-none 
+            focus:bg-white 
+            focus:border-gray-500",
 ])
 
 <div>
@@ -20,21 +37,13 @@
         id="{{ $name }}"
         name="{{ $name }}"
         {{  $multiple }}
-        class="
-            appearance-none 
-            text-black 
-            block 
-            w-full 
-            border 
-            border-gray-700 
-            rounded
-            py-3 
-            px-4 
-            mb-3 
-            leading-tight 
-            focus:outline-none 
-            focus:bg-white 
-            focus:border-gray-500"
+        @class([
+            $class,
+            $borderColor => ! $disabled,
+            $textColor => ! $disabled,
+            $borderColorDisabled => $disabled,
+            $textColorDisabled => $disabled,            
+        ])
         @disabled($disabled)
     >
         <option value="">-- {{ $placeholder }} --</option>

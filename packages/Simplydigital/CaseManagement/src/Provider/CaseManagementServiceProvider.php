@@ -68,6 +68,7 @@ use Simplydigital\CaseManagement\Livewire\Case\{
     ViewSlaPause,
     ViewSiteVisit,
     CreateSiteVisit,
+    CloseAndResolveCase,
 };
 
 class CaseManagementServiceProvider extends ServiceProvider
@@ -109,6 +110,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         'case-sla-pause' => ViewSlaPause::class,
         'view-site-visit' => ViewSiteVisit::class,
         'create-site-visit' => CreateSiteVisit::class,
+        'close-and-resolve-case' => CloseAndResolveCase::class,
     ];
 
     private array $services = [

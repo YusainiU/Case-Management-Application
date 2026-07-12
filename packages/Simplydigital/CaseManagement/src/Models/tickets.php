@@ -128,6 +128,11 @@ class tickets extends Model
         return $this->resolved_datetime !== null;
     }
 
+    public function getIsClosedAttribute()
+    {
+        return $this->closed_datetime !== null;
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
