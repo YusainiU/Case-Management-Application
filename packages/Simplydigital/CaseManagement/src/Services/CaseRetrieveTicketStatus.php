@@ -233,7 +233,7 @@ class CaseRetrieveTicketStatus
 
             'closeToBreachWarning' => $breachWarning,
 
-            'resolved' => $this->formatDate($ticket->resolved_datetime),
+            'resolved' => $ticket->resolvedDateTime() && !$ticket->closedDateTime() ? 1 : 0,
 
             'currentlyWorking' => (bool) $ticket->currently_working,
 

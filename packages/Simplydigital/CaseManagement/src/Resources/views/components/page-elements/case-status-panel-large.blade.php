@@ -29,9 +29,15 @@
             <button class="rounded-lg bg-green-50 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100">
                 Resolved
             </button>
-            <button class="rounded-lg bg-green-50 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100">
+            <button class="rounded-lg bg-green-100 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100">
                 Paused
             </button>
+            <button class="rounded-lg bg-red-800 px-4 py-2 text-sm font-medium text-gray-100 hover:bg-red-600" wire:click='allClosedCases'>
+                Closed
+            </button>
+            <button class="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-gray-100 hover:bg-gray-600" wire:click='resetFilterSelection'>
+                Reset
+            </button>                        
         </div>
     </div>
 

@@ -1,7 +1,9 @@
 @php
     use Simplydigital\CaseManagement\Services\UI;
+    use Carbon\Carbon;
     $important = UI::ALERT_WARNING;
     $information = UI::ALERT_INFORMATION;
+    $warning = UI::ALERT_IMPORTANT;
     $paused = UI::PAUSED_STATE_CLASS;
 @endphp
 
@@ -119,6 +121,31 @@
                 </div>
             </div>
         @endif
+
+        @if ($case->isResolved)
+            <!-- Visit Scheduled -->
+            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
+                <span class="w-3 h-3 rounded-full {{ $information }}"></span>
+                <div>
+                    <p class="text-xs text-gray-500 font-extrabold">
+                        Resolved at {{ Carbon::createFromTimestamp($case->resolved_datetime)->format('d-m-Y H:i') }}
+                    </p>
+                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
+                </div>
+            </div>
+        @endif
+        
+        @if ($case->isClosed)
+            <!-- Visit Scheduled -->
+            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
+                <span class="w-3 h-3 rounded-full {{ $warning }}"></span>
+                <div>
+                    <p class="text-xs text-gray-500 font-extrabold">
+                        ClOSED
+                    </p>
+                </div>
+            </div>
+        @endif        
 
     </div>
 </div>

@@ -13,6 +13,7 @@ use Spatie\Activitylog\Models\Activity;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
 use Simplydigital\CaseManagement\Enums\CaseState;
+use Carbon\Carbon;
 
 class tickets extends Model
 {
@@ -123,6 +124,20 @@ class tickets extends Model
         return $this->belongsTo(User::class, 'resolved_by');
     }
 
+    public function resolvedDateTime()
+    {
+        return $this->resolved_datetime 
+                ? Carbon::createFromTimestamp($this->resolved_datetime)->format('Y-m-d\TH:i')
+                : null;
+    }
+
+    public function closedDateTime()
+    {
+        return $this->closed_datetime 
+                ? Carbon::createFromTimestamp($this->closed_datetime)->format('Y-m-d\TH:i')
+                : null;        
+    }
+
     public function getIsResolvedAttribute()
     {
         return $this->resolved_datetime !== null;
@@ -131,6 +146,11 @@ class tickets extends Model
     public function getIsClosedAttribute()
     {
         return $this->closed_datetime !== null;
+    }
+
+    public function openResolvedCase()
+    {
+        return tickets::whereNotNull('resolved_datetime')->whereNull('closed_datetime');
     }
 
     public function createdBy()

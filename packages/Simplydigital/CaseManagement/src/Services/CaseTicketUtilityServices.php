@@ -162,9 +162,9 @@ class CaseTicketUtilityServices
 
     public function retrieveTicketStatuses()
     {
-        $tickets = tickets::where('state', '!=', CaseState::Completed->value)
-            ->orWhere('state', '!=', CaseState::Cancelled->value)
-            ->orWhereNull('closed_datetime')
+        $tickets = tickets::where('state', '!=', CaseState::Closed->value)
+            ->where('state', '!=', CaseState::Cancelled->value)
+            ->whereNull('closed_datetime')
             ->get();
 
         return $this->caseRetrieveTicketStatus->retrieveStatuses($tickets);
@@ -201,12 +201,25 @@ class CaseTicketUtilityServices
         $service = $this->caseRepository;
         $data = $this->cleanCreateInputData($data);
         $ticket = $service->createNewTicket($data);
+        $reopenCase = null;
+
+        if(\array_key_exists('closed_ticket_id', $data)) {
+            $reopenCase = $data['ticket_number'];
+            unset($data['ticket_number']);
+        }
 
         if ($ticket) {
             // Create Log for ticket
             $logAdmin = $this->caseLogAdministrationService;
             $logText = $logAdmin->buildTicketCreatedText($ticket);
             $logAdmin->createSystemLog($ticket, $logText);
+
+            if($reopenCase) {
+                //create log
+                $logText = Config('case-management.ProgressLogs.reopen');
+                $logText = str_replace('%CASENUMBER%', $reopenCase, $logText);
+                $logAdmin->createSystemLog($ticket, $logText);
+            }
 
             // Get Respond/Fix By DateTime
             $respondby = $this->getRespondByDateTime($ticket);
@@ -243,7 +256,8 @@ class CaseTicketUtilityServices
         $raisedByUserId = $raisedBy?->user_id;
         $createdBy = Auth::id();
         $data = [
-            'ticket_number' => null,
+            'ticket_number' => $ticket->number,
+            'closed_ticket_id' => $ticket->id,
             'customer_id' => $ticket->customer->id,
             'sla_applications_id' => $ticket->sla_applications_id,
             'customer_reference' => $ticket->customer_reference,
@@ -893,7 +907,7 @@ class CaseTicketUtilityServices
 
         // Update Case
         $caseState = CaseState::Resolved;
-        $resolved_at = Carbon::parse($data['resolved_datetime'])->timespan;
+        $resolved_at = Carbon::parse($data['resolved_datetime'])->timestamp;
         $data['resolved_datetime'] = $resolved_at;
         $data['state'] = $caseState;
         $updated = $this->caseRepository->updateTicket($ticket, $data);
@@ -930,7 +944,7 @@ class CaseTicketUtilityServices
         $stateTicket = CaseState::Closed->value;
         $logType = config('case-management.logs.type.completed');
 
-        $closedAt = Carbon::parse($data['closed_at']);
+        $closedAt = Carbon::parse($data['closed_datetime']);
         $closedAtTS = $closedAt->timestamp;
 
         //Get the time between open and close

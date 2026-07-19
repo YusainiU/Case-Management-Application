@@ -36,6 +36,8 @@ class ViewCases extends Component
         'closeProfileModal' => 'closeProfileModal',
         'closeSummaryModal' => 'closeSummaryModal',
         'reloadCaseStatus' => '$refresh',
+        'AllClosedCases' => 'openAllClosedCases',
+        'ResetFilterSelection' => 'resetFilterSelection',
     ];
 
     public function mount()
@@ -96,6 +98,16 @@ class ViewCases extends Component
     public function closeDescriptionModal()
     {
         $this->resetAllModal(); 
+    }
+
+    public function openAllClosedCases()
+    {
+        $this->displayCaseStatus = CaseState::Closed->value;
+    }
+
+    public function resetFilterSelection()
+    {
+        $this->displayCaseStatus = CaseState::Open->value;
     }
 
     public function buildUI()

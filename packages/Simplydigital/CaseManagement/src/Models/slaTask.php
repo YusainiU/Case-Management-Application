@@ -188,6 +188,7 @@ class slaTask extends Model
         $responseBreached =
             $this->respond_by !== null
             && $this->respond_by->isPast()
+            && !$this->caseTicket->closed_datetime
             && (
                 $this->responded_at === null
                 || $this->responded_at->gt($this->respond_by)
@@ -196,6 +197,7 @@ class slaTask extends Model
         $fixBreached =
             $this->fix_by !== null
             && $this->fix_by->isPast()
+            && !$this->caseTicket->closed_datetime
             && (
                 $this->fixed_at === null
                 || $this->fixed_at->gt($this->fix_by)
@@ -209,9 +211,14 @@ class slaTask extends Model
      */
     public function scopeBreached(Builder $query): Builder
     {
+
         return $query
             ->notPaused()
             ->where(function (Builder $query) {
+
+                $query->whereHas('caseTicket', function($case){
+                    $case->whereNull('closed_datetime');
+                });
 
                 // Response SLA breached
                 $query->where(function (Builder $query) {

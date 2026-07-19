@@ -29,6 +29,7 @@
     'width' => 'w-full',
     'webkit' => null,
     'hint' => null,
+    'hint_important' => null,
 ])
 
 
@@ -90,7 +91,7 @@
     />
 
     @if ($hint)
-        <p class="text-xs text-gray-500">{{ $hint }}</p>
+        <p class="text-xs text-gray-500 {{ $hint_important }}">{{ $hint }}</p>
     @endif
     
 </div>

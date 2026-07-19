@@ -1,4 +1,11 @@
 <div>
+    @if($this->message)
+        <x-casemanagement::page-elements.toast-alert-simple 
+            header="Changes Made"
+            mode="information"
+            message="{{ $message }}"
+        />
+    @endif     
     <div class="grid grid-cols-3 gap-4">
         <div class="flex flex-col gap-3">            
             <x-casemanagement::form-elements.input-label name="Resolution" :required=true />
@@ -44,7 +51,7 @@
             />
         </div>        
     </div>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-3 gap-4 mt-4">
         <div class="flex flex-col gap-3">
             <x-casemanagement::form-elements.input-label name="Case Closed At" />
             <x-casemanagement::form-elements.input-text 
@@ -55,13 +62,21 @@
                 [&::-webkit-calendar-picker-indicator]:bg-gray-400 
                 [&::-webkit-calendar-picker-indicator]:p-1 
                 [&::-webkit-calendar-picker-indicator]:rounded"
-                :disabled="$isClosed !== null || $isResolved" 
-                hint="Date and time when the case is closed." />            
+                :disabled="$isClosed || (!$isResolved && !$isClosed)" 
+                hint="This will be available once the case is resolved" 
+                hint_important="font-extrabold"
+            />            
         </div>  
     </div>
-    <div class="grid grid-cols-3 gap-4 mt-4">
-        <div class="flex flex-col gap-3">
-            <x-casemanagement::form-elements.button-primary label="Save" action="save"/>
+    @if(!$isClosed)
+        <div class="grid grid-cols-3 gap-4 mt-4">
+            <div class="flex flex-col gap-3">            
+                <x-casemanagement::form-elements.button-primary label="Save" action="save"/>
+            </div>
         </div>
-    </div>
+    @else
+        <div class="grid grid-cols-1 gap-4 mt-4">
+            <x-casemanagement::form-elements.button-primary label="Reopen Case" action="reopen"/>
+        </div>
+    @endif
 </div>

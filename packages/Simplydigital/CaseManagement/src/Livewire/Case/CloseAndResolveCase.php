@@ -9,7 +9,6 @@ use Simplydigital\CaseManagement\Services\CaseUserServices;
 class CloseAndResolveCase extends Component
 {
 
-    private CaseTicketServices $caseServices;
     public ?tickets $case = null;
     public string $mode = "resolve";
     public array $form_close  = [];
@@ -27,12 +26,16 @@ class CloseAndResolveCase extends Component
         ]);
     }
 
+    protected function caseServices(): CaseTicketServices
+    {
+        return app(CaseTicketServices::class);
+    }    
     private function validateResolve()
     {
         $datetime = $this->form_resolve['resolved_datetime'];
         $resolution = $this->form_resolve['resolution'];
         $by = $this->form_resolve['resolved_by'];
-        $notes = trim($this->form_resolved['resolution_details']);
+        $notes = trim($this->form_resolve['resolution_details']);
         return $datetime && $resolution && $by && $notes;
     }
 
@@ -43,9 +46,9 @@ class CloseAndResolveCase extends Component
 
     public function mount()
     {
-        $this->caseServices = app(CaseTicketServices::class);
         $this->resyncVars();
         $this->buildOptions();
+        $this->loadForms();
     }
 
     public function resyncVars()
@@ -57,42 +60,47 @@ class CloseAndResolveCase extends Component
     public function close()
     {
         $validated = $this->validateClose();
+        $service = $this->caseServices();
         if($validated) {
-            $this->caseServices->closeCase($this->case, $this->form_close);
+            $service->closeCase($this->case, $this->form_close);
             $this->message = "Case has been closed";
             $this->case->refresh();
             $this->resyncVars();
         }else{
             $this->message = "Close Datetime is required";
-            return;
         }
+        return;
     }
 
     public function resolve()
     {
         $this->resetAll();
         $validated = $this->validateResolve();
+        $service = $this->caseServices();
         if($validated) {
-            $this->caseServices->resolveCase($this->case, $this->form_resolve);
+            $service->resolveCase($this->case, $this->form_resolve);
             $this->message = "The case has been resolved";
             $this->case->refresh();
             $this->resyncVars();
         }else{
             $this->message = "Resolve Datetime, Resolution and Resolved By are all required";
-            return;
         }
-
+        return;
     }
 
     public function loadForms()
     {
         $this->form_resolve = [
-
+          'resolution'  => $this->case?->resolution ?? null,
+          'resolved_by' => $this->case?->resolved_by ?? null,
+          'resolved_datetime' => $this->case?->resolvedDateTime(),
+          'resolution_details' => $this->case?->resolution_details,
         ];
 
         $this->form_close = [
-
+            'closed_datetime' => $this->case?->closedDateTime(),
         ];
+        
     }
 
     private function buildOptions()
@@ -112,7 +120,24 @@ class CloseAndResolveCase extends Component
         $this->reset([
             'message',
         ]);
-    }       
+    }
+    
+    public function save()
+    {
+        if(!$this->isResolved) {
+            $this->resolve();
+        }else{
+            if(!$this->isClosed) {
+                $this->close();
+            }
+        }
+        return;
+    }
+
+    public function reopen()
+    {
+        
+    }
 
     public function render()
     {

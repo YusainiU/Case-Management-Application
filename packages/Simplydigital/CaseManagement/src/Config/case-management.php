@@ -162,6 +162,7 @@ return [
         'resume' => '%USER% has resumed the case at %DATETIME%. Respond By and Fix By datetimes have been readjusted',
         'respondByTimeChanged' => 'Respond by time changed from %FROM% to %TO%',
         'cancelPause' => '%USER% has cancelled the pause of the case at %DATETIME%.',
+        'reopen' => 'This case was previously closed under case number %CASENUMBER%',
 
     ],
     'siteVisit' => [

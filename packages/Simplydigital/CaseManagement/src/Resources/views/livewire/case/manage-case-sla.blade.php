@@ -73,22 +73,27 @@
             <x-casemanagement::form-elements.input-error field="forms.log" />
         </div>
     </div>
-    <div class="flex flex-row gap-4">
-        @if($this->noSlaTask)
-            <x-casemanagement::form-elements.button-danger action="createSlaTask" label="Create SLA Task" />
-        @else
-            <x-casemanagement::form-elements.button-primary action="updateSla" label="Update" />
-            @if($forms['assigned_to'])
-                <x-casemanagement::form-elements.button-danger action="unassign" label="Unassigned Case" />
-            @endif
-            @if(!$case->slaTasks->breached && $isTodayWorkingDay)
-                @if($case->slaTasks->activePause)
-                    <x-casemanagement::form-elements.button-primary action="resume" label="Resume SLA" />
-                    <x-casemanagement::form-elements.button-primary action="cancelPause" label="Cancel Pause" />
-                @else
-                    <x-casemanagement::form-elements.button-danger action="pause" label="Pause SLA" />
+
+    @if(!$case->closed_datetime)
+
+        <div class="flex flex-row gap-4">
+            @if($this->noSlaTask)
+                <x-casemanagement::form-elements.button-danger action="createSlaTask" label="Create SLA Task" />
+            @else
+                <x-casemanagement::form-elements.button-primary action="updateSla" label="Update" />
+                @if($forms['assigned_to'])
+                    <x-casemanagement::form-elements.button-danger action="unassign" label="Unassigned Case" />
+                @endif
+                @if(!$case->slaTasks->breached && $isTodayWorkingDay)
+                    @if($case->slaTasks->activePause)
+                        <x-casemanagement::form-elements.button-primary action="resume" label="Resume SLA" />
+                        <x-casemanagement::form-elements.button-primary action="cancelPause" label="Cancel Pause" />
+                    @else
+                        <x-casemanagement::form-elements.button-danger action="pause" label="Pause SLA" />
+                    @endif
                 @endif
             @endif
-        @endif
-    </div>      
+        </div>
+    
+    @endif
 </div>

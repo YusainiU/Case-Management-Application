@@ -24,7 +24,10 @@
         />
     </div>
     <x-casemanagement::page-elements.seperator margin="2" />
-    <x-casemanagement::form-elements.button-primary label="Schedule a Visit" action="scheduleVisit" />
+
+    @if($case && !$case->closed_datetime)
+        <x-casemanagement::form-elements.button-primary label="Schedule a Visit" action="scheduleVisit" />
+    @endif
 
     {{ $siteVisits?->links() }}
 
@@ -81,6 +84,7 @@
                             {{ $visit->offsite_at?->format('d-m-Y H:i') }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
+                            @if($case && !$case->closed_datetime)
                             <div class="flex flex-row gap-4">
                                 @php
                                     $completed = $visit->offsite_at !== null;
@@ -96,7 +100,10 @@
                                     label="{{ $label }}" 
                                     action="manageVisit({{ $visit->id }})" 
                                 />
-                            </div>                            
+                            </div>
+                            @else
+                                Case Closed
+                            @endif
                         </x-casemanagement::table-elements.table-td>                        
                     </tr>
                 @endforeach

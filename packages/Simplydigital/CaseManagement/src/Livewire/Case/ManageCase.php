@@ -9,9 +9,8 @@ use Simplydigital\CaseManagement\Services\CaseTicketServices;
 class ManageCase extends ModalComponent
 {
     public ?tickets $case = null;
-
     public ?string $message = null;
-
+    public bool $caseClosed = false;
     public array $tabHeaders = [
         'sla' => 'SLA',
         'status' => 'SLA Status',
@@ -28,11 +27,22 @@ class ManageCase extends ModalComponent
     /**
      * @var array<string, string>
      */
+
     protected $listeners = [
         'closeManageSlaModal' => 'closeManageSlaModal',
         'reloadCaseStatus' => '$refresh',
         'caseUpdated' => 'caseUpdated',
     ];
+
+    public function mount()
+    {
+        if($this->case){
+            if($this->case->closed_datetime) {
+                $this->tabHeaders['close'] = 'Reopen Case';
+                $this->caseClosed = true;
+            }
+        }   
+    }    
 
     public function resetTabs()
     {

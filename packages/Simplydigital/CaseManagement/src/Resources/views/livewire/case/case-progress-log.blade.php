@@ -8,11 +8,14 @@
         $label = 'Create Respond';
         $enableCancel = true;
     }
-    if($logToEdit) {
-        $action = "editThisLog";
-        $label = "Edit Log";
+    if ($logToEdit) {
+        $action = 'editThisLog';
+        $label = 'Edit Log';
         $enableCancel = true;
     }
+
+    $caseOpen = !$taskLogs->first()->ticket->closed_datetime;
+
 @endphp
 
 <div x-data x-on:modal-scroll-top.window="$refs.modalBody.scrollTo({ top: 0, behavior: 'smooth' })">
@@ -32,7 +35,7 @@
             </div>
         @endif
 
-        @if($logToEdit)
+        @if ($logToEdit)
             <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm mb-3">
                 <div>
                     <p class="font-medium text-gray-900">
@@ -42,20 +45,26 @@
             </div>
         @endif
 
-        <div class="flex flex-col gap-3">
-            <x-casemanagement::form-elements.textarea model="logText" hint="Progress Log" />
-            <x-casemanagement::form-elements.checkbox label="Urgent Attention" model="urgentAttention"
-                name="Urgent Attention" />
-            <div class="flex flex-row gap-3">
-                <x-casemanagement::form-elements.button-primary action="{{ $action }}"
-                    label="{{ $label }}" />
-                @if ($enableCancel)
-                    <x-casemanagement::form-elements.button-secondary action="cancelRespond" label="Cancel" />
-                @endif
-            </div>
-        </div>
+        @if ($caseOpen)
 
-        <x-casemanagement::page-elements.seperator />
+            <div class="flex flex-col gap-3">
+                <x-casemanagement::form-elements.textarea model="logText" hint="Progress Log" />
+                <x-casemanagement::form-elements.checkbox label="Urgent Attention" model="urgentAttention"
+                    name="Urgent Attention" />
+                <div class="flex flex-row gap-3">
+                    <x-casemanagement::form-elements.button-primary action="{{ $action }}"
+                        label="{{ $label }}" />
+                    @if ($enableCancel)
+                        <x-casemanagement::form-elements.button-secondary action="cancelRespond" label="Cancel" />
+                    @endif
+                </div>
+            </div>
+
+            <x-casemanagement::page-elements.seperator />
+
+        @endif
+
+
         <ul role="list" class="-mb-8">
 
             @foreach ($taskLogs as $log)
@@ -67,8 +76,9 @@
 
                 @endphp
 
-                @if($logToDelete == $log->id)
-                    <x-casemanagement::page-elements.confirm-delete recordToDelete="{{  $log->number }}" action="deleteThisLog" deleteText="Delete this Log"/>
+                @if ($logToDelete == $log->id)
+                    <x-casemanagement::page-elements.confirm-delete recordToDelete="{{ $log->number }}"
+                        action="deleteThisLog" deleteText="Delete this Log" />
                 @endif
 
                 <li>
@@ -113,7 +123,7 @@
 
                                         </div>
 
-                                        @if ($attention)
+                                        @if ($attention && $caseOpen)
                                             {{-- <div class="{{ $attention }} px-2 py-2 rounded-md text-xs">Require Attention</div> --}}
                                             <x-casemanagement::form-elements.button-hover-change-action size="small"
                                                 hover_on_label="Remove Require Attention"
@@ -142,17 +152,19 @@
 
                                     <div class="flex flex-col gap-2 mt-4 rounded bg-gray-50 p-3 text-sm">
 
-                                        <div class="flex flex-row gap-3">
-                                            <x-casemanagement::form-elements.button-secondary
-                                                action="respondLog({{ $log->id }})" label="Respond"
-                                                size="small" />
-                                            <x-casemanagement::form-elements.button-danger
-                                                action="deleteLog({{ $log->id }})" label="Delete"
-                                                size="small" />
-                                            <x-casemanagement::form-elements.button-secondary
-                                                action="editLog({{ $log->id }})" label="Edit"
-                                                size="small" />                                                
-                                        </div>
+                                        @if ($caseOpen)
+                                            <div class="flex flex-row gap-3">
+                                                <x-casemanagement::form-elements.button-secondary
+                                                    action="respondLog({{ $log->id }})" label="Respond"
+                                                    size="small" />
+                                                <x-casemanagement::form-elements.button-danger
+                                                    action="deleteLog({{ $log->id }})" label="Delete"
+                                                    size="small" />
+                                                <x-casemanagement::form-elements.button-secondary
+                                                    action="editLog({{ $log->id }})" label="Edit"
+                                                    size="small" />
+                                            </div>
+                                        @endif
 
                                         <div>
                                             <span class="font-medium text-red-600">Source:</span>

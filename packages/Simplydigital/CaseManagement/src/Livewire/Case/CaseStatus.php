@@ -43,7 +43,7 @@ class CaseStatus extends Component
         $status['totalBreached'] = collect($cases)->sum('taskBreached');
         $status['nearBreach'] = collect($cases)->sum('closeToBreachWarning');
         $status['urgentLogs'] = collect($cases)->sum('numberOfUrgentLogs');
-        $status['resolved'] = collect($cases)->pluck('resolved')->whereNotNull()->count();
+        $status['resolved'] = collect($cases)->sum('resolved');
         $status['currentlyWorking'] = collect($cases)->where('resolved', true)->count();
         $status['responded'] = collect($cases)->pluck('respondedAt')->whereNotNull()->count();
         $status['paused'] = collect($cases)->sum('paused');
@@ -90,6 +90,16 @@ class CaseStatus extends Component
     public function allPausedCases()
     {
         $this->dispatch('AllPausedCases');
+    }
+
+    public function allClosedCases()
+    {
+        $this->dispatch('AllClosedCases');
+    }
+    
+    public function resetFilterSelection()
+    {
+        $this->dispatch('ResetFilterSelection');
     }
    
     public function render()

@@ -77,7 +77,7 @@
                         <x-casemanagement::form-elements.input-error field="form.description" />
                     </div>
 
-                    @if(isset($modeUpdate) && $modeUpdate)
+                    @if(isset($modeUpdate) && $modeUpdate && !$case->closed_datetime)
                         <div>&nbsp;</div>
                         <div>&nbsp;</div>                    
                         <div>
