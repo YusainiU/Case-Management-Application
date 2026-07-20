@@ -123,7 +123,7 @@
         @endif
 
         @if ($case->isResolved)
-            <!-- Visit Scheduled -->
+            <!-- Resolved -->
             <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
                 <span class="w-3 h-3 rounded-full {{ $information }}"></span>
                 <div>
@@ -136,7 +136,7 @@
         @endif
         
         @if ($case->isClosed)
-            <!-- Visit Scheduled -->
+            <!-- Closed -->
             <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
                 <span class="w-3 h-3 rounded-full {{ $warning }}"></span>
                 <div>
@@ -145,7 +145,19 @@
                     </p>
                 </div>
             </div>
-        @endif        
+        @endif
+    
+        @if($case->closedCase)
+            <!-- Open from closed ticket -->
+            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
+                <span class="w-3 h-3 rounded-full {{ $information }}"></span>
+                <div>
+                    <p class="text-xs text-gray-500 font-extrabold">
+                        CLOSED CASE: {{ $case->closedCase->number }}
+                    </p>
+                </div>
+            </div>
+        @endif
 
     </div>
 </div>

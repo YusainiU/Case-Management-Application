@@ -84,7 +84,7 @@
                 @if($forms['assigned_to'])
                     <x-casemanagement::form-elements.button-danger action="unassign" label="Unassigned Case" />
                 @endif
-                @if(!$case->slaTasks->breached && $isTodayWorkingDay)
+                @if(!$case->slaTasks->breached && $isTodayWorkingDay && $isNowWorkingHours)
                     @if($case->slaTasks->activePause)
                         <x-casemanagement::form-elements.button-primary action="resume" label="Resume SLA" />
                         <x-casemanagement::form-elements.button-primary action="cancelPause" label="Cancel Pause" />

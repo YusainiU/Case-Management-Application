@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Spatie\Activitylog\Models\Concerns\LogsActivity; 
 use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Activitylog\Models\Activity;
@@ -14,6 +15,7 @@ use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class tickets extends Model
 {
@@ -66,9 +68,10 @@ class tickets extends Model
     {
 
         static::creating(function ($model) {
-            $prefix = config('case-management.TICKET_PREFIX');
-            $utilityService = app('case-management-utility-services');
-            $model->number = $utilityService::generateRecordNumber($prefix);
+            //$utilityService = app('case-management-utility-services');
+            // $prefix = config('case-management.TICKET_PREFIX');
+            // $model->number = $utilityService::generateRecordNumber($prefix);
+            $model->number = CaseManagementUtilityServices::generateCaseNumber();
         });
     }
 
@@ -178,6 +181,16 @@ class tickets extends Model
     public function scopeOpenCases(Builder $query): Builder
     {
         return $query->whereNull('closed_datetime');
+    }
+
+    public function closedCase()
+    {
+        return $this->hasOne(tickets::class,'closed_ticket_id');
+    }
+
+    public function getOpenCase()
+    {
+        return tickets::where('closed_ticket_id', $this->id)->first();
     }
 
     protected function casts()

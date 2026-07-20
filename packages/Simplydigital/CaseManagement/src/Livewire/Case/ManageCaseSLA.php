@@ -17,6 +17,7 @@ class ManageCaseSLA extends ModalComponent
     public ?string $message = null;
     public bool $noSlaTask = false;
     public bool $isTodayWorkingDay = true;
+    public bool $isNowWorkingHours = true;
 
     protected $validationAttributes = [
         'forms.responded_at' => 'Responded At',
@@ -41,7 +42,9 @@ class ManageCaseSLA extends ModalComponent
             $this->noSlaTask = true;
         }
         $this->callData();
-        $this->isTodayWorkingDay = $this->ticketService()->isTodayBusinessWorkingDay($this->case);
+        $services = $this->ticketService();
+        $this->isTodayWorkingDay = $services->isTodayBusinessWorkingDay($this->case);
+        $this->isNowWorkingHours = $services->isNowInsideServiceHours($this->case);
     }
 
     public function callData()

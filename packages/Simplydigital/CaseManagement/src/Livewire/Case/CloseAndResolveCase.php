@@ -136,7 +136,13 @@ class CloseAndResolveCase extends Component
 
     public function reopen()
     {
-        
+        $newCase = $this->caseServices()->reopenTicket($this->case);
+        if($newCase){
+            $this->case = $newCase;
+            $this->case->refresh();
+            $this->message = "Reopened, new case is created";
+        }
+        return;
     }
 
     public function render()

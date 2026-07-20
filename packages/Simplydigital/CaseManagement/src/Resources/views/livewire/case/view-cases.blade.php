@@ -55,6 +55,9 @@
             <x-casemanagement::table-elements.table-th>
                 &nbsp;
             </x-casemanagement::table-elements.table-th>
+            <x-casemanagement::table-elements.table-th>
+                Case Number
+            </x-casemanagement::table-elements.table-th>
             <x-casemanagement::table-elements.table-th sortable field="created_at" direction="asc">
                 Created At
             </x-casemanagement::table-elements.table-th>
@@ -82,7 +85,21 @@
                 @foreach ($cases as $case)
                     <tr>
                         <x-casemanagement::table-elements.table-td>
-                            {{ $cases->firstItem() + $loop->index }}
+                            <div class="flex flex-row gap-2 items-center justify-center">
+                                <span>
+                                    {{ $cases->firstItem() + $loop->index }}
+                                </span>
+                                @if($case->closed_ticket_id)
+                                <x-casemanagement::page-elements.tooltip text="Closed Case">
+                                    <a href="#" wire:click="openProfileModal({{ $case->closed_ticket_id }})">
+                                        <x-casemanagement-ui-icon name="reopen" class="w-5 h-5"/>
+                                    </a>
+                                </x-casemanagement::page-elements.tooltip>                                    
+                                @endif
+                            </div>
+                        </x-casemanagement::table-elements.table-td>
+                        <x-casemanagement::table-elements.table-td>
+                            {{  $case->number }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             {{ CaseManagementUtilityServices::reverseYMDToDMY($case->created_at) }}
@@ -91,18 +108,25 @@
                             {{ $case->customer?->name }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            <x-casemanagement::page-elements.href 
-                                label="{{ Str::of($case->description)->limit(30) }}" 
-                                action="openDescription({{ $case->id }})"
-                            />
+                            <x-casemanagement::page-elements.tooltip text="View Case Description">
+                                <x-casemanagement::page-elements.href 
+                                    label="{{ Str::of($case->description)->limit(30) }}" 
+                                    action="openDescription({{ $case->id }})"
+                                />
+                            </x-casemanagement::page-elements.tooltip>
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             {{ $case->assignedToUser?->name ?? '?'}}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td textcolor="{{ $case->slaTasks?->sla_flag }}">
-                            <button wire:click="openSlaStatus({{ $case->id }})" class="hover:underline hover:text-blue-500 cursor-pointer">
-                                <x-casemanagement::table-elements.table-td-content-sla :case="$case" />
-                            </button>
+                            <x-casemanagement::page-elements.tooltip text="View SLA Status">
+                                <button 
+                                    wire:click="openSlaStatus({{ $case->id }})" 
+                                    class="hover:underline hover:text-blue-500 cursor-pointer"
+                                >
+                                    <x-casemanagement::table-elements.table-td-content-sla :case="$case" />
+                                </button>
+                            </x-casemanagement::page-elements.tooltip>
                         </x-casemanagement::table-elements.table-td>                        
                         <x-casemanagement::table-elements.table-td textcolor="{{ $case->state->color() }}">
                             {{ $case->state?->label() }}

@@ -11,6 +11,7 @@ use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Repositories\CaseRepository;
 use Simplydigital\CaseManagement\Services\CaseLogAdministrationService;
 use Simplydigital\CaseManagement\Services\SLACalculationService;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class CaseTicketServices
 {
@@ -307,6 +308,11 @@ class CaseTicketServices
     {
         $data = $this->calcService->createSlaData($ticket);
         return $this->calcService->isBusinessWorkingHours($data, Carbon::now());
+    }
+
+    public function isNowInsideServiceHours(tickets $ticket)
+    {
+        return CaseManagementUtilityServices::isNowInsideSLA($ticket);
     }
 
     public function getAllCaseSlaPauses(tickets $ticket)

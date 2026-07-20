@@ -75,8 +75,10 @@
             </div>
         </div>
     @else
-        <div class="grid grid-cols-1 gap-4 mt-4">
-            <x-casemanagement::form-elements.button-primary label="Reopen Case" action="reopen"/>
-        </div>
+        @if(!$case->getOpenCase())
+            <div class="grid grid-cols-1 gap-4 mt-4">
+                <x-casemanagement::form-elements.button-primary label="Reopen Case" action="reopen"/>
+            </div>
+        @endif
     @endif
 </div>

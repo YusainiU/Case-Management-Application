@@ -191,22 +191,21 @@ class CaseTicketUtilityServices
         $currentUserName = Auth::getName(); // auth()->user()->name;
         $data['created_by'] = Auth::id();
         $data['state'] = CaseState::Open->value;
-        $data['ticket_number'] = null;
-
+        if(\array_key_exists('ticket_number', $data)){
+            unset($data['ticket_number']);
+        }
         return $data;
     }
 
     public function createNewTicket(array $data)
     {
         $service = $this->caseRepository;
-        $data = $this->cleanCreateInputData($data);
-        $ticket = $service->createNewTicket($data);
         $reopenCase = null;
-
         if(\array_key_exists('closed_ticket_id', $data)) {
             $reopenCase = $data['ticket_number'];
-            unset($data['ticket_number']);
         }
+        $data = $this->cleanCreateInputData($data);
+        $ticket = $service->createNewTicket($data);        
 
         if ($ticket) {
             // Create Log for ticket
@@ -214,6 +213,7 @@ class CaseTicketUtilityServices
             $logText = $logAdmin->buildTicketCreatedText($ticket);
             $logAdmin->createSystemLog($ticket, $logText);
 
+            //If reopen create log
             if($reopenCase) {
                 //create log
                 $logText = Config('case-management.ProgressLogs.reopen');

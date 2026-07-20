@@ -2,13 +2,20 @@
 
 namespace Simplydigital\CaseManagement\Services;
 
+use Simplydigital\CaseManagement\Services\CaseNumberGenerator;
 use Carbon\Carbon;
+use Simplydigital\CaseManagement\Models\tickets;
 
 class CaseManagementUtilityServices
 {
     public static function generateRecordNumber(string $prefix)
     {
         return $prefix . '-' . now()->format('YmdHis') . mt_rand(1000, 9999);
+    }
+
+    public static function generateCaseNumber()
+    {        
+        return CaseNumberGenerator::generate();
     }
 
     public static function formatPriceValue(int $value)
@@ -46,6 +53,20 @@ class CaseManagementUtilityServices
             $timestamp = strtotime('+1 day', $timestamp);
         }
         return $days;
+    }
+
+    public static function isNowInsideSLA(tickets $ticket)
+    {
+        $sla = $ticket->slaApplication?->serviceLevelAgreement;
+
+        if (! $sla || ! $sla->service_start_time || ! $sla->service_end_time) {
+            return true;
+        }
+
+        $now = Carbon::now()->secondsSinceMidnight();
+
+        return $now >= $sla->service_start_time
+            && $now <= $sla->service_end_time;
     }
     
     public static function isDayInsideSla(

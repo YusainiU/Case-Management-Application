@@ -176,7 +176,10 @@ class ViewCases extends Component
         $this->resetAllModal();
         $caseId = (int) $caseId;
         $column = "id";
-        $this->ticket = $this->tickets->firstWhere($column, $caseId);        
+        $this->ticket = $this->tickets->firstWhere($column, $caseId);
+        if(!$this->ticket){
+            $this->ticket = $this->ticketService()->getCaseById($caseId);            
+        }        
         $this->displayProfileModal = true;
     }
 
