@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Simplydigital\CaseManagement\Models\tickets;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class TaskSiteVisit extends Model
 {
@@ -82,8 +83,7 @@ class TaskSiteVisit extends Model
     {       
         static::creating(function ($model) {
             $prefix = config('case-management.LOGVISIT_PREFIX');    
-            $utilityService = app('case-management-utility-services');
-            $model->number = $utilityService::generateRecordNumber($prefix);
+            $model->number = CaseManagementUtilityServices::generateNumber($prefix, TaskSiteVisit::class);
         });
     }    
     

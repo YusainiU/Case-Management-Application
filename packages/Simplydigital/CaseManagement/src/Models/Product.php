@@ -5,6 +5,7 @@ namespace Simplydigital\CaseManagement\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Simplydigital\CaseManagement\Enums\ProductTypes;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class Product extends Model
 {
@@ -32,8 +33,7 @@ class Product extends Model
     {      
         static::creating(function ($product) {
             $prefix = config('case-management.PRODUCT_PREFIX');
-            $utilityService = app('case-management-utility-services');
-            $product->number = $utilityService::generateRecordNumber($prefix);
+            $product->number = CaseManagementUtilityServices::generateNumber($prefix, Product::class);
         });
     }
 

@@ -68,10 +68,8 @@ class tickets extends Model
     {
 
         static::creating(function ($model) {
-            //$utilityService = app('case-management-utility-services');
-            // $prefix = config('case-management.TICKET_PREFIX');
-            // $model->number = $utilityService::generateRecordNumber($prefix);
-            $model->number = CaseManagementUtilityServices::generateCaseNumber();
+            $prefix = Config('case-management.TICKET_PREFIX');
+            $model->number = CaseManagementUtilityServices::generateNumber($prefix, tickets::class);
         });
     }
 

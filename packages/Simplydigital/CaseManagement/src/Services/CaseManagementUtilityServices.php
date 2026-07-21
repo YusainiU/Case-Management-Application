@@ -2,7 +2,6 @@
 
 namespace Simplydigital\CaseManagement\Services;
 
-use Simplydigital\CaseManagement\Services\CaseNumberGenerator;
 use Carbon\Carbon;
 use Simplydigital\CaseManagement\Models\tickets;
 
@@ -10,22 +9,28 @@ class CaseManagementUtilityServices
 {
     public static function generateRecordNumber(string $prefix)
     {
-        return $prefix . '-' . now()->format('YmdHis') . mt_rand(1000, 9999);
+        return $prefix.'-'.now()->format('YmdHis').mt_rand(1000, 9999);
+    }
+
+    public static function generateNumber(string $prefix, string $modelName)
+    {
+        return CaseNumberGenerator::generateNumber($prefix, $modelName);
     }
 
     public static function generateCaseNumber()
-    {        
-        return CaseNumberGenerator::generate();
+    {
+        $prefix = Config('case-management.TICKET_PREFIX');
+        return CaseNumberGenerator::generateNumber($prefix,tickets::class);
     }
 
     public static function formatPriceValue(int $value)
     {
-        return '£' . number_format(\floatval($value), 2);
+        return '£'.number_format(\floatval($value), 2);
     }
 
     public static function checkIfDate(?string $value)
-    {            
-        return \is_string($value) && Carbon::hasFormat($value, 'Y-m-d');    
+    {
+        return \is_string($value) && Carbon::hasFormat($value, 'Y-m-d');
     }
 
     public static function normaliseDecimalPriceValues(int $value)
@@ -41,6 +46,7 @@ class CaseManagementUtilityServices
     public static function reverseYMDToDMY(string $date)
     {
         $d = Carbon::createFromFormat('Y-m-d H:i:s', $date);
+
         return $d->format('d/m/Y H:i:s');
     }
 
@@ -52,6 +58,7 @@ class CaseManagementUtilityServices
             $days[] = strtolower(date('l', $timestamp));
             $timestamp = strtotime('+1 day', $timestamp);
         }
+
         return $days;
     }
 
@@ -68,13 +75,12 @@ class CaseManagementUtilityServices
         return $now >= $sla->service_start_time
             && $now <= $sla->service_end_time;
     }
-    
+
     public static function isDayInsideSla(
-        string $slaStartDay, 
-        string $slaEndDay, 
-        string $dayToVerify, 
-    )
-    {
+        string $slaStartDay,
+        string $slaEndDay,
+        string $dayToVerify,
+    ) {
         $w = self::daysOfWeek();
         $f = array_flip($w);
         $f['sunday'] = 7;
@@ -85,21 +91,23 @@ class CaseManagementUtilityServices
         if ($start <= $end) {
             return $verify >= $start && $verify <= $end;
         }
+
         // Wrapped range (e.g. Friday-Tuesday)
-        return $verify >= $start || $verify <= $end;            
+        return $verify >= $start || $verify <= $end;
     }
 
     public static function parseTimeStampToSeconds(int $timestamp)
     {
         $r = date('H:i:s', $timestamp);
-        $s = explode(":", $r);
+        $s = explode(':', $r);
         $h = (int) $s[0];
         $m = (int) $s[1];
         $i = (int) $s[2];
         $result = ($h * 3600) + ($m * 60) + $i;
+
         return $result;
     }
-    
+
     public static function parseSeconds(int $seconds)
     {
 
@@ -118,12 +126,13 @@ class CaseManagementUtilityServices
         ];
 
     }
-    
+
     public static function secondsToHM(int $seconds)
     {
 
         $hours = floor($seconds / 3600);
         $minutes = floor(($seconds % 3600) / 60);
+
         return [
             'hours' => $hours,
             'minutes' => $minutes,
@@ -136,17 +145,19 @@ class CaseManagementUtilityServices
         $minutes = floor(($seconds % 3600) / 60);
         $hr = str_pad($hours, 2, '0', STR_PAD_LEFT);
         $mn = str_pad($minutes, 2, '0', STR_PAD_LEFT);
-        if($format == 'HM'){
+        if ($format == 'HM') {
             $result = "$hr:$mn";
-        }else{
+        } else {
             $result = "$hr:$mn:00";
         }
+
         return $result;
-    }    
+    }
 
     public static function HMSToSeconds(string $time): int
     {
         $d = explode(':', $time);
+
         return ($d[0] * 3600) + ($d[1] * 60);
     }
 
@@ -158,7 +169,7 @@ class CaseManagementUtilityServices
     public static function convertStringTimeToInt(int $seconds, string $timeType)
     {
         $his = self::secondsToHMS($seconds);
-        $t = explode(":", $his);
+        $t = explode(':', $his);
         $h = (int) $t[0];
         $m = (int) $t[1];
         $result = 0;
@@ -168,9 +179,10 @@ class CaseManagementUtilityServices
         if ($timeType == 'minutes') {
             $result = $m;
         }
+
         return $result;
     }
-    
+
     public static function buildResponseTimeResult(int $response_time)
     {
         $h = self::convertStringTimeToInt($response_time, 'hours');
@@ -182,21 +194,22 @@ class CaseManagementUtilityServices
             'minutes' => $m,
             'seconds' => $response_time,
             'formatted' => $f,
-        ];        
-    }    
-    
+        ];
+    }
+
     public static function timeDiff(int $start, int $end)
     {
         $timediff = $start - $end;
         $result = self::parseSeconds($timediff);
+
         return $result;
     }
-    
+
     public static function timeFromCreate(string $created_at)
     {
         $startDate = $created_at;
         $dur = round((time() - strtotime($startDate)) / 3600, 1);
-        return $dur;
-    }    
 
+        return $dur;
+    }
 }

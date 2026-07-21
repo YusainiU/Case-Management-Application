@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class Supplier extends Model
 {
@@ -36,8 +37,7 @@ class Supplier extends Model
         
         static::creating(function (self $supplier) {
             $prefix = config('case-management.SUPPLIER_PREFIX');
-            $utilityService = app('case-management-utility-services');
-            $supplier->number = $utilityService::generateRecordNumber($prefix);
+            $supplier->number = CaseManagementUtilityServices::generateNumber($prefix, Supplier::class);
         });
     }
     

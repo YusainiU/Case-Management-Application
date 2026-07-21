@@ -84,23 +84,23 @@
                             {{ $visit->offsite_at?->format('d-m-Y H:i') }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            @if($case && !$case->closed_datetime)
-                            <div class="flex flex-row gap-4">
-                                @php
-                                    $completed = $visit->offsite_at !== null;
-                                    $button = "secondary";
-                                    $label = "Manage";
-                                    if($completed) {
-                                        $button = "primary";
-                                        $label = "Completed";
-                                    }
-                                @endphp
-                                <x-dynamic-component
-                                    :component="'casemanagement::form-elements.button-'.$button" 
-                                    label="{{ $label }}" 
-                                    action="manageVisit({{ $visit->id }})" 
-                                />
-                            </div>
+                            @if($visit->ticket && !$visit->ticket?->closed_datetime)
+                                <div class="flex flex-row gap-4">
+                                    @php
+                                        $completed = $visit->offsite_at !== null;
+                                        $button = "secondary";
+                                        $label = "Manage";
+                                        if($completed) {
+                                            $button = "primary";
+                                            $label = "Completed";
+                                        }
+                                    @endphp
+                                    <x-dynamic-component
+                                        :component="'casemanagement::form-elements.button-'.$button" 
+                                        label="{{ $label }}" 
+                                        action="manageVisit({{ $visit->id }})" 
+                                    />
+                                </div>
                             @else
                                 Case Closed
                             @endif

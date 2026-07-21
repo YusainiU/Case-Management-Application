@@ -34,8 +34,7 @@ class serviceLevelAgreements extends Model
         
         static::creating(function ($model) {
             $prefix = config('case-management.SLA_PREFIX');
-            $utilityService = app('case-management-utility-services');
-            $model->number = $utilityService::generateRecordNumber($prefix);
+            $model->number = CaseManagementUtilityServices::generateNumber($prefix, serviceLevelAgreements::class);
         });
     }
 

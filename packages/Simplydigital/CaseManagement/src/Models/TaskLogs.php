@@ -5,6 +5,7 @@ namespace Simplydigital\CaseManagement\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use App\Models\User;
 
 class TaskLogs extends Model
@@ -32,8 +33,7 @@ class TaskLogs extends Model
     {       
         static::creating(function ($model) {
             $prefix = config('case-management.LOG_PREFIX');    
-            $utilityService = app('case-management-utility-services');
-            $model->number = $utilityService::generateRecordNumber($prefix);
+            $model->number = CaseManagementUtilityServices::generateNumber($prefix, TaskLogs::class);
         });
 
     }

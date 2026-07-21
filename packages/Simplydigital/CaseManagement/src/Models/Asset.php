@@ -3,6 +3,7 @@
 namespace Simplydigital\CaseManagement\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Illuminate\Database\Eloquent\Model;
 
 class Asset extends Model
@@ -55,9 +56,8 @@ class Asset extends Model
     {
         
         static::creating(function ($model) {
-            $prefix = config('case-management.ASSET_PREFIX');
-            $utilityService = app('case-management-utility-services');
-            $model->number = $utilityService::generateRecordNumber($prefix);
+            $prefix = config('case-management.ASSET_PREFIX');            
+            $model->number = CaseManagementUtilityServices::generateNumber($prefix, asset::class);
         });
     }    
 

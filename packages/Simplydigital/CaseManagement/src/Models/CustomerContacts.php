@@ -2,10 +2,12 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
+use App\CustomerContacts as AppCustomerContacts;
 use App\Models\User;
 use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
 use Illuminate\Database\Eloquent\Model;
 use Simplydigital\UserManagement\Model\UsersDetails;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class CustomerContacts extends Model
 {
@@ -24,8 +26,7 @@ class CustomerContacts extends Model
         
         static::creating(function ($model) {
             $prefix = config('case-management.CUSTOMER_CONTACT_PREFIX');
-            $utilityService = app('case-management-utility-services');
-            $model->number = $utilityService::generateRecordNumber($prefix);
+            $model->number = CaseManagementUtilityServices::generateNumber($prefix, CustomerContacts::class);
         });
     }
 

@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Simplydigital\CaseManagement\Enums\slaAppPriorities;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class slaApplication extends Model
 {
@@ -40,8 +41,7 @@ class slaApplication extends Model
         
         static::creating(function ($slaApplication) {
             $prefix = config('case-management.SLA_APPLICATION_PREFIX');
-            $utilityService = app('case-management-utility-services');
-            $slaApplication->number = $utilityService::generateRecordNumber($prefix);
+            $slaApplication->number = CaseManagementUtilityServices::generateNumber($prefix, slaApplication::class);
         });
     }
     

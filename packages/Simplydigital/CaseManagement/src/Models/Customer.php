@@ -6,7 +6,7 @@ use Simplydigital\CaseManagement\Enums\CustomerChildTypes;
 use Simplydigital\CaseManagement\Enums\CustomerPrimaryTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class Customer extends Model
 {
@@ -50,9 +50,8 @@ class Customer extends Model
     {
         
         static::creating(function ($model) {
-            $prefix = config('case-management.CUSTOMER_PREFIX');
-            $utilityService = app('case-management-utility-services');
-            $model->number = $utilityService::generateRecordNumber($prefix);
+            $prefix = config('case-management.CUSTOMER_PREFIX');            
+            $model->number = CaseManagementUtilityServices::generateNumber($prefix, Customer::class);
         });
     }
     

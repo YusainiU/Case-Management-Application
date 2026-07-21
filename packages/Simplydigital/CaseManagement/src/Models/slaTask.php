@@ -13,6 +13,7 @@ use Simplydigital\CaseManagement\Services\UI;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 /**
  * @property Carbon|null $responded_at
@@ -85,9 +86,8 @@ class slaTask extends Model
     {
 
         static::creating(function ($slaTask) {
-            $prefix = config('case-management.SLA_TASK_PREFIX');
-            $utilityService = app('case-management-utility-services');
-            $slaTask->number = $utilityService::generateRecordNumber($prefix);
+            $prefix = config('case-management.SLA_TASK_PREFIX');            
+            $slaTask->number = CaseManagementUtilityServices::generateNumber($prefix, slaTask::class);
 
         });
     }
