@@ -26,17 +26,17 @@ return [
     |
     */
     
-    'ASSET_PREFIX' => 'ASSET',
+    'ASSET_PREFIX' => 'ASST',
     'SLA_PREFIX' => 'SLA',
-    'TICKET_PREFIX' => 'TICKET',
+    'TICKET_PREFIX' => 'CAS',
     'CUSTOMER_PREFIX' => 'CUST',
     'PRODUCT_PREFIX' => 'PROD',
-    'SLA_APPLICATION_PREFIX' => 'SLAAPP',
-    'SLA_TASK_PREFIX' => 'SLATASK',
+    'SLA_APPLICATION_PREFIX' => 'SLAP',
+    'SLA_TASK_PREFIX' => 'TASK',
     'SUPPLIER_PREFIX' => 'SUPP',
-    'CUSTOMER_CONTACT_PREFIX' => 'CUSTCONT',
+    'CUSTOMER_CONTACT_PREFIX' => 'CCT',
     'LOG_PREFIX' => 'LOG',
-    'LOGVISIT_PREFIX' => 'LOGVISIT',
+    'LOGVISIT_PREFIX' => 'LOGV', 
 
     /*
     |--------------------------------------------------------------------------

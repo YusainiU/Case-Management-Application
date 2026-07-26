@@ -1,6 +1,6 @@
 @php
     
-    use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
+    use Carbon\Carbon;
     
 @endphp
 
@@ -12,6 +12,10 @@
 
     @if($displaySummaryModal)
         <livewire:case-summary :caseId="$caseId" />
+    @endif
+
+    @if($displayCustomerModal)
+        <livewire:customer-summary :customerId="$customer->id" />
     @endif
 
     @if($displayDescription)
@@ -32,8 +36,6 @@
         <livewire:case-sla :case="$ticket" />
     @endif
 
-    
-
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="{{ $ui_params['title'] }}"
             description="Cases Management: List" aside="what is this" />
@@ -41,7 +43,6 @@
 
     <x-casemanagement::page-elements.seperator margin="2" />
     <x-casemanagement::form-elements.button-primary label="Create New Case" action="openCreateModal" />
-    {{-- <x-casemanagement::form-elements.button-primary label="Open Cases" action="openTab('{{ CaseState::Open }}')" /> --}}
     <x-casemanagement::form-elements.input-filter />
 
     @if(!$ViewSelectedCustomerCases)
@@ -99,18 +100,23 @@
                             </div>
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{  $case->number }}
+                            {{  ltrim(strstr($case->number, '-'), '-') }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{ CaseManagementUtilityServices::reverseYMDToDMY($case->created_at) }}
+                            {{ Carbon::parse($case->created_at)->format('d/m/Y H:i') }}
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
-                            {{ $case->customer?->name }}
+                            <x-casemanagement::page-elements.tooltip text="{{ $case->customer?->name }}">
+                                <x-casemanagement::page-elements.href 
+                                    label="{{ $case->customer?->name }}"
+                                    action="openCustomerSummaryModal({{ $case->customer?->id }})" 
+                                />                                
+                            </x-casemanagement::page-elements.tooltip>                                                              
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             <x-casemanagement::page-elements.tooltip text="View Case Description">
                                 <x-casemanagement::page-elements.href 
-                                    label="{{ Str::of($case->description)->limit(30) }}" 
+                                    label="{{ Str::of($case->description)->limit(20) }}" 
                                     action="openDescription({{ $case->id }})"
                                 />
                             </x-casemanagement::page-elements.tooltip>
@@ -124,7 +130,11 @@
                                     wire:click="openSlaStatus({{ $case->id }})" 
                                     class="hover:underline hover:text-blue-500 cursor-pointer"
                                 >
-                                    <x-casemanagement::table-elements.table-td-content-sla :case="$case" />
+                                    @if($case->closed_datetime)
+                                        Closed
+                                    @else
+                                        <x-casemanagement::table-elements.table-td-content-sla :case="$case" />
+                                    @endif
                                 </button>
                             </x-casemanagement::page-elements.tooltip>
                         </x-casemanagement::table-elements.table-td>                        

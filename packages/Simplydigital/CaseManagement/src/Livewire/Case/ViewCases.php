@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Models\Customer;
 class ViewCases extends Component
 {
     use WithPagination;
@@ -15,6 +16,7 @@ class ViewCases extends Component
     public ?int $caseId = null;
     public ?Collection $tickets = null;
     public ?tickets $ticket = null;
+    public ?Customer $customer = null;
     public ?string $filter = null;
     public ?string $sortField = null;
     public ?string $sortDirection = null;    
@@ -25,7 +27,8 @@ class ViewCases extends Component
     public bool $displayDescription = false;
     public bool $displaySlaStatus = false; 
     public array $descriptionDetails = [];
-    public ?string $displayCaseStatus = null;    
+    public ?string $displayCaseStatus = null;
+    public bool $displayCustomerModal = false;  
 
     /**
     * @var array<string, string>
@@ -59,6 +62,7 @@ class ViewCases extends Component
             'displaySummaryModal',
             'displayDescription',
             'displaySlaStatus',
+            'displayCustomerModal',
         ]);
     }
 
@@ -169,6 +173,13 @@ class ViewCases extends Component
         $this->resetAllModal();
         $this->caseId = $caseId;
         $this->displaySummaryModal = true;
+    }
+
+    public function openCustomerSummaryModal(int $customerId)
+    {
+        $this->resetAllModal();
+        $this->customer = Customer::find($customerId);
+        $this->displayCustomerModal = true;
     }
 
     public function openProfileModal(int $caseId)

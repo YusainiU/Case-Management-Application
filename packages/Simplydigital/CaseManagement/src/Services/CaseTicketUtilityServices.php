@@ -19,8 +19,7 @@ use Simplydigital\CaseManagement\Repositories\CaseRepository;
 
 class CaseTicketUtilityServices
 {
-    private CasePublicHolidayService $casePublicHolidayService;
-
+    
     private CaseLogAdministrationService $caseLogAdministrationService;
 
     private SLACalculationService $calcService;
@@ -30,15 +29,17 @@ class CaseTicketUtilityServices
     protected CaseRetrieveTicketStatus $caseRetrieveTicketStatus;
 
     private CaseUserServices $userServices;
+     
+    private SLALoggerService $logger;    
 
     public function __construct(?CaseRepository $caseRepository = null)
     {
-        $this->casePublicHolidayService = app()->make(CasePublicHolidayService::class);
         $this->caseRepository = $caseRepository ?? app()->make(CaseRepository::class);
         $this->caseRetrieveTicketStatus = app()->make(CaseRetrieveTicketStatus::class);
         $this->userServices = app()->make(CaseUserServices::class);
         $this->setCaseLogAdministrationService(app()->make(CaseLogAdministrationService::class));
         $this->setSLACalculationService(app()->make(SLACalculationService::class));
+        $this->logger = $logger ?? app()->make(SLALoggerService::class);
     }
 
     public function setCaseLogAdministrationService(CaseLogAdministrationService $service)
@@ -205,7 +206,7 @@ class CaseTicketUtilityServices
             $reopenCase = $data['ticket_number'];
         }
         $data = $this->cleanCreateInputData($data);
-        $ticket = $service->createNewTicket($data);        
+        $ticket = $service->createNewTicket($data);
 
         if ($ticket) {
             // Create Log for ticket
@@ -272,7 +273,7 @@ class CaseTicketUtilityServices
             'raised_by_nonuser' => $ticket->raised_by_nonuser,
             'contact_telephone' => $ticket->contact_telephone,
             'contact_email' => $ticket->contact_email,
-        ];
+        ];        
         $newTicket = $this->createNewTicket($data);
         if ($newTicket) {
             $newTicket->closed_ticket_id = $ticket->id;

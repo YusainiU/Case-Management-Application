@@ -1,3 +1,8 @@
+@php
+    $closed = $case->closed_datetime != null;
+    $closedText = "Case Closed";
+@endphp
+
 <div class="grid grid-cols-3 gap-4">
     <div>
         <x-casemanagement::form-elements.input-label name="Respond By" />
@@ -5,13 +10,17 @@
     </div>
     <div>
         <x-casemanagement::form-elements.input-label name="SLA Status" />
-        <x-casemanagement::page-elements.text-box text="{{ $case->slaTasks->sla_flag_text }}"
-            textCss="{{ $case->slaTasks->sla_flag }}" />
+        <x-casemanagement::page-elements.text-box 
+            text="{{ $closed ? $closedText: $case->slaTasks->sla_flag_text }}"
+            textCss="{{ $case->slaTasks->sla_flag }}" 
+        />
     </div>
     <div>
         <x-casemanagement::form-elements.input-label name="Duration" />
-        <x-casemanagement::page-elements.text-box text="{{ $case->slaTasks->sla_status_info }}"
-            textCss="{{ $case->slaTasks->sla_flag }}" />
+        <x-casemanagement::page-elements.text-box 
+            text="{{ $closed ? $closedText: $case->slaTasks->sla_status_info }}"
+            textCss="{{ $case->slaTasks->sla_flag }}" 
+        />
     </div>
     <div>
         <x-casemanagement::form-elements.input-label name="SLA Applied" />

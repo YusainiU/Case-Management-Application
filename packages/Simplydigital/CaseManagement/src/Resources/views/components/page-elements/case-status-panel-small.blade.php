@@ -153,7 +153,7 @@
                 <span class="w-3 h-3 rounded-full {{ $information }}"></span>
                 <div>
                     <p class="text-xs text-gray-500 font-extrabold">
-                        CLOSED CASE: {{ $case->closedCase->number }}
+                        REOPENED: {{ $case->closedCase->number }}
                     </p>
                 </div>
             </div>

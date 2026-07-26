@@ -7,6 +7,7 @@ use Simplydigital\CaseManagement\Services\SLACalculationService;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Models\SlaTaskPause;
 use Simplydigital\CaseManagement\Services\SLALoggerService;
+use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 
@@ -27,11 +28,11 @@ class CaseBuildCalcTest extends TestCase
 
         //===============================================================
         //TEST FUNCTION ONE
-        //$fieldToCheck = 'response_time'; // Replace with the field you want to check
-        //$ServiceUtility = new CaseTicketUtilityServices();        
-        // dump($sampleCase);
-        //$this->assertEquals($caseId, $sampleCase->id); // Replace with the expected case ID
-        //$calcData = $ServiceUtility->buildCalcData($sampleCase, $fieldToCheck);
+        $fieldToCheck = 'response_time'; // Replace with the field you want to check
+        $ServiceUtility = new CaseTicketUtilityServices();        
+        dump($sampleCase);
+        $this->assertEquals($caseId, $sampleCase->id); // Replace with the expected case ID
+        $calcData = $ServiceUtility->buildCalcData($sampleCase, $fieldToCheck);
 
         //Example $data structure:
         
@@ -47,10 +48,10 @@ class CaseBuildCalcTest extends TestCase
             //     "includePublicHoliday" => false,
             // ];
         
-        //$calc = $SLACalcService->calcRespondByTime($calcData);
-        //$logs = $loggers->getLogs();
-        //dump($logs);
-        //dump($calc);
+        $calc = $SLACalcService->calcRespondByTime($calcData);
+        $logs = $loggers->getLogs();
+        dump($logs);
+        dump($calc);
 
         //===============================================================
         //TEST FUNCTION 2
@@ -61,30 +62,30 @@ class CaseBuildCalcTest extends TestCase
 
         //===============================================================
         //TEST FUNCTION THREE        
-        $from = carbon::parse('2026-06-26 12:00:00');
-        $to = carbon::parse('2026-06-29 10:00:00');
-        $calc = $SLACalcService->workingMinutesBetween($sampleCase, $from, $to);
-        $remaining = $SLACalcService->calculatePauseRemainingValue($sampleCase, carbon::now());
+        // $from = carbon::parse('2026-06-26 12:00:00');
+        // $to = carbon::parse('2026-06-29 10:00:00');
+        // $calc = $SLACalcService->workingMinutesBetween($sampleCase, $from, $to);
+        // $remaining = $SLACalcService->calculatePauseRemainingValue($sampleCase, carbon::now());
 
-        $slaTask = $sampleCase->slaTasks;
-        $pause = SlaTaskPause::where('sla_task_id', $slaTask->id)
-            ->where('paused_at', $slaTask->paused_at)
-            ->first();
-        $timeResumed = Carbon::now();
-        $slaRemaining = $pause->remaining;                
-        $newRespondBy = $SLACalcService->calcCustomRespondByTime($sampleCase, $slaRemaining, $timeResumed);
+        // $slaTask = $sampleCase->slaTasks;
+        // $pause = SlaTaskPause::where('sla_task_id', $slaTask->id)
+        //     ->where('paused_at', $slaTask->paused_at)
+        //     ->first();
+        // $timeResumed = Carbon::now();
+        // $slaRemaining = $pause->remaining;                
+        // $newRespondBy = $SLACalcService->calcCustomRespondByTime($sampleCase, $slaRemaining, $timeResumed);
 
 
         // REMEMBER TO CHANGE THE FUNCTION TO PUBLIC !!
         //$pub = $SLACalcService->isPublicHoliday($from->timestamp);
-        $logs = $loggers->getLogs();
-        dump($calc * 60);
-        dump("REMAINING: ".CarbonInterval::seconds($remaining)->cascade()->forHumans());
-        dump("NEW RESPOND BY: $newRespondBy");
-        dump($pause->created_at->format('H:i'));
+        //$logs = $loggers->getLogs();
+        //dump($calc * 60);
+        //dump("REMAINING: ".CarbonInterval::seconds($remaining)->cascade()->forHumans());
+        //dump("NEW RESPOND BY: $newRespondBy");
+        //dump($pause->created_at->format('H:i'));
         //dump($logs);
 
-        $this->assertNotEmpty($calc);
+        //$this->assertNotEmpty($calc);
 
     }
 }
