@@ -17,27 +17,52 @@
 
         <!-- Filters -->
         <div class="flex flex-wrap gap-2">
-            <button class="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">
-                All Cases
-            </button>
-            <button class="rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100">
-                Expired
-            </button>
-            <button class="rounded-lg bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-100">
-                Warning
-            </button>
-            <button class="rounded-lg bg-green-50 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100">
-                Resolved
-            </button>
-            <button class="rounded-lg bg-green-100 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-100">
-                Paused
-            </button>
-            <button class="rounded-lg bg-red-800 px-4 py-2 text-sm font-medium text-gray-100 hover:bg-red-600" wire:click='allClosedCases'>
-                Closed
-            </button>
-            <button class="rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-gray-100 hover:bg-gray-600" wire:click='resetFilterSelection'>
-                Reset
-            </button>                        
+            <x-casemanagement::form-elements.button-generic 
+                label="All Cases"
+                action="allClosedCases"
+            />
+            <x-casemanagement::form-elements.button-generic
+                label="Expired"
+                bg="bg-red-50"
+                text="text-red-700"
+                hover="bg-red-100"
+                action="allClosedCases"
+            />
+            <x-casemanagement::form-elements.button-generic
+                label="Warning"
+                bg="bg-yellow-50"
+                text="text-yellow-700"
+                hover="bg-yellow-100"
+                action="allClosedCases"
+            />
+            <x-casemanagement::form-elements.button-generic
+                label="Resolved"
+                bg="bg-green-50"
+                text="text-green-700"
+                hover="bg-green-100"
+                action="allClosedCases"
+            />
+            <x-casemanagement::form-elements.button-generic
+                label="Paused"
+                bg="bg-olive-50"
+                text="text-olive-700"
+                hover="bg-olive-100"
+                action="allPausedCases"
+            />
+            <x-casemanagement::form-elements.button-generic
+                label="Closed"
+                bg="bg-red-800"
+                text="text-gray-100"
+                hover="bg-red-600"
+                action="allClosedCases"
+            />              
+            <x-casemanagement::form-elements.button-generic
+                label="Reset"
+                bg="bg-gray-800"
+                text="text-gray-100"
+                hover="bg-gray-600"
+                action="resetFilterSelection"
+            />                        
         </div>
     </div>
 
@@ -45,108 +70,82 @@
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
 
         <!-- Expired -->
-        <div class="rounded-xl border border-red-100 bg-red-50 p-4">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-red-700">Expired</p>
-                    <h3 class="mt-2 text-3xl font-bold text-red-900">{{ $status['totalBreached'] }}</h3>
-                    <p class="mt-1 text-xs text-red-600">
-                        SLA breached
-                    </p>
-                </div>
-            </div>
-        </div>
+        <x-casemanagement::page-elements.box-element 
+            title="Expired"
+            status="{{ $status['totalBreached'] }}"
+            label="SLA Breached" 
+        /> 
 
         <!-- Warning -->
-        <div class="rounded-xl border border-yellow-100 bg-yellow-50 p-4">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-yellow-700">
-                        Close to Expiry
-                    </p>
-                    <h3 class="mt-2 text-3xl font-bold text-yellow-900">{{ $status['nearBreach'] }}</h3>
-                    <p class="mt-1 text-xs text-yellow-600">
-                        SLA nearing limit
-                    </p>
-                </div>
-            </div>
-        </div>
+        <x-casemanagement::page-elements.box-element
+            title="Close To Expiry"
+            status="{{ $status['nearBreach'] }}"
+            label="SLA Nearing Limit"
+            containerBg="bg-yellow-50"
+            containerBorder="border-yellow-100"
+            titleText="text-yellow-900"
+            subTitleText="text-yellow-600"
+        />
 
         <!-- Unassigned -->
-        <div class="rounded-xl border border-blue-100 bg-blue-50 p-4">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-blue-700">
-                        Unassigned
-                    </p>
-                    <h3 class="mt-2 text-3xl font-bold text-blue-900">{{ $status['unassigned'] }}</h3>
-                    <p class="mt-1 text-xs text-blue-600">
-                        Awaiting owner
-                    </p>
-                </div>
-            </div>
-        </div>
+        <x-casemanagement::page-elements.box-element
+            title="Unassigned"
+            status="{{ $status['unassigned'] }}"
+            label="Awaiting Owner"
+            containerBg="bg-blue-50"
+            containerBorder="border-blue-100"
+            headerText="text-blue-700"
+            titleText="text-blue-900"
+            subTitleText="text-blue-600"
+        />
 
         <!-- No Action -->
-        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-700">
-                        No Action
-                    </p>
-                    <h3 class="mt-2 text-3xl font-bold text-gray-900">{{ $status['noUpdate'] }}</h3>
-                    <p class="mt-1 text-xs text-gray-500">
-                        No update
-                    </p>
-                </div>
-            </div>
-        </div>
+        <x-casemanagement::page-elements.box-element
+            title="No Action"
+            status="{{ $status['noUpdate'] }}"
+            label="No Update"
+            containerBg="bg-gray-50"
+            containerBorder="border-gray-100"
+            headerText="text-gray-700"
+            titleText="text-gray-900"
+            subTitleText="text-gray-600"
+        />        
 
         <!-- Resolved -->
-        <div class="rounded-xl border border-green-100 bg-green-50 p-4">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-green-700">
-                        Resolved
-                    </p>
-                    <h3 class="mt-2 text-3xl font-bold text-green-900">{{ $status['resolved'] }}</h3>
-                    <p class="mt-1 text-xs text-green-600">
-                        Successfully closed
-                    </p>
-                </div>
-            </div>
-        </div>
+        <x-casemanagement::page-elements.box-element
+            title=" Resolved"
+            status="{{ $status['resolved'] }}"
+            label="Case Resolved"
+            containerBg="bg-green-50"
+            containerBorder="border-green-100"
+            headerText="text-green-700"
+            titleText="text-green-900"
+            subTitleText="text-green-600"
+        />
 
         <!-- Paused -->
-        <div class="rounded-xl border border-green-100 bg-green-50 p-4">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-green-700">
-                        Paused
-                    </p>
-                    <h3 class="mt-2 text-3xl font-bold text-green-900">{{ $status['paused'] }}</h3>
-                    <p class="mt-1 text-xs text-green-600">
-                        Paused
-                    </p>
-                </div>
-            </div>
-        </div>
-
+        <x-casemanagement::page-elements.box-element
+            title=" Paused"
+            status="{{ $status['paused'] }}"
+            label="SLA Paused"
+            containerBg="bg-zinc-50"
+            containerBorder="border-zinc-100"
+            headerText="text-zinc-700"
+            titleText="text-zinc-900"
+            subTitleText="text-zinc-600"
+        />
+        
         <!-- Visit Schduled -->
-        <div class="rounded-xl border border-green-100 bg-green-50 p-4">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-green-700">
-                        Site Visits
-                    </p>
-                    <h3 class="mt-2 text-3xl font-bold text-green-900">{{ $status['totalVisits'] }}</h3>
-                    <p class="mt-1 text-xs text-green-600">
-                        Site Visits
-                    </p>
-                </div>
-            </div>
-        </div>        
-
-
+        <x-casemanagement::page-elements.box-element
+            title="Site Visits"
+            status="{{ $status['totalVisits'] }}"
+            label="Site Visits"
+            containerBg="bg-rose-50"
+            containerBorder="border-rose-100"
+            headerText="text-rose-700"
+            titleText="text-rose-900"
+            subTitleText="text-rose-600"
+        />
+                
     </div>
 </div>

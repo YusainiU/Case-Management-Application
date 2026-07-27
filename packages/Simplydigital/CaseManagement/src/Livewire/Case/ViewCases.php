@@ -40,6 +40,7 @@ class ViewCases extends Component
         'closeSummaryModal' => 'closeSummaryModal',
         'reloadCaseStatus' => '$refresh',
         'AllClosedCases' => 'openAllClosedCases',
+        'AllPausedCases' => 'openAllPausedCases',
         'ResetFilterSelection' => 'resetFilterSelection',
     ];
 
@@ -107,6 +108,11 @@ class ViewCases extends Component
     public function openAllClosedCases()
     {
         $this->displayCaseStatus = CaseState::Closed->value;
+    }
+
+    public function openAllPausedCases()
+    {
+        $this->displayCaseStatus = CaseState::Paused->value;
     }
 
     public function resetFilterSelection()

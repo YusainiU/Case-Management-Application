@@ -71,6 +71,17 @@ class tickets extends Model
             $prefix = Config('case-management.TICKET_PREFIX');
             $model->number = CaseManagementUtilityServices::generateNumber($prefix, tickets::class);
         });
+
+        static::updating(function ($model) {
+            $oldState = $model->getOriginal('state')->value ;
+            $newState = $model->state;
+            if($model->slaTasks->paused) {
+                if($oldState == CaseState::Site_Visit->value && $oldState != $newState){
+                    $model->state = CaseState::Paused->value;
+                }
+            }
+            
+        });        
     }
 
     public function slaApplication()
