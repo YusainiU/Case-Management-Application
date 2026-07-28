@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Simplydigital\CaseManagement\Enums\CaseState;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\UI;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
-use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 /**
  * @property Carbon|null $responded_at
@@ -86,7 +86,7 @@ class slaTask extends Model
     {
 
         static::creating(function ($slaTask) {
-            $prefix = config('case-management.SLA_TASK_PREFIX');            
+            $prefix = config('case-management.SLA_TASK_PREFIX');
             $slaTask->number = CaseManagementUtilityServices::generateNumber($prefix, slaTask::class);
 
         });
@@ -177,7 +177,6 @@ class slaTask extends Model
     {
 
         // dd(get_debug_type($this->fixed_at));
-
         if ($this->paused) {
             return false;
         }
@@ -188,7 +187,7 @@ class slaTask extends Model
         $responseBreached =
             $this->respond_by !== null
             && $this->respond_by->isPast()
-            && !$this->caseTicket->closed_datetime
+            && ! $this->caseTicket->closed_datetime
             && (
                 $this->responded_at === null
                 || $this->responded_at->gt($this->respond_by)
@@ -197,7 +196,7 @@ class slaTask extends Model
         $fixBreached =
             $this->fix_by !== null
             && $this->fix_by->isPast()
-            && !$this->caseTicket->closed_datetime
+            && ! $this->caseTicket->closed_datetime
             && (
                 $this->fixed_at === null
                 || $this->fixed_at->gt($this->fix_by)
@@ -214,31 +213,43 @@ class slaTask extends Model
 
         return $query
             ->notPaused()
-            ->where(function (Builder $query) {
+            ->whereHas('caseTicket', function ($case) {
+                $case->whereNull('closed_datetime');
+            })
+            ->where(function ($query) {
 
-                $query->whereHas('caseTicket', function($case){
-                    $case->whereNull('closed_datetime');
+                // Response breach
+                $query->where(function ($query) {
+
+                    $query->whereNull('responded_at')
+                        ->whereNotNull('respond_by')
+                        ->where('respond_by', '<', now());
+
+                })->orWhere(function ($query) {
+
+                    $query->whereNotNull('responded_at')
+                        ->whereColumn('responded_at', '>', 'respond_by');
+
                 });
 
-                // Response SLA breached
-                $query->where(function (Builder $query) {
-                    $query->whereNotNull('respond_by')
-                        ->where('respond_by', '<', now())
-                        ->where(function (Builder $query) {
-                            $query->whereNull('responded_at')
-                                ->orWhereColumn('responded_at', '>', 'respond_by');
-                        });
-                })
+                // OR Fix breach
+                $query->orWhere(function ($query) {
 
-                // OR Fix SLA breached
-                    ->orWhere(function (Builder $query) {
-                        $query->whereNotNull('fix_by')
-                            ->where('fix_by', '<', now())
-                            ->where(function (Builder $query) {
-                                $query->whereNull('fixed_at')
-                                    ->orWhereColumn('fixed_at', '>', 'fix_by');
-                            });
+                    $query->where(function ($query) {
+
+                        $query->whereNull('fixed_at')
+                            ->whereNotNull('fix_by')
+                            ->where('fix_by', '<', now());
+
+                    })->orWhere(function ($query) {
+
+                        $query->whereNotNull('fixed_at')
+                            ->whereColumn('fixed_at', '>', 'fix_by');
+
                     });
+
+                });
+
             });
     }
 
@@ -288,7 +299,7 @@ class slaTask extends Model
             ->whereNotNull('respond_by')
             ->whereBetween('respond_by', [
                 now(),
-                now()->copy()->addHours($this->getWarningTimer()),
+                now()->copy()->addHours(config('case-management.CLOSE_TO_BREACH_WARNING')),
             ]);
     }
 

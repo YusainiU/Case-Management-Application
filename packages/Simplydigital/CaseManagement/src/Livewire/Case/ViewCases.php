@@ -42,6 +42,11 @@ class ViewCases extends Component
         'AllClosedCases' => 'openAllClosedCases',
         'AllPausedCases' => 'openAllPausedCases',
         'ResetFilterSelection' => 'resetFilterSelection',
+        'AllResolvedCases' => 'openAllResolvedCases',
+        'AllNearBreachedCases' => 'openAllNearBreachedCases',
+        'AllBreachedCases' => 'openAllBreachedCases',
+        'AllOpenCases' => 'resetFilterSelection',
+
     ];
 
     public function mount()
@@ -103,6 +108,26 @@ class ViewCases extends Component
     public function closeDescriptionModal()
     {
         $this->resetAllModal(); 
+    }
+
+    public function openAllResolvedCases()
+    {
+        $this->displayCaseStatus = CaseState::Resolved->value;
+    }
+
+    public function openAllNearBreachedCases()
+    {
+        $this->displayCaseStatus = 'nearBreached';
+    }
+
+    public function openAllBreachedCases()
+    {
+        $this->displayCaseStatus = 'breached';
+    }
+
+    public function openAllCompletedCases()
+    {
+        $this->displayCaseStatus = CaseState::Completed->value;
     }
 
     public function openAllClosedCases()
@@ -223,6 +248,14 @@ class ViewCases extends Component
 
         if($this->customerId) {
             $service->setCustomer($this->customerId);
+        }
+
+        if($this->displayCaseStatus == 'breached' ) {
+            $query = $service->getAllBreachedCases($filterString);
+        }
+
+        if($this->displayCaseStatus == 'nearBreached') {
+            $query = $service->getAllNearBreachCases($filterString);
         }
 
         if($this->displayCaseStatus == CaseState::Open->value) {

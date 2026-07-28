@@ -19,28 +19,28 @@
         <div class="flex flex-wrap gap-2">
             <x-casemanagement::form-elements.button-generic 
                 label="All Cases"
-                action="allClosedCases"
+                action="allOpenCases"
             />
             <x-casemanagement::form-elements.button-generic
                 label="Expired"
                 bg="bg-red-50"
                 text="text-red-700"
                 hover="bg-red-100"
-                action="allClosedCases"
+                action="allBreachedCases"
             />
             <x-casemanagement::form-elements.button-generic
                 label="Warning"
                 bg="bg-yellow-50"
                 text="text-yellow-700"
                 hover="bg-yellow-100"
-                action="allClosedCases"
+                action="allNearBreachCases"
             />
             <x-casemanagement::form-elements.button-generic
                 label="Resolved"
                 bg="bg-green-50"
                 text="text-green-700"
                 hover="bg-green-100"
-                action="allClosedCases"
+                action="allResolvedCases"
             />
             <x-casemanagement::form-elements.button-generic
                 label="Paused"

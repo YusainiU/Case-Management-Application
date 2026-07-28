@@ -69,22 +69,22 @@ class CaseStatus extends Component
 
     public function allOpenCases()
     {
-        $this->dispatch('allOpenCases');
+        $this->dispatch('AllOpenCases');
     }
 
     public function allBreachedCases()
     {
-        $this->dispatch('allBreachedCases');
+        $this->dispatch('AllBreachedCases');
     }
 
     public function allNearBreachCases()
     {
-        $this->dispatch('allBreachedCases');
+        $this->dispatch('AllNearBreachedCases');
     }
 
     public function allResolvedCases()
     {
-        $this->dispatch('allResolvedCases');
+        $this->dispatch('AllResolvedCases');
     }
 
     public function allPausedCases()

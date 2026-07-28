@@ -14,149 +14,139 @@
 
         <!-- Expired -->
         @if ($case->slaTasks?->breached)
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
-                <span class="w-3 h-3 rounded-full bg-red-600"></span>
-                <div>
-                    <p class="text-xs text-gray-500">{{ $case->slaTasks->sla_flag_text }}</p>
-                    {{-- <p class="text-sm font-semibold text-red-700">12 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="{{ $case->slaTasks->sla_flag_text }}"
+            />
         @endif
 
         <!-- Warning -->
         @if ($case->slaTasks?->sla_severity)
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-50 border border-amber-100">
-                <span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
-                <div>
-                    <p class="text-xs text-gray-500">{{ $case->slaTasks->sla_severity }}</p>
-                    {{-- <p class="text-sm font-semibold text-amber-700">7 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="{{ $case->slaTasks->sla_severity }}"
+                containerBg="bg-amber-50 border"
+                containerBorder="border-amber-100"
+                bulletBg="bg-amber-600 animate-pulse"
+                paraText="text-gray-500"
+            />
         @endif
 
         <!-- Resolved -->
         @if ($case->is_resolved)
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 border border-green-100">
-                <span class="w-3 h-3 rounded-full bg-green-600"></span>
-                <div>
-                    <p class="text-xs text-gray-500">Resolved</p>
-                    {{-- <p class="text-sm font-semibold text-green-700">48 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="Resolved"
+                containerBg="bg-green-50 border"
+                containerBorder="border-green-100"
+                bulletBg="bg-green-600"
+                paraText="text-green-500"
+            />        
         @endif
 
         <!-- Unassigned -->
         @if ($case->unassigned)
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
-                <span class="w-3 h-3 rounded-full bg-blue-600"></span>
-                <div>
-                    <p class="text-xs text-gray-500">Unassigned</p>
-                    {{-- <p class="text-sm font-semibold text-blue-700">5 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="Unassigned"
+                containerBg="bg-blue-50"
+                containerBorder="border-blue-100"
+                bulletBg="bg-blue-600"
+                paraText="text-blue-500"
+            />
         @endif
 
         <!-- No Update -->
         @if (!$case->has_internal_update)
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
-                <span class="w-3 h-3 rounded-full bg-gray-500"></span>
-                <div>
-                    <p class="text-xs text-gray-500">No Update</p>
-                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="No Update"
+                containerBg="bg-gray-50"
+                containerBorder="border-gray-100"
+                bulletBg="bg-gray-600"
+                paraText="text-gray-500"
+            />
         @endif
 
         <!-- Require Attention -->
         @if ($case->requiresAttention())
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
-                <span class="w-3 h-3 rounded-full {{ $important }}"></span>
-                <div>
-                    <p class="text-xs text-gray-500">Require Attention</p>
-                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="Require Attention"
+                containerBg="bg-gray-50"
+                containerBorder="border-gray-100"
+                bulletBg="{{ $important }}"
+                paraText="text-gray-500"
+            />
         @endif
 
         <!-- Paused -->
         @if ($case->slaTasks->activePause)
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200">
-                <span class="w-3 h-3 rounded-full {{ $information }}"></span>
-                <div>
-                    <p class="text-xs text-gray-500">SLA PAUSED</p>
-                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="SLA Paused"
+                containerBg="bg-gray-50"
+                containerBorder="border-gray-100"
+                bulletBg="{{ $paused }}"
+                paraText="text-gray-500"
+            />
         @endif
 
         <!-- Respond By -->
-        <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
-            <span class="w-3 h-3 rounded-full {{ $information }}"></span>
-            <div>
-                <p class="text-xs text-gray-500 font-extrabold">Respond By:
-                    {{ $case->slaTasks->respond_by->format('d-m-Y H:i') }}</p>
-                {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
-            </div>
-        </div>
+        <x-casemanagement::page-elements.small-panel-item
+            title="Respond By: {{ $case->slaTasks->respond_by->format('d-m-Y H:i') }}"
+            containerBg="bg-blue-50"
+            containerBorder="border-blue-100"
+            bulletBg="{{ $information }}"
+            paraText="text-blue-500 font-extrabold"
+        />
 
         @if ($case->slaTasks->responded_at)
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
-                <span class="w-3 h-3 rounded-full {{ $information }}"></span>
-                <div>
-                    <p class="text-xs text-gray-500 font-extrabold">Responded At:
-                        {{ $case->slaTasks->responded_at->format('d-m-Y H:i') }}</p>
-                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="Responded At: {{ $case->slaTasks->responded_at->format('d-m-Y H:i') }}"
+                containerBg="bg-blue-50"
+                containerBorder="border-blue-100"
+                bulletBg="{{ $information }}"
+                paraText="text-blue-500 font-extrabold"
+            />
         @endif
 
 
         @if ($case->outstandingVisit()->exists())
             <!-- Visit Scheduled -->
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
-                <span class="w-3 h-3 rounded-full {{ $information }}"></span>
-                <div>
-                    <p class="text-xs text-gray-500 font-extrabold">Visit Scheduled</p>
-                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="Visit Scheduled"
+                containerBg="bg-blue-50"
+                containerBorder="border-blue-100"
+                bulletBg="{{ $information }}"
+                paraText="text-blue-500 font-extrabold"
+            />
         @endif
 
         @if ($case->isResolved)
             <!-- Resolved -->
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
-                <span class="w-3 h-3 rounded-full {{ $information }}"></span>
-                <div>
-                    <p class="text-xs text-gray-500 font-extrabold">
-                        Resolved at {{ Carbon::createFromTimestamp($case->resolved_datetime)->format('d-m-Y H:i') }}
-                    </p>
-                    {{-- <p class="text-sm font-semibold text-gray-700">14 Cases</p> --}}
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="Resolved At {{ Carbon::createFromTimestamp($case->resolved_datetime)->format('d-m-Y H:i') }}"
+                containerBg="bg-blue-50"
+                containerBorder="border-blue-100"
+                bulletBg="{{ $information }}"
+                paraText="text-blue-500 font-extrabold"
+            />
         @endif
         
         @if ($case->isClosed)
             <!-- Closed -->
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
-                <span class="w-3 h-3 rounded-full {{ $warning }}"></span>
-                <div>
-                    <p class="text-xs text-gray-500 font-extrabold">
-                        ClOSED
-                    </p>
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="CLOSED"
+                containerBg="bg-red-50"
+                containerBorder="border-red-100"
+                bulletBg="{{ $warning }}"
+                paraText="text-red-500 font-extrabold"
+            />            
         @endif
     
         @if($case->closedCase)
             <!-- Open from closed ticket -->
-            <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
-                <span class="w-3 h-3 rounded-full {{ $information }}"></span>
-                <div>
-                    <p class="text-xs text-gray-500 font-extrabold">
-                        REOPENED: {{ $case->closedCase->number }}
-                    </p>
-                </div>
-            </div>
+            <x-casemanagement::page-elements.small-panel-item
+                title="REOPENED: {{ $case->closedCase->number }}"
+                containerBg="bg-blue-50"
+                containerBorder="border-blue-100"
+                bulletBg="{{ $information }}"
+                paraText="text-blue-500 font-extrabold"
+            />
         @endif
 
     </div>

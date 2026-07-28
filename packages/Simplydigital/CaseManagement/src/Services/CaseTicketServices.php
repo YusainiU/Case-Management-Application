@@ -104,6 +104,28 @@ class CaseTicketServices
         return $this->query;
     }
 
+    public function getAllBreachedCases(?string $filter)
+    {
+        $this->query->whereHas('slaTasks', function($r) {
+            $r->breached();
+        });
+        if($filter){
+            $this->buildFilter($filter);
+        }
+        return $this->query;
+    }
+
+    public function getAllNearBreachCases(?string $filter)
+    {
+        $this->query->whereHas('slaTasks', function($r) {
+            $r->showWarningFlag();
+        });
+        if($filter) {
+            $this->buildFilter($filter);
+        }
+        return $this->query;
+    }
+
     public function getCaseById(int $caseId)
     {
         return $this->query->find($caseId);
