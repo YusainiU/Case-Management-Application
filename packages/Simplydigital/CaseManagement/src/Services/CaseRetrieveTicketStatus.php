@@ -48,11 +48,13 @@ class CaseRetrieveTicketStatus
         |--------------------------------------------------------------------------
         */
 
-        return $tickets
+        $result = $tickets
             ->mapWithKeys(fn (tickets $ticket) => [
                 $ticket->id => $this->buildTicketStatus($ticket),
             ])
             ->toArray();
+        $result['total'] = $tickets->count();
+        return $result;
     }
 
     public function retrieveStatus(tickets $ticket): array

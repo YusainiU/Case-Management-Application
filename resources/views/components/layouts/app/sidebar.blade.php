@@ -14,8 +14,9 @@
             </a>
 
              <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Case Management')" class="grid" expandable="true" expanded="true">                    
+                <flux:navlist.group :heading="__('Case Management')" class="grid" expandable="true" expanded="true">  
                     <flux:navlist.group :heading="__('Case')" class="grid" expandable="true" expanded="true">
+                        <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.dashboard.view')" :current="request()->routeIs('casemanagement.dashboard.view')" wire:navigate>Dashboard</flux:navlist.item>
                         <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.cases.view')" :current="request()->routeIs('casemanagement.cases.view')" wire:navigate>View Cases</flux:navlist.item>
                         <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.sitevisit.view')" :current="request()->routeIs('casemanagement.sitevisit.view')" wire:navigate>View Site Visits</flux:navlist.item>
                     </flux:navlist.group>

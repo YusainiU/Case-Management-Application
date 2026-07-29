@@ -69,6 +69,7 @@ use Simplydigital\CaseManagement\Livewire\Case\{
     ViewSiteVisit,
     CreateSiteVisit,
     CloseAndResolveCase,
+    Dashboard,
 };
 
 class CaseManagementServiceProvider extends ServiceProvider
@@ -111,6 +112,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         'view-site-visit' => ViewSiteVisit::class,
         'create-site-visit' => CreateSiteVisit::class,
         'close-and-resolve-case' => CloseAndResolveCase::class,
+        'dashboard' => Dashboard::class,
     ];
 
     private array $services = [
