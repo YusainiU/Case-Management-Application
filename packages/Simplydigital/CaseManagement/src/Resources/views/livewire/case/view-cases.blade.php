@@ -45,7 +45,7 @@
     <x-casemanagement::form-elements.button-primary label="Create New Case" action="openCreateModal" />
     <x-casemanagement::form-elements.input-filter />
 
-    @if(!$ViewSelectedCustomerCases)
+    @if(!$hideStatus)
         <livewire:case-status />
     @endif
     

@@ -50,6 +50,20 @@
                 action="allPausedCases"
             />
             <x-casemanagement::form-elements.button-generic
+                label="Unassigned"
+                bg="bg-teal-50"
+                text="text-teal-700"
+                hover="bg-teal-100"
+                action='allUnassignedCases'
+            />
+            <x-casemanagement::form-elements.button-generic
+                label="No Action"
+                bg="bg-violet-50"
+                text="text-violet-700"
+                hover="bg-violet-100"
+                action='allNoUpdateCases'
+            />            
+            <x-casemanagement::form-elements.button-generic
                 label="Closed"
                 bg="bg-red-800"
                 text="text-gray-100"
@@ -62,7 +76,9 @@
                 text="text-gray-100"
                 hover="bg-gray-600"
                 action="resetFilterSelection"
-            />                        
+            />           
+
+
         </div>
     </div>
 

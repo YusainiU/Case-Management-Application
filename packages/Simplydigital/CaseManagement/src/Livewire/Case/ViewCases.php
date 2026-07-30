@@ -9,6 +9,7 @@ use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Models\Customer;
+use Livewire\Attributes\Url;
 class ViewCases extends Component
 {
     use WithPagination;
@@ -28,7 +29,10 @@ class ViewCases extends Component
     public bool $displaySlaStatus = false; 
     public array $descriptionDetails = [];
     public ?string $displayCaseStatus = null;
-    public bool $displayCustomerModal = false;  
+    public bool $displayCustomerModal = false;
+
+    #[Url]
+    public ?string $dashboardFilter = null;
 
     /**
     * @var array<string, string>
@@ -45,13 +49,15 @@ class ViewCases extends Component
         'AllResolvedCases' => 'openAllResolvedCases',
         'AllNearBreachedCases' => 'openAllNearBreachedCases',
         'AllBreachedCases' => 'openAllBreachedCases',
+        'AllUnassignedCases' => 'openAllUnassignedCases',
+        'AllNoUpdateCases' => 'openAllNoUpdateCases',
         'AllOpenCases' => 'resetFilterSelection',
 
     ];
 
     public function mount()
-    {
-        $this->displayCaseStatus = CaseState::Open->value;
+    {        
+        $this->displayCaseStatus = $this->dashboardFilter ?? CaseState::Open->value;
     }
 
     protected function ticketService(): CaseTicketServices
@@ -125,6 +131,11 @@ class ViewCases extends Component
         $this->displayCaseStatus = 'breached';
     }
 
+    public function openAllUnassignedCases()
+    {
+        $this->displayCaseStatus = 'unassigned';
+    }
+
     public function openAllCompletedCases()
     {
         $this->displayCaseStatus = CaseState::Completed->value;
@@ -138,6 +149,11 @@ class ViewCases extends Component
     public function openAllPausedCases()
     {
         $this->displayCaseStatus = CaseState::Paused->value;
+    }
+
+    public function openAllNoUpdateCases()
+    {
+        $this->displayCaseStatus = 'noUpdate';
     }
 
     public function resetFilterSelection()
@@ -258,6 +274,14 @@ class ViewCases extends Component
             $query = $service->getAllNearBreachCases($filterString);
         }
 
+        if($this->displayCaseStatus == 'unassigned') {
+            $query = $service->getAllUnassignedCases($filterString);
+        }
+
+        if($this->displayCaseStatus == 'noUpdate') {
+            $query = $service->getAllNoUpdateCases($filterString);
+        }
+
         if($this->displayCaseStatus == CaseState::Open->value) {
             $query = $service->getAllOpenCases($filterString);
         }
@@ -296,11 +320,11 @@ class ViewCases extends Component
         $cases = null;
         $ui = $this->buildUI();
         $cases = $this->loadCases()?->paginate(10);
-        $viewSelectedCustomerCases = $this->customerId ?? false;
+        $hideStatus = $this->customerId || $this->dashboardFilter;
         return view('casemanagement::livewire.case.view-cases',[
             'ui_params' => $ui,
             'cases' => $cases,
-            'ViewSelectedCustomerCases' => $viewSelectedCustomerCases,
+            'hideStatus' => $hideStatus,
         ]);
                
     }

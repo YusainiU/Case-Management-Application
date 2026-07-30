@@ -14,9 +14,10 @@
             $text,
             "hover:$hover",
             $class,
+            'hover:cursor-pointer',
         ])
         wire:click="{{ $action }}"
-    >
+    >   
         {{ $label }}
     </button>
 </div>

@@ -5,12 +5,14 @@
             <x-casemanagement::page-elements.box-dashboard-element 
                 content="{{ $status['totalOpenCases'] }}"
                 title="SLA Breached"
-                subTitle="SLA Breached" 
+                subTitle="SLA Breached"
+                action="openBreached" 
             />
             <x-casemanagement::page-elements.box-dashboard-element 
                 content="{{ $status['nearBreach'] }}"
-                title="Close To Expiry"
+                title="Close To Expiry"                
                 subTitle="SLA Nearing Limit"
+                action="openNearBreach"
                 containerBg="bg-yellow-50"
                 containerBorder="border-yellow-100"
                 titleText="text-yellow-900"
@@ -20,6 +22,7 @@
                 title="Unassigned"
                 subTitle="Cases Without Ownership"
                 content="{{ $status['unassigned'] }}"
+                action="openUnassigned"
                 containerBg="bg-blue-50"
                 containerBorder="border-blue-100"
                 headerText="text-blue-700"
@@ -33,6 +36,7 @@
                 content="{{ $status['noUpdate'] }}"
                 title="No Action"
                 subTitle="Cases awaiting update"
+                action="openNoUpdate"
                 containerBg="bg-gray-50"
                 containerBorder="border-gray-100"
                 headerText="text-gray-700"
@@ -43,6 +47,7 @@
                 content="{{ $status['resolved'] }}"
                 title="Resolved"
                 subTitle="Cases Resolved"
+                action="openResolvedCases"
                 containerBg="bg-green-50"
                 containerBorder="border-green-100"
                 headerText="text-green-700"
@@ -53,6 +58,7 @@
                 content="{{ $status['paused'] }}"
                 title="Paused"
                 subTitle="SLA Paused"
+                action="openPaused"
                 containerBg="bg-zinc-50"
                 containerBorder="border-zinc-100"
                 headerText="text-zinc-700"
@@ -65,12 +71,24 @@
                 content="{{ $status['total'] }}"
                 title="Total"
                 subTitle="Total All Open Cases"
+                action="openAllOutstanding"
                 containerBg="bg-zinc-50"
                 containerBorder="border-zinc-100"
                 headerText="text-zinc-700"
                 titleText="text-zinc-900"
                 subTitleText="text-zinc-600"             
-            />              
+            />
+            <x-casemanagement::page-elements.box-dashboard-element
+                title="Site Visits"
+                content="{{ $status['totalVisits'] }}"
+                subTitle="Site Visits"
+                action="openVisit"
+                containerBg="bg-rose-50"
+                containerBorder="border-rose-100"
+                headerText="text-rose-700"
+                titleText="text-rose-900"
+                subTitleText="text-rose-600"
+            />                   
         </div>
 
     </div>

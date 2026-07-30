@@ -12,7 +12,8 @@
     'headerClass' => 'mt-2 font-bold',
     'headerText' => 'text-red-900',
     'subtitleClass' => 'mt-1 text-xl',
-    'subTitleText' => 'text-red-600',            
+    'subTitleText' => 'text-red-600',
+    'action' => null,            
 ])
 
 
@@ -22,7 +23,11 @@
                 {{ $title }}
             </p>
             <h3 @class([$headerClass,$headerText,])>
-                {{ $content }}
+                @if($action)
+                    <x-casemanagement::page-elements.href action="{{ $action }}" label="{{ $content }}" />
+                @else
+                    {{ $content }}
+                @endif
             </h3>
             <p @class([$subtitleClass,$subTitleText,])>
                 {{ $subTitle }}

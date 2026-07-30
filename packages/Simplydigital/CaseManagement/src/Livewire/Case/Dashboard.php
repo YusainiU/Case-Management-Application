@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 
 use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
+use Simplydigital\CaseManagement\Enums\CaseState;
 class Dashboard extends Component
 {
 
@@ -67,7 +68,41 @@ class Dashboard extends Component
         $status['total'] = $cases['total'];
 
         return $status;
-    }    
+    }
+    
+    public function openBreached()
+    {
+        $this->openSelectedFilter('breached');
+    }
+
+    public function openNearBreach()
+    {
+        $this->openSelectedFilter('nearBreached');
+    }
+
+    public function openUnassigned()
+    {
+        $this->openSelectedFilter('unassigned');
+    }
+
+    public function openNoUpdate()
+    {
+        $this->openSelectedFilter('noUpdate');
+    }
+
+    public function openResolvedCases()
+    {
+        $this->openSelectedFilter(CaseState::Resolved->value);
+    }
+
+    public function openSelectedFilter(string $filter)
+    {
+        return $this->redirectRoute('casemanagement.cases.view', [
+            'customerId' => null,
+            'dashboardFilter' => $filter,
+        ]);        
+    }
+
     public function render()
     {
         $data = $this->buildStatus();

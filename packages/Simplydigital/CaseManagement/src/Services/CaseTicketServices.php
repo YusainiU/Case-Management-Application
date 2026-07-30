@@ -106,9 +106,11 @@ class CaseTicketServices
 
     public function getAllBreachedCases(?string $filter)
     {
-        $this->query->whereHas('slaTasks', function($r) {
-            $r->breached();
-        });
+        $this->query
+            ->whereNull('closed_datetime')
+            ->whereHas('slaTasks', function($r) {
+                $r->breached();
+            });
         if($filter){
             $this->buildFilter($filter);
         }
@@ -117,13 +119,37 @@ class CaseTicketServices
 
     public function getAllNearBreachCases(?string $filter)
     {
-        $this->query->whereHas('slaTasks', function($r) {
-            $r->showWarningFlag();
-        });
+        $this->query
+            ->whereNull('closed_datetime')
+            ->whereHas('slaTasks', function($r) {
+                $r->showWarningFlag();
+            });
         if($filter) {
             $this->buildFilter($filter);
         }
         return $this->query;
+    }
+
+    public function getAllUnassignedCases(?string $filter)
+    {
+        $this->query
+            ->whereNull('closed_datetime')
+            ->whereNull('assigned_to');
+        if($filter) {
+            $this->buildFilter($filter);
+        }
+        return $this->query;
+    }
+    
+    public function getAllNoUpdateCases(?string $filter)
+    {
+        $this->query
+            ->whereNull('closed_datetime')
+            ->whereDoesntHave('taskLogs');
+        if($filter) {
+            $this->buildFilter($filter);
+        }
+        return $this->query;                     
     }
 
     public function getCaseById(int $caseId)

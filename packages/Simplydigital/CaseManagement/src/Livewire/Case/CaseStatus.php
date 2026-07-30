@@ -96,6 +96,16 @@ class CaseStatus extends Component
     {
         $this->dispatch('AllClosedCases');
     }
+
+    public function allUnassignedCases()
+    {
+        $this->dispatch('AllUnassignedCases');
+    }
+
+    public function allNoUpdateCases()
+    {
+        $this->dispatch('AllNoUpdateCases');
+    }
     
     public function resetFilterSelection()
     {
