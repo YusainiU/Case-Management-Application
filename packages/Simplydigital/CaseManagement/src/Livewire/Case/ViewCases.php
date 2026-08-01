@@ -30,6 +30,7 @@ class ViewCases extends Component
     public array $descriptionDetails = [];
     public ?string $displayCaseStatus = null;
     public bool $displayCustomerModal = false;
+    public string $listTitle = CaseState::Open->value;
 
     #[Url]
     public ?string $dashboardFilter = null;
@@ -268,42 +269,57 @@ class ViewCases extends Component
 
         if($this->displayCaseStatus == 'breached' ) {
             $query = $service->getAllBreachedCases($filterString);
+            $this->listTitle = 'Breached';
         }
 
         if($this->displayCaseStatus == 'nearBreached') {
             $query = $service->getAllNearBreachCases($filterString);
+            $this->listTitle = 'Near Breach';
         }
 
         if($this->displayCaseStatus == 'unassigned') {
             $query = $service->getAllUnassignedCases($filterString);
+            $this->listTitle = 'Unassigned';
         }
 
         if($this->displayCaseStatus == 'noUpdate') {
             $query = $service->getAllNoUpdateCases($filterString);
+            $this->listTitle = 'Awaiting Action';
         }
 
         if($this->displayCaseStatus == CaseState::Open->value) {
             $query = $service->getAllOpenCases($filterString);
+            $this->listTitle = $this->displayCaseStatus;
         }
         
         if($this->displayCaseStatus === CaseState::In_Progress->value) {
             $query = $service->getOutstandingCases($filterString);
+            $this->listTitle = $this->displayCaseStatus;
         }
 
         if($this->displayCaseStatus === CaseState::Resolved->value) {
             $query = $service->getAllOpenResolvedCases($filterString);
+            $this->listTitle = $this->displayCaseStatus;
         }
         
         if($this->displayCaseStatus === CaseState::Completed->value) {
             $query = $service->getAllClosedResolvedCases($filterString);
+            $this->listTitle = $this->displayCaseStatus;
         }
 
         if($this->displayCaseStatus === CaseState::Closed->value) {
             $query = $service->getAllClosedCases($filterString);
+            $this->listTitle = $this->displayCaseStatus;
         }
 
         if($this->displayCaseStatus === CaseState::Paused->value) {
             $query = $service->getAllPausedCases($filterString);
+            $this->listTitle = $this->displayCaseStatus;
+        }
+
+        if($this->displayCaseStatus === CaseState::Site_Visit->value){
+            $query = $service->getAllVisitCases($filterString);
+            $this->listTitle = $this->displayCaseStatus;
         }
 
         if(isset($query)){

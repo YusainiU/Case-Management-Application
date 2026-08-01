@@ -95,6 +95,21 @@ class Dashboard extends Component
         $this->openSelectedFilter(CaseState::Resolved->value);
     }
 
+    public function openPausedCases()
+    {
+        $this->openSelectedFilter(CaseState::Paused->value);
+    }
+
+    public function openVisit()
+    {
+        $this->openSelectedFilter(CaseState::Site_Visit->value);
+    }
+
+    public function openAllOutstanding()
+    {
+        $this->openSelectedFilter(CaseState::Open->value);
+    }
+
     public function openSelectedFilter(string $filter)
     {
         return $this->redirectRoute('casemanagement.cases.view', [

@@ -152,6 +152,17 @@ class CaseTicketServices
         return $this->query;                     
     }
 
+    public function getAllVisitCases(?string $filter)
+    {
+        $this->query
+            ->whereNull('closed_datetime')
+            ->where('state', CaseState::Site_Visit->value);
+        if($filter) {
+            $this->buildFilter($filter);
+        }
+        return $this->query;              
+    }
+
     public function getCaseById(int $caseId)
     {
         return $this->query->find($caseId);

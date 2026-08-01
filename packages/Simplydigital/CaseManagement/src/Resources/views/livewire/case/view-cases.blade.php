@@ -37,8 +37,8 @@
     @endif
 
     <div class="my-4">
-        <x-casemanagement::page-elements.section-title title="{{ $ui_params['title'] }}"
-            description="Cases Management: List" aside="what is this" />
+        <x-casemanagement::page-elements.section-title title="{{ $this->listTitle }} {{  $ui_params['title']  }}"
+            description="Table List View" aside="what is this" />
     </div>
 
     <x-casemanagement::page-elements.seperator margin="2" />
