@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd1f281b09b029c06edabc7f48c8d185",
+    "content-hash": "5750409e516fb8b357e593b179284547",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4457,6 +4457,49 @@
                 }
             ],
             "description": "Engineer Management Module for Simply Digital",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "simplydigital/notificationmanagement",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Simplydigital/NotificationManagement",
+                "reference": "4ed5196cf432fc83513423591f4a0dfab618f51e"
+            },
+            "require": {
+                "illuminate/database": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^12.0",
+                "illuminate/view": "^10|^11|^12.0",
+                "livewire/livewire": "^3.5.4",
+                "php": ">=8.2"
+            },
+            "type": "project",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SimplyDigital\\NotificationManagement\\NotificationManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Simplydigital\\NotificationManagement\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "YusainiU",
+                    "email": "yusaini.usulludin@gmail.com"
+                }
+            ],
+            "description": "Notification Management Module",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -11258,6 +11301,7 @@
     "stability-flags": {
         "simplydigital/casemanagement": 20,
         "simplydigital/engineermanagement": 20,
+        "simplydigital/notificationmanagement": 20,
         "simplydigital/usermanagement": 20
     },
     "prefer-stable": true,
