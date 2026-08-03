@@ -3,7 +3,14 @@
 namespace Simplydigital\NotificationManagement\Models;
 
 use App\Models\User;
+use Throwable;
 use Illuminate\Database\Eloquent\Model;
+use Simplydigital\NotificationManagement\Notifications\Events\{
+    NotificationSent,
+    NotificationFailed,
+    NotificationSending,
+};
+use Simplydigital\NotificationManagement\DTO\NotificationResult;
 use Simplydigital\NotificationManagement\Enums\{
     NotificationPriority,
     NotificationStatus,
@@ -60,6 +67,32 @@ class Notification extends Model
         return $this->hasMany(NotificationRecipient::class);
     }
 
+    /**
+     * Get the template view path safely
+     */
+    public function getTemplateView(): string
+    {
+        // This tells the IDE we know it's an enum
+        $template = $this->template;
+        
+        if ($template instanceof NotificationTemplate) {
+            return $template->value;
+        }
+        
+        // Fallback if not cast properly
+        return (string) $template;
+    }
+    
+    /**
+     * Get the template with fallback
+     */
+    public function getTemplateValue(): string
+    {
+        return $this->template instanceof NotificationTemplate 
+            ? $this->template->value 
+            : (string) $this->template;
+    }    
+
     /*
     |--------------------------------------------------------------------------
     | Example of creating polymorphic relationshipt
@@ -101,4 +134,52 @@ class Notification extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function markSent(NotificationResult $result): void
+    {
+        $this->update([
+
+            'status'      => NotificationStatus::Sent,
+
+            'sent_at'     => now(),
+
+            'transport'   => $result->transport,
+
+            'message_id'  => $result->messageId,
+
+        ]);
+
+        NotificationSent::dispatch($this);
+    }
+
+    public function markFailed(Throwable $exception): void 
+    {
+
+        $this->update([
+
+            'status' => NotificationStatus::Failed,
+
+            'failed_at' => now(),
+
+            'error_message' => $exception->getMessage(),
+
+        ]);
+
+        NotificationFailed::dispatch(
+            $this,
+            $exception
+        );
+    }
+    
+    public function markSending(): void
+    {
+        $this->update([
+
+            'status' => NotificationStatus::Sending,
+
+        ]);
+
+        NotificationSending::dispatch($this);
+    }    
+
 }

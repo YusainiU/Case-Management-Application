@@ -11,8 +11,11 @@ use Simplydigital\NotificationManagement\Models\Notification;
 use Simplydigital\NotificationManagement\Models\NotificationRecipient;
 use Simplydigital\NotificationManagement\Models\NotificationAttachment;
 use Simplydigital\NotificationManagement\Notifications\DTO\NotificationData;
-use Simplydigital\NotificationManagement\Notifications\Events\NotificationCreated;
 use Simplydigital\NotificationManagement\Jobs\SendNotificationJob;
+use Simplydigital\NotificationManagement\Notifications\Events\{
+    NotificationCreated,
+    NotificationQueued,
+};
 use Simplydigital\NotificationManagement\Exceptions\{
     MissingSubjectException,
     MissingTemplateException,
@@ -88,6 +91,7 @@ class NotificationService
              |--------------------------------------------------------------------------
              */
 
+            
             event(new NotificationQueued($notification));
 
             return $notification;
@@ -95,10 +99,6 @@ class NotificationService
 
 
     }
-
-    public function resend(Notification $notification) {}
-
-    public function cancel(Notification $notification) {}
 
     protected function validate(NotificationData $data): void
     {

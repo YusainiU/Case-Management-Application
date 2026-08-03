@@ -18,11 +18,14 @@ class NotificationMail extends Mailable
 
     public function build(): static
     {
+        
+        $templateView = $this->notification->getTemplateView();
+
         return $this
 
             ->subject($this->notification->subject)
 
-            ->view($this->notification->template->value)
+            ->view($templateView)
 
             ->with($this->notification->payload);
     }
