@@ -29,7 +29,7 @@ return new class extends Migration
 
             $table->morphs('trigger');
 
-            $table->unsignedBigInteger('trigger_id');
+            $table->json('view_data')->nullable();
 
             $table->foreignId('created_by')->nullable();
 

@@ -15,6 +15,10 @@ enum NotificationTemplate : string
     case Welcome='emails.welcome';
 
     case EmailNotification='emails.notification';
+    
+    case EmailLogNotification='emails.log-notification';
+
+    case EmailUrgentNotification='emails.urgent-notification';
 
     public function label(): string
     {
@@ -30,6 +34,22 @@ enum NotificationTemplate : string
                 $case->value => $case->label(),
             ])
             ->all();
-    }   
+    }
+
+    /**
+     * Get the view path for this template
+     */
+    public function view(): string
+    {
+        return "notification::{$this->value}";
+    }    
+    
+    /**
+     * Check if template exists
+     */
+    public function exists(): bool
+    {
+        return view()->exists($this->view());
+    }    
 
 }

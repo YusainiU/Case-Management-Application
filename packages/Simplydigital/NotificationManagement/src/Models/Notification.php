@@ -5,6 +5,7 @@ namespace Simplydigital\NotificationManagement\Models;
 use App\Models\User;
 use Throwable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Simplydigital\NotificationManagement\Notifications\Events\{
     NotificationSent,
     NotificationFailed,
@@ -28,6 +29,7 @@ class Notification extends Model
         'priority',
         'template',
         'trigger',
+        'view_data',
         'created_by',
         'queued_at',
         'sent_at',
@@ -44,6 +46,7 @@ class Notification extends Model
             'status' => NotificationStatus::class,
             'priority' => NotificationPriority::class,
             'channel' => NotificationChannel::class,
+            'view_data' => 'array',
         ];
     }
 
@@ -180,6 +183,48 @@ class Notification extends Model
         ]);
 
         NotificationSending::dispatch($this);
+    }
+
+    /**
+     * Get recipients by type with email and name
+     */
+    protected function getRecipientsByType(string $type): Collection
+    {
+        return $this->notificationRecipient
+            ->where('type', $type)
+            ->whereNotNull('email')
+            ->mapWithKeys(function ($recipient) {
+                return [$recipient->email => $recipient->name ?? null];
+            })
+            ->filter();
+    }
+
+    /**
+     * Format recipients for Mail::to(), ::cc(), ::bcc()
+     */
+    protected function formatRecipientsForMail(Collection $recipients): array
+    {
+        return $recipients
+            ->map(function ($name, $email) {
+                return $name ? "{$name} <{$email}>" : $email;
+            })
+            ->values()
+            ->toArray();
     }    
+    
+    public function toRecipients(): array|Collection
+    {
+        return $this->formatRecipientsForMail($this->getRecipientsByType('to'));
+    }
+
+    public function ccRecipients(): array|Collection
+    {
+        return $this->formatRecipientsForMail($this->getRecipientsByType('cc'));
+    }
+
+    public function bccRecipients(): array|Collection
+    {
+        return $this->formatRecipientsForMail($this->getRecipientsByType('bcc'));
+    }
 
 }

@@ -2,8 +2,10 @@
 
 namespace Simplydigital\NotificationManagement\Notifications\DTO;
 
+
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Simplydigital\NotificationManagement\Notifications\DTO\NotificationViewData;
 use Simplydigital\NotificationManagement\Enums\{
     NotificationPriority,
     NotificationStatus,
@@ -11,29 +13,25 @@ use Simplydigital\NotificationManagement\Enums\{
     NotificationChannel,
 };
 
-class NotificationData
+final readonly class NotificationData
 {
     public function __construct(
 
         public string $subject,
 
-        public string $view,
+        public ?NotificationViewData $viewData,
 
-        public array $viewData = [],
+        public Model $trigger,
 
         public array $to = [],
 
         public array $cc = [],
 
-        public array $bcc = [],
-        
+        public array $bcc = [],        
+
         public ?NotificationTemplate $template = NotificationTemplate::EmailNotification,
 
-        public ?string $payload = null,
-
         public ?string $scheduledAt = null,
-
-        public Model $trigger,
 
         public ?NotificationChannel $channel = NotificationChannel::Email,
 
@@ -56,6 +54,16 @@ class NotificationData
             ),         
          ]
         */
+
+         /*
+            To use ... example
+                $data = new NotificationData(
+                channel: NotificationChannel::Email,
+                priority: NotificationPriority::Normal,
+                template: NotificationTemplate::Generic,
+                subject: 'Test Notification',
+            );
+         */
 
 
     ) {}

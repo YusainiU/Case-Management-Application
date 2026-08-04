@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplydigital\NotificationManagement\Services;
+namespace Simplydigital\NotificationManagement\Notifications\Services;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -134,7 +134,7 @@ class NotificationService
 
         $notification->template = $data->template->value;
 
-        $notification->payload = $data->payload;
+        $notification->view_data = $data->viewData;
 
         $notification->created_by = $data->createdBy ?? Auth::id();
 
