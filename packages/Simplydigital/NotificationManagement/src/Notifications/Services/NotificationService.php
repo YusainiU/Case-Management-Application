@@ -11,12 +11,12 @@ use Simplydigital\NotificationManagement\Models\Notification;
 use Simplydigital\NotificationManagement\Models\NotificationRecipient;
 use Simplydigital\NotificationManagement\Models\NotificationAttachment;
 use Simplydigital\NotificationManagement\Notifications\DTO\NotificationData;
-use Simplydigital\NotificationManagement\Jobs\SendNotificationJob;
+use Simplydigital\NotificationManagement\Notifications\Jobs\SendNotificationJob;
 use Simplydigital\NotificationManagement\Notifications\Events\{
     NotificationCreated,
     NotificationQueued,
 };
-use Simplydigital\NotificationManagement\Exceptions\{
+use Simplydigital\NotificationManagement\Notifications\Exceptions\{
     MissingSubjectException,
     MissingTemplateException,
     NoRecipientsException,
@@ -136,9 +136,9 @@ class NotificationService
 
         $notification->view_data = $data->viewData;
 
-        $notification->created_by = $data->createdBy ?? Auth::id();
+        $notification->created_by = $data->createdBy?->id ?? Auth::id();
 
-        $notification->scheduled_at = $data->scheduledAt;
+        //$notification->scheduled_at = $data->scheduledAt;
 
         // Associate the model that triggered the notification
         if ($data->trigger) {

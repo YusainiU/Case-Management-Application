@@ -3,7 +3,7 @@
 namespace SimplyDigital\NotificationManagement;
 
 use Illuminate\Support\ServiceProvider;
-use Simplydigital\NotificationManagement\Services\NotificationService;
+use Simplydigital\NotificationManagement\Notifications\Services\NotificationService;
 
 class NotificationManagementServiceProvider extends ServiceProvider
 {
@@ -16,7 +16,7 @@ class NotificationManagementServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         // Load views with notification namespace
-        $this->loadViewsFrom( __DIR__ . '/Notification/templates', 'notification');
+        $this->loadViewsFrom( __DIR__ . '/Notifications/Templates', 'notification');
 
         $this->registerServices();
 

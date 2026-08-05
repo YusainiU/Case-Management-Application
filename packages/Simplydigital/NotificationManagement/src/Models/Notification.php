@@ -11,7 +11,7 @@ use Simplydigital\NotificationManagement\Notifications\Events\{
     NotificationFailed,
     NotificationSending,
 };
-use Simplydigital\NotificationManagement\DTO\NotificationResult;
+use Simplydigital\NotificationManagement\Notifications\DTO\NotificationResult;
 use Simplydigital\NotificationManagement\Enums\{
     NotificationPriority,
     NotificationStatus,
@@ -77,9 +77,8 @@ class Notification extends Model
     {
         // This tells the IDE we know it's an enum
         $template = $this->template;
-        
         if ($template instanceof NotificationTemplate) {
-            return $template->value;
+            return $template->view();
         }
         
         // Fallback if not cast properly
@@ -188,15 +187,15 @@ class Notification extends Model
     /**
      * Get recipients by type with email and name
      */
-    protected function getRecipientsByType(string $type): Collection
+    public function getRecipientsByType(string $type): Collection
     {
-        return $this->notificationRecipient
+        return $this->notificationRecipients
             ->where('type', $type)
             ->whereNotNull('email')
             ->mapWithKeys(function ($recipient) {
                 return [$recipient->email => $recipient->name ?? null];
-            })
-            ->filter();
+            });
+            //->filter();
     }
 
     /**

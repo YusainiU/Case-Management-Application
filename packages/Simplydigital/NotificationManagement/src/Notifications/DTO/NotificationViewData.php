@@ -9,9 +9,22 @@ final readonly class NotificationViewData
         public ?string $greeting = null,
         public ?string $intro = null,
         public array $details = [],
-        public ?string $message = null,
+        public ?string $body = null,
         public ?string $actionUrl = null,
         public ?string $actionText = null,
     ) {}
+
+    public function toArray(): array
+    {
+        return [
+            'subject' => $this->subject,
+            'greeting' => $this->greeting,
+            'intro' => $this->intro,
+            'details' => $this->details,
+            'body' => $this->body,
+            'actionUrl' => $this->actionUrl,
+            'actionText' => $this->actionText,
+        ];
+    }    
     
 } 

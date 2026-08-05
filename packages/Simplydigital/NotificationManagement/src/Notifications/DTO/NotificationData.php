@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Simplydigital\NotificationManagement\Notifications\DTO\NotificationViewData;
 use Simplydigital\NotificationManagement\Enums\{
     NotificationPriority,
-    NotificationStatus,
     NotificationTemplate,
     NotificationChannel,
 };

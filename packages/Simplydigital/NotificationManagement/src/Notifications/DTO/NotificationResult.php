@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplydigital\NotificationManagement\DTO;
+namespace Simplydigital\NotificationManagement\Notifications\DTO;
 
 class NotificationResult
 {

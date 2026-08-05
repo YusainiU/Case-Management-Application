@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplydigital\NotificationManagement\Exceptions;
+namespace Simplydigital\NotificationManagement\Notifications\Exceptions;
 
 use Exception;
 

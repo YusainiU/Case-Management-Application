@@ -7,22 +7,11 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 
 ## Foundational Context
 
-This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
+This application is a Laravel application running on PHP 8.4. You are an expert with the Laravel ecosystem. Always use the APIs that match the installed major version of each package — do not assume a version.
 
-- php - 8.4
-- laravel/fortify (FORTIFY) - v1
-- laravel/framework (LARAVEL) - v12
-- laravel/prompts (PROMPTS) - v0
-- livewire/flux (FLUXUI_FREE) - v2
-- livewire/livewire (LIVEWIRE) - v3
-- livewire/volt (VOLT) - v1
-- laravel/boost (BOOST) - v2
-- laravel/mcp (MCP) - v0
-- laravel/pail (PAIL) - v1
-- laravel/pint (PINT) - v1
-- laravel/sail (SAIL) - v1
-- phpunit/phpunit (PHPUNIT) - v11
-- tailwindcss (TAILWINDCSS) - v4
+Before relying on a package's API, confirm its installed version:
+- PHP packages: run `composer show --direct` to list direct dependencies with versions, or `composer show <vendor/package>` for a single package.
+- JS packages: check `package.json` for the installed versions.
 
 ## Skills Activation
 
@@ -80,6 +69,11 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 2. Use `"quoted phrases"` for exact position matching: `"infinite scroll"` requires adjacent words in order.
 3. Combine words and phrases for mixed queries: `middleware "rate limit"`.
 4. Use multiple queries for OR logic: `queries=["authentication", "middleware"]`.
+
+## Project Rules
+
+- This project keeps committed, area-grouped rules in `.ai/rules` (settled decisions, non-obvious traps, standing constraints). Framework and package guidelines that only apply to specific paths (testing, frontend, components) also live there, under `.ai/rules/boost` — this is not just recorded decisions, it is load-bearing guidance you have not seen inline. Before you enter plan mode or create/edit any file, you MUST first: open @.ai/rules/index.md (it maps file globs to rule files), read every rule file whose globs cover the path(s) in scope, and run `grep -rin 'keyword' .ai/rules` to catch what a path match alone misses. Do not write code until you have read and are following every matching rule.
+- Record durable rules with `record-rule` so the next agent or teammate inherits them instead of working them out again. Pass a `glob` (e.g. `app/Http/Controllers/**`), a short `title`, and a few-line `note`. Always use `record-rule`, never your native memory or notes tool — native memory is personal and session-scoped; only `.ai/rules` is shared with the team and persists in the repo.
 
 ## Artisan
 
@@ -166,6 +160,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 ## Database
 
 - When modifying a column, the migration must include all of the attributes that were previously defined on the column. Otherwise, they will be dropped and lost.
+
 - Laravel 12 allows limiting eagerly loaded records natively, without external packages: `$query->latest()->limit(10);`.
 
 ### Models
@@ -205,5 +200,158 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - To run all tests: `php artisan test --compact`.
 - To run all tests in a file: `php artisan test --compact tests/Feature/ExampleTest.php`.
 - To filter on a particular test name: `php artisan test --compact --filter=testName` (recommended after making a change to a related file).
+
+=== spatie/laravel-activitylog/core rules ===
+
+# spatie/laravel-activitylog
+
+Activity logging package for Laravel. Logs model events and manual activities to a database table.
+
+## Key Concepts
+
+- **Activity**: An Eloquent model (`Spatie\Activitylog\Models\Activity`) storing log entries with subject, causer, event, attribute_changes, and properties.
+- **Subject**: The model being acted upon (polymorphic `subject_type`/`subject_id`).
+- **Causer**: The model that caused the action, typically the authenticated user (polymorphic `causer_type`/`causer_id`).
+- **LogOptions**: Fluent configuration object returned by `getActivitylogOptions()` on models using the `LogsActivity` trait.
+- **ActivityEvent**: Enum with cases `Created`, `Updated`, `Deleted`, `Restored`.
+- **`attribute_changes`** column: stores `{"attributes": {...}, "old": {...}}` for tracked model changes.
+- **`properties`** column: stores custom user data set via `withProperties()`.
+
+## Traits
+
+### `LogsActivity`
+
+Add to models to automatically log create/update/delete events. Optionally implement `getActivitylogOptions()` to configure which attributes to track (defaults to logging events without attribute changes).
+
+```php
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
+
+class Article extends Model
+{
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges();
+    }
+}
+```
+
+### `CausesActivity`
+
+Add to user/causer models. Provides `activitiesAsCauser()` relationship.
+
+### `HasActivity`
+
+Combines `LogsActivity` and `CausesActivity`. Provides `activities()`, `activitiesAsSubject()`, and `activitiesAsCauser()`.
+
+## Manual Logging
+
+```php
+activity()
+    ->performedOn($article)
+    ->causedBy($user)
+    ->event(ActivityEvent::Updated)
+    ->withProperties(['key' => 'value'])
+    ->log('Article was updated');
+```
+
+## LogOptions Methods
+
+| Method | Description |
+|--------|-------------|
+| `logFillable()` | Log all fillable attributes |
+| `logAll()` | Log all attributes |
+| `logOnly(array)` | Log specific attributes |
+| `logExcept(array)` | Exclude attributes |
+| `logOnlyDirty()` | Only log changed attributes |
+| `dontLogEmptyChanges()` | Skip logging when no tracked attributes changed |
+| `dontLogIfAttributesChangedOnly(array)` | Ignore updates that only change these attributes |
+| `useLogName(string)` | Set custom log name |
+| `setDescriptionForEvent(Closure)` | Custom description per event |
+| `useAttributeRawValues(array)` | Store raw (uncast) values |
+
+## Querying Activities
+
+```php
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Enums\ActivityEvent;
+
+Activity::forEvent(ActivityEvent::Created)->get();
+Activity::causedBy($user)->get();
+Activity::forSubject($article)->get();
+Activity::inLog('orders')->get();
+```
+
+## Setting the causer
+
+Override the causer for a block of code:
+
+```php
+use Spatie\Activitylog\Facades\Activity;
+
+Activity::defaultCauser($admin, function () {
+    // all activities here are caused by $admin
+});
+
+// or set globally for the rest of the request
+Activity::defaultCauser($admin);
+```
+
+## Disabling Logging
+
+```php
+activity()->withoutLogging(function () {
+    // no activities logged here
+});
+```
+
+## Accessing Changes and Properties
+
+```php
+$activity = Activity::latest()->first();
+
+// Tracked model changes (set automatically by LogsActivity)
+$activity->attribute_changes; // Collection: {"attributes": {...}, "old": {...}}
+
+// Custom user data (set via withProperties)
+$activity->properties; // Collection
+$activity->getProperty('key'); // single value
+```
+
+## Custom Activity Model
+
+Set `activity_model` in `config/activitylog.php` to a class that extends `Model` and implements `Spatie\Activitylog\Contracts\Activity`. Use a custom model for custom table names or database connections.
+
+## Customizing Actions
+
+The package uses action classes (`LogActivityAction`, `CleanActivityLogAction`) that can be extended and swapped via config:
+
+```php
+// config/activitylog.php
+'actions' => [
+    'log_activity' => \App\Actions\CustomLogActivityAction::class,
+    'clean_log' => \App\Actions\CustomCleanAction::class,
+],
+```
+
+Custom action classes must extend the originals. Override protected methods (`save()`, `beforeActivityLogged()`, `resolveDescription()`, etc.) to customize behavior.
+
+## Configuration
+
+Key config options in `config/activitylog.php`:
+- `enabled`: Master on/off switch (env: `ACTIVITYLOG_ENABLED`)
+- `clean_after_days`: Days to keep records for `activitylog:clean` command
+- `default_log_name`: Default log name (string)
+- `default_auth_driver`: Auth driver for causer resolution
+- `include_soft_deleted_subjects`: Include soft-deleted subjects
+- `activity_model`: Custom Activity model class
+- `default_except_attributes`: Globally excluded attributes
+- `actions.log_activity`: Action class for logging activities
+- `actions.clean_log`: Action class for cleaning old activities
 
 </laravel-boost-guidelines>

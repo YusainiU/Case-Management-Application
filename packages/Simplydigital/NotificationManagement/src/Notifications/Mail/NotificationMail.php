@@ -20,11 +20,12 @@ class NotificationMail extends Mailable
     public function content(): Content
     {
         $templateView = $this->notification->getTemplateView();
+        $viewData = $this->notification->view_data;
         return new Content(
             view: $templateView,
             with: [
                 'notification' => $this->notification,
-                ...get_object_vars($this->notification->view_data),
+                ...(\is_array($viewData) ? $viewData : $viewData->toArray()),
             ],
         );
     }

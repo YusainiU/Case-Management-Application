@@ -12,7 +12,7 @@
                 'Reference' => 'LOG-000552',
                 'Priority' => 'Urgent',
             ],
-            'message' => 'Please review this service log immediately.',
+            'body' => 'Please review this service log immediately.',
             'actionUrl' => route('logs.show', $log),
             'actionText' => 'Open Service Log',
         ]        
@@ -135,10 +135,10 @@
 
             @endisset
 
-            @isset($message)
+            @isset($body)
                 <div class="message">
 
-                    {!! nl2br(e($message)) !!}
+                    {!! nl2br(e($body)) !!}
 
                 </div>
             @endisset
