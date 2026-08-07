@@ -14,7 +14,7 @@ use Simplydigital\NotificationManagement\Notifications\DTO\{
 //use Carbon\Carbon;
 //use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use Illuminate\Support\Facades\Mail;
+
 
 //use Simplydigital\NotificationManagement\Notifications\DTO\NotificationData;
 
@@ -46,11 +46,34 @@ class NotificationServiceTest extends TestCase
         );
         $data = new NotificationData(
             subject: 'Test Notification',
-            to: ['Yusaini.Usulludin@gmail.com'],
+            to: [
+                    [
+                        'name' => 'Yusaini Usulludin', 
+                        'email' => 'yusaini.usulludin@dimplydigital.com',
+                    ],
+                ],
             viewData:$payload,
             trigger:$case,
-            cc:['yusaini.usulludin@gmail.com,rick.pearce@gmail.com'],
-            bcc:['yusaini.usulludin@gmail.com,rick.pearce@gmail.com'],
+            cc:[
+                [
+                    'name' => 'Yusaini Usulludin', 
+                    'email' => 'yusaini.usulludin@example.com',
+                ],
+                [
+                    'name' => 'Rick Pearce',
+                    'email' => 'rick.pearce@example.com',
+                ],
+            ],
+            bcc:[
+                    [
+                        'name' => 'Yusaini Usulludin', 
+                        'email' => 'yusaini.usulludin@example.com'
+                    ],
+                    [
+                        'name' => 'Rick Pearce',
+                        'email' => 'rick.pearce@gxample.com'
+                    ],
+                ],
             //scheduledAt:Carbon::now()->toString(),
             createdBy:$createdBy,
         );

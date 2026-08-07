@@ -201,29 +201,46 @@ class Notification extends Model
     /**
      * Format recipients for Mail::to(), ::cc(), ::bcc()
      */
-    protected function formatRecipientsForMail(Collection $recipients): array
+    protected function formatRecipientsForMail(Collection $recipients)
     {
         return $recipients
             ->map(function ($name, $email) {
                 return $name ? "{$name} <{$email}>" : $email;
             })
-            ->values()
-            ->toArray();
+            ->values();
+            //->toArray();
     }    
     
-    public function toRecipients(): array|Collection
+    public function toRecipients(): array
     {
-        return $this->formatRecipientsForMail($this->getRecipientsByType('to'));
+        $em = $this->getRecipientsByType('to');
+        $email = $em->keys()->first();
+        $name = $em[$email];
+        $result = ['email' => $email, 'name' => $name];
+        return $result;
+        //return $this->formatRecipientsForMail($this->getRecipientsByType('to'));
     }
 
-    public function ccRecipients(): array|Collection
+    public function ccRecipients()
     {
-        return $this->formatRecipientsForMail($this->getRecipientsByType('cc'));
+        $results = [];
+        $em = $this->getRecipientsByType('cc');
+        foreach($em as $k => $v) {
+            $results[] = $k;
+        }
+        return $results;
+        //return $this->formatRecipientsForMail($this->getRecipientsByType('cc'));
     }
 
-    public function bccRecipients(): array|Collection
+    public function bccRecipients(): array
     {
-        return $this->formatRecipientsForMail($this->getRecipientsByType('bcc'));
+        $results = [];
+        $em = $this->getRecipientsByType('bcc');
+        foreach($em as $k => $v) {
+            $results[] = $k;
+        }
+        return $results;        
+        //return $this->formatRecipientsForMail($this->getRecipientsByType('bcc'));
     }
 
 }

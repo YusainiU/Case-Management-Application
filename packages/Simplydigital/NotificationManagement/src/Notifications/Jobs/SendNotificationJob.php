@@ -1,144 +1,58 @@
 <?php
 
-namespace Simplydigital\NotificationManagement\notifications\Jobs;
+namespace Simplydigital\NotificationManagement\Notifications\Jobs;
 
+use Throwable;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Simplydigital\NotificationManagement\Models\Notification;
-use Simplydigital\NotificationManagement\Models\NotificationRecipient;
-use Simplydigital\NotificationManagement\Enums\NotificationChannel;
-use Simplydigital\NotificationManagement\Enums\NotificationStatus;
-use Simplydigital\NotificationManagement\Enums\NotificationTemplate;
-use Simplydigital\NotificationManagement\Notifications\Exceptions\InvalidChannelException;
-use Simplydigital\NotificationManagement\Notifications\Mail\NotificationMail;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
-class SendNotificationJob
+class SendNotificationJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;   // Job implementation goes here
-    public $tries = 3;
-    public $backoff = [60, 300, 600]; // Retry after 1, 5, 10 minutes
-    public $timeout = 120;
-    
-    /**
-     * Create a new job instance.
-     */
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+
+    public int $tries = 3;
+
+    public int $timeout = 120;
+
+    public int $backoff = 60;
+
     public function __construct(
-        protected Notification $notification
+        public Notification $notification
     ) {}
-    
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
-    {
-       try {
-            // Update status to processing
-            $this->notification->update([
-                'status' => NotificationStatus::Pending->value,
-                'queued_at' => now(),
-            ]);
 
-            // Get the trigger model and recipient
-            $trigger = $this->notification->trigger;
-            $recipients = $this->notification->notificationRecipients;
-            
-            // Send based on channel
-            $channel = NotificationChannel::tryFrom($this->notification->channel->value);
-            
-            if (!$channel) {
-                throw new InvalidChannelException("Invalid channel: {$this->notification->channel}");
-            }
+    public function handle(
+        EmailNotificationSender $sender
+    ): void {
 
-            $result = match ($channel) {
-                NotificationChannel::Email => $this->sendEmail($recipients, $trigger),
-                // NotificationChannel::Sms => $this->sendSms($recipients, $trigger),
-                // NotificationChannel::Push => $this->sendPush($recipients, $trigger),
-                // NotificationChannel::Teams => $this->sendTeams($recipients, $trigger),
-                // NotificationChannel::Slack => $this->sendSlack($recipients, $trigger),
-                // NotificationChannel::WhatsApp => $this->sendWhatsApp($recipients, $trigger),
-                // NotificationChannel::Webhook => $this->sendWebhook($recipients, $trigger),
-                // NotificationChannel::Internal => $this->sendInternal($recipients, $trigger),
-            };
+        $this->notification->refresh();
 
-            // Update status to sent
-            $this->notification->update([
-                'status' => NotificationStatus::Sent->value,
-                'sent_at' => now(),
-            ]);
+        $this->notification->markSending();
 
-            // Log successful send
-            //$this->logNotification('success', $result);
+        try {
 
-        } catch (\Exception $e) {
-            // Update status to failed
-            $this->notification->update([
-                'status' => NotificationStatus::Failed->value,
-                'failed_at' => now(),
-            ]);
+            $result = $sender->send(
+                $this->notification
+            );
 
-            // Log failure
-            //$this->logNotification('error', $e->getMessage());
+            $this->notification->markSent(
+                $result
+            );
 
-            // Re-throw to trigger retry
-            throw $e;
-        }            
+        } catch (Throwable $exception) {
+
+            $this->notification->markFailed(
+                $exception
+            );
+
+            throw $exception;
+        }
     }
-
-    /**
-     * Send email notification
-     */
-    protected function sendEmail(Collection $recipients, Model $trigger): array
-    {
-        $emails = $recipients->pluck('email')->toArray();
-        
-        // Use Laravel's Mail facade
-        // Mail::send(
-        //     $this->notification->getTemplateView(),
-        //     ['notification' => $this->notification, 'trigger' => $trigger],
-        //     function ($message) use ($emails) {
-        //         $message->to($emails)
-        //             ->subject($this->notification->subject);
-        //     }
-        // );
-
-          Mail::to(
-                $this->notification->toRecipients()
-            )->cc(
-                $this->notification->ccRecipients()
-            )->bcc(
-                $this->notification->bccRecipients()
-            )->send(
-
-                new NotificationMail(
-                    $this->notification
-                )
-
-            );        
-
-        return ['channel' => 'email', 'recipients' => \count($emails)];
-    }
-    
-    /**
-     * Log notification activity
-     */
-    protected function logNotification(string $level, mixed $message): void
-    {
-        Log::{$level}('Notification processed', [
-            'notification_id' => $this->notification->id,
-            'channel' => $this->notification->channel,
-            'subject' => $this->notification->subject,
-            'message' => $message,
-            'attempts' => $this->attempts(),
-        ]);
-    }    
-
 
 }

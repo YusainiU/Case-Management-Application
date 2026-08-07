@@ -8,26 +8,21 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Simplydigital\NotificationManagement\Enums\NotificationStatus;
 use Simplydigital\NotificationManagement\Models\Notification;
-use Simplydigital\NotificationManagement\Models\NotificationRecipient;
 use Simplydigital\NotificationManagement\Models\NotificationAttachment;
+use Simplydigital\NotificationManagement\Models\NotificationRecipient;
 use Simplydigital\NotificationManagement\Notifications\DTO\NotificationData;
+use Simplydigital\NotificationManagement\Notifications\Events\NotificationCreated;
+use Simplydigital\NotificationManagement\Notifications\Events\NotificationQueued;
+use Simplydigital\NotificationManagement\Notifications\Exceptions\AttachmentNotFoundException;
+use Simplydigital\NotificationManagement\Notifications\Exceptions\MissingSubjectException;
+use Simplydigital\NotificationManagement\Notifications\Exceptions\MissingTemplateException;
+use Simplydigital\NotificationManagement\Notifications\Exceptions\NoRecipientsException;
 use Simplydigital\NotificationManagement\Notifications\Jobs\SendNotificationJob;
-use Simplydigital\NotificationManagement\Notifications\Events\{
-    NotificationCreated,
-    NotificationQueued,
-};
-use Simplydigital\NotificationManagement\Notifications\Exceptions\{
-    MissingSubjectException,
-    MissingTemplateException,
-    NoRecipientsException,
-    AttachmentNotFoundException,
-};
-
-
 
 class NotificationService
 {
-    public function send(NotificationData $data) {
+    public function send(NotificationData $data)
+    {
 
         // Validate the incoming request
         $this->validate($data);
@@ -91,12 +86,10 @@ class NotificationService
              |--------------------------------------------------------------------------
              */
 
-            
             event(new NotificationQueued($notification));
 
             return $notification;
-        });    
-
+        });
 
     }
 
@@ -138,7 +131,7 @@ class NotificationService
 
         $notification->created_by = $data->createdBy?->id ?? Auth::id();
 
-        //$notification->scheduled_at = $data->scheduledAt;
+        // $notification->scheduled_at = $data->scheduledAt;
 
         // Associate the model that triggered the notification
         if ($data->trigger) {
@@ -151,7 +144,7 @@ class NotificationService
         return $notification;
     }
 
-    protected function createRecipients(Notification $notification, NotificationData $data): void 
+    protected function createRecipients(Notification $notification, NotificationData $data): void
     {
 
         $this->storeRecipients(
@@ -173,53 +166,16 @@ class NotificationService
         );
     }
 
-    protected function storeRecipients(Notification $notification, array $recipients, string $type): void 
+    protected function storeRecipients(Notification $notification, array $recipients, string $type): void
     {
 
         foreach ($recipients as $recipient) {
 
-            /*
-             * Recipient may be:
-             *
-             * "john@test.com"
-             *
-             * OR
-             *
-             * [
-             *     'email' => 'john@test.com',
-             *     'name'  => 'John Smith',
-             * ]
-             */
-
-            
-
-            if (\is_string($recipient)) {
-
-                NotificationRecipient::create([
-
-                    'notification_id' => $notification->id,
-
-                    'type' => $type,
-
-                    'email' => $recipient,
-
-                    'name' => null,
-
-                ]);
-
-                continue;
-            }
-
             NotificationRecipient::create([
-
                 'notification_id' => $notification->id,
-
                 'type' => $type,
-
-                'email' => $recipient['email'],
-
                 'name' => $recipient['name'] ?? null,
-
+                'email' => $recipient['email'],
             ]);
         }
     }
@@ -256,6 +212,5 @@ class NotificationService
             ]);
 
         }
-    }    
-
+    }
 }

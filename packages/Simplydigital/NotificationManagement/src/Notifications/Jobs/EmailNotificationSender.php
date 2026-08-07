@@ -14,21 +14,24 @@ class EmailNotificationSender
     ): NotificationResult {
 
         try {
+
+            $to = $notification->toRecipients();
+            $cc = $notification->ccRecipients();
+            $bcc = $notification->bccRecipients();
             
             Mail::to(
-                $notification->toRecipients()
+                $to['email']
             )->cc(
-                $notification->ccRecipients()
+                $cc
             )->bcc(
-                $notification->bccRecipients()
+                $bcc
             )->send(
 
-                new NotificationMail(
+                $mail = new NotificationMail(
                     $notification
                 )
-
             );
-
+            
             return new NotificationResult(
 
                 success: true,

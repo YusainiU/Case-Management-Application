@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
 
 class NotificationMail extends Mailable
 {
@@ -17,28 +18,32 @@ class NotificationMail extends Mailable
         public readonly Notification $notification
     ) {}
 
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: $this->notification->subject,
+        );
+    }
+
+    public function attachments(): array
+    {
+        return [];
+    }
+
     public function content(): Content
     {
         $templateView = $this->notification->getTemplateView();
         $viewData = $this->notification->view_data;
-        return new Content(
+        $mail = new Content(
             view: $templateView,
             with: [
                 'notification' => $this->notification,
                 ...(\is_array($viewData) ? $viewData : $viewData->toArray()),
             ],
         );
+        return $mail;
     }
 
-    // Old Laravel Mailable build() method, replaced with content() method in Laravel 10
-    //-----------------------------------------------------------------------------------
-    // public function build(): static
-    // {       
-    //     $templateView = $this->notification->getTemplateView();
-    //     return $this
-    //         ->subject($this->notification->subject)
-    //         ->view($templateView)
-    //         ->with($this->notification->payload);
-    // }    
+  
 
 }
