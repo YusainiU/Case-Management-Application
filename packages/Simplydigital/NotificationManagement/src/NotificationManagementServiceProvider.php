@@ -20,23 +20,12 @@ class NotificationManagementServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        
+        $this->loadMigrations();
 
-        // Load views with notification namespace
-        $this->loadViewsFrom(
-           __DIR__.'/Notifications/Templates', 
-           'notification'
-        );
+        $this->loadComponents();       
 
-        $this->loadViewsFrom(
-            __DIR__.'/Resources/views',
-            'notification-management'
-        );
-
-        Livewire::component(
-            'notification-management.admin.queued-mail-jobs',
-            QueuedMailJobs::class
-        );        
+        $this->loadViews();
 
         $this->registerServices();
 
@@ -52,6 +41,33 @@ class NotificationManagementServiceProvider extends ServiceProvider
         foreach ($this->services as $key => $service) {
             $this->app->singleton($key, fn () => new $service);
         }
+    }
+
+    public function loadMigrations()
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+    }
+
+    public function loadComponents()
+    {
+        Livewire::component(
+            'notification-management.admin.queued-mail-jobs',
+            QueuedMailJobs::class
+        ); 
+    }
+
+    public function loadViews()
+    {
+        // Load views with notification namespace
+        $this->loadViewsFrom(
+           __DIR__.'/Notifications/Templates', 
+           'notification'
+        );
+
+        $this->loadViewsFrom(
+            __DIR__.'/Resources/views',
+            'notification-management'
+        );
     }
 
     public function loadRoutes()
