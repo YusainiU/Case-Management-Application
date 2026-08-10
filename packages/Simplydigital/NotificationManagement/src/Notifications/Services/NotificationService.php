@@ -74,10 +74,14 @@ class NotificationService
             /*
              |--------------------------------------------------------------------------
              | Queue the Job
+             | Currently the onQueue() will stop the immediate dispatch of email
+             | It will wait for Admin to run the queue job manually
+             | To automate it remove the method
              |--------------------------------------------------------------------------
              */
 
             SendNotificationJob::dispatch($notification)
+                ->onQueue('notifications')
                 ->afterCommit();
 
             /*

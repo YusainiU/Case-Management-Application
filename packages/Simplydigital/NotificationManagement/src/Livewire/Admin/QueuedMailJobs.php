@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\NotificationManagement\Notifications\Services\QueuedJobRunner;
-use Simplydigital\NotificationManagement\Enums\NotificationStatus;
 use Throwable;
 
 class QueuedMailJobs extends Component
@@ -34,8 +33,9 @@ public function runNow(int $jobId): void
 
     public function render()
     {
+        $queueName = 'notifications';
         $jobs = DB::table('jobs')
-            ->where('queue', NotificationStatus::Queue->value)
+            ->where('queue', $queueName)
             ->orderBy('id')
             ->paginate(20);
 

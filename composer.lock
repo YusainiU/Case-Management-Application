@@ -4468,7 +4468,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/NotificationManagement",
-                "reference": "4ed5196cf432fc83513423591f4a0dfab618f51e"
+                "reference": "9b359e15bdc6bc6b35c4116bf722d324486c1b46"
             },
             "require": {
                 "illuminate/database": "^10.0|^11.0|^12.0",
@@ -4481,7 +4481,7 @@
             "extra": {
                 "laravel": {
                     "providers": [
-                        "SimplyDigital\\NotificationManagement\\NotificationManagementServiceProvider"
+                        "Simplydigital\\NotificationManagement\\NotificationManagementServiceProvider"
                     ]
                 }
             },

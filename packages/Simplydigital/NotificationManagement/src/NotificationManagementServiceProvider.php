@@ -1,13 +1,15 @@
 <?php
 
-namespace SimplyDigital\NotificationManagement;
+namespace Simplydigital\NotificationManagement;
 
 use Illuminate\Support\ServiceProvider;
 use Simplydigital\NotificationManagement\Notifications\Services\NotificationService;
 use Livewire\Livewire;
 use Simplydigital\NotificationManagement\Livewire\Admin\QueuedMailJobs;
-use Simplydigital\NotificationManagement\Notifications\Services\RegisterEmailListenerService;
+use Simplydigital\NotificationManagement\Middleware\RestrictInternalUserOnly;
+use Illuminate\Support\Facades\Route;
 
+//use Simplydigital\NotificationManagement\Notifications\Services\RegisterEmailListenerService;
 
 
 class NotificationManagementServiceProvider extends ServiceProvider
@@ -27,7 +29,7 @@ class NotificationManagementServiceProvider extends ServiceProvider
         );
 
         $this->loadViewsFrom(
-            __DIR__.'/../resources/views',
+            __DIR__.'/Resources/views',
             'notification-management'
         );
 
@@ -38,8 +40,10 @@ class NotificationManagementServiceProvider extends ServiceProvider
 
         $this->registerServices();
 
+        $this->loadRoutes();
+
         //Email logging diagnostic
-        RegisterEmailListenerService::registerListener();
+        //RegisterEmailListenerService::registerListener();
 
     }
 
@@ -49,6 +53,12 @@ class NotificationManagementServiceProvider extends ServiceProvider
             $this->app->singleton($key, fn () => new $service);
         }
     }
+
+    public function loadRoutes()
+    {        
+        Route::middleware('web')->group(__DIR__.'/Routes/web.php');
+        Route::aliasMiddleware('restrict.internal.user', RestrictInternalUserOnly::class);   
+    }    
 
 
 

@@ -27,6 +27,7 @@
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.assets.view')" :current="request()->routeIs('casemanagement.assets.view')" wire:navigate>Assets</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.serviceLevelAgreement.view')" :current="request()->routeIs('casemanagement.serviceLevelAgreement.view')" wire:navigate>Service Level</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.slaapplication.view')" :current="request()->routeIs('casemanagement.slaapplication.view')" wire:navigate>Implement SLA</flux:navlist.item>
+                    <flux:navlist.item icon="ellipsis-vertical" :href="route('notifcation.jobs.view')" :current="request()->routeIs('notifcation.jobs.view')" wire:navigate>Email Queueu</flux:navlist.item>
                     
                 </flux:navlist.group>   
              </flux:navlist>
