@@ -195,7 +195,6 @@ class Notification extends Model
             ->mapWithKeys(function ($recipient) {
                 return [$recipient->email => $recipient->name ?? null];
             });
-            //->filter();
     }
 
     /**
@@ -208,7 +207,6 @@ class Notification extends Model
                 return $name ? "{$name} <{$email}>" : $email;
             })
             ->values();
-            //->toArray();
     }    
     
     public function toRecipients(): array
@@ -218,7 +216,6 @@ class Notification extends Model
         $name = $em[$email];
         $result = ['email' => $email, 'name' => $name];
         return $result;
-        //return $this->formatRecipientsForMail($this->getRecipientsByType('to'));
     }
 
     public function ccRecipients()
@@ -229,7 +226,6 @@ class Notification extends Model
             $results[] = $k;
         }
         return $results;
-        //return $this->formatRecipientsForMail($this->getRecipientsByType('cc'));
     }
 
     public function bccRecipients(): array
@@ -240,7 +236,6 @@ class Notification extends Model
             $results[] = $k;
         }
         return $results;        
-        //return $this->formatRecipientsForMail($this->getRecipientsByType('bcc'));
     }
 
 }

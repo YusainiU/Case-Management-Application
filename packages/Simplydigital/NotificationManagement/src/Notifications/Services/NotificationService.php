@@ -169,13 +169,17 @@ class NotificationService
     protected function storeRecipients(Notification $notification, array $recipients, string $type): void
     {
 
+        if (! \count($recipients)) {
+            return;
+        }
+
         foreach ($recipients as $recipient) {
 
             NotificationRecipient::create([
                 'notification_id' => $notification->id,
                 'type' => $type,
-                'name' => $recipient['name'] ?? null,
-                'email' => $recipient['email'],
+                'name' => $recipient->name ?? null,
+                'email' => $recipient->email,
             ]);
         }
     }

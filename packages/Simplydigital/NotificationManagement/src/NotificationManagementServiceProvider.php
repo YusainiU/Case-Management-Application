@@ -2,11 +2,12 @@
 
 namespace SimplyDigital\NotificationManagement;
 
-use Illuminate\Mail\Events\MessageSending;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Simplydigital\NotificationManagement\Notifications\Services\NotificationService;
-use Symfony\Component\Mime\Address;
+use Livewire\Livewire;
+use Simplydigital\NotificationManagement\Livewire\Admin\QueuedMailJobs;
+use Simplydigital\NotificationManagement\Notifications\Services\RegisterEmailListenerService;
+
 
 
 class NotificationManagementServiceProvider extends ServiceProvider
@@ -20,11 +21,25 @@ class NotificationManagementServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         // Load views with notification namespace
-        $this->loadViewsFrom(__DIR__.'/Notifications/Templates', 'notification');
+        $this->loadViewsFrom(
+           __DIR__.'/Notifications/Templates', 
+           'notification'
+        );
+
+        $this->loadViewsFrom(
+            __DIR__.'/../resources/views',
+            'notification-management'
+        );
+
+        Livewire::component(
+            'notification-management.admin.queued-mail-jobs',
+            QueuedMailJobs::class
+        );        
 
         $this->registerServices();
 
-        $this->registerListener();
+        //Email logging diagnostic
+        RegisterEmailListenerService::registerListener();
 
     }
 
@@ -35,34 +50,6 @@ class NotificationManagementServiceProvider extends ServiceProvider
         }
     }
 
-    public function registerListener()
-    {
 
-        Event::listen(MessageSending::class, function (MessageSending $event) {
-
-            $message = $event->message;
-
-            logger()->info('MessageSending', [
-                'subject' => $message->getSubject(),
-                'from' => collect($message->getFrom())->map(fn (Address $a) => [
-                    'address' => $a->getAddress(),
-                    'name' => $a->getName(),
-                ])->all(),
-                'to' => collect($message->getTo())->map(fn (Address $a) => [
-                    'address' => $a->getAddress(),
-                    'name' => $a->getName(),
-                ])->all(),
-                'cc' => collect($message->getCc())->map(fn (Address $a) => [
-                    'address' => $a->getAddress(),
-                    'name' => $a->getName(),
-                ])->all(),
-                'bcc' => collect($message->getBcc())->map(fn (Address $a) => [
-                    'address' => $a->getAddress(),
-                    'name' => $a->getName(),
-                ])->all(),
-            ]);
-
-        });
-    }
 
 }

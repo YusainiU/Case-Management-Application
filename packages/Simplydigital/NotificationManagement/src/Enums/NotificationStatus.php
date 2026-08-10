@@ -10,6 +10,8 @@ enum NotificationStatus: string
 
     case Queued = 'queued';
 
+    case Queue = 'queue';
+
     case Sending = 'sending';
 
     case Sent = 'sent';
@@ -47,7 +49,6 @@ enum NotificationStatus: string
             self::Failed,
             self::Cancelled,
             self::Expired => true,
-
             default => false,
 
         };
@@ -60,6 +61,7 @@ enum NotificationStatus: string
             self::Sent => 'success',
             self::Failed => 'danger',
             self::Queued => 'warning',
+            self::Queue => 'warning',
             self::Sending => 'info',
             default => 'secondary',
         };
