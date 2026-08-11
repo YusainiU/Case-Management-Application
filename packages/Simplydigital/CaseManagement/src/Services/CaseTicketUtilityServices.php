@@ -6,16 +6,15 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Simplydigital\CaseManagement\Enums\CaseState;
-use Simplydigital\CaseManagement\Mail\DefaultEmail;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\SlaTaskPause;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
-use Simplydigital\CaseManagement\Notifications\DefaultNotification;
 use Simplydigital\CaseManagement\Repositories\CaseRepository;
+use Simplydigital\CaseManagement\Services\EmailService;
+
 
 class CaseTicketUtilityServices
 {
@@ -30,13 +29,16 @@ class CaseTicketUtilityServices
 
     private CaseUserServices $userServices;
      
-    private SLALoggerService $logger;    
+    private SLALoggerService $logger;
+    
+    private EmailService $emailService;    
 
     public function __construct(?CaseRepository $caseRepository = null)
     {
         $this->caseRepository = $caseRepository ?? app()->make(CaseRepository::class);
         $this->caseRetrieveTicketStatus = app()->make(CaseRetrieveTicketStatus::class);
         $this->userServices = app()->make(CaseUserServices::class);
+        $this->emailService = app()->make(EmailService::class);
         $this->setCaseLogAdministrationService(app()->make(CaseLogAdministrationService::class));
         $this->setSLACalculationService(app()->make(SLACalculationService::class));
         $this->logger = $logger ?? app()->make(SLALoggerService::class);
@@ -231,6 +233,10 @@ class CaseTicketUtilityServices
             $logText = $logAdmin->buildSlaTaskCreatedText($task);
             $logType = config('case-management.logs.type.sla_tasks');
             $logAdmin->createSystemLog($ticket, $logText, $logType);
+
+            //Send Email
+            $this->emailService->caseCreated($ticket);
+            
         }
 
         return $ticket;
@@ -455,52 +461,12 @@ class CaseTicketUtilityServices
             $log = $logAdmin->createSystemLog($ticket, $logText, $logType);
             if ($data['emailResolution']) {
                 // Email Resolution Log to customer
-                $this->sendProgressNotification($ticket, $log, $logText);
                 $log->notification_sent_at = date('Y-m-d H:i:s', time());
                 $log->save();
             }
         }
 
         return $result;
-    }
-
-    private function sendProgressNotification(tickets $ticket, TaskLogs $taskLog, string $log)
-    {
-
-        $from = Auth::user()->name;
-        $title = "Progress Log ( $ticket->ticket_number ) - $ticket->short_description";
-        $email = '';
-        $usr = '';
-        if ($ticket->raised_by_user) {
-            $usr = $ticket->raised_by_user;
-            $user = $ticket->raisedByUser;
-            $email = $user->customerUser->email;
-            $message['from'] = "From: $from";
-            $message['title'] = "Subject: $title";
-            $message['greeting'] = "For attention: $usr";
-            $message['content'] = $log;
-            $message['datetime'] = 'Timestamp: '.date('d-m-Y H:s', time());
-            $user->notify(new DefaultNotification($message));
-        }
-        if ($ticket->raised_by_nonuser && $ticket->contact_email) {
-            $email = $ticket->contact_email;
-            $usr = $ticket->raised_by_nonuser;
-            $data['name'] = $usr;
-            $data['subject'] = $title;
-            $data['title'] = $title;
-            $data['message'] = $log;
-            Mail::to($email)->send(new DefaultEmail($data));
-        }
-        if ($email && $usr) {
-            // Create Log
-            $logAdmin = $this->caseLogAdministrationService;
-            $logText = $logAdmin->buildProgressEmailLog($taskLog, $usr);
-            $log = $logAdmin->createSystemLog($ticket, $logText);
-
-            return true;
-        }
-
-        return false;
     }
 
     public function setAssignedTo(tickets $ticket, int|string|null $userId)

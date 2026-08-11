@@ -14,9 +14,14 @@ use Illuminate\Support\Facades\Route;
 
 class NotificationManagementServiceProvider extends ServiceProvider
 {
-    private array $services = [
-        'notification-services' => NotificationService::class,
-    ];
+    
+    public function register(): void
+    {
+        $this->app->singleton(
+            NotificationService::class,
+            fn ($app) => new NotificationService()
+        );
+    }    
 
     public function boot(): void
     {
@@ -27,20 +32,11 @@ class NotificationManagementServiceProvider extends ServiceProvider
 
         $this->loadViews();
 
-        $this->registerServices();
-
         $this->loadRoutes();
 
         //Email logging diagnostic
         //RegisterEmailListenerService::registerListener();
 
-    }
-
-    public function registerServices()
-    {
-        foreach ($this->services as $key => $service) {
-            $this->app->singleton($key, fn () => new $service);
-        }
     }
 
     public function loadMigrations()
