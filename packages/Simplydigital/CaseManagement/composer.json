@@ -27,7 +27,8 @@
         "spatie/laravel-activitylog": "*",
         "spatie/laravel-permission": "*",
         "simplydigital/usermanagement": "*",
-        "simplydigital/engineermanagement": "*"    
+        "simplydigital/engineermanagement": "*",    
+        "simplydigital/notificationmanagement": "*"
     },    
     "authors": [
         {
