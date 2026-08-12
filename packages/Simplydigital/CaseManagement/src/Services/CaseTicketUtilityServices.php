@@ -488,6 +488,7 @@ class CaseTicketUtilityServices
             $logAdmin = $this->caseLogAdministrationService;
             $logText = $logAdmin->buildAssignedToText($ticket, $user);
             $logAdmin->createSystemLog($ticket, $logText);
+            $this->emailService->caseAssignment($ticket);
         }
 
         return $result;
@@ -895,6 +896,9 @@ class CaseTicketUtilityServices
                     ->format('d-m-Y H:i'));
             $this->caseLogAdministrationService->createSystemLog($ticket, $logText, $type);
 
+            //Send Email to Customer
+            $this->emailService->caseResolved($ticket);
+
         }
 
         return $updated;
@@ -910,6 +914,7 @@ class CaseTicketUtilityServices
         $logAdmin = $this->caseLogAdministrationService;
         $stateTicket = CaseState::Closed->value;
         $logType = config('case-management.logs.type.completed');
+
 
         $closedAt = Carbon::parse($data['closed_datetime']);
         $closedAtTS = $closedAt->timestamp;
@@ -934,6 +939,8 @@ class CaseTicketUtilityServices
 
             $logText = $logAdmin->buildCompletedText($closedAt);
             $logAdmin->createSystemLog($ticket, $logText, $logType);
+
+            $this->emailService->caseClosed($ticket);
 
         }
 
