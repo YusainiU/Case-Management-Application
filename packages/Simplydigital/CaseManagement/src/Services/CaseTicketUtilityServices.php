@@ -635,7 +635,7 @@ class CaseTicketUtilityServices
         return $saved;
     }
 
-    public function buildProgressLog(tickets $ticket, ?string $logText)
+    public function buildProgressLog(tickets $ticket, ?string $logText, bool $notifyCustomer=false)
     {
         if (! $logText) {
             return false;
@@ -645,9 +645,18 @@ class CaseTicketUtilityServices
         $service = $this->caseLogAdministrationService;
         $logText = $service->buildProgressLogText($logText, $currentDate, $currentUser);
         $logType = Config('case-management.logs.type.internal_update');
+        $log = $service->createSystemLog($ticket, $logText, $logType);
+        if($notifyCustomer) {
+            //Send Email Notification
+            $this->emailLog($log);
+        }
+        return $log;        
 
-        return $service->createSystemLog($ticket, $logText, $logType);
+    }
 
+    public function emailLog(TaskLogs $log)
+    {
+        $this->emailService->notifyCustomer($log);
     }
 
     public function respondToComment(int $logId, string $respond)

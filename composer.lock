@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5750409e516fb8b357e593b179284547",
+    "content-hash": "6025ad18d39bbd172cff1bc241e62f83",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4457,6 +4457,46 @@
                 }
             ],
             "description": "Engineer Management Module for Simply Digital",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "simplydigital/fileupload-management",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/Simplydigital/FileUploadManagement",
+                "reference": "a85f783aedbda1865bb0c4c83bbdc69213cb5591"
+            },
+            "require": {
+                "illuminate/contracts": "^11.0|^12.0",
+                "illuminate/database": "^10.0|^11.0|^12.0",
+                "illuminate/filesystem": "^11.0|^12.0",
+                "illuminate/http": "^11.0|^12.0",
+                "illuminate/support": "^11.0|^12.0",
+                "illuminate/view": "^10|^11|^12.0",
+                "livewire/livewire": "^3.5.4",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Simplydigital\\FileUploadManagement\\Providers\\FileUploadManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Simplydigital\\FileUploadManagement\\": "src/"
+                }
+            },
+            "license": [
+                "proprietary"
+            ],
+            "description": "File upload and storage management package for Simplydigital applications.",
             "transport-options": {
                 "symlink": true,
                 "relative": true

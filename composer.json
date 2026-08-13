@@ -19,6 +19,7 @@
         "livewire/volt": "^1.7.0",
         "simplydigital/casemanagement": "dev-main",
         "simplydigital/engineermanagement": "dev-main",
+        "simplydigital/fileupload-management": "*",
         "simplydigital/notificationmanagement": "@dev",
         "simplydigital/usermanagement": "dev-main",
         "spatie/laravel-activitylog": "^5.0",
@@ -65,7 +66,14 @@
             "options": {
                 "symlink": true
             }
-        }        
+        },
+        {
+            "type": "path",
+            "url": "packages/Simplydigital/FileUploadManagement",
+            "options": {
+                "symlink": true
+            }
+        }                
     ],
     "autoload": {
         "psr-4": {

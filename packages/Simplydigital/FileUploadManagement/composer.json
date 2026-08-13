@@ -1,0 +1,28 @@
+{
+    "name": "simplydigital/fileupload-management",
+    "description": "File upload and storage management package for Simplydigital applications.",
+    "type": "library",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Simplydigital\\FileUploadManagement\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Simplydigital\\FileUploadManagement\\Providers\\FileUploadManagementServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": "^8.2",
+        "illuminate/database": "^10.0|^11.0|^12.0",
+        "illuminate/view": "^10|^11|^12.0",
+        "livewire/livewire": "^3.5.4",        
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/filesystem": "^11.0|^12.0",
+        "illuminate/http": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0"
+    }
+}

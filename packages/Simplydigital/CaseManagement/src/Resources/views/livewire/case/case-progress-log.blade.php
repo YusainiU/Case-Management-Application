@@ -49,8 +49,18 @@
 
             <div class="flex flex-col gap-3">
                 <x-casemanagement::form-elements.textarea model="logText" hint="Progress Log" />
-                <x-casemanagement::form-elements.checkbox label="Urgent Attention" model="urgentAttention"
-                    name="Urgent Attention" />
+                <div class="flex flex-row gap-3">
+                    <x-casemanagement::form-elements.checkbox 
+                        label="Urgent Attention" 
+                        model="urgentAttention" 
+                        name="Urgent Attention" 
+                    />
+                    <x-casemanagement::form-elements.checkbox 
+                        label="Email Customer Contact" 
+                        model="notifyCustomer" 
+                        name="Email Customer Contact" 
+                    />
+                </div>
                 <div class="flex flex-row gap-3">
                     <x-casemanagement::form-elements.button-primary action="{{ $action }}"
                         label="{{ $label }}" />

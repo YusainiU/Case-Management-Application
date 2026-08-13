@@ -2,13 +2,15 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
+use League\Flysystem\FilesystemReader;
 use Simplydigital\CaseManagement\Enums\CustomerChildTypes;
 use Simplydigital\CaseManagement\Enums\CustomerPrimaryTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
+use Simplydigital\FileUploadManagement\Contracts\FileOwner;
 
-class Customer extends Model
+class Customer extends Model implements FileOwner
 {
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
     use HasFactory;
@@ -54,6 +56,16 @@ class Customer extends Model
             $model->number = CaseManagementUtilityServices::generateNumber($prefix, Customer::class);
         });
     }
+
+    public function getFileOwnerType(): string
+    {
+        return 'Customers';
+    }
+
+    public function getFileOwnerIdentifier(): string
+    {
+        return $this->customer_number;
+    }    
     
     public function parentCompany()
     {

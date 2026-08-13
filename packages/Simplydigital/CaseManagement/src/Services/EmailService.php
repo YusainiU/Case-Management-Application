@@ -3,6 +3,7 @@
 namespace Simplydigital\CaseManagement\Services;
 
 use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\NotificationManagement\Notifications\DTO\EmailRecipient;
 use Simplydigital\NotificationManagement\Notifications\DTO\NotificationData;
 use Simplydigital\NotificationManagement\Notifications\DTO\NotificationViewData;
@@ -262,6 +263,67 @@ class EmailService
             createdBy: $case->createdBy,
         );
         $this->notificationService->send($data);            
+    }
+
+    public function notifyCustomer(TaskLogs $log)
+    {
+        $case = $log->ticket;
+        $caseNumber = $case->number;
+        $logNumber = $log->number;
+        $logtext = $log->description;
+        $loggedBy = Auth::user()->name;
+        $loggedByEmail= Auth::user()->email;         
+        $customerContact = [];
+        $cc = [];
+        $bcc = [];
+        if ($case->raised_by_user) {
+            $customerContact = [
+                new EmailRecipient(
+                    email: $case->raisedByUser->customerUser->email,
+                    name: $raisedByName = $case->raisedByUser->customerUser->name
+                ),
+            ];
+
+        } elseif ($case->raised_by_nonuser && $case->contact_email) {
+            $customerContact = [
+                new EmailRecipient(
+                    email: $raisedBy = $case->contact_email,
+                    name: $raisedByName = $case->contact_email
+                ),
+            ];
+        }
+
+        if(!\count($customerContact)) return false;
+        
+        $greeting = "Progress Notification for case # {$caseNumber}";
+        $subject = "Progress Notification";
+        
+        $payload = new NotificationViewData(
+            subject: $subject,
+            greeting: $greeting,
+            intro: "Case short description {$case->short_description}",
+            details: [
+                'Site' => $case->customer->name,
+                'Progress created By' => $loggedBy,
+                'Our Reference' => $case->number,
+                'Your Reference' => $case->customer_reference,
+                'Created At' => $log->created_at->format('d-m-Y H:i'),
+                'Log Ref #' => $logNumber,
+            ],
+            body: "Progress Log: {$logtext}",
+            actionText: 'Open Service Log',            
+        );
+        $data = new NotificationData(
+            subject: $subject,
+            to: $customerContact,
+            viewData: $payload,
+            trigger: $case,
+            cc: $cc,
+            bcc: $bcc,
+            createdBy: $case->createdBy,
+        );
+         $this->notificationService->send($data);  
+
     }
 
 }

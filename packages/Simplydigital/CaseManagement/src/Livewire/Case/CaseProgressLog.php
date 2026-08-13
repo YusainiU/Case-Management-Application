@@ -21,6 +21,7 @@ class CaseProgressLog extends ModalComponent
     public ?TaskLogs $respondToLog = null; 
     public ?int $logToDelete = null;
     public ?TaskLogs $logToEdit = null;
+    public bool $notifyCustomer = false;
 
     public function logService(): CaseLogAdministrationService
     {
@@ -42,7 +43,7 @@ class CaseProgressLog extends ModalComponent
         $util = $this->utilityService();
         $text = trim($this->logText);
         if($text) {
-            $result = $util->buildProgressLog($this->case, $text);
+            $result = $util->buildProgressLog($this->case, $text, $this->notifyCustomer);
             if($result){
                 $this->message = "Added new progress log";            
                 if($this->urgentAttention){
@@ -86,7 +87,10 @@ class CaseProgressLog extends ModalComponent
             if($this->urgentAttention) {
                 $util = $this->utilityService();
                 $util->requireAttention($this->logToEdit, $this->urgentAttention);
-            }            
+            }
+            if($this->notifyCustomer){
+                $this->utilityService()->emailLog($this->logToEdit);
+            }           
         }
         $this->case->refresh();
         $this->cancelRespond();
@@ -119,6 +123,9 @@ class CaseProgressLog extends ModalComponent
         if($respond && $this->urgentAttention) {
             $util->requireAttention($respond, $this->urgentAttention);
         }
+        if($this->notifyCustomer) {
+            $util->emailLog($respond);
+        }
         $this->cancelRespond();
         $this->case->refresh();
     }
@@ -130,6 +137,7 @@ class CaseProgressLog extends ModalComponent
             'respondToComment',
             'logText',
             'urgentAttention',
+            'notifyCustomer',
             'message',
             'logToDelete',
             'logToEdit',

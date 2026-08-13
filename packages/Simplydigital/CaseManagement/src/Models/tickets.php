@@ -15,13 +15,23 @@ use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Simplydigital\FileUploadManagement\Contracts\FileOwner;
 
-class tickets extends Model
+class tickets extends Model implements FileOwner
 {
 
     use SoftDeletes;
     use LogsActivity;
+
+    public function getFileOwnerType(): string
+    {
+        return 'Cases';
+    }
+
+    public function getFileOwnerIdentifier(): string
+    {
+        return $this->case_number;
+    }    
 
     protected static function getActivitylogOptions(): LogOptions
     {
