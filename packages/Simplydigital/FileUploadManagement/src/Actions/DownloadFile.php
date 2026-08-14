@@ -3,7 +3,7 @@
 namespace Simplydigital\FileUploadManagement\Actions;
 
 use Illuminate\Http\Response;
-use Illuminate\Http\StreamedResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Simplydigital\FileUploadManagement\Exceptions\FileUploadException;
 use Simplydigital\FileUploadManagement\Models\UploadedFile;
 use Simplydigital\FileUploadManagement\Services\FileUploadService;

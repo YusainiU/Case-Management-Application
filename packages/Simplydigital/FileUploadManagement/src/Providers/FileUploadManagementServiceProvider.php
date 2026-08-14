@@ -15,10 +15,6 @@ class FileUploadManagementServiceProvider extends ServiceProvider
     public function register(): void
     {
         
-        // $this->mergeConfigFrom(
-        //     __DIR__ . '/../../config/fileupload.php',
-        //     'fileupload'
-        // );
         
         $this->publishes([
             __DIR__ . '/../../config/fileupload.php' => config_path('fileupload.php'),
@@ -57,8 +53,8 @@ class FileUploadManagementServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(
             __DIR__ . '/../Resources/views',
-            'fileupload'
-        );
+            'fileupload-management'
+        );        
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
