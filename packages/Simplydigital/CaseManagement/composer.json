@@ -27,7 +27,8 @@
         "spatie/laravel-permission": "*",
         "simplydigital/usermanagement": "*",
         "simplydigital/engineermanagement": "*",    
-        "simplydigital/notificationmanagement": "*"
+        "simplydigital/notificationmanagement": "*",
+        "simplydigital/fileupload-management":"*"
     },    
     "authors": [
         {

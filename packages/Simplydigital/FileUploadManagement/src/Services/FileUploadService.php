@@ -76,7 +76,7 @@ class FileUploadService
                 'path' => $storedPath,
 
                 'original_name' => $data->originalName(),
-                'file_name' => $storedName,
+                'stored_name' => $storedName,
 
                 'mime_type' => $data->mimeType(),
                 'extension' => $data->extension(),

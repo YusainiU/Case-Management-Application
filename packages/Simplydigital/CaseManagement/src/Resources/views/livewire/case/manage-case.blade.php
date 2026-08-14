@@ -62,7 +62,11 @@
 
             @if($tabHeaders[$this->selectedTab] == $tabHeaders['close'])
                 <livewire:close-and-resolve-case :case="$case" />
-            @endif            
+            @endif
+            
+            @if($tabHeaders[$this->selectedTab] == $tabHeaders['uploaded'])
+                @include('casemanagement::components.form-elements.upload-file')
+            @endif
 
         </x-casemanagement::page-elements.tab>
 

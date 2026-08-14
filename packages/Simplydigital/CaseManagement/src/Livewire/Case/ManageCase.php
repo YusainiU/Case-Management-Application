@@ -2,15 +2,26 @@
 
 namespace Simplydigital\CaseManagement\Livewire\Case;
 
+use Illuminate\Http\UploadedFile;
+use Livewire\WithFileUploads;
 use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
+use Simplydigital\CaseManagement\Services\FileUploadService;
+use Simplydigital\FileUploadManagement\Exceptions\FileUploadException;
 
 class ManageCase extends ModalComponent
 {
+    use WithFileUploads;
+
     public ?tickets $case = null;
+
+    public ?UploadedFile $attachment = null;
+
     public ?string $message = null;
+
     public bool $caseClosed = false;
+
     public array $tabHeaders = [
         'sla' => 'SLA',
         'status' => 'SLA Status',
@@ -19,7 +30,8 @@ class ManageCase extends ModalComponent
         'progress' => 'Progress',
         'visit' => 'Visit',
         'close' => 'Close & Resolve',
-        'tracker' => 'Changes Tracker'
+        'tracker' => 'Changes Tracker',
+        'uploaded' => 'Upload Files',
     ];
 
     public string $selectedTab = 'sla';
@@ -27,7 +39,6 @@ class ManageCase extends ModalComponent
     /**
      * @var array<string, string>
      */
-
     protected $listeners = [
         'closeManageSlaModal' => 'closeManageSlaModal',
         'reloadCaseStatus' => '$refresh',
@@ -36,13 +47,13 @@ class ManageCase extends ModalComponent
 
     public function mount()
     {
-        if($this->case){
-            if($this->case->closed_datetime) {
+        if ($this->case) {
+            if ($this->case->closed_datetime) {
                 $this->tabHeaders['close'] = 'Reopen Case';
                 $this->caseClosed = true;
             }
-        }   
-    }    
+        }
+    }
 
     public function resetTabs()
     {
@@ -95,6 +106,58 @@ class ManageCase extends ModalComponent
             'title' => $title,
             'description' => $this->case->customer()->first()->name ?? null,
         ];
+    }
+
+    public function getAttachmentsProperty()
+    {
+        if (! $this->case) {
+            return collect();
+        }
+
+        return app(FileUploadService::class)
+            ->files($this->case->number);
+    }
+
+    public function uploadAttachment(): void
+    {
+        $this->validate([
+            'attachment' => [
+                'required',
+                'file',
+                'max:10240',
+            ],
+        ]);
+
+        if (! $this->case) {
+            $this->addError(
+                'attachment',
+                'A case must be selected before uploading a file.'
+            );
+            return;
+        }
+
+        try {
+            app(FileUploadService::class)->upload(
+                caseNumber: $this->case->number,
+                file: $this->attachment,
+                uploadedBy: auth()->id(),
+            );
+
+            $this->reset('attachment');
+
+            $this->dispatch('file-uploaded');
+
+            session()->flash(
+                'file-upload-success',
+                'File uploaded successfully.'
+            );
+        } catch (FileUploadException $exception) {
+            report($exception);
+            $this->addError(
+                'attachment',
+                'The file could not be uploaded.'
+            );
+        }
     }
 
     public function render()

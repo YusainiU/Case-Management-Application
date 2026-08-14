@@ -10,6 +10,13 @@
 <div>
     <button 
         type="{{ $type ?? 'button' }}" 
+        wire:click="{{ $attributes->get('action') ?? '' }}"
+        @if($attributes->get('loadingAttributeFalse'))
+            wire:loading.attr='disabled'
+        @endif
+        @if($attributes->get('loadingTarget'))
+            wire:target='{{ $attributes->get('loadingTarget') }}'
+        @endif
         class="
             {{ $px }} 
             {{ $py }} 
@@ -25,9 +32,16 @@
             hover:bg-blue-600 
             transition-colors 
             duration-300"
-
-        wire:click="{{ $attributes->get('action') ?? '' }}"
-    >    
-        {{ $attributes->get('label') }}
+    >
+        @if($attributes->get('loadingTarget'))
+            <span wire:loading.remove wire:target="{{ $attributes->get('loadingTarget') }}">
+                Upload
+            </span>
+            <span wire:loading wire:target="{{ $attributes->get('loadingTarget') }}">
+                Saving...
+            </span>        
+        @else
+            {{ $attributes->get('label') }}
+        @endif
     </button>
 </div>
