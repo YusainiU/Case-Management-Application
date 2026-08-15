@@ -62,6 +62,9 @@
         @if('outstandingCases' === $selectedTab)
             <livewire:view-cases :customerId="$customerId" />
         @endif
+        @if('upload' === $selectedTab)
+            <livewire:customer-files :customer="$customer"/>
+        @endif
 
     </div>
 

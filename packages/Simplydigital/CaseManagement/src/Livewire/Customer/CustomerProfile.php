@@ -2,9 +2,7 @@
 
 namespace Simplydigital\CaseManagement\Livewire\Customer;
 
-use Illuminate\Queue\Listener;
 use Livewire\Component;
-use PSpell\Config;
 use Simplydigital\CaseManagement\Models\Customer;
 
 class CustomerProfile extends Component

@@ -9,6 +9,7 @@ use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\FileUploadService;
 use Simplydigital\FileUploadManagement\Exceptions\FileUploadException;
+use Simplydigital\FileUploadManagement\Models\UploadedFile as UploadedAttachment;
 
 class ManageCase extends ModalComponent
 {
@@ -115,7 +116,17 @@ class ManageCase extends ModalComponent
         }
 
         return app(FileUploadService::class)
-            ->files($this->case->number);
+            ->files($this->case->number, 'Cases');
+    }
+
+    public function removeAttachment(UploadedAttachment $attachment)
+    {
+        return app(FileUploadService::class)->delete($attachment);
+    }
+
+    public function downloadAttachment(UploadedAttachment $attachment)
+    {
+        return app(FileUploadService::class)->download($attachment);
     }
 
     public function uploadAttachment(): void
@@ -138,7 +149,8 @@ class ManageCase extends ModalComponent
 
         try {
             app(FileUploadService::class)->upload(
-                caseNumber: $this->case->number,
+                ownerType:'Cases',
+                ownerNumber: $this->case->number,
                 file: $this->attachment,
                 uploadedBy: auth()->id(),
             );

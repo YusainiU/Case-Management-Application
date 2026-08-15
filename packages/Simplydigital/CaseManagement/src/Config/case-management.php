@@ -53,6 +53,7 @@ return [
         'contacts' => 'Contacts',
         'childs' => 'Child Companies',
         'sla' => 'Service Level Agreement',
+        'upload' => 'Uploaded Files',
     ],
 
     /*

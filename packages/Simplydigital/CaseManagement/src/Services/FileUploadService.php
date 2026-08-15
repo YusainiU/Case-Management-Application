@@ -18,7 +18,15 @@ class FileUploadService
         private readonly DeleteFile $deleteFile,
         private readonly DownloadFile $downloadFile,
         private readonly MoveFile $moveFile,
-    ) {
+    ) {}
+
+    private function identifyType(string $type): FileOwnerType
+    {
+        return match($type) {
+            'Cases' => FileOwnerType::CASE,
+            'Customers' => FileOwnerType::CUSTOMER,
+            'Assets' => FileOwnerType::ASSET,
+        };
     }
 
     /**
@@ -27,14 +35,17 @@ class FileUploadService
      * @throws FileUploadException
      */
     public function upload(
-        string $caseNumber,
+        string $ownerType,
+        string $ownerNumber,
         HttpUploadedFile $file,
         ?int $uploadedBy = null,
         array $metadata = [],
     ): UploadedFile {
+
+        $type = $this->identifyType($ownerType);
         return ($this->uploadFile)(
-            ownerType: FileOwnerType::CASE,
-            ownerIdentifier: $caseNumber,
+            ownerType: $type,
+            ownerIdentifier: $ownerNumber,
             file: $file,
             uploadedBy: $uploadedBy,
             metadata: $metadata,
@@ -89,11 +100,13 @@ class FileUploadService
      * @return \Illuminate\Database\Eloquent\Collection<int, UploadedFile>
      */
     public function files(
-        string $caseNumber,
+        string $ownerNumber,
+        string $ownerType,
     ) {
+        $type = $this->identifyType($ownerType);
         return UploadedFile::query()
-            ->where('owner_type', FileOwnerType::CASE->value)
-            ->where('owner_identifier', $caseNumber)
+            ->where('owner_type', $type->value)
+            ->where('owner_identifier', $ownerNumber)
             ->latest()
             ->get();
     }

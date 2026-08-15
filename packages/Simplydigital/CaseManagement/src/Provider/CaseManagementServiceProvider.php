@@ -25,7 +25,8 @@ use Simplydigital\CaseManagement\Livewire\Customer\{
     CustomerContacts,
     CreateCustomerContact,
     UpdateCustomerContact,
-    CustomerSummary
+    CustomerSummary,
+    CustomerFiles,    
 };
 
 use Simplydigital\CaseManagement\Livewire\Asset\{
@@ -113,6 +114,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         'create-site-visit' => CreateSiteVisit::class,
         'close-and-resolve-case' => CloseAndResolveCase::class,
         'dashboard' => Dashboard::class,
+        'customer-files' => CustomerFiles::class,
     ];
 
     private array $services = [

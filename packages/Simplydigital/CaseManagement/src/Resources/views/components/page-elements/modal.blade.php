@@ -8,7 +8,7 @@
     'confirmText' => 'Confirm',
     'showFooter' => true,
     'showConfirm' => true,
-    'bgColor' => 'bg-gray-100',
+    'bgColor' => '!bg-gray-100',
     'borderColor' => 'border-gray-400',
     'border' => 'border rounded-lg shadow-xl',
     'width' => 'w-full',
