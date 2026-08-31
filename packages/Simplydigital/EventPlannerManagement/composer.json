@@ -1,0 +1,35 @@
+{
+    "name": "simplydigital/eventplannermanagement",
+    "description": "Event Planner Management Module for Simply Digital",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Simplydigital\\EventPlannerManagement\\": "src/",
+            "Simplydigital\\EventPlannerManagement\\Database\\Factories\\": "database/factories/",
+            "Simplydigital\\EventPlannerManagement\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Simplydigital\\EventPlannerManagement\\Provider\\EventPlannerManagementServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": ">=8.2",
+        "illuminate/database": "^10.0|^11.0|^12.0",
+        "illuminate/view": "^10|^11|^12.0",
+        "livewire/livewire": "^3.5.4",
+        "illuminate/support": "^12.0",
+        "simplydigital/engineermanagement": "*"
+    },
+    "authors": [
+        {
+            "name": "YusainiU",
+            "email": "yusaini.usulludin@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
