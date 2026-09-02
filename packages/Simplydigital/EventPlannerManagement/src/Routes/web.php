@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Simplydigital\EventPlannerManagement\Middleware\RestrictInternalUserOnly;
-use Simplydigital\EventPlannerManagement\Livewire\Planner;
+use Simplydigital\EventPlannerManagement\Http\Controllers\PlannerController;
 use Illuminate\Auth\Middleware\Authenticate;
 
 const AUTH_MIDDLEWARE = Authenticate::class; // Define constant
@@ -12,6 +12,14 @@ Route::middleware([
         RestrictInternalUserOnly::class,
     ])
     ->prefix('eventManager')
-    ->group(function() {
-        Route::get('/eventmanagement/planner', Planner::class)->name('eventmanagement.view');
-    });
+    ->group(function () {
+        // Route::get(
+        //     '/',
+        //     fn () => view('eventplanner::livewire.planner')
+        // )->name('eventmanagement.view');
+
+        Route::get(
+            '/events',
+            [PlannerController::class, 'index']
+        )->name('eventmanagement.view');
+    });    

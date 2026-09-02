@@ -2,16 +2,12 @@
 
 namespace Simplydigital\EventPlannerManagement\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
+use Illuminate\View\View;
 
-class PlannerController extends Controller
+class PlannerController
 {
-    public function index(Request $request)
-    {
-        return view('eventplanner::livewire.planner', [
-            'view' => $request->query('view', config('planner.default_view', 'week')),
-            'events' => [],
-        ]);
+    public function index(): View 
+    { 
+        return view('eventplanner::planner'); 
     }
 }

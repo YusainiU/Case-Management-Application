@@ -2,80 +2,63 @@
 
 namespace Simplydigital\CaseManagement\Provider;
 
+use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Database\Query\Builder;
+use Simplydigital\CaseManagement\Events\CasePlannerEventProvider;
+use Simplydigital\CaseManagement\Events\SiteVisitEventProvider;
+use Simplydigital\CaseManagement\Events\SlaExpiryEventProvider;
+use Simplydigital\CaseManagement\Livewire\Asset\AssetProfile;
+use Simplydigital\CaseManagement\Livewire\Asset\CreateAsset;
+use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
+use Simplydigital\CaseManagement\Livewire\Case\CaseFieldChanges;
+use Simplydigital\CaseManagement\Livewire\Case\CaseProgressLog;
+use Simplydigital\CaseManagement\Livewire\Case\CaseSla;
+use Simplydigital\CaseManagement\Livewire\Case\CaseStatus;
+use Simplydigital\CaseManagement\Livewire\Case\CaseSummary;
+use Simplydigital\CaseManagement\Livewire\Case\CloseAndResolveCase;
+use Simplydigital\CaseManagement\Livewire\Case\CreateCase;
+use Simplydigital\CaseManagement\Livewire\Case\CreateSiteVisit;
+use Simplydigital\CaseManagement\Livewire\Case\Dashboard;
+use Simplydigital\CaseManagement\Livewire\Case\ManageCase;
+use Simplydigital\CaseManagement\Livewire\Case\ManageCaseSLA;
+use Simplydigital\CaseManagement\Livewire\Case\ViewCases;
+use Simplydigital\CaseManagement\Livewire\Case\ViewSiteVisit;
+use Simplydigital\CaseManagement\Livewire\Case\ViewSlaPause;
+use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
+use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomerContact;
+use Simplydigital\CaseManagement\Livewire\Customer\CustomerContacts;
+use Simplydigital\CaseManagement\Livewire\Customer\CustomerFiles;
+use Simplydigital\CaseManagement\Livewire\Customer\CustomerProfile;
+use Simplydigital\CaseManagement\Livewire\Customer\CustomerSummary;
+use Simplydigital\CaseManagement\Livewire\Customer\DeleteCustomer;
+use Simplydigital\CaseManagement\Livewire\Customer\UpdateCustomerContact;
+use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
+use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
+use Simplydigital\CaseManagement\Livewire\Product\ProductProfile;
+use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\CreateServiceLevelAgreement;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\CreateSlaImplementation;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ImplementationProfile;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ServiceLevelAgreementProfile;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewServiceLevelAgreement;
+use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewSlaImplementation;
+use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
+use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
+use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
-
-use Simplydigital\CaseManagement\Services\{
-    CaseManagementUtilityServices,
-    CaseTicketServices,
-    CaseCustomerServices,
-    CaseAssetServices,
-    CaseProductService,
-    CaseSupplierService
-};
-
-use Simplydigital\CaseManagement\Livewire\Customer\{
-    CreateCustomer,
-    ViewCustomers,
-    CustomerProfile,
-    DeleteCustomer,
-    CustomerContacts,
-    CreateCustomerContact,
-    UpdateCustomerContact,
-    CustomerSummary,
-    CustomerFiles,    
-};
-
-use Simplydigital\CaseManagement\Livewire\Asset\{
-    ViewAssets,
-    AssetProfile,
-    CreateAsset
-};
-
-use Simplydigital\CaseManagement\Livewire\Product\{
-    ViewProducts,
-    CreateProduct,
-    ProductProfile
-};
-
-use Simplydigital\CaseManagement\Livewire\Supplier\{
-    ViewSuppliers,
-    CreateSupplier,
-    SupplierProfile
-};
-
-use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\{
-    CreateServiceLevelAgreement,
-    ViewServiceLevelAgreement,
-    ServiceLevelAgreementProfile,
-    ViewSlaImplementation,
-    CreateSlaImplementation,
-    ImplementationProfile
-};
-
-use Simplydigital\CaseManagement\Livewire\Case\{
-    CaseFieldChanges,
-    ViewCases,
-    CreateCase,
-    CaseSummary,
-    CaseStatus,
-    CaseSla,
-    ManageCase,
-    ManageCaseSLA,
-    CaseProgressLog,
-    ViewSlaPause,
-    ViewSiteVisit,
-    CreateSiteVisit,
-    CloseAndResolveCase,
-    Dashboard,
-};
+use Simplydigital\CaseManagement\Services\CaseAssetServices;
+use Simplydigital\CaseManagement\Services\CaseCustomerServices;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
+use Simplydigital\CaseManagement\Services\CaseProductService;
+use Simplydigital\CaseManagement\Services\CaseSupplierService;
+use Simplydigital\CaseManagement\Services\CaseTicketServices;
+use Simplydigital\CaseManagement\View\Components\Icon;
+use Simplydigital\EventPlannerManagement\Facade\PlannerFacade;
 
 class CaseManagementServiceProvider extends ServiceProvider
 {
-
     private array $components = [
         'create-customer' => CreateCustomer::class,
         'view-customer' => ViewCustomers::class,
@@ -119,12 +102,12 @@ class CaseManagementServiceProvider extends ServiceProvider
 
     private array $services = [
         'case-management-utility-services' => CaseManagementUtilityServices::class,
-        'case-ticket-services'             => CaseTicketServices::class,
-        'case-customer-services'           => CaseCustomerServices::class,
-        'case-asset-services'              => CaseAssetServices::class,
-        'case-product-services'            => CaseProductService::class,
-        'case-supplier-services'           => CaseSupplierService::class,
-    ];    
+        'case-ticket-services' => CaseTicketServices::class,
+        'case-customer-services' => CaseCustomerServices::class,
+        'case-asset-services' => CaseAssetServices::class,
+        'case-product-services' => CaseProductService::class,
+        'case-supplier-services' => CaseSupplierService::class,
+    ];
 
     /**
      * Bootstrap services.
@@ -138,18 +121,64 @@ class CaseManagementServiceProvider extends ServiceProvider
         $this->publishResources();
         $this->registerLivewireComponents();
         $this->addCustomeHelper();
-        
+
     }
+
     /**
      * Register services.
      */
-
     public function addCustomeHelper()
     {
         Builder::macro('dumpRawSql', function () {
             dump($this->toRawSql());
+
             return $this;
-        });        
+        });
+    }
+
+    public function loadEventPlanner()
+    {
+        // if (class_exists(PlannerFacade::class)) {
+        //     PlannerFacade::registerProvider(
+        //         app(CasePlannerEventProvider::class)
+        //     );
+
+        //     PlannerFacade::registerProvider(
+        //         app(SlaExpiryEventProvider::class)
+        //     );
+
+        //     PlannerFacade::registerProvider(
+        //         app(SiteVisitEventProvider::class)
+        //     );
+        // }
+
+        // Debugging
+        logger()->info('CaseManagementServiceProvider booted');
+
+        if (! class_exists(
+            PlannerFacade::class
+        )) {
+            logger()->warning('EventPlannerManagement not available');
+
+            return;
+        }else{
+            logger()->info('EventPlannerManagement available');
+        }
+
+        logger()->info('Registering Case Planner providers');
+
+        PlannerFacade::registerProvider(
+            app(CasePlannerEventProvider::class)
+        );
+
+        PlannerFacade::registerProvider(
+            app(SlaExpiryEventProvider::class)
+        );
+
+        PlannerFacade::registerProvider(
+            app(SiteVisitEventProvider::class)
+        );
+
     }
 
     public function register(): void
@@ -161,14 +190,14 @@ class CaseManagementServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'casemanagement');
         $this->loadViewComponentsAs('casemanagement-ui', [
-            \Simplydigital\CaseManagement\View\Components\Icon::class,
+            Icon::class,
         ]);
     }
 
     public function loadRoutes()
-    {        
+    {
         Route::middleware('web')->group(__DIR__.'/../Routes/web.php');
-        Route::aliasMiddleware('restrict.internal.user', RestrictInternalUserOnly::class);   
+        Route::aliasMiddleware('restrict.internal.user', RestrictInternalUserOnly::class);
     }
 
     public function loadMigrations()
@@ -180,38 +209,34 @@ class CaseManagementServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../../database/factories' => database_path('factories/simplydigital/casemanagement'),
-        ], 'casemanagement-factories');        
+        ], 'casemanagement-factories');
     }
 
     public function publishConfig()
     {
         $this->publishes([
-            __DIR__ . '/../Config/case-management.php' => config_path('case-management.php'),
+            __DIR__.'/../Config/case-management.php' => config_path('case-management.php'),
         ], 'case-management-config');
-    } 
+    }
 
     public function publishResources()
     {
         $this->publishes([
-            __DIR__.'/../Resources/icons' => resource_path('Simplydigital/CaseManagement/icons')
-        ], 'simplydigital-casemanagement-resources');        
+            __DIR__.'/../Resources/icons' => resource_path('Simplydigital/CaseManagement/icons'),
+        ], 'simplydigital-casemanagement-resources');
     }
 
-
-        
     public function registerLivewireComponents()
     {
         foreach ($this->components as $name => $class) {
             Livewire::component($name, $class);
-        }          
+        }
     }
-    
+
     public function registerServices()
     {
         foreach ($this->services as $key => $service) {
-            $this->app->singleton($key, fn () => new $service());
-        }        
+            $this->app->singleton($key, fn () => new $service);
+        }
     }
-
-
 }

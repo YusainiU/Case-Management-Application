@@ -4,6 +4,7 @@ namespace Simplydigital\EventPlannerManagement\DTO;
 
 use Carbon\CarbonInterface;
 use InvalidArgumentException;
+use Simplydigital\EventPlannerManagement\Services\PlannerEventTypeService;
 
 final class PlannerEvent
 {
@@ -25,6 +26,35 @@ final class PlannerEvent
         }
     }
 
+    public function getColour(): ?string
+    {
+        if ($this->colour !== null) {
+            return $this->colour;
+        }
+
+        return app(
+            PlannerEventTypeService::class
+        )->colour($this->type);
+    }
+
+    public function getIcon(): ?string
+    {
+        if ($this->icon !== null) {
+            return $this->icon;
+        }
+
+        return app(
+            PlannerEventTypeService::class
+        )->icon($this->type);
+    }
+
+    public function getLabel(): string
+    {
+        return app(
+            PlannerEventTypeService::class
+        )->label($this->type);
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -39,9 +69,31 @@ final class PlannerEvent
             'type' => $this->type,
             'url' => $this->url,
             'description' => $this->description,
-            'colour' => $this->colour,
-            'icon' => $this->icon,
             'metadata' => $this->metadata,
+            'colour' => $this->getColour(),
+            'icon' => $this->getIcon(),            
+        ];
+    }
+
+    public function toFullCalendar(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'start' => $this->start
+                ->toIso8601String(),
+            'end' => $this->end
+                ?->toIso8601String(),
+            'allDay' => $this->allDay,
+            'url' => $this->url,
+            'backgroundColor' => $this->getColour(),
+            'borderColor' => $this->getColour(),
+            'extendedProps' => [
+                'type' => $this->type,
+                'description' => $this->description,
+                'icon' => $this->getIcon(),
+                'metadata' => $this->metadata,
+            ],
         ];
     }
 }

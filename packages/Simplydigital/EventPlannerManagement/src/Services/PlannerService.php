@@ -4,12 +4,19 @@ namespace Simplydigital\EventPlannerManagement\Services;
 
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
+use Simplydigital\EventPlannerManagement\Contracts\PlannerEventProvider;
 
 class PlannerService
 {
     public function __construct(
         protected PlannerEventProviderRegistry $registry,
     ) {}
+
+    public function registerProvider(
+        PlannerEventProvider $provider
+    ): void {
+        $this->registry->register($provider);
+    }    
 
     public function events(
         CarbonInterface $start,

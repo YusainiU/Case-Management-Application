@@ -2,14 +2,12 @@
 
 namespace Simplydigital\EventPlannerManagement\Livewire;
 
-
-use Livewire\Component;
 use Carbon\Carbon;
+use Livewire\Component;
 use Simplydigital\EventPlannerManagement\Services\PlannerService;
 
 class Planner extends Component
 {
-
     public string $view = 'dayGridMonth';
 
     public string $date;
@@ -45,10 +43,33 @@ class Planner extends Component
             ->all();
     }
 
-    public function render()
+    public function getCalendarDays(): array
     {
+        $date = Carbon::parse($this->date);
+        $start = $date->copy()->startOfMonth()->startOfWeek();
+        $end = $date->copy()->endOfMonth()->endOfWeek();
+        $days = [];
+        for ($day = $start->copy(); $day->lte($end); $day->addDay()) {
+            $days[] = [
+                'date' => $day->copy(),
+                'isCurrentMonth' => $day->month === $date->month,
+                'isToday' => $day->isToday()
+            ];
+        }
+
+        return $days;
+    }
+
+    public function render(PlannerService $planner)
+    {
+        $events = $this->getEvents($planner);
+
         return view(
-            'eventplanner::livewire.planner'
+            'eventplanner::livewire.planner',
+            [
+                'events' => $events,
+                'calendarDays' => $this->getCalendarDays(),
+            ]
         );
-    }    
+    }
 }
