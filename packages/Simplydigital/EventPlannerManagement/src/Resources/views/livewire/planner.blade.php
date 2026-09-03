@@ -1,12 +1,8 @@
 @php
-    use Carbon\Carbon;    
+    use Carbon\Carbon;
 @endphp
 
-<div
-    x-data="plannerCalendar(@js($events))"
-    x-init="init()"
-    class="w-full"
->
+<div class="w-full">
 
     {{-- Calendar header --}}
     <div class="flex items-center justify-between mb-4 mt-7 ml-4 mr-3">
@@ -18,27 +14,15 @@
         </div>
 
         <div class="flex gap-2">
-            <button
-                type="button"
-                wire:click="previousMonth"
-                class="px-3 py-2 border rounded"
-            >
+            <button type="button" wire:click="previous" class="px-3 py-2 border rounded">
                 Previous
             </button>
 
-            <button
-                type="button"
-                wire:click="today"
-                class="px-3 py-2 border rounded"
-            >
+            <button type="button" wire:click="today" class="px-3 py-2 border rounded">
                 Today
             </button>
 
-            <button
-                type="button"
-                wire:click="nextMonth"
-                class="px-3 py-2 border rounded"
-            >
+            <button type="button" wire:click="next" class="px-3 py-2 border rounded">
                 Next
             </button>
         </div>
@@ -57,23 +41,18 @@
 
     </div>
 
-
     {{-- Calendar days --}}
     <div class="grid grid-cols-7 border-l">
 
         @foreach ($calendarDays as $day)
-
             @php
                 $dateKey = $day['date']->format('Y-m-d');
 
                 $dayEvents = collect($events)->filter(function ($event) use ($dateKey) {
-                    return Carbon::parse($event['start'])
-                        ->format('Y-m-d') === $dateKey;
+                    return Carbon::parse($event['start'])->format('Y-m-d') === $dateKey;
                 });
             @endphp
 
-
-            {{-- Day panel --}}
             <div
                 class="
                     min-h-35
@@ -83,10 +62,8 @@
                     border-gray-500
                     bg-white
                     {{ $day['isCurrentMonth'] ? '' : 'bg-gray-50 text-gray-400' }}
-                "
-            >
+                ">
 
-                {{-- Date number --}}
                 <div class="flex justify-between mb-2">
 
                     <span
@@ -96,57 +73,34 @@
                             text-sm
                             rounded-full
                             {{ $day['isToday'] ? 'bg-blue-600 text-white font-bold' : 'text-gray-700' }}
-                        "
-                    >
+                        ">
                         {{ $day['date']->day }}
                     </span>
 
                 </div>
 
-
-                {{-- Events --}}
                 <div class="space-y-1">
-
-                    @forelse ($dayEvents as $event)
-
-                        <div
-                            class="
-                                px-2
-                                py-1
-                                text-xs
-                                rounded
-                                bg-blue-100
-                                text-blue-800
-                                truncate
-                            "
-                        >
-
-                            <div class="font-medium truncate">
-                                {{ $event['title'] }}
-                            </div>
-
-                            @if (!empty($event['start']))
-                                <div class="text-[10px]">
-                                    {{ Carbon::parse($event['start'])->format('H:i') }}
-                                </div>
+                    @forelse ($events as $event)
+                        <div class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800 truncate">
+                            @if (Carbon::parse($event['start'])->toDateString() === $day['date']->toDateString())
+                                <a href="{{ $event['url'] }}" class="block" target="_blank">
+                                    <div class="font-medium truncate">
+                                        {{ $event['title'] }}
+                                    </div>
+                                    <div class="text-[10px]">
+                                        {{ Carbon::parse($event['start'])->format('H:i') }}
+                                    </div>
+                                </a>                                
                             @endif
-
                         </div>
-
                     @empty
-
-                        {{-- No events --}}
-
+                        <div>&nbsp;</div>
                     @endforelse
-
                 </div>
 
             </div>
-
         @endforeach
 
     </div>
-
-    @vite('packages/Simplydigital/EventPlannerManagement/src/Resources/js/planner.js')    
 
 </div>

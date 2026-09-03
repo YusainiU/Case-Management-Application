@@ -6,6 +6,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 export default function plannerCalendar(events = []) {
     return {
         calendar: null,
+        events: events,
 
         init() {
             this.calendar = new Calendar(this.$refs.calendar, {
@@ -16,6 +17,7 @@ export default function plannerCalendar(events = []) {
                 ],
 
                 initialView: 'dayGridMonth',
+
                 headerToolbar: false,
 
                 events: this.events,

@@ -16,6 +16,7 @@ class SiteVisitEventProvider implements PlannerEventProvider
         ?int $userId = null,
     ): Collection {
         $query = TaskSiteVisit::query()
+            ->where('visit_scheduled_at', '!=', null)
             ->whereBetween('visit_scheduled_at', [
                 $start,
                 $end,
@@ -23,7 +24,7 @@ class SiteVisitEventProvider implements PlannerEventProvider
             ->where('active', true);
 
         if ($userId !== null) {
-            $query->where('user_id', $userId);
+            $query->where('assigned_to', $userId);
         }
 
         return $query
@@ -35,7 +36,7 @@ class SiteVisitEventProvider implements PlannerEventProvider
                 end: $visit->visit_scheduled_at,
                 type: 'site_visit',
                 url: route(
-                    'casemanagement.cases.view',
+                    'casemanagement.case.view',
                     $visit->ticket
                 ),
                 metadata: [

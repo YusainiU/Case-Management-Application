@@ -30,12 +30,12 @@ class CasePlannerEventProvider implements PlannerEventProvider
             ->map(function (tickets $case) {
                 return new PlannerEvent(
                     id: "case-{$case->id}",
-                    title: "Case #{$case->id} - {$case->title}",
-                    start: $case->scheduled_at,
-                    end: $case->scheduled_end_at,
+                    title: "Case #{$case->number}",
+                    start: $case->created_at,
+                    end: $case->created_at,
                     type: 'case',
                     url: route(
-                        'casemanagement.cases.view',
+                        'casemanagement.case.view',
                         $case
                     ),
                     description: $case->description,

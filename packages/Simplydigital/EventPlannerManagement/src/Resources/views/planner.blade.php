@@ -1,3 +1,4 @@
-<div> 
-    <livewire:planner />
-</div>
+ 
+<x-layouts.app>
+    <livewire:planner /> 
+</x-layouts.app>

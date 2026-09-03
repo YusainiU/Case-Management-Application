@@ -21,6 +21,7 @@ class SlaExpiryEventProvider implements PlannerEventProvider
                 $query->whereNotNull('respond_by')
                     ->where('active', true)
                     ->where('state', '!=', CaseState::Closed->value)
+                    ->where('respond_by', '!=', null)
                     ->whereBetween('respond_by', [
                         $start,
                         $end,
@@ -28,26 +29,22 @@ class SlaExpiryEventProvider implements PlannerEventProvider
             })
             ->whereNull('closed_datetime');
 
-        if ($userId !== null) {
-            $query->where('assigned_to', $userId);
-        }
-
         return $query
             ->get()
             ->map(function (tickets $case) {
                 return new PlannerEvent(
                     id: "sla-expiry-{$case->id}",
                     title: "SLA Expiry - Case #{$case->slaTasks->first()->number}",
-                    start: $case->slaTasks->first()->respond_by,
-                    end: $case->slaTasls->first()->respond_by,
+                    start: $case->slaTasks?->first()->respond_by,
+                    end: $case->slaTasks?->first()->respond_by,
                     type: 'sla_expiry',
                     url: route(
-                        'casemanagement.cases.view',
+                        'casemanagement.case.view',
                         $case
                     ),
                     metadata: [
                         'case_id' => $case->id,
-                        'severity' => $case->slaTasks->first()->state,
+                        'severity' => $case->slaTasks?->first()->state,
                     ],
                 );
             });

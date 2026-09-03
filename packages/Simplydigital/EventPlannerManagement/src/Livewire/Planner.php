@@ -29,18 +29,26 @@ class Planner extends Component
             $start = $date->copy()->startOfMonth();
             $end = $date->copy()->endOfMonth();
         }
+        
+    return $planner
+        ->events($start, $end, auth()->id())
+        ->map(fn ($event) => $event->toArray())
+        ->all();        
+    }
 
-        return $planner
-            ->events(
-                $start,
-                $end,
-                auth()->id()
-            )
-            ->map(
-                fn ($event) => $event->toArray()
-            )
-            ->values()
-            ->all();
+    public function previous()
+    {
+        $this->date = Carbon::parse($this->date)->subMonth()->toDateString();
+    }
+
+    public function next()
+    {
+        $this->date = Carbon::parse($this->date)->addMonth()->toDateString();
+    }
+
+    public function today()
+    {
+        $this->date = now()->toDateString();
     }
 
     public function getCalendarDays(): array
@@ -62,8 +70,7 @@ class Planner extends Component
 
     public function render(PlannerService $planner)
     {
-        $events = $this->getEvents($planner);
-
+        $events = $this->getEvents($planner);        
         return view(
             'eventplanner::livewire.planner',
             [

@@ -121,6 +121,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         $this->publishResources();
         $this->registerLivewireComponents();
         $this->addCustomeHelper();
+        $this->loadEventPlanner();
 
     }
 
@@ -138,46 +139,19 @@ class CaseManagementServiceProvider extends ServiceProvider
 
     public function loadEventPlanner()
     {
-        // if (class_exists(PlannerFacade::class)) {
-        //     PlannerFacade::registerProvider(
-        //         app(CasePlannerEventProvider::class)
-        //     );
+        if (class_exists(PlannerFacade::class)) {
+            PlannerFacade::registerProvider(
+                app(CasePlannerEventProvider::class)
+            );
 
-        //     PlannerFacade::registerProvider(
-        //         app(SlaExpiryEventProvider::class)
-        //     );
+            PlannerFacade::registerProvider(
+                app(SlaExpiryEventProvider::class)
+            );
 
-        //     PlannerFacade::registerProvider(
-        //         app(SiteVisitEventProvider::class)
-        //     );
-        // }
-
-        // Debugging
-        logger()->info('CaseManagementServiceProvider booted');
-
-        if (! class_exists(
-            PlannerFacade::class
-        )) {
-            logger()->warning('EventPlannerManagement not available');
-
-            return;
-        }else{
-            logger()->info('EventPlannerManagement available');
+            PlannerFacade::registerProvider(
+                app(SiteVisitEventProvider::class)
+            );
         }
-
-        logger()->info('Registering Case Planner providers');
-
-        PlannerFacade::registerProvider(
-            app(CasePlannerEventProvider::class)
-        );
-
-        PlannerFacade::registerProvider(
-            app(SlaExpiryEventProvider::class)
-        );
-
-        PlannerFacade::registerProvider(
-            app(SiteVisitEventProvider::class)
-        );
 
     }
 

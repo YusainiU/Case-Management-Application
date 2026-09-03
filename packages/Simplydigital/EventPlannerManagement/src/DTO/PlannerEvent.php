@@ -21,9 +21,9 @@ final class PlannerEvent
         public readonly ?string $icon = null,
         public readonly array $metadata = [],
     ) {
-        if ($this->end < $this->start) {
-            throw new InvalidArgumentException('Planner events must end after they start.');
-        }
+        // if ($this->end && $this->end <= $this->start) {
+        //     throw new InvalidArgumentException('Planner events must end after they start.');
+        // }
     }
 
     public function getColour(): ?string
