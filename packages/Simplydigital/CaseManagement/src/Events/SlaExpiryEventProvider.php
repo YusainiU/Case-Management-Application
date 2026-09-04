@@ -28,15 +28,15 @@ class SlaExpiryEventProvider implements PlannerEventProvider
                     ]);
             })
             ->whereNull('closed_datetime');
-
+        
         return $query
             ->get()
             ->map(function (tickets $case) {
                 return new PlannerEvent(
-                    id: "sla-expiry-{$case->id}",
+                    id: $case->id,
                     title: "SLA Expiry - Case #{$case->slaTasks->first()->number}",
-                    start: $case->slaTasks?->first()->respond_by,
-                    end: $case->slaTasks?->first()->respond_by,
+                    start: $case->slaTasks?->respond_by,
+                    end: $case->slaTasks?->respond_by,
                     type: 'sla_expiry',
                     url: route(
                         'casemanagement.case.view',

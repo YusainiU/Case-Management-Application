@@ -4,6 +4,10 @@
 
 <div class="w-full">
 
+    @if($showEventModal && $case)
+        <livewire:manage-case :case="$case" />
+    @endif
+
     {{-- Calendar header --}}
     <div class="flex items-center justify-between mb-4 mt-7 ml-4 mr-3">
 
@@ -80,14 +84,19 @@
                 </div>
 
                 <div class="space-y-1">
+
                     @forelse ($events as $event)
                         <div class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800 truncate">
                             @if (Carbon::parse($event['start'])->toDateString() === $day['date']->toDateString())
-                                <a href="{{ $event['url'] }}" class="block" target="_blank">
-                                    <div class="font-medium truncate">
+                                <a href="#" 
+                                    class="block px-2 py-2"
+                                    style="background-color: {{ $event['colour'] ?? null }}; font-weight: bold;" 
+                                    wire:click.prevent="openEventModal({{ $event['id'] }})"                                    
+                                >
+                                    <div class="font-medium truncate" style="color: {{ $event['text'] ?? null }};">
                                         {{ $event['title'] }}
                                     </div>
-                                    <div class="text-[10px]">
+                                    <div class="text-[10px]" style="color: {{ $event['text'] ?? null }};">
                                         {{ Carbon::parse($event['start'])->format('H:i') }}
                                     </div>
                                 </a>                                

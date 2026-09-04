@@ -23,14 +23,14 @@ class SiteVisitEventProvider implements PlannerEventProvider
             ])
             ->where('active', true);
 
-        if ($userId !== null) {
-            $query->where('assigned_to', $userId);
-        }
+        // if ($userId !== null) {
+        //     $query->where('assigned_to', $userId);
+        // }
 
         return $query
             ->get()
             ->map(fn (TaskSiteVisit $visit) => new PlannerEvent(
-                id: "site-visit-{$visit->ticket->number}",
+                id: $visit->ticket->id,
                 title: "Site Visit - {$visit->ticket->customer->name}",
                 start: $visit->visit_scheduled_at,
                 end: $visit->visit_scheduled_at,

@@ -20,16 +20,12 @@ class CasePlannerEventProvider implements PlannerEventProvider
                 $start,
                 $end,
             ]);
-
-        if ($userId !== null) {
-            $query->where('assigned_to', $userId);
-        }
-
+        
         return $query
             ->get()
             ->map(function (tickets $case) {
                 return new PlannerEvent(
-                    id: "case-{$case->id}",
+                    id: $case->id,
                     title: "Case #{$case->number}",
                     start: $case->created_at,
                     end: $case->created_at,

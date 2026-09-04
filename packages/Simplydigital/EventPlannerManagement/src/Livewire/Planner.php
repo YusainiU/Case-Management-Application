@@ -4,6 +4,7 @@ namespace Simplydigital\EventPlannerManagement\Livewire;
 
 use Carbon\Carbon;
 use Livewire\Component;
+use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\EventPlannerManagement\Services\PlannerService;
 
 class Planner extends Component
@@ -12,9 +13,31 @@ class Planner extends Component
 
     public string $date;
 
+    public bool $showEventModal = false;
+
+    public ?tickets $case = null;
+
+    /**
+     * @var array<string, string>
+     */
+    protected $listeners = [
+        'closeProfileModal' => 'closeEventModal',
+    ];
+
     public function mount(): void
     {
         $this->date = now()->toDateString();
+    }
+
+    public function closeEventModal(): void
+    {
+        $this->showEventModal = false;
+    }
+
+    public function openEventModal(int $caseId): void
+    {
+        $this->case = tickets::find($caseId);
+        $this->showEventModal = true;
     }
 
     public function getEvents(
@@ -29,11 +52,13 @@ class Planner extends Component
             $start = $date->copy()->startOfMonth();
             $end = $date->copy()->endOfMonth();
         }
-        
-    return $planner
-        ->events($start, $end, auth()->id())
-        ->map(fn ($event) => $event->toArray())
-        ->all();        
+    
+        $events = $planner
+            ->events($start, $end, auth()->id())
+            ->map(fn ($event) => $event->toArray())
+            ->all();
+
+        return $events;
     }
 
     public function previous()
@@ -61,7 +86,7 @@ class Planner extends Component
             $days[] = [
                 'date' => $day->copy(),
                 'isCurrentMonth' => $day->month === $date->month,
-                'isToday' => $day->isToday()
+                'isToday' => $day->isToday(),
             ];
         }
 
@@ -70,7 +95,8 @@ class Planner extends Component
 
     public function render(PlannerService $planner)
     {
-        $events = $this->getEvents($planner);        
+        $events = $this->getEvents($planner);
+
         return view(
             'eventplanner::livewire.planner',
             [

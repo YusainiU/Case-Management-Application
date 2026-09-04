@@ -3,7 +3,6 @@
 namespace Simplydigital\EventPlannerManagement\DTO;
 
 use Carbon\CarbonInterface;
-use InvalidArgumentException;
 use Simplydigital\EventPlannerManagement\Services\PlannerEventTypeService;
 
 final class PlannerEvent
@@ -18,13 +17,10 @@ final class PlannerEvent
         public readonly ?string $url = null,
         public readonly ?string $description = null,
         public readonly ?string $colour = null,
+        public readonly ?string $text = null,
         public readonly ?string $icon = null,
         public readonly array $metadata = [],
-    ) {
-        // if ($this->end && $this->end <= $this->start) {
-        //     throw new InvalidArgumentException('Planner events must end after they start.');
-        // }
-    }
+    ) {}
 
     public function getColour(): ?string
     {
@@ -35,6 +31,16 @@ final class PlannerEvent
         return app(
             PlannerEventTypeService::class
         )->colour($this->type);
+    }
+
+    public function getTextColour(): ?string
+    {
+        if( $this->text !== null) {
+            return $this->text;
+        }
+        return app(
+            PlannerEventTypeService::class
+        )->text($this->type);
     }
 
     public function getIcon(): ?string
@@ -71,6 +77,7 @@ final class PlannerEvent
             'description' => $this->description,
             'metadata' => $this->metadata,
             'colour' => $this->getColour(),
+            'text' => $this->getTextColour(),
             'icon' => $this->getIcon(),            
         ];
     }
