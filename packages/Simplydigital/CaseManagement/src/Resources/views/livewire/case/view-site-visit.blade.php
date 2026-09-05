@@ -20,7 +20,7 @@
         <x-casemanagement::page-elements.section-title 
             title="{{ $ui_params['title'] }}"
             description="{{ $ui_params['description'] }}" 
-            aside="what is this" 
+            aside="" 
         />
     </div>
     <x-casemanagement::page-elements.seperator margin="2" />

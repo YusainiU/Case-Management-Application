@@ -11,7 +11,7 @@
 
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="{{ $title }}" description="Manage your customers here."
-            aside="what is this" />
+            aside="" />
     </div>
 
     <x-casemanagement::page-elements.seperator margin="2" />

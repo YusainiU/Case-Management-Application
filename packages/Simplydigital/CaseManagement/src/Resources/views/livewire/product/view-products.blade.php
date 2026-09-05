@@ -14,7 +14,7 @@
 
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="{{ $title }}"
-            description="Manage your customers here." aside="what is this" />
+            description="Manage your customers here." aside="" />
     </div>
     <x-casemanagement::page-elements.seperator margin="2" />
     <x-casemanagement::form-elements.button-primary label="Create New Product" action="openCreateModal" />

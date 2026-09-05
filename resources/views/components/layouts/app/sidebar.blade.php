@@ -7,7 +7,7 @@
         <flux:sidebar :collapsible=true sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="me-5 flex items-center justify-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <a href="{{ route('casemanagement.dashboard.view') }}" class="me-5 flex items-center justify-center space-x-2 rtl:space-x-reverse" wire:navigate>
                 <div class="w-15 h-15">
                 <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />
                 </div>
@@ -34,7 +34,7 @@
 
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('User Management')" class="grid" expandable="true" expanded="false">
-                    <flux:navlist.item icon="ellipsis-vertical" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Dashboard</flux:navlist.item>
+                    <flux:navlist.item icon="ellipsis-vertical" :href="route('engineer_dashboard')" :current="request()->routeIs('engineer_dashboard')" wire:navigate>Dashboard</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('user-management')" :current="request()->routeIs('user-management')" wire:navigate>User Management</flux:navlist.item>            
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('engineer-management')" :current="request()->routeIs('engineer-management')" wire:navigate>Engineer Management</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('engineer-skills')" :current="request()->routeIs('engineer-skills')" wire:navigate>Skills</flux:navlist.item>
@@ -44,15 +44,6 @@
 
             <flux:spacer />
 
-            {{-- <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                Repository
-                </flux:navlist.item>
-
-                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                Documentation
-                </flux:navlist.item>
-            </flux:navlist> --}}
 
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">

@@ -14,7 +14,7 @@
 
     <div class="my-4">
         <x-casemanagement::page-elements.section-title title="Customer Contacts" description="Manage your customer contacts here."
-            aside="what is this" />
+            aside="" />
     </div>
 
     <x-casemanagement::page-elements.seperator margin="2" />

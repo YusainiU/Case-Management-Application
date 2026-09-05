@@ -7,18 +7,26 @@ use App\Livewire\EngineerCertificates;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
+use Simplydigital\CaseManagement\Livewire\Case\Dashboard;
 
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
+Route::get('/dashboard', Dashboard::class)
     ->middleware([
         'auth',
         'verified',
     ])
     ->name('dashboard');
+
+Route::view('/engineer-dashboard', 'dashboard')
+    ->middleware([
+        'auth',
+        'verified',
+    ])
+    ->name('engineer_dashboard');    
 
 Route::middleware([
     'auth',
