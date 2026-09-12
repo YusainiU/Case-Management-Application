@@ -9,7 +9,8 @@
     @endif
 
     @if($showPermissions)
-        <livewire:listpermissions-component />
+        {{-- <livewire:listpermissions-component /> --}}
+        <livewire:addnewpermission-component />
     @endif
 
     @if($showRoles)

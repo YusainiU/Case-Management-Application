@@ -7,29 +7,29 @@ use Simplydigital\UserManagement\Data\PermissionDefinition;
 
 class PermissionRegistry
 {
-    /**
-     * @var PermissionProvider[]
-     */
-    protected array $providers = [];
+    protected array $permissions = [];
 
-    public function registerProvider(PermissionProvider $provider): void
-    {
-        $this->providers[] = $provider;
+    public function registerProvider(
+        PermissionProvider $provider
+    ): void {
+        $this->register(...$provider->permissions());
     }
 
-    /**
-     * @return PermissionDefinition[]
-     */
+    public function register(
+        PermissionDefinition ...$permissions
+    ): void {
+        foreach ($permissions as $permission) {
+            $this->permissions[$permission->name] = $permission;
+        }
+    }
+
     public function all(): array
     {
-        $permissions = [];
+        return array_values($this->permissions);
+    }
 
-        foreach ($this->providers as $provider) {
-            foreach ($provider->permissions() as $permission) {
-                $permissions[$permission->name] = $permission;
-            }
-        }
-
-        return array_values($permissions);
+    public function find(string $name): ?PermissionDefinition
+    {
+        return $this->permissions[$name] ?? null;
     }
 }
