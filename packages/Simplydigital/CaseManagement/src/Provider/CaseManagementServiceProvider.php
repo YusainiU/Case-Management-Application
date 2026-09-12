@@ -3,9 +3,11 @@
 namespace Simplydigital\CaseManagement\Provider;
 
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Simplydigital\CaseManagement\Authorization\CaseManagementPermissionProvider;
 use Simplydigital\CaseManagement\Events\CasePlannerEventProvider;
 use Simplydigital\CaseManagement\Events\SiteVisitEventProvider;
 use Simplydigital\CaseManagement\Events\SlaExpiryEventProvider;
@@ -48,6 +50,11 @@ use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
 use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
 use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
+use Simplydigital\CaseManagement\Models\Customer;
+use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Policies\CasePolicy;
+use Simplydigital\CaseManagement\Policies\CustomerContactPolicy;
+use Simplydigital\CaseManagement\Policies\CustomerPolicy;
 use Simplydigital\CaseManagement\Services\CaseAssetServices;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
@@ -56,6 +63,7 @@ use Simplydigital\CaseManagement\Services\CaseSupplierService;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\View\Components\Icon;
 use Simplydigital\EventPlannerManagement\Facade\PlannerFacade;
+use Simplydigital\UserManagement\Services\PermissionRegistry;
 
 class CaseManagementServiceProvider extends ServiceProvider
 {
@@ -122,6 +130,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         $this->registerLivewireComponents();
         $this->addCustomeHelper();
         $this->loadEventPlanner();
+        $this->loadPolicies();
 
     }
 
@@ -135,6 +144,35 @@ class CaseManagementServiceProvider extends ServiceProvider
 
             return $this;
         });
+    }
+
+    public function registerUserPermissions()
+    {
+        $this->app->afterResolving(
+            PermissionRegistry::class,
+            function (PermissionRegistry $registry) {
+                $registry->registerProvider(
+                    new CaseManagementPermissionProvider
+                );
+            }
+        );
+
+    }
+
+    public function loadPolicies()
+    {
+        Gate::policy(
+            Customer::class, 
+            CustomerPolicy::class
+        );
+        Gate::policy(
+            CustomerContacts::class,
+            CustomerContactPolicy::class
+        );
+        Gate::policy(
+            tickets::class,
+            CasePolicy::class
+        );
     }
 
     public function loadEventPlanner()
@@ -158,6 +196,7 @@ class CaseManagementServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerServices();
+        $this->registerUserPermissions();
     }
 
     public function loadViews()
