@@ -94,7 +94,7 @@
 
                 <div>
                     <x-usermanagement::input-label for="Permissions" name="Permissions" class="block text-sm font-medium text-gray-700" :required="true" />
-                    <div class="space-y- mt-3">
+                    <div class="mt-3 grid grid-cols-2 gap-x-6 gap-y-2">
                         @foreach ($allPermissions as $permissionId => $permissionName)
                             <x-usermanagement::checkbox 
                                 name="selectedPermissions"
@@ -130,7 +130,7 @@
 
                 <div>
                     <x-usermanagement::input-label for="Permissions" name="Permissions" class="block text-sm font-medium text-gray-700" :required="true" />
-                    <div class="space-y- mt-3">
+                    <div class="mt-3 grid grid-cols-2 gap-x-6 gap-y-2">
                         @foreach ($allPermissions as $permissionId => $permissionName)
                             <x-usermanagement::checkbox 
                                 name="selectedPermissions"

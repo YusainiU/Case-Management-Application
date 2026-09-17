@@ -34,7 +34,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">
                     Permissions
                 </label>
-                <div class="space-y-2">
+                <div class="grid grid-cols-2 gap-x-6 gap-y-2">
                     @foreach ($availablePermissions as $permission)
                         <label class="flex items-center">
                             <input

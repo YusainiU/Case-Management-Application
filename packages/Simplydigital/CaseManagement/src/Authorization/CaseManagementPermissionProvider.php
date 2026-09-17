@@ -7,6 +7,7 @@ use Simplydigital\UserManagement\Data\PermissionDefinition;
 use Simplydigital\CaseManagement\Enums\Permissions\CustomerPermission;
 use Simplydigital\CaseManagement\Enums\Permissions\CustomerContactPermission;
 use Simplydigital\CaseManagement\Enums\Permissions\CasePermission;
+use Simplydigital\CaseManagement\Enums\Permissions\ServiceLevelAgreementPermission as sla;
 class CaseManagementPermissionProvider implements PermissionProvider
 {
     public function permissions(): array
@@ -87,6 +88,33 @@ class CaseManagementPermissionProvider implements PermissionProvider
                 description: 'Delete cases',
                 group: 'Cases',
             ),
+
+            //SLA - Service Level Agreement
+            new PermissionDefinition(
+                name: sla::View->value,
+                description: 'View Service Level Agreement',
+                group: 'Service Level Agreement',
+            ),
+
+            new PermissionDefinition(
+                name: sla::Create->value,
+                description: 'Delete Service Level Agreement',
+                group: 'Service Level Agreement',
+            ),
+
+            new PermissionDefinition(
+                name: sla::Update->value,
+                description: 'Update Service Level Agreement',
+                group: 'Service Level Agreement',
+            ),
+            
+            new PermissionDefinition(
+                name: sla::Delete->value,
+                description: 'Delete Service Level Agreement',
+                group: 'Service Level Agreement',
+            ),            
+
+
         ];
     }
 }
