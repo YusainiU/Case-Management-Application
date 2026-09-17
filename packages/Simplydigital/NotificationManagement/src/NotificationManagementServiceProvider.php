@@ -3,13 +3,18 @@
 namespace Simplydigital\NotificationManagement;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Simplydigital\NotificationManagement\Authorization\NotificationManagementPermissionProvider;
+use Simplydigital\NotificationManagement\Policies\NotificationPolicy;
+use Simplydigital\UserManagement\Services\PermissionRegistry;
 use Simplydigital\NotificationManagement\Notifications\Services\NotificationService;
 use Livewire\Livewire;
 use Simplydigital\NotificationManagement\Livewire\Admin\QueuedMailJobs;
 use Simplydigital\NotificationManagement\Middleware\RestrictInternalUserOnly;
+use Simplydigital\NotificationManagement\Models\Notification;
 use Illuminate\Support\Facades\Route;
 
-//use Simplydigital\NotificationManagement\Notifications\Services\RegisterEmailListenerService;
+
 
 
 class NotificationManagementServiceProvider extends ServiceProvider
@@ -21,6 +26,9 @@ class NotificationManagementServiceProvider extends ServiceProvider
             NotificationService::class,
             fn ($app) => new NotificationService()
         );
+
+        $this->registerUserPermissions();
+
     }    
 
     public function boot(): void
@@ -34,10 +42,30 @@ class NotificationManagementServiceProvider extends ServiceProvider
 
         $this->loadRoutes();
 
+        $this->loadPolicies();
+
         //Email logging diagnostic
         //RegisterEmailListenerService::registerListener();
 
     }
+
+    public function registerUserPermissions()
+    {
+        $this->app->afterResolving(
+            PermissionRegistry::class,
+            function (PermissionRegistry $registry) {
+                $registry->registerProvider(
+                    new NotificationManagementPermissionProvider
+                );
+            }
+        );
+
+    }
+    
+    public function loadPolicies()
+    {
+        Gate::policy(Notification::class, NotificationPolicy::class);
+    }    
 
     public function loadMigrations()
     {

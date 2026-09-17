@@ -3,6 +3,11 @@
 namespace Simplydigital\FileUploadManagement\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Simplydigital\FileUploadManagement\Models\UploadedFile;
+use Simplydigital\UserManagement\Services\PermissionRegistry;
+use Simplydigital\FileUploadManagement\Authorization\FileManagementPermissionProvider;
+use Simplydigital\FileUploadManagement\Policies\FilePolicy;
 use Simplydigital\FileUploadManagement\Contracts\FileStorage;
 use Simplydigital\FileUploadManagement\Services\FilePathResolver;
 use Simplydigital\FileUploadManagement\Services\FileStorageManager;
@@ -40,7 +45,22 @@ class FileUploadManagementServiceProvider extends ServiceProvider
             FilePathResolver::class,
             fn () => new FilePathResolver()
         );
+
+        $this->registerUserPermissions();
     }
+
+    public function registerUserPermissions()
+    {
+        $this->app->afterResolving(
+            PermissionRegistry::class,
+            function (PermissionRegistry $registry) {
+                $registry->registerProvider(
+                    new FileManagementPermissionProvider
+                );
+            }
+        );
+
+    }    
 
     /**
      * Bootstrap package services.
@@ -54,7 +74,9 @@ class FileUploadManagementServiceProvider extends ServiceProvider
         $this->loadViewsFrom(
             __DIR__ . '/../Resources/views',
             'fileupload-management'
-        );        
+        );
+        
+        $this->loadPolicies();
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -73,4 +95,9 @@ class FileUploadManagementServiceProvider extends ServiceProvider
             ], 'fileupload-views');
         }
     }
+
+    public function loadPolicies()
+    {
+        Gate::policy(UploadedFile::class, FilePolicy::class);
+    }      
 }
