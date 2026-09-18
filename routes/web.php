@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Foundation\Configuration\Middleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 use App\Livewire\EngineerManagement;
 use App\Livewire\EngineerSkills;
 use App\Livewire\EngineerCertificates;
@@ -26,7 +28,8 @@ Route::view('/engineer-dashboard', 'dashboard')
         'auth',
         'verified',
     ])
-    ->name('engineer_dashboard');    
+    ->name('engineer_dashboard')
+    ->middleware('permission:engineer.view');    
 
 Route::middleware([
     'auth',
@@ -37,18 +40,29 @@ Route::middleware([
         Route::redirect('settings', 'settings/profile');
 
         Route::middleware([
-            RoleMiddleware::class.':Engineer Administrator',
+            'web',
+            'auth',
         ])->group(function(){
-            Route::get('engineer-management', EngineerManagement::class)->name('engineer-management');
-            Route::get('engineer-skills', EngineerSkills::class)->name('engineer-skills');
-            Route::get('engineer-certificates', EngineerCertificates::class)->name('engineer-certificates');
+
+            Route::get('engineer-management', EngineerManagement::class)
+                ->name('engineer-management')
+                ->middleware('permission:engineer.view');
+            Route::get('engineer-skills', EngineerSkills::class)
+                ->name('engineer-skills')
+                ->middleware('permission:engineer.view');
+            Route::get('engineer-certificates', EngineerCertificates::class)
+                ->name('engineer-certificates')
+                ->middleware('permission:engineer.view');
         });
 
 
         Route::middleware([
-            RoleMiddleware::class.':User Administrator',
+            'web',
+            'auth',
         ])->group(function(){   
-            Route::get('user-management', App\Livewire\UserManagement::class)->name('user-management');
+            Route::get('user-management', App\Livewire\UserManagement::class)
+            ->name('user-management')
+            ->middleware('permission:User.view');
         });        
 
         Volt::route('settings/profile', 'settings.profile')->name('profile.edit');

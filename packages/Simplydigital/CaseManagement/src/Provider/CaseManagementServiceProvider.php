@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Simplydigital\CaseManagement\Authorization\CaseManagementPermissionProvider;
+
 use Simplydigital\CaseManagement\Events\CasePlannerEventProvider;
 use Simplydigital\CaseManagement\Events\SiteVisitEventProvider;
 use Simplydigital\CaseManagement\Events\SlaExpiryEventProvider;
+
 use Simplydigital\CaseManagement\Livewire\Asset\AssetProfile;
 use Simplydigital\CaseManagement\Livewire\Asset\CreateAsset;
 use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
@@ -49,18 +51,29 @@ use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewSlaImplement
 use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
 use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
 use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
+
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
+
 use Simplydigital\CaseManagement\Models\Customer;
+use Simplydigital\CaseManagement\Models\Product;
+use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
+use Simplydigital\CaseManagement\Models\Supplier;
 use Simplydigital\CaseManagement\Models\tickets;
+
 use Simplydigital\CaseManagement\Policies\CasePolicy;
 use Simplydigital\CaseManagement\Policies\CustomerContactPolicy;
 use Simplydigital\CaseManagement\Policies\CustomerPolicy;
+use Simplydigital\CaseManagement\Policies\ProductPolicy;
+use Simplydigital\CaseManagement\Policies\ServiceLevelAgreementPolicy;
+use Simplydigital\CaseManagement\Policies\SupplierPolicy;
+
 use Simplydigital\CaseManagement\Services\CaseAssetServices;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseProductService;
 use Simplydigital\CaseManagement\Services\CaseSupplierService;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
+
 use Simplydigital\CaseManagement\View\Components\Icon;
 use Simplydigital\EventPlannerManagement\Facade\PlannerFacade;
 use Simplydigital\UserManagement\Services\PermissionRegistry;
@@ -173,6 +186,18 @@ class CaseManagementServiceProvider extends ServiceProvider
             tickets::class,
             CasePolicy::class
         );
+        Gate::policy(
+            Supplier::class,
+            SupplierPolicy::class
+        );
+        Gate::policy(
+            Product::class,
+            ProductPolicy::class
+        );        
+        Gate::policy(
+            serviceLevelAgreements::class,
+            ServiceLevelAgreementPolicy::class
+        );                 
     }
 
     public function loadEventPlanner()

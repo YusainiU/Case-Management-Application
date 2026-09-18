@@ -2,12 +2,15 @@
 
 namespace Simplydigital\CaseManagement\Authorization;
 
+use Simplydigital\CaseManagement\Models\Product;
 use Simplydigital\UserManagement\Contracts\PermissionProvider;
 use Simplydigital\UserManagement\Data\PermissionDefinition;
 use Simplydigital\CaseManagement\Enums\Permissions\CustomerPermission;
 use Simplydigital\CaseManagement\Enums\Permissions\CustomerContactPermission;
 use Simplydigital\CaseManagement\Enums\Permissions\CasePermission;
 use Simplydigital\CaseManagement\Enums\Permissions\ServiceLevelAgreementPermission as sla;
+use Simplydigital\CaseManagement\Enums\Permissions\ProductPermission;
+use Simplydigital\CaseManagement\Enums\Permissions\SupplierPermission;
 class CaseManagementPermissionProvider implements PermissionProvider
 {
     public function permissions(): array
@@ -98,7 +101,7 @@ class CaseManagementPermissionProvider implements PermissionProvider
 
             new PermissionDefinition(
                 name: sla::Create->value,
-                description: 'Delete Service Level Agreement',
+                description: 'Create Service Level Agreement',
                 group: 'Service Level Agreement',
             ),
 
@@ -112,7 +115,57 @@ class CaseManagementPermissionProvider implements PermissionProvider
                 name: sla::Delete->value,
                 description: 'Delete Service Level Agreement',
                 group: 'Service Level Agreement',
-            ),            
+            ),
+
+            //SLA - Products
+            new PermissionDefinition(
+                name: ProductPermission::View->value,
+                description: 'View Products',
+                group: 'Products',
+            ),
+
+            new PermissionDefinition(
+                name: ProductPermission::Create->value,
+                description: 'Create Products',
+                group: 'Products',
+            ),
+
+            new PermissionDefinition(
+                name: ProductPermission::Update->value,
+                description: 'Update Products',
+                group: 'Products',
+            ),
+            
+            new PermissionDefinition(
+                name: ProductPermission::Delete->value,
+                description: 'Delete Products',
+                group: 'Products',
+            ),                     
+
+            //SLA - Products
+            new PermissionDefinition(
+                name: SupplierPermission::View->value,
+                description: 'View Suppliers',
+                group: 'Suppliers',
+            ),
+
+            new PermissionDefinition(
+                name: SupplierPermission::Create->value,
+                description: 'Create Suppliers',
+                group: 'Suppliers',
+            ),
+
+            new PermissionDefinition(
+                name: SupplierPermission::Update->value,
+                description: 'Update Suppliers',
+                group: 'Suppliers',
+            ),
+            
+            new PermissionDefinition(
+                name: SupplierPermission::Delete->value,
+                description: 'Delete Suppliers',
+                group: 'Suppliers',
+            ),
 
 
         ];

@@ -3,16 +3,20 @@
 namespace Simplydigital\NotificationManagement;
 
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
+use Illuminate\Support\Facades\Route;
+
 use Illuminate\Support\Facades\Gate;
 use Simplydigital\NotificationManagement\Authorization\NotificationManagementPermissionProvider;
 use Simplydigital\NotificationManagement\Policies\NotificationPolicy;
 use Simplydigital\UserManagement\Services\PermissionRegistry;
+
 use Simplydigital\NotificationManagement\Notifications\Services\NotificationService;
-use Livewire\Livewire;
+
 use Simplydigital\NotificationManagement\Livewire\Admin\QueuedMailJobs;
 use Simplydigital\NotificationManagement\Middleware\RestrictInternalUserOnly;
 use Simplydigital\NotificationManagement\Models\Notification;
-use Illuminate\Support\Facades\Route;
+
 
 
 

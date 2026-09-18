@@ -9,15 +9,11 @@ const AUTH_MIDDLEWARE = Authenticate::class; // Define constant
 
 Route::middleware([
         AUTH_MIDDLEWARE, // @phpstan-ignore-line
-        RestrictInternalUserOnly::class,
+        'auth',
+        'permission:event.view',
     ])
     ->prefix('eventManager')
     ->group(function () {
-        // Route::get(
-        //     '/',
-        //     fn () => view('eventplanner::livewire.planner')
-        // )->name('eventmanagement.view');
-
         Route::get(
             '/events',
             [PlannerController::class, 'index']

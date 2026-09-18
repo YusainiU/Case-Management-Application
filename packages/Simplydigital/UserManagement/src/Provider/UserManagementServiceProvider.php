@@ -2,9 +2,12 @@
 
 namespace Simplydigital\UserManagement\Provider;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use Simplydigital\UserManagement\Authorization\UserManagementPermissionProvider;
 use Simplydigital\UserManagement\Http\Components\BladeAddNewUserComponent;
 use Simplydigital\UserManagement\Http\Components\BladeListAllUserComponent;
 use Simplydigital\UserManagement\Livewire\AddNewPermission;
@@ -15,6 +18,9 @@ use Simplydigital\UserManagement\Livewire\ListPermissions;
 use Simplydigital\UserManagement\Livewire\ListRoles;
 use Simplydigital\UserManagement\Livewire\UpdateUser;
 use Simplydigital\UserManagement\Livewire\UserProfile;
+use Simplydigital\UserManagement\Model\UsersDetails;
+use Simplydigital\UserManagement\Model\UsersStatuses;
+use Simplydigital\UserManagement\Policies\UserPolicy;
 use Simplydigital\UserManagement\Services\PermissionRegistry;
 use Simplydigital\UserManagement\Services\PermissionSynchronizer;
 use Simplydigital\UserManagement\Services\UserManagementServices;
@@ -36,6 +42,18 @@ class UserManagementServiceProvider extends ServiceProvider
         $this->publishMigrations();
         $this->publishConfig();
         $this->publishResources();
+    }
+
+    public function loadPolicies()
+    {
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('Super Admin')
+                ? true
+                : null;
+        });
+        Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(UsersDetails::class, UserPolicy::class);
+        Gate::policy(UsersStatuses::class, UserPolicy::class);
     }
 
     public function loadViews()
@@ -93,6 +111,19 @@ class UserManagementServiceProvider extends ServiceProvider
         Livewire::component('userprofile-component', UserProfile::class);
     }
 
+    public function registerUserPermissions()
+    {
+        $this->app->afterResolving(
+            PermissionRegistry::class,
+            function (PermissionRegistry $registry) {
+                $registry->registerProvider(
+                    new UserManagementPermissionProvider
+                );
+            }
+        );
+
+    }
+
     public function register()
     {
         $this->app->singleton(
@@ -109,5 +140,8 @@ class UserManagementServiceProvider extends ServiceProvider
         $this->app->singleton('usermanagementservices', function () {
             return new UserManagementServices;
         });
+
+        $this->registerUserPermissions();
+
     }
 }
