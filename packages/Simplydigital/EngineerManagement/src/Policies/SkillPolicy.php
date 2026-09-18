@@ -1,6 +1,6 @@
 <?php
 
-namespace Simplydigital\NotificationManagement\Policies;
+namespace Simplydigital\EngineerManagement\Policies;
 
 use App\Models\User;
 use Simplydigital\CaseManagement\Models\tickets;

@@ -22,7 +22,7 @@
                     wire:model.live='filter' />
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto max-h-96">
                 <table class="{{ $table }}">
                     <thead class="">
                         <tr class="{{ $trThClass }}">

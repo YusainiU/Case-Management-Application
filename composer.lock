@@ -9139,20 +9139,20 @@
         },
         {
             "name": "laramint/laravel-stress",
-            "version": "v1.0.2",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laramint/laravel-stress.git",
-                "reference": "adbdea7b2e49d4e6c8d3616d46eb20ba6e03cacb"
+                "reference": "87abdd5d65a7cb47f079a33daf1552d1520cee07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laramint/laravel-stress/zipball/adbdea7b2e49d4e6c8d3616d46eb20ba6e03cacb",
-                "reference": "adbdea7b2e49d4e6c8d3616d46eb20ba6e03cacb",
+                "url": "https://api.github.com/repos/laramint/laravel-stress/zipball/87abdd5d65a7cb47f079a33daf1552d1520cee07",
+                "reference": "87abdd5d65a7cb47f079a33daf1552d1520cee07",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^7.0",
+                "guzzlehttp/guzzle": "^7.0|^8.0",
                 "illuminate/support": "^9.0|^10.0|^11.0|^12.0|^13.0",
                 "php": ">=8.1"
             },
@@ -9190,9 +9190,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laramint/laravel-stress/issues",
-                "source": "https://github.com/laramint/laravel-stress/tree/v1.0.2"
+                "source": "https://github.com/laramint/laravel-stress/tree/v1.0.3"
             },
-            "time": "2026-05-06T18:24:33+00:00"
+            "time": "2026-09-18T01:30:51+00:00"
         },
         {
             "name": "laravel/boost",

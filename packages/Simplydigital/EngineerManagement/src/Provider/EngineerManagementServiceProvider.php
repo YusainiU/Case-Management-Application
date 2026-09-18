@@ -6,6 +6,19 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 
+use Illuminate\Support\Facades\Gate;
+use Simplydigital\EngineerManagement\Authorization\EngineerManagementPermissionProvider;
+use Simplydigital\EngineerManagement\Models\Certificates;
+use Simplydigital\EngineerManagement\Models\EngineerManagement;
+use Simplydigital\EngineerManagement\Models\EngineerCertifications;
+use Simplydigital\EngineerManagement\Models\EngineerSkills;
+use Simplydigital\EngineerManagement\Models\Skills;
+use Simplydigital\UserManagement\Services\PermissionRegistry;
+use Simplydigital\EngineerManagement\Policies\EngineerPolicy;
+use Simplydigital\EngineerManagement\Policies\CertificatePolicy;
+use Simplydigital\EngineerManagement\Policies\SkillPolicy;
+
+
 use Simplydigital\EngineerManagement\Http\Components\BladeEngineerManagementComponent;
 use Simplydigital\EngineerManagement\Http\Components\BladeSkillComponent;
 use Simplydigital\EngineerManagement\Http\Components\BladeCertificateComponent;
@@ -40,6 +53,15 @@ class EngineerManagementServiceProvider extends ServiceProvider
         $this->registerLivewireComponents();
      
     }
+
+    public function loadPolicies()
+    {
+        Gate::policy(EngineerManagement::class, EngineerPolicy::class);
+        Gate::policy(Certificates::class, CertificatePolicy::class);
+        Gate::policy(EngineerCertifications::class, CertificatePolicy::class);
+        Gate::policy(Skills::class, SkillPolicy::class);
+        Gate::polict(EngineerSkills::class, SkillPolicy::class);
+    }       
 
     public function loadViews(): void
     {
@@ -110,11 +132,25 @@ class EngineerManagementServiceProvider extends ServiceProvider
         Livewire::component('engineercertificate-component', EngineerCertificateComponent::class);
     }
 
+    public function registerUserPermissions()
+    {
+        $this->app->afterResolving(
+            PermissionRegistry::class,
+            function (PermissionRegistry $registry) {
+                $registry->registerProvider(
+                    new EngineerManagementPermissionProvider
+                );
+            }
+        );
+
+    }      
+
     public function register(): void
     {
         $this->app->singleton('engineermanagementservices', function () {
             return new EngineerManagementServices();
-        });       
+        });        
+        $this->registerUserPermissions();
     }    
 
 }
