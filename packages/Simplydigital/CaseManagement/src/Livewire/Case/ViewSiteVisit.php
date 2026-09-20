@@ -37,6 +37,11 @@ class ViewSiteVisit extends Component
         'reloadVisitStatus' => '$refresh',
     ];
 
+    public function mount()
+    {
+        $this->authorize('viewAny', tickets::class );
+    }
+
     public function closeCreateModal()
     {
         $this->resetAllModals();

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
+use PHPUnit\Framework\Assert;
 use Simplydigital\CaseManagement\Authorization\CaseManagementPermissionProvider;
 
 use Simplydigital\CaseManagement\Events\CasePlannerEventProvider;
@@ -66,6 +67,8 @@ use Simplydigital\CaseManagement\Policies\CustomerPolicy;
 use Simplydigital\CaseManagement\Policies\ProductPolicy;
 use Simplydigital\CaseManagement\Policies\ServiceLevelAgreementPolicy;
 use Simplydigital\CaseManagement\Policies\SupplierPolicy;
+use Simplydigital\CaseManagement\Policies\AssetPolicy;
+
 
 use Simplydigital\CaseManagement\Services\CaseAssetServices;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
@@ -197,7 +200,11 @@ class CaseManagementServiceProvider extends ServiceProvider
         Gate::policy(
             serviceLevelAgreements::class,
             ServiceLevelAgreementPolicy::class
-        );                 
+        );
+        Gate::policy(
+            Assert::class,
+            AssetPolicy::class
+        );                         
     }
 
     public function loadEventPlanner()

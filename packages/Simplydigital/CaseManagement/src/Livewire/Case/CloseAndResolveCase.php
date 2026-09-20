@@ -46,6 +46,7 @@ class CloseAndResolveCase extends Component
 
     public function mount()
     {
+        $this->authorize('viewAny', tickets::class);
         $this->resyncVars();
         $this->buildOptions();
         $this->loadForms();
@@ -59,6 +60,7 @@ class CloseAndResolveCase extends Component
 
     public function close()
     {
+        $this->authorize('update', $this->case);
         $validated = $this->validateClose();
         $service = $this->caseServices();
         if($validated) {
@@ -74,6 +76,7 @@ class CloseAndResolveCase extends Component
 
     public function resolve()
     {
+        $this->authorize('update', $this->case);
         $this->resetAll();
         $validated = $this->validateResolve();
         $service = $this->caseServices();
@@ -124,6 +127,7 @@ class CloseAndResolveCase extends Component
     
     public function save()
     {
+        $this->authorize('update', $this->case);
         if(!$this->isResolved) {
             $this->resolve();
         }else{
@@ -136,6 +140,7 @@ class CloseAndResolveCase extends Component
 
     public function reopen()
     {
+        $this->authorize('update', $this->case);
         $newCase = $this->caseServices()->reopenTicket($this->case);
         if($newCase){
             $this->case = $newCase;

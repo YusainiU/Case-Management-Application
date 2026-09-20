@@ -2,6 +2,7 @@
 
 namespace Simplydigital\CaseManagement\Livewire\Asset;
 
+use Gate;
 use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Models\Asset;
 
@@ -58,6 +59,7 @@ class CreateAsset extends ModalComponent
 
     public function mount()
     {
+
         $this->ui = [
             'title' => 'Create Asset',
             'confirmText' => 'Create',
@@ -70,9 +72,14 @@ class CreateAsset extends ModalComponent
 
         if ($this->assetId) {
             $this->loadAsset();
+            $this->authorize('update', $this->asset);
+        }else{
+            $this->authorize('create', Asset::class);
         }
 
         $this->loadOptions();
+
+
     }
 
     public function loadOptions()
@@ -137,11 +144,14 @@ class CreateAsset extends ModalComponent
     public function save()
     {
     
+        
         $this->validate();
         $service = app('case-asset-services');
         if ($this->assetId) {
+            $this->authorize('update', $this->asset);
             $service->updateAsset($this->asset, $this->form);
         } else {
+            $this->authorize('create', Asset::class);
             $service->createAsset($this->form);
         }
         $this->dispatch($this->closureEvent);

@@ -5,17 +5,22 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
 use Simplydigital\CaseManagement\Enums\CaseState;
+use Simplydigital\CaseManagement\Models\tickets;
 class Dashboard extends Component
 {
 
     protected $listeners = [
         'reloadCaseStatus' => '$refresh',
     ];
+
+    public function mount()
+    {
+        $this->authorize('viewAny', tickets::class);
+    }    
     private function ticketUtilityService(): CaseTicketUtilityServices
     {
         return new CaseTicketUtilityServices();
     }
-
 
     private function getTicketStatuses()
     {

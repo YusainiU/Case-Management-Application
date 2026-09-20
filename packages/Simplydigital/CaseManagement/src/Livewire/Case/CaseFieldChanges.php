@@ -19,6 +19,11 @@ class CaseFieldChanges extends Component
 
     public Collection $visits;
 
+    public function mount()
+    {
+        $this->authorize('viewAny', tickets::class);
+    }
+
     public function tableActivities()
     {
         $service = app(CaseTableSpatieLogService::class);

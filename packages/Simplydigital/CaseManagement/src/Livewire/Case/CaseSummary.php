@@ -21,6 +21,7 @@ class CaseSummary extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', Tickets::class);
         $this->loadCase();
     }
 

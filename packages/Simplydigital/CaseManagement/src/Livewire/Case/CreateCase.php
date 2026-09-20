@@ -66,6 +66,7 @@ class CreateCase extends ModalComponent
 
     public function mount()
     {
+        
         $this->declareFormProperties();
         $this->displayForm = (bool) $this->customerId || (bool) $this->caseId;
         if($this->displayForm){
@@ -89,6 +90,13 @@ class CreateCase extends ModalComponent
         if($this->customerId) {
             $this->selectCustomer();
         }
+
+        if($this->case) {
+            $this->authorize('update', $this->case);
+        }else{
+            $this->authorize('create', tickets::class);
+        }
+
     }
 
     public function loadCaseForm()
@@ -230,6 +238,7 @@ class CreateCase extends ModalComponent
 
     public function save()
     {
+        $this->authorize('create', tickets::class);
         $this->validate();
         $this->form['customer_id'] = $this->customerId;
         $service = $this->ticketServices();
@@ -239,6 +248,7 @@ class CreateCase extends ModalComponent
 
     public function updateCase()
     {
+        $this->authorize('update', $this->case);
         $this->validate();
         $this->repoService()->updateTicket($this->case, $this->form);
         $this->dispatch('caseUpdated');

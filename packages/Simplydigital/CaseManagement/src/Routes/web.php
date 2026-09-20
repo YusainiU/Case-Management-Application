@@ -54,12 +54,18 @@ Route::middleware([
                 ->middleware('permission:service_level_agreement.view');
 
             Route::get('/casemanagement/view-cases/{customerId?}', ViewCases::class)
-                ->name('casemanagement.cases.view');
+                ->name('casemanagement.cases.view')
+                ->middleware('permission:case.view');
                 
             Route::get('/casemanagement/view-site-visit/{caseId?}', ViewSiteVisit::class)
-                ->name('casemanagement.sitevisit.view');
+                ->name('casemanagement.sitevisit.view')
+                ->middleware('permission:case.view');
+
             Route::get('/casemanagement/dashboard', Dashboard::class)
-                ->name('casemanagement.dashboard.view');
+                ->name('casemanagement.dashboard.view')
+                ->middleware('permission:case.view');
+
             Route::get('/casemanagement/case/{case}', ManageCase::class)
-                ->name('casemanagement.case.view');
+                ->name('casemanagement.case.view')
+                ->middleware('permission:case.view');
     });

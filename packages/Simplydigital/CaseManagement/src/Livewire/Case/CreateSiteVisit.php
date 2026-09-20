@@ -65,6 +65,7 @@ class CreateSiteVisit extends ModalComponent
 
     public function mount()
     {
+        $this->authorise('viewAny', tickets::class);
         $this->checkCaseExists();
         $this->initialize();
     }
@@ -131,6 +132,7 @@ class CreateSiteVisit extends ModalComponent
         if (! $this->case) {
             return;
         }
+        $this->authorize('update', $this->case);
         $this->validate();
         $service = $this->visitService();
         $data = [
@@ -161,6 +163,7 @@ class CreateSiteVisit extends ModalComponent
 
     public function completeVisit()
     {
+        $this->authorize('update', $this->case);
         $service = $this->visitService();
         $canComplete = $service->canComplete($this->taskSiteVisit);
         if($canComplete){
@@ -180,6 +183,7 @@ class CreateSiteVisit extends ModalComponent
     public function removeVisit()
     {
         //Cancel and Remove
+        $this->authorize('update', $this->case);
         $visitNumber = $this->taskSiteVisit->number;
         $removed = $this->visitService()->cancelAndRemoveVisit($this->taskSiteVisit);
         if($removed){

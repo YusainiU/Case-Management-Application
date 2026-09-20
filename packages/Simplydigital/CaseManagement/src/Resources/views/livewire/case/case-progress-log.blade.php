@@ -46,32 +46,25 @@
         @endif
 
         @if ($caseOpen)
-
-            <div class="flex flex-col gap-3">
-                <x-casemanagement::form-elements.textarea model="logText" hint="Progress Log" />
-                <div class="flex flex-row gap-3">
-                    <x-casemanagement::form-elements.checkbox 
-                        label="Urgent Attention" 
-                        model="urgentAttention" 
-                        name="Urgent Attention" 
-                    />
-                    <x-casemanagement::form-elements.checkbox 
-                        label="Email Customer Contact" 
-                        model="notifyCustomer" 
-                        name="Email Customer Contact" 
-                    />
+            @can('update', $case)
+                <div class="flex flex-col gap-3">
+                    <x-casemanagement::form-elements.textarea model="logText" hint="Progress Log" />
+                    <div class="flex flex-row gap-3">
+                        <x-casemanagement::form-elements.checkbox label="Urgent Attention" model="urgentAttention"
+                            name="Urgent Attention" />
+                        <x-casemanagement::form-elements.checkbox label="Email Customer Contact" model="notifyCustomer"
+                            name="Email Customer Contact" />
+                    </div>
+                    <div class="flex flex-row gap-3">
+                        <x-casemanagement::form-elements.button-primary action="{{ $action }}"
+                            label="{{ $label }}" />
+                        @if ($enableCancel)
+                            <x-casemanagement::form-elements.button-secondary action="cancelRespond" label="Cancel" />
+                        @endif
+                    </div>
                 </div>
-                <div class="flex flex-row gap-3">
-                    <x-casemanagement::form-elements.button-primary action="{{ $action }}"
-                        label="{{ $label }}" />
-                    @if ($enableCancel)
-                        <x-casemanagement::form-elements.button-secondary action="cancelRespond" label="Cancel" />
-                    @endif
-                </div>
-            </div>
-
-            <x-casemanagement::page-elements.seperator />
-
+                <x-casemanagement::page-elements.seperator />
+            @endcan
         @endif
 
 
@@ -161,21 +154,21 @@
                                     @endif
 
                                     <div class="flex flex-col gap-2 mt-4 rounded bg-gray-50 p-3 text-sm">
-
-                                        @if ($caseOpen)
-                                            <div class="flex flex-row gap-3">
-                                                <x-casemanagement::form-elements.button-secondary
-                                                    action="respondLog({{ $log->id }})" label="Respond"
-                                                    size="small" />
-                                                <x-casemanagement::form-elements.button-danger
-                                                    action="deleteLog({{ $log->id }})" label="Delete"
-                                                    size="small" />
-                                                <x-casemanagement::form-elements.button-secondary
-                                                    action="editLog({{ $log->id }})" label="Edit"
-                                                    size="small" />
-                                            </div>
-                                        @endif
-
+                                        @can('update', $case)
+                                            @if ($caseOpen)
+                                                <div class="flex flex-row gap-3">
+                                                    <x-casemanagement::form-elements.button-secondary
+                                                        action="respondLog({{ $log->id }})" label="Respond"
+                                                        size="small" />
+                                                    <x-casemanagement::form-elements.button-danger
+                                                        action="deleteLog({{ $log->id }})" label="Delete"
+                                                        size="small" />
+                                                    <x-casemanagement::form-elements.button-secondary
+                                                        action="editLog({{ $log->id }})" label="Edit"
+                                                        size="small" />
+                                                </div>
+                                            @endif
+                                        @endcan
                                         <div>
                                             <span class="font-medium text-red-600">Source:</span>
                                             <span class="text-gray-900">{{ ucwords($log->source) }}</span>

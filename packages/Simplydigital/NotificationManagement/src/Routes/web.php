@@ -6,7 +6,9 @@ use Simplydigital\NotificationManagement\Livewire\Admin\QueuedMailJobs;
 
 Route::middleware([
         'auth',
-        RestrictInternalUserOnly::class,
+        'permission:notification.view',
     ])->group(function() {
-            Route::get('/notficationmanagement/EmailJobs', QueuedMailJobs::class)->name('notifcation.jobs.view');
+            Route::get('/notficationmanagement/EmailJobs', QueuedMailJobs::class)
+                ->name('notifcation.jobs.view')
+                ->middleware('permission:notification.update');
     });

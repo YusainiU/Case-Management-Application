@@ -57,7 +57,8 @@ class ViewCases extends Component
     ];
 
     public function mount()
-    {        
+    {
+        $this->authorize('viewAny', tickets::class);        
         $this->displayCaseStatus = $this->dashboardFilter ?? CaseState::Open->value;
     }
 

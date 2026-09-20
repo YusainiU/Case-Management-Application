@@ -16,6 +16,7 @@ class AssetProfile extends ModalComponent
 
     public function mount(int $assetId)
     {
+        $this->authorize('viewAny', Asset::class);
         $this->assetId = $assetId;
         $this->loadAsset();
         $this->buildProfileItems();

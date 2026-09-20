@@ -37,8 +37,10 @@
                 </div>
                 <div class="text-right">
                     <div class="flex flex-rows gap-2 justify-end">
-                        <x-casemanagement::form-elements.button-danger action="removeAttachment({{ $attachment->id }})" label="Remove"/>
-                        <x-casemanagement::form-elements.button-secondary action="downloadAttachment({{ $attachment->id }})" label="Download"/>
+                        @can('create', $uploadedAttachment)
+                            <x-casemanagement::form-elements.button-danger action="removeAttachment({{ $attachment->id }})" label="Remove"/>
+                            <x-casemanagement::form-elements.button-secondary action="downloadAttachment({{ $attachment->id }})" label="Download"/>
+                        @endcan
                     </div>
                 </div>
             </div>

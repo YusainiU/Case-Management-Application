@@ -38,8 +38,15 @@ class CaseProgressLog extends ModalComponent
         return new CaseRepository();
     }
 
+    public function mount()
+    {
+        $this->authorize('viewAny', tickets::class);
+    }
+
     public function createLog()
     {
+
+        $this->authorize('update', $this->case);
         $util = $this->utilityService();
         $text = trim($this->logText);
         if($text) {
@@ -58,12 +65,14 @@ class CaseProgressLog extends ModalComponent
 
     public function deleteLog(int|string $logId)
     {
+        $this->authorize('update', $this->case);
         $logId = (int) $logId;
         $this->logToDelete = $logId;
     }
 
     public function deleteThisLog()
     {
+        $this->authorize('update', $this->case);
         if($this->logToDelete) {
             $this->repoUtility()->deleteLog($this->logToDelete);
         }
@@ -73,6 +82,7 @@ class CaseProgressLog extends ModalComponent
 
     public function editLog(int|string $logId)
     {
+        $this->authorize('update', $this->case);
         $logId = (int) $logId;
         $this->logToEdit = $this->taskLogs->find($logId);
         $this->logText = $this->logToEdit->description;
@@ -81,6 +91,7 @@ class CaseProgressLog extends ModalComponent
 
     public function editThisLog()
     {
+        $this->authorize('update', $this->case);
         if($this->logToEdit && trim($this->logText)) {
             $logText = trim($this->logText);
             $edited = $this->repoUtility()->updateLog($this->logToEdit, $logText);
@@ -116,6 +127,7 @@ class CaseProgressLog extends ModalComponent
 
     public function createRespond(int|string $logId)
     {
+        $this->authorize('update', $this->case);
         if(!trim($this->logText)) return false;
         $logId = (int) $logId;
         $util = $this->utilityService();
@@ -146,7 +158,8 @@ class CaseProgressLog extends ModalComponent
 
     public function removeRequireAttention(int|string $logId)
     {
-        $logId - (int) $logId;
+        $this->authorize('update', $this->case);
+        $logId = (int) $logId;
         $this->utilityService()->removeRequireAttention($logId);
         $this->case->refresh();
     }

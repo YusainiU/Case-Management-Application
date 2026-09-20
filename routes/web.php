@@ -21,7 +21,8 @@ Route::get('/dashboard', Dashboard::class)
         'auth',
         'verified',
     ])
-    ->name('dashboard');
+    ->name('dashboard')
+    ->middleware('permission:case.view');
 
 Route::view('/engineer-dashboard', 'dashboard')
     ->middleware([

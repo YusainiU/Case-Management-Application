@@ -48,6 +48,7 @@ class ManageCase extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', $this->case);
         if ($this->case) {
             if ($this->case->closed_datetime) {
                 $this->tabHeaders['close'] = 'Reopen Case';
@@ -131,6 +132,9 @@ class ManageCase extends ModalComponent
 
     public function uploadAttachment(): void
     {
+
+        $this->authorize('create', UploadedAttachment::class);
+
         $this->validate([
             'attachment' => [
                 'required',

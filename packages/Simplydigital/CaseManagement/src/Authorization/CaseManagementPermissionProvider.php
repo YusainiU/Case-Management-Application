@@ -2,7 +2,6 @@
 
 namespace Simplydigital\CaseManagement\Authorization;
 
-use Simplydigital\CaseManagement\Models\Product;
 use Simplydigital\UserManagement\Contracts\PermissionProvider;
 use Simplydigital\UserManagement\Data\PermissionDefinition;
 use Simplydigital\CaseManagement\Enums\Permissions\CustomerPermission;
@@ -11,6 +10,7 @@ use Simplydigital\CaseManagement\Enums\Permissions\CasePermission;
 use Simplydigital\CaseManagement\Enums\Permissions\ServiceLevelAgreementPermission as sla;
 use Simplydigital\CaseManagement\Enums\Permissions\ProductPermission;
 use Simplydigital\CaseManagement\Enums\Permissions\SupplierPermission;
+use Simplydigital\CaseManagement\Enums\Permissions\AssetPermission;
 class CaseManagementPermissionProvider implements PermissionProvider
 {
     public function permissions(): array
@@ -117,7 +117,7 @@ class CaseManagementPermissionProvider implements PermissionProvider
                 group: 'Service Level Agreement',
             ),
 
-            //SLA - Products
+            //Products
             new PermissionDefinition(
                 name: ProductPermission::View->value,
                 description: 'View Products',
@@ -142,7 +142,7 @@ class CaseManagementPermissionProvider implements PermissionProvider
                 group: 'Products',
             ),                     
 
-            //SLA - Products
+            //Supplier
             new PermissionDefinition(
                 name: SupplierPermission::View->value,
                 description: 'View Suppliers',
@@ -166,6 +166,31 @@ class CaseManagementPermissionProvider implements PermissionProvider
                 description: 'Delete Suppliers',
                 group: 'Suppliers',
             ),
+
+            //Asset
+            new PermissionDefinition(
+                name: AssetPermission::View->value,
+                description: 'View Assets',
+                group: 'Assets',
+            ),
+
+            new PermissionDefinition(
+                name: AssetPermission::Create->value,
+                description: 'Create Assets',
+                group: 'Assets',
+            ),
+
+            new PermissionDefinition(
+                name: AssetPermission::Update->value,
+                description: 'Update Assets',
+                group: 'Assets',
+            ),
+            
+            new PermissionDefinition(
+                name: AssetPermission::Delete->value,
+                description: 'Delete Assets',
+                group: 'Assets',
+            ),            
 
 
         ];

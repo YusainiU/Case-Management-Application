@@ -10,7 +10,10 @@ class ViewSlaPause extends Component
 
     public ?tickets $case = null;
 
-    
+    public function mount()
+    {
+        $this->authorize('viewAny', $this->case);
+    }
 
     private function getPauses()
     {

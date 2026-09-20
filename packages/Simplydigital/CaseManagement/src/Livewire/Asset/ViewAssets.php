@@ -35,6 +35,11 @@ class ViewAssets extends Component
         'closeProfileModal' => 'closeProfileModal',
     ];
 
+    public function mount()
+    {
+        $this->authorize('viewAny', Asset::class);
+    }
+
     public function closeCreateModal()
     {
         $this->displayCreateModal = false;  

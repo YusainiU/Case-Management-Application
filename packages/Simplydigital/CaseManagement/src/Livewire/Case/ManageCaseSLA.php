@@ -38,6 +38,7 @@ class ManageCaseSLA extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', tickets::class);
         if(!$this->case->slaTasks){
             $this->noSlaTask = true;
         }
@@ -88,6 +89,7 @@ class ManageCaseSLA extends ModalComponent
 
     public function updateSla()
     {
+        $this->authorize('update', $this->case);
         $this->validate();
         $result = $this->ticketService()->updateCaseSLADetails($this->case, $this->forms);
         $this->callData();
@@ -102,6 +104,7 @@ class ManageCaseSLA extends ModalComponent
 
     public function unassign()
     {
+        $this->authorize('update', $this->case);
         $this->ticketService()->unassignedUser($this->case);
         $this->callData();
         $this->message = "Case has been unassigned";
@@ -119,6 +122,7 @@ class ManageCaseSLA extends ModalComponent
 
     public function pause()
     {
+        $this->authorize('update', $this->case);
         $this->ticketService()->pauseSla($this->case);
         $this->dispatch('reloadCaseStatus');
         $this->dispatch('$refresh');
@@ -127,6 +131,7 @@ class ManageCaseSLA extends ModalComponent
 
     public function resume()
     {
+        $this->authorize('update', $this->case);
         $this->ticketService()->resumeSla($this->case);
         $this->dispatch('reloadCaseStatus');
         $this->dispatch('$refresh');
@@ -135,6 +140,7 @@ class ManageCaseSLA extends ModalComponent
 
     public function cancelPause()
     {
+        $this->authorize('update', $this->case);
         $this->ticketService()->cancelPauseSla($this->case);
         $this->dispatch('reloadCaseStatus');
         $this->dispatch('$refresh');
