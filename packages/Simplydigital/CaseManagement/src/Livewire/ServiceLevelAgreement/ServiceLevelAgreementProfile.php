@@ -21,6 +21,7 @@ class ServiceLevelAgreementProfile extends ModalComponent
     
     public function mount()
     {
+        $this->authorize('viewAny', ServiceLevelAgreements::class);
         $this->loadSLA();
     }
 

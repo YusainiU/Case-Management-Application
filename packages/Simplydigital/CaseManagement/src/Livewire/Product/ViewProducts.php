@@ -25,6 +25,12 @@ class ViewProducts extends Component
         'closeProfileModal' => 'closeProfileModal',
     ];
 
+    public function mount()
+    {
+        $this->authorize('view', Product::class);
+    }
+
+
     public function closeCreateModal()
     {
         $this->displayCreateModal = false;  

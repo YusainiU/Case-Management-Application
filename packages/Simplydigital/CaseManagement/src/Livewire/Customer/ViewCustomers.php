@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Livewire\Customer;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Simplydigital\CaseManagement\Models\Customer;
 
 class ViewCustomers extends Component
 {
@@ -20,6 +21,7 @@ class ViewCustomers extends Component
 
     public function mount()
     {
+        $this->authorize('viewAny', Customer::class);
         $this->getAllActiveCustomers();
         if($this->viewChildCompanies){
             $this->title = "Child Companies";

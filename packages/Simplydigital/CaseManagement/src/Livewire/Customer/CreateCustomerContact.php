@@ -6,6 +6,7 @@ use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
 use Simplydigital\CaseManagement\Services\UI;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
+use Simplydigital\CaseManagement\Models\CustomerContacts;
 
 class CreateCustomerContact extends ModalComponent
 {
@@ -39,6 +40,8 @@ class CreateCustomerContact extends ModalComponent
 
     public function mount()
     {
+
+        $this->authorize('viewAny', CustomerContacts::class);        
         $this->customers = $this->customerService()->buildOptionsForCustomerSelect();
         if(\sizeof($this->customers)){
             $this->customers = UI::createArrayforMultiselect($this->customers,'id','name');
@@ -116,8 +119,10 @@ class CreateCustomerContact extends ModalComponent
             'contact_role' => $this->contactRole,
         ];
         if ($this->isUpdate) {
+            $this->authorize('update', CustomerContacts::find($this->customerContactId));
             $service->updateCustomerContact($this->customerContactId, $input);                        
         } else {
+            $this->authorize('create', CustomerContacts::class);
             $service->createCustomerContact($input);            
         }
         $this->resetAll();

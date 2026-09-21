@@ -59,6 +59,7 @@ class CreateServiceLevelAgreement extends ModalComponent
     
     public function mount()
     {
+        
         $this->ui = [
             'title' => 'Create Service Level Agreement (SLA)',
             'confirmText' => 'Create',
@@ -71,6 +72,9 @@ class CreateServiceLevelAgreement extends ModalComponent
 
         if ($this->slaId) {
             $this->loadSLA();
+            $this->authorize('update', $this->sla);
+        }else{
+            $this->authorize('create', serviceLevelAgreements::class);
         }
 
         $this->loadOptions();
@@ -155,8 +159,10 @@ class CreateServiceLevelAgreement extends ModalComponent
         $this->form['service_start_time']=$service->HMSToSeconds($this->form['service_start_time']);
         $this->form['service_end_time']=$service->HMSToSeconds($this->form['service_end_time']);        
         if($this->slaId) {
+            $this->authorize('update', $this->sla);
             $slaService->updateSLA($this->sla, $this->form);
         }else{
+            $this->authorize('create', serviceLevelAgreements::class);
             $slaService->createSLA($this->form);
         }
         $this->closeThisModal();

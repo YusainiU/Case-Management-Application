@@ -25,6 +25,7 @@ class CustomerProfile extends Component
 
     public function mount()
     {
+        $this->authorize('viewAny', Customer::class);
         $this->getCustomer();
         $this->getTabHeaders();        
     }

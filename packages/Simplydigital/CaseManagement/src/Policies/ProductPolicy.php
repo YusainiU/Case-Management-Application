@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Policies;
 
 use App\Models\User;
 use Simplydigital\CaseManagement\Enums\Permissions\ProductPermission;
+use Simplydigital\CaseManagement\Models\Product;
 class ProductPolicy
 {
 
@@ -13,7 +14,8 @@ class ProductPolicy
     }
 
     public function view(
-        User $user
+        User $user,
+        Product $product
     ): bool {
         return $user->can(ProductPermission::View->value);
     }
@@ -24,13 +26,15 @@ class ProductPolicy
     }
 
     public function update(
-        User $user
+        User $user,
+        Product $product
     ): bool {
         return $user->can(ProductPermission::Update->value);
     }
 
     public function delete(
-        User $user
+        User $user,
+        Product $product
     ): bool {
         return $user->can(ProductPermission::Delete->value);
     }    

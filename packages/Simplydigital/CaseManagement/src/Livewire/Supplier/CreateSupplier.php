@@ -36,17 +36,21 @@ class CreateSupplier extends ModalComponent
     ];
 
     public function mount()
-    {
+    {        
+        $this->authorize('create', Supplier::class);
         $this->ui = [
             'title' => 'Create Supplier',
             'confirmText' => 'Create',
         ];
-        if ($this->supplierId) {
+        if ($this->supplierId) {            
             $this->ui = [
                 'title' => 'Update Supplier',
                 'confirmText' => 'Update'
             ];
             $this->loadSupplier();
+            $this->authorize('update', $this->supplier);
+        }else{
+            $this->authorize('create', Supplier::class);
         }
     }
 
@@ -70,6 +74,7 @@ class CreateSupplier extends ModalComponent
 
     public function save()
     {
+
         $this->validate();
 
         $caseSupplierServices = app('case-supplier-services');
@@ -87,8 +92,10 @@ class CreateSupplier extends ModalComponent
         ];
 
         if($this->supplierId){
+            $this->authorize('update', $this->supplier);
             $caseSupplierServices->updateSupplier($this->supplierId, $input);
         } else {
+            $this->authorize('create', Supplier::class);
             $caseSupplierServices->createSupplier($input);
         }
 

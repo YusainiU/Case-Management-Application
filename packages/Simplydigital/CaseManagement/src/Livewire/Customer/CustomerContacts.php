@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Livewire\Customer;
 
 use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
+use Simplydigital\CaseManagement\Models\CustomerContacts as Contacts;
 use Livewire\WithPagination;
 
 class CustomerContacts extends Component
@@ -25,6 +26,11 @@ class CustomerContacts extends Component
         'closeUserProfile' => 'closeProfile',
         'closeUpdateCustomerContactModal' => 'closeUpdateModal',
     ];
+
+    public function mount()
+    {
+        $this->authorize('viewAny', Contacts::class);
+    }
 
     public function closeCreateCustomerContactModal()
     {

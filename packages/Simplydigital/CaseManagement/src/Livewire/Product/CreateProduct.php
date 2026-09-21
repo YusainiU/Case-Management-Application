@@ -4,11 +4,13 @@ namespace Simplydigital\CaseManagement\Livewire\Product;
 
 use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Enums\ProductTypes;
+use Simplydigital\CaseManagement\Models\Product;
 
 class CreateProduct extends ModalComponent
 {
 
     public ?int $productId = null;
+    public ?Product $product = null;
     public $ui = [];
     public $name = '';
     public $product_code = '';
@@ -33,10 +35,13 @@ class CreateProduct extends ModalComponent
 
     public function mount()
     {
+        
         $this->loadTypes();        
         if($this->productId){            
             $this->updateMode();
+            $this->authorize('update', $this->product);        
         }else{
+            $this->authorize('create', Product::class);
             $this->createMode();
         }
     }
@@ -62,7 +67,7 @@ class CreateProduct extends ModalComponent
     public function loadProduct()
     {
         $caseProductServices = app('case-product-services');
-        $product = $caseProductServices->getProductById($this->productId);
+        $product = $this->product = $caseProductServices->getProductById($this->productId);
         if($product){
             $this->name = $product->name;
             $this->product_code = $product->product_code;
@@ -115,8 +120,10 @@ class CreateProduct extends ModalComponent
         ];
         $services = app('case-product-services');
         if($this->productId){
+            $this->authorize('update', $this->product);
             $services->updateProduct($this->productId, $input);
         }else{
+            $this->authorize('create', Product::class);
             $services->createProduct($input);
         }
         $this->closeThisModal();  

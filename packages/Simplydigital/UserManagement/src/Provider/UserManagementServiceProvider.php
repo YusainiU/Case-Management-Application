@@ -35,6 +35,7 @@ class UserManagementServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        
         $this->loadViews();
         $this->loadRoutes();
         $this->registerBladeComponents();
@@ -42,11 +43,13 @@ class UserManagementServiceProvider extends ServiceProvider
         $this->publishMigrations();
         $this->publishConfig();
         $this->publishResources();
+        $this->loadPolicies();
+
     }
 
     public function loadPolicies()
     {
-        Gate::before(function ($user, $ability) {
+        Gate::before(function ($user, $ability) {         
             return $user->hasRole('Super Admin')
                 ? true
                 : null;

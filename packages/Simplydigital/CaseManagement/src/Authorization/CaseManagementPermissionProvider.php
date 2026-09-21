@@ -48,7 +48,6 @@ class CaseManagementPermissionProvider implements PermissionProvider
                 description: 'View customer contacts',
                 group: 'Customer Contacts',
             ),
-
             new PermissionDefinition(
                 name: CustomerContactPermission::Create->value,
                 description: 'Create customer contacts',

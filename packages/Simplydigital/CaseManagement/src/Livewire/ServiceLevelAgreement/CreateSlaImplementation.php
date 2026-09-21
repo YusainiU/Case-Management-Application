@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement;
 
 use LivewireUI\Modal\ModalComponent;
 use Simplydigital\CaseManagement\Models\slaApplication;
+use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Services\CaseServiceLevelAgreement;
 use Simplydigital\CaseManagement\Services\CaseSLAPService;
@@ -32,6 +33,7 @@ class CreateSlaImplementation extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('create', serviceLevelAgreements::class);
         $this->ui = [
             'title' => 'Implement SLA',
             'confirmText' => 'Create',
@@ -133,6 +135,8 @@ class CreateSlaImplementation extends ModalComponent
         // }catch(ValidationException $e){
         //     $this->message = $e->validator->errors();
         // }
+
+        $this->authorize('create', serviceLevelAgreements::class);
 
         $this->validate();
 

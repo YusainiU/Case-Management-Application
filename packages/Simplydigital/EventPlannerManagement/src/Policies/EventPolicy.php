@@ -3,7 +3,7 @@
 namespace Simplydigital\EventPlannerManagement\Policies;
 
 use App\Models\User;
-use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\EventPlannerManagement\Models\PlannerEvent;
 use Simplydigital\EventPlannerManagement\Enums\Permissions\EventPermission;
 class EventPolicy
 {
@@ -15,7 +15,7 @@ class EventPolicy
 
     public function view(
         User $user,
-        tickets $case
+        PlannerEvent $event
     ): bool {
         return $user->can(EventPermission::View->value);
     }
@@ -27,14 +27,14 @@ class EventPolicy
 
     public function update(
         User $user,
-        tickets $case
+        PlannerEvent $event
     ): bool {
         return $user->can(EventPermission::Update->value);
     }
 
     public function delete(
         User $user,
-        tickets $case
+        PlannerEvent $event
     ): bool {
         return $user->can(EventPermission::Delete->value);
     }    

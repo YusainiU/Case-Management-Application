@@ -16,6 +16,7 @@ class CustomerSummary extends ModalComponent
     
     public function mount(int $customerId)
     {
+        $this->authorize('viewAny', Customer::class);
         $this->customerId = $customerId;
         $this->loadCustomer();
     }

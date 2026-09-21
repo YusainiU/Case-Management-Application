@@ -13,9 +13,10 @@ class DeleteCustomer extends ModalComponent
     public ?string $deleteText = null;
 
     public function mount()
-    {
+    {        
         $this->getCustomer();
         $this->deleteText = "Delete For Customer has not been built yet";
+        $this->authorize('delete', $this->customer);
     }
 
     public function getCustomer()
@@ -26,6 +27,7 @@ class DeleteCustomer extends ModalComponent
     
     public function deleteCustomer()
     {
+        $this->authorize('delete', $this->customer);
         $this->dispatch('closeDeleteAndRedirect');
     }
 

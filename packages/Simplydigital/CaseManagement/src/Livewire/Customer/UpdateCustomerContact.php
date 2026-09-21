@@ -34,10 +34,11 @@ class UpdateCustomerContact extends ModalComponent
     }
 
     public function mount()
-    {
+    {   
+        $this->authorize('viewAny', CustomerContacts::class);     
         $this->loadCustomerContact();
         $this->loadCustomers();
-        $this->contactRoles = CustomerContactRoles::options();
+        $this->contactRoles = CustomerContactRoles::options();        
     }
 
     public function closeThisModal()
@@ -68,6 +69,7 @@ class UpdateCustomerContact extends ModalComponent
 
     public function save()
     {
+        $this->authorize('update', $this->customerContact);
         $this->validate();
 
         $inputData = [

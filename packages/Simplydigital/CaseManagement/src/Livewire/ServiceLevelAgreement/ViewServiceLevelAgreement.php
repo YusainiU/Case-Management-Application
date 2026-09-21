@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement;
 
 use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseServiceLevelAgreement;
+use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Livewire\WithPagination;
 
 class ViewServiceLevelAgreement extends Component
@@ -25,6 +26,11 @@ class ViewServiceLevelAgreement extends Component
         'closeUpdateSLAModal' => 'closeUpdateModal',
         'closeProfileModal' => 'closeProfileModal',
     ];
+
+    public function mount()
+    {
+        $this->authorize('viewAny', ServiceLevelAgreements::class);
+    }
 
     protected function slaService(): CaseServiceLevelAgreement
     {

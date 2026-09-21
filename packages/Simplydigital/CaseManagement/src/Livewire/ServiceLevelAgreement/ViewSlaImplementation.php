@@ -3,7 +3,7 @@
 namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement;
 
 use Livewire\Component;
-use Simplydigital\CaseManagement\Services\CaseServiceLevelAgreement;
+use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Services\CaseSLAPService;
 
@@ -32,6 +32,11 @@ class ViewSlaImplementation extends Component
         'closeProfileSLAPModal' => 'closeProfileModal',
         'closeProfileModal' => 'closeProfileModal',
     ];
+
+    public function mount()
+    {
+        $this->authorize('viewAny', ServiceLevelAgreements::class);
+    }
 
     protected function slapService(): CaseSLAPService
     {

@@ -9,6 +9,7 @@ use Simplydigital\CaseManagement\Models\Customer;
 use Simplydigital\CaseManagement\Services\FileUploadService;
 use Simplydigital\FileUploadManagement\Exceptions\FileUploadException;
 use Simplydigital\FileUploadManagement\Models\UploadedFile as UploadedAttachment;
+use Simplydigital\CaseManagement\Models\CustomerContacts;
 
 class CustomerFiles extends Component
 {
@@ -16,7 +17,12 @@ class CustomerFiles extends Component
     use WithFileUploads;
 
     public Customer $customer;
-    public ?UploadedFile $attachment = null;    
+    public ?UploadedFile $attachment = null;
+    
+    public function mount()
+    {
+        $this->authorize('view', $this->customer);
+    }
 
     public function removeAttachment(UploadedAttachment $attachment)
     {
@@ -40,6 +46,10 @@ class CustomerFiles extends Component
 
     public function uploadAttachment(): void
     {
+
+        $this->authorize('update', $this->customer);
+        $this->authorize('create', UploadedAttachment::class);
+
         $this->validate([
             'attachment' => [
                 'required',

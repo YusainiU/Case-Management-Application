@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Livewire\Component;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\EventPlannerManagement\Services\PlannerService;
+use Simplydigital\EventPlannerManagement\Models\PlannerEvent;
 
 class Planner extends Component
 {
@@ -26,6 +27,7 @@ class Planner extends Component
 
     public function mount(): void
     {
+        $this->authorize('viewAny', PlannerEvent::class);
         $this->date = now()->toDateString();
     }
 

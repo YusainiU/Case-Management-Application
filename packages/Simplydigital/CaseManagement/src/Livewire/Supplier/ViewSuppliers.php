@@ -23,6 +23,11 @@ class ViewSuppliers extends Component
         'closeProfileModal' => 'closeProfileModal',
     ];
 
+    public function mount()
+    {
+        $this->authorize('viewAny', Supplier::class);
+    }
+
     public function closeCreateModal()
     {
         $this->displayCreateModal = false;

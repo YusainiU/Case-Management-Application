@@ -39,12 +39,15 @@ class CreateCustomer extends ModalComponent
     ];
 
     public function mount()
-    {
+    {        
         $this->primaryTypes = CustomerPrimaryTypes::options();
         $this->childTypes = CustomerChildTypes::options();
         $this->customers = $this->getAllActiveCustomers();
         if($this->customerId){
             $this->getCustomer();
+            $this->authorize('update', $this->customers);
+        }else{
+            $this->authorize('create', Customer::class);
         }
     }
 
@@ -93,6 +96,7 @@ class CreateCustomer extends ModalComponent
 
     public function save()
     {
+
         $this->validate();
         
         $input = [
@@ -114,9 +118,11 @@ class CreateCustomer extends ModalComponent
         }
 
         if($this->customerId){
+            $this->authorize('update', $this->customer);
             $this->customer->update($input);
             $this->closeThisModal();
         }else{
+            $this->authorize('create', Customer::class);
             $new = Customer::create($input);
             return redirect()->route('casemanagement.customer.profile', $new->id);
         }

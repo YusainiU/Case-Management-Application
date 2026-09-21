@@ -13,6 +13,7 @@ class ProductProfile extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', Product::class);
         $caseProductServices = app('case-product-services');
         $this->product = $caseProductServices->getProductById($this->productId);
         $this->buildProfileItems();

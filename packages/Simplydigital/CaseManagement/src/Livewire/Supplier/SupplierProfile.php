@@ -14,6 +14,7 @@ class SupplierProfile extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', Supplier::class);
         $caseSupplierServices = app('case-supplier-services');
         $this->supplier = $caseSupplierServices->getSupplierById($this->supplierId);
         $this->buildProfileItems();

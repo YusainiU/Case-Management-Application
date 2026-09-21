@@ -3,6 +3,7 @@
 namespace Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement;
 
 use LivewireUI\Modal\ModalComponent;
+use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Services\CaseSLAPService;
 use Simplydigital\CaseManagement\Models\slaApplication;
 
@@ -16,6 +17,7 @@ class ImplementationProfile extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', serviceLevelAgreements::class);
         $this->loadSLAP();
     }
 
