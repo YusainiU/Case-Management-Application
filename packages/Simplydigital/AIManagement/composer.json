@@ -1,0 +1,29 @@
+{
+    "name": "simplydigital/ai-management",
+    "description": "AI management functionality for Simplydigital applications",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.2",
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/database": "^10.0|^11.0|^12.0",
+        "illuminate/http": "^11.0|^12.0",
+        "illuminate/support": "^12.0",
+        "livewire/livewire": "^3.5.4",
+        "spatie/laravel-permission": "^6.24"
+    },
+    "autoload": {
+        "psr-4": {
+            "Simplydigital\\AIManagement\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Simplydigital\\AIManagement\\Providers\\AIManagementServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

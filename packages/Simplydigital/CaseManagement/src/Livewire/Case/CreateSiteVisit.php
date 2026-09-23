@@ -65,7 +65,7 @@ class CreateSiteVisit extends ModalComponent
 
     public function mount()
     {
-        $this->authorise('viewAny', tickets::class);
+        $this->authorize('viewAny', tickets::class);
         $this->checkCaseExists();
         $this->initialize();
     }
