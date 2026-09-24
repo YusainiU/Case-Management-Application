@@ -69,7 +69,7 @@ class CaseAssistantPrompt
 
         ASSET
 
-            {$this->formatAsset($context->asset)}
+            {$this->formatAsset($context->assets)}
 
         CASE COMMENTS
 
@@ -107,16 +107,23 @@ class CaseAssistantPrompt
         @param array<string, mixed> $asset
     */
 
-   protected function formatAsset(array $asset): string
+   protected function formatAsset(array $assets): string
    {
 
-       if ($asset === []) {
+       if ($assets === []) {
            return 'No asset information supplied.';
        }
 
-       return collect($asset)
-           ->map( fn ($value, $key) => "{$key}: {$value}")
-           ->implode("n");
+    return collect($assets)
+        ->map(function (array $asset) {
+            return \sprintf(
+                '- %s (Type: %s, Serial: %s)',
+                $asset['name'] ?? 'Unknown',
+                $asset['type'] ?? 'Unknown',
+                $asset['serial_number'] ?? 'Unknown',
+            );
+        })
+        ->implode("\n");
 
    }
 

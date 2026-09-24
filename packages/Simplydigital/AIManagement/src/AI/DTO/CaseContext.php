@@ -27,7 +27,7 @@ final readonly class CaseContext
 
        public array $customer = [],
 
-       public array $asset = [],
+       public array $assets = [],
 
        public array $comments = [],
 

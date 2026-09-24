@@ -1,5 +1,7 @@
 <?php
 
+namespace Simplydigital\AIManagement\AI\Contracts;
+
 interface AIService
 {
     /**

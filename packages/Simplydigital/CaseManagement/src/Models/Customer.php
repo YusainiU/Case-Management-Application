@@ -2,6 +2,7 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use League\Flysystem\FilesystemReader;
 use Simplydigital\CaseManagement\Enums\CustomerChildTypes;
 use Simplydigital\CaseManagement\Enums\CustomerPrimaryTypes;
@@ -32,6 +33,10 @@ class Customer extends Model implements FileOwner
         'portal_enabled',
     ];
 
+    public function assets()
+    {
+        return $this->hasMany(Asset::class, 'customer_id');
+    }
 
     protected static function newFactory()
     {
