@@ -23,6 +23,13 @@
             <span class="font-bold block mb-4">Case Description:</span>
             {{ $case->description }}
         </x-casemanagement::page-elements.paragraph>
+
+        {{-- <x-casemanagement::page-elements.paragraph>
+            @can('case-assistant.view', $case)
+                <livewire:ai-management.case-assistant :case="$case" />
+            @endcan
+        </x-casemanagement::page-elements.paragraph> --}}
+
         <x-casemanagement::page-elements.seperator margin="0" />
         <x-casemanagement::page-elements.tab 
             :tabHeaders=$tabHeaders

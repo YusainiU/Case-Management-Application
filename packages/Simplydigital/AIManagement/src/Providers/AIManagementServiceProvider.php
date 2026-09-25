@@ -3,6 +3,7 @@
 namespace Simplydigital\AIManagement\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Simplydigital\AIManagement\AI\Contracts\AIService;
 use Simplydigital\AIManagement\AI\Prompts\CaseAssistantPrompt;
 use Simplydigital\AIManagement\AI\Providers\OpenAIService;
@@ -63,7 +64,9 @@ class AIManagementServiceProvider extends ServiceProvider
 
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
-        $this->loadViewsFrom(__DIR__.'/../Resources/views', 'ai-management');
+        $this->loadViewsFrom(__DIR__.'/../Resources/views', 'ai-management');  
+        
+        Livewire::component('ai-management.case-assistant', CaseAssistant::class);        
 
     }
 }

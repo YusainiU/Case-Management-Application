@@ -8,12 +8,13 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use PHPUnit\Framework\Assert;
+use Simplydigital\AIManagement\Authorization\Permissions\AIPermission;
+use Simplydigital\AIManagement\Livewire\CaseAssistant;
 use Simplydigital\CaseManagement\Authorization\CaseManagementPermissionProvider;
-
+use Simplydigital\CaseManagement\Enums\Permissions\CasePermission;
 use Simplydigital\CaseManagement\Events\CasePlannerEventProvider;
 use Simplydigital\CaseManagement\Events\SiteVisitEventProvider;
 use Simplydigital\CaseManagement\Events\SlaExpiryEventProvider;
-
 use Simplydigital\CaseManagement\Livewire\Asset\AssetProfile;
 use Simplydigital\CaseManagement\Livewire\Asset\CreateAsset;
 use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
@@ -31,6 +32,7 @@ use Simplydigital\CaseManagement\Livewire\Case\ManageCaseSLA;
 use Simplydigital\CaseManagement\Livewire\Case\ViewCases;
 use Simplydigital\CaseManagement\Livewire\Case\ViewSiteVisit;
 use Simplydigital\CaseManagement\Livewire\Case\ViewSlaPause;
+use Simplydigital\CaseManagement\Livewire\Case\CaseAssistant as CaseAssistantComponent;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomerContact;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerContacts;
@@ -52,31 +54,25 @@ use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewSlaImplement
 use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
 use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
 use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
-
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
-
 use Simplydigital\CaseManagement\Models\Customer;
 use Simplydigital\CaseManagement\Models\Product;
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Models\Supplier;
 use Simplydigital\CaseManagement\Models\tickets;
-
+use Simplydigital\CaseManagement\Policies\AssetPolicy;
 use Simplydigital\CaseManagement\Policies\CasePolicy;
 use Simplydigital\CaseManagement\Policies\CustomerContactPolicy;
 use Simplydigital\CaseManagement\Policies\CustomerPolicy;
 use Simplydigital\CaseManagement\Policies\ProductPolicy;
 use Simplydigital\CaseManagement\Policies\ServiceLevelAgreementPolicy;
 use Simplydigital\CaseManagement\Policies\SupplierPolicy;
-use Simplydigital\CaseManagement\Policies\AssetPolicy;
-
-
 use Simplydigital\CaseManagement\Services\CaseAssetServices;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Simplydigital\CaseManagement\Services\CaseProductService;
 use Simplydigital\CaseManagement\Services\CaseSupplierService;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
-
 use Simplydigital\CaseManagement\View\Components\Icon;
 use Simplydigital\EventPlannerManagement\Facade\PlannerFacade;
 use Simplydigital\UserManagement\Services\PermissionRegistry;
@@ -122,6 +118,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         'close-and-resolve-case' => CloseAndResolveCase::class,
         'dashboard' => Dashboard::class,
         'customer-files' => CustomerFiles::class,
+        'case-assistant' => CaseAssistantComponent::class,
     ];
 
     private array $services = [
@@ -178,7 +175,7 @@ class CaseManagementServiceProvider extends ServiceProvider
     public function loadPolicies()
     {
         Gate::policy(
-            Customer::class, 
+            Customer::class,
             CustomerPolicy::class
         );
         Gate::policy(
@@ -196,7 +193,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         Gate::policy(
             Product::class,
             ProductPolicy::class
-        );        
+        );
         Gate::policy(
             serviceLevelAgreements::class,
             ServiceLevelAgreementPolicy::class
@@ -204,7 +201,19 @@ class CaseManagementServiceProvider extends ServiceProvider
         Gate::policy(
             Assert::class,
             AssetPolicy::class
-        );                         
+        );
+
+        Gate::define(
+            'case-assistant.analyze',
+            function ($user, $case) {
+                return $user->can(
+                    AIPermission::CaseAssistantAnalyze->value
+                )
+                    && $user->can(
+                        CasePermission::View->value
+                    );
+            }
+        );
     }
 
     public function loadEventPlanner()
