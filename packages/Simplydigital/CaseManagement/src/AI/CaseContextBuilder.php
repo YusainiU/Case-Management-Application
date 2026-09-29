@@ -18,7 +18,7 @@ class CaseContextBuilder
                     'id' => $assets->number,
                     'name' => $assets->product->name,
                     'serial_number' => $assets->number,
-                    'type' => $assets->product->type,
+                    'type' => $assets?->product->type->value,
                 ])
                 ->values()
                 ->all();

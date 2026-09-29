@@ -7,9 +7,11 @@ use Livewire\Livewire;
 use Simplydigital\AIManagement\AI\Contracts\AIService;
 use Simplydigital\AIManagement\AI\Prompts\CaseAssistantPrompt;
 use Simplydigital\AIManagement\AI\Providers\OpenAIService;
+use Simplydigital\AIManagement\AI\Providers\DeepSeekService;
 use Simplydigital\AIManagement\AI\Services\CaseAssistant;
 use Simplydigital\AIManagement\Authorization\AIPermissionProvider;
 use Simplydigital\UserManagement\Services\PermissionRegistry;
+use Simplydigital\AIManagement\Livewire\CaseAssistant as CaseAssistantLivewire;
 
 class AIManagementServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,7 @@ class AIManagementServiceProvider extends ServiceProvider
                     config('ai-management.provider')
                 ) {
                     'openai' => $app->make(OpenAIService::class),
+                    'deepseek' => $app->make(DeepSeekService::class),                    
                     default => throw new \RuntimeException(
                         'Unsupported AI provider: '.config('ai-management.provider')
                     ),
@@ -66,7 +69,7 @@ class AIManagementServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'ai-management');  
         
-        Livewire::component('ai-management.case-assistant', CaseAssistant::class);        
-
+        Livewire::component('ai-management.case-assistant', CaseAssistantLivewire::class);
+          
     }
 }

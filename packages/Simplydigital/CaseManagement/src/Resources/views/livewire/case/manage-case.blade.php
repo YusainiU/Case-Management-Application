@@ -25,7 +25,7 @@
         </x-casemanagement::page-elements.paragraph>
 
         {{-- <x-casemanagement::page-elements.paragraph>
-            @can('case-assistant.view', $case)
+            @can('ai.case_assistant.view', $case)
                 <livewire:ai-management.case-assistant :case="$case" />
             @endcan
         </x-casemanagement::page-elements.paragraph> --}}
@@ -74,6 +74,13 @@
             @if($tabHeaders[$this->selectedTab] == $tabHeaders['uploaded'])
                 @include('casemanagement::components.form-elements.upload-file')
             @endif
+
+            @can('ai.case_assistant.view', $case)
+                @if($tabHeaders[$this->selectedTab] == $tabHeaders['caseAssistant'])                            
+                    <livewire:ai-management.case-assistant :case="$case" />
+                @endif
+            @endcan                
+        
 
         </x-casemanagement::page-elements.tab>
 

@@ -5,6 +5,7 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 use Illuminate\Http\UploadedFile;
 use Livewire\WithFileUploads;
 use LivewireUI\Modal\ModalComponent;
+use phpDocumentor\Reflection\Types\Object_;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\FileUploadService;
@@ -18,6 +19,8 @@ class ManageCase extends ModalComponent
     public ?tickets $case = null;
 
     public ?UploadedFile $attachment = null;
+    
+    public UploadedAttachment $uploadedAttachment;
 
     public ?string $message = null;
 
@@ -33,6 +36,7 @@ class ManageCase extends ModalComponent
         'close' => 'Close & Resolve',
         'tracker' => 'Changes Tracker',
         'uploaded' => 'Upload Files',
+        'caseAssistant' => 'Case Assistant (AI)',
     ];
 
     public string $selectedTab = 'sla';

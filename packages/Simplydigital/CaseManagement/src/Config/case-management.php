@@ -54,6 +54,7 @@ return [
         'childs' => 'Child Companies',
         'sla' => 'Service Level Agreement',
         'upload' => 'Uploaded Files',
+        'caseAssistant' => 'Case Assistant (AI)',
     ],
 
     /*

@@ -13,12 +13,10 @@ use Simplydigital\CaseManagement\AI\CaseAssistantService;
 class CaseAssistant extends Component
 {
     public object $case;
-
     public ?int $analysisId = null;
-
     public ?CaseAssistantResult $result = null;
-
     public bool $analyzing = false;
+    public ?AIAnalysis $analysis = null;
 
     public function mount(object $case): void
     {
@@ -78,9 +76,11 @@ class CaseAssistant extends Component
             return;
         }
 
+        $this->analysis = $analysis;
+
         $this->analysisId = $analysis->id;
 
-        if ($analysis->status === 'completed') {
+        if ($analysis->status === AIStatuses::Completed->value) {
             $this->result = CaseAssistantResult::fromArray(
                 $analysis->result ?? []
             );

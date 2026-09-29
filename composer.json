@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.10.1",
         "livewire/flux": "^2.1.1",
         "livewire/volt": "^1.7.0",
+        "simplydigital/ai-management": "@dev",
         "simplydigital/casemanagement": "dev-main",
         "simplydigital/engineermanagement": "dev-main",
         "simplydigital/eventplannermanagement": "dev-main",
@@ -81,7 +82,11 @@
             "options": {
                 "symlink": true
             }
-        }
+        },
+        {
+            "type": "path",
+            "url": "packages/Simplydigital/AIManagement"
+        }        
     ],
     "autoload": {
         "psr-4": {

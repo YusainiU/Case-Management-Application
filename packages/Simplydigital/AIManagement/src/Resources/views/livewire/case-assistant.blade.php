@@ -1,62 +1,64 @@
-<div
-    wire:poll.3s="refreshAnalysis"
-    class="space-y-6"
->
+<div wire:poll.3s="refreshAnalysis" class="space-y-6">
     <div class="flex items-center justify-between">
+
         <div>
-            <h2 class="text-lg font-semibold">
+            <h2 class="text-lg font-semibold text-gray-600">
                 AI Case Assistant
             </h2>
 
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-gray-600 mt-4">
                 AI-generated suggestions based on the case information.
             </p>
         </div>
 
         @can('case-assistant.analyze', $case)
-            <button
-                type="button"
-                wire:click="analyze"
-                wire:loading.attr="disabled"
-                class="rounded-md px-4 py-2 text-sm font-medium"
-            >
-                <span wire:loading.remove wire:target="analyze">
-                    Analyze Case
-                </span>
+            <button type="button" wire:click="analyze" wire:loading.attr="disabled"
+                class="rounded-md px-4 py-2 text-sm font-medium bg-blue-600 text-gray-200">
+                <div>
+                    <span wire:loading.remove wire:target="analyze">
+                        Analyze Case
+                    </span>
 
-                <span wire:loading wire:target="analyze">
-                    Starting...
-                </span>
+                    <span wire:loading wire:target="analyze">
+                        Starting...
+                    </span>
+                </div>
             </button>
         @endcan
     </div>
 
-    @if ($analysis?->status === 'pending')
-        <div class="rounded-md border p-4">
-            AI analysis is waiting to start...
-        </div>
-    @endif
+    <div class="text-gray-600">
+        @if ($analysis?->status === 'pending')
+            <div class="rounded-md border p-4 border-gray-500">
+                AI analysis is waiting to start...
+            </div>
+        @endif
 
-    @if ($analysis?->status === 'processing')
-        <div class="rounded-md border p-4">
-            AI is analyzing this case...
-        </div>
-    @endif
+        @if ($analysis?->status === 'processing')
+            <div class="rounded-md border p-4 border-gray-500">
+                AI is analyzing this case...
+            </div>
+        @endif
 
-    @if ($analysis?->status === 'failed')
-        <div class="rounded-md border p-4">
-            <p class="font-medium">
-                AI analysis failed.
-            </p>
+        @if ($analysis?->status === 'failed')
+            <div class="rounded-md border p-4 border-gray-500">
+                <p class="font-medium text-red-600">
+                    AI analysis failed.
+                </p>
 
-            <p class="mt-1 text-sm">
-                Please try again.
-            </p>
-        </div>
-    @endif
+                <p class=" text-red-600 text-sm italic my-3">
+                    {{ $analysis->error }}
+                </p>                
+
+                <p class="mt-1 text-sm">
+                    Please try again.
+                </p>
+            </div>
+        @endif
+    </div>
 
     @if ($result)
-        <div class="space-y-6">
+        <div class="space-y-6 text-gray-600">
 
             {{-- Summary --}}
             <section>
@@ -107,10 +109,8 @@
                 </h3>
 
                 <ul class="mt-3 space-y-2">
-                    @forelse (
-                        $result->suggestedNextActions
-                        as $action
-                    )
+                    @forelse ($result->suggestedNextActions
+                        as $action)
                         <li class="rounded-md border p-3">
                             {{ $action }}
                         </li>
@@ -135,11 +135,8 @@
                         </div>
                     </div>
 
-                    @can('case-assistant.apply', $case)
-                        <button
-                            type="button"
-                            class="mt-3 rounded-md border px-4 py-2 text-sm"
-                        >
+                    @can('ai.case_assistant.apply', $case)
+                        <button type="button" class="mt-3 rounded-md border px-4 py-2 text-sm">
                             Use Draft
                         </button>
                     @endcan

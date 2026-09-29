@@ -79,6 +79,7 @@ class FileUploadManagementServiceProvider extends ServiceProvider
         $this->loadPolicies();
 
         if ($this->app->runningInConsole()) {
+
             $this->publishes([
                 __DIR__ . '/../../config/fileupload.php'
                     => config_path('fileupload.php'),
@@ -93,6 +94,7 @@ class FileUploadManagementServiceProvider extends ServiceProvider
                 __DIR__ . '/../Resources/views'
                     => resource_path('views/vendor/fileupload'),
             ], 'fileupload-views');
+            
         }
     }
 
