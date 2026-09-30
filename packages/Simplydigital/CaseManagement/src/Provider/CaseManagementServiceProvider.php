@@ -214,6 +214,19 @@ class CaseManagementServiceProvider extends ServiceProvider
                     );
             }
         );
+
+
+        Gate::define(
+            'case-assistant.apply',
+            function ($user, $case) {
+                return $user->can(
+                    AIPermission::CaseAssistantApply->value
+                )
+                    && $user->can(
+                        CasePermission::View->value
+                    );
+            }
+        );        
     }
 
     public function loadEventPlanner()

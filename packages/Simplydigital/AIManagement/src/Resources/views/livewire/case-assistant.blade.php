@@ -137,11 +137,11 @@
                         </div>
                     </div>
 
-                    @can('ai.case_assistant.apply', $case)
-                        <button type="button" class="mt-3 rounded-md border px-4 py-2 text-sm">
-                            Use Draft
-                        </button>
-                    @endcan
+                    
+                    <button type="button" class="mt-3 rounded-md border px-4 py-2 text-sm">
+                        Use Draft
+                    </button>
+                    
                 @else
                     <p class="mt-2 text-sm text-gray-500">
                         No response draft was generated.
