@@ -12,18 +12,20 @@
         </div>
 
         @can('case-assistant.analyze', $case)
-            <button type="button" wire:click="analyze" wire:loading.attr="disabled"
-                class="rounded-md px-4 py-2 text-sm font-medium bg-blue-600 text-gray-200">
-                <div>
-                    <span wire:loading.remove wire:target="analyze">
-                        Analyze Case
-                    </span>
+            @if (!$result)
+                <button type="button" wire:click="analyze" wire:loading.attr="disabled"
+                    class="rounded-md px-4 py-2 text-sm font-medium bg-blue-600 text-gray-200">
+                    <div>
+                        <span wire:loading.remove wire:target="analyze">
+                            Analyze Case
+                        </span>
 
-                    <span wire:loading wire:target="analyze">
-                        Starting...
-                    </span>
-                </div>
-            </button>
+                        <span wire:loading wire:target="analyze">
+                            Starting...
+                        </span>
+                    </div>
+                </button>
+            @endif
         @endcan
     </div>
 
@@ -48,7 +50,7 @@
 
                 <p class=" text-red-600 text-sm italic my-3">
                     {{ $analysis->error }}
-                </p>                
+                </p>
 
                 <p class="mt-1 text-sm">
                     Please try again.
@@ -66,8 +68,8 @@
                     Summary
                 </h3>
 
-                <p class="mt-2 text-sm">
-                    {{ $result->summary }}
+                <p class="mt-2 text-sm border border-gray-400 p-2.5">
+                    {{ $result['summary'] }}
                 </p>
             </section>
 
@@ -79,23 +81,23 @@
 
                 <div class="mt-3 grid grid-cols-2 gap-4">
 
-                    <div class="rounded-md border p-4">
+                    <div class="rounded-md border p-4  border-gray-400">
                         <div class="text-xs text-gray-500">
                             Category
                         </div>
 
                         <div class="mt-1 font-medium">
-                            {{ $result->suggestedCategory ?? 'No suggestion' }}
+                            {{ $result['suggested_category'] ?? 'No suggestion' }}
                         </div>
                     </div>
 
-                    <div class="rounded-md border p-4">
+                    <div class="rounded-md border p-4 border-gray-400">
                         <div class="text-xs text-gray-500">
                             Priority
                         </div>
 
                         <div class="mt-1 font-medium">
-                            {{ $result->suggestedPriority ?? 'No suggestion' }}
+                            {{ $result['suggested_priority'] ?? 'No suggestion' }}
                         </div>
                     </div>
 
@@ -108,8 +110,8 @@
                     Suggested Next Actions
                 </h3>
 
-                <ul class="mt-3 space-y-2">
-                    @forelse ($result->suggestedNextActions
+                <ul class="mt-3 space-y-2 border-gray-400 border p-4">
+                    @forelse ($result["suggested_next_actions"]
                         as $action)
                         <li class="rounded-md border p-3">
                             {{ $action }}
@@ -128,10 +130,10 @@
                     Customer Response Draft
                 </h3>
 
-                @if ($result->customerResponseDraft)
-                    <div class="mt-3 rounded-md border p-4">
+                @if ($result['customer_response_draft'])
+                    <div class="mt-3 rounded-md border p-4 border-gray-400">
                         <div class="whitespace-pre-line text-sm">
-                            {{ $result->customerResponseDraft }}
+                            {{ $result['customer_response_draft'] }}
                         </div>
                     </div>
 
@@ -148,14 +150,14 @@
             </section>
 
             {{-- Warnings --}}
-            @if (count($result->warnings))
+            @if (count($result['warnings']))
                 <section>
                     <h3 class="font-semibold">
                         Warnings
                     </h3>
 
-                    <ul class="mt-3 space-y-2">
-                        @foreach ($result->warnings as $warning)
+                    <ul class="mt-3 space-y-2 border-gray-400 border p-4">
+                        @foreach ($result['warnings'] as $warning)
                             <li class="rounded-md border p-3 text-sm">
                                 {{ $warning }}
                             </li>
