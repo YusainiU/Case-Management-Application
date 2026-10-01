@@ -1,4 +1,4 @@
-# Engineer Management
+# Case Management Application
 
 A Laravel 12 monorepo for Simplydigital operational and internal management modules, built with Livewire, Fortify, and modular package-based architecture.
 
