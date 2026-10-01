@@ -80,24 +80,66 @@ Before you begin, ensure you have:
 composer install
 ```
 
-2. Install frontend dependencies:
+1. Install frontend dependencies:
 
 ```bash
 npm install
 ```
 
-3. Configure your environment:
+1. Configure your environment:
 
 - Update `.env` with your application key, database credentials, and app URL if needed.
 - Ensure the database exists and is accessible.
+- To use Email Notification make sure to configure the Mail Mailer
+- These are some of the parameters for the applications
 
-4. Run the database migrations:
+```text
+
+# Migration Configuration
+
+AUDIT_AUTO_MIGRATION=true
+
+# Retention Configuration
+
+AUDIT_RETENTION_ENABLED=false
+AUDIT_RETENTION_DAYS=365
+AUDIT_RETENTION_STRATEGY=delete
+AUDIT_RETENTION_BATCH_SIZE=1000
+AUDIT_ANONYMIZE_DAYS=180
+AUDIT_ARCHIVE_CONNECTION=null
+AUDIT_AUTO_CLEANUP=false
+
+# File upload Configuration
+
+FILEUPLOAD_DISK=local
+FILEUPLOAD_ROOT=uploads
+FILEUPLOAD_MAX_SIZE=10240
+
+# Select AI Provider - below are two examples
+
+# Example AI Providers - OPEN AI
+AI_MANAGEMENT_PROVIDER=openai
+AI_MANAGEMENT_MODEL=gpt-5.6-luna
+AI_CASE_ASSISTANT_ENABLED=true
+AI_CASE_ASSISTANT_QUEUE=
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_API_KEY=
+
+# Example AI Provider - DEEPSEEK
+AI_MANAGEMENT_PROVIDER=deepseek
+AI_MANAGEMENT_MODEL=deepseek-flash
+DEEPSEEK_API_KEY=
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+
+```
+
+1. Run the database migrations:
 
 ```bash
 php artisan migrate
 ```
 
-5. Start the application:
+1. Start the application:
 
 For the full dev environment:
 
@@ -125,26 +167,6 @@ The monorepo includes the following package modules:
 - `UserManagement` — user access and administration
 
 These packages are registered through Composer path repositories in the root `composer.json`, which makes them easy to work on locally without publishing them to a package registry.
-
-## Development workflow
-
-### Run tests
-
-```bash
-php artisan test
-```
-
-### Build frontend assets
-
-```bash
-npm run build
-```
-
-### Check formatting
-
-```bash
-./vendor/bin/pint
-```
 
 ## Contributing
 
