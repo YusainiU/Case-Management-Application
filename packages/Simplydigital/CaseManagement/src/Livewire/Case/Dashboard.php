@@ -6,6 +6,9 @@ use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\tickets;
+use Livewire\Attributes\Layout;
+
+#[Layout('components.layouts.app')]
 class Dashboard extends Component
 {
 
@@ -37,27 +40,6 @@ class Dashboard extends Component
     {
         $status = [];
         $cases = $this->getTicketStatuses();
-        /*
-        Example ...
-            "numberOfUrgentLogs" => 0
-            "lastUrgentLogCreatedAt" => null
-            "lastCustomerLogCreatedAt" => null
-            "totalVisits" => 0
-            "totalVisited" => 0
-            "currentlyEnroute" => 0
-            "currentlyOnsite" => 0
-            "visitScheduled" => false
-            "respondBy" => "26-05-2026 09:42"
-            "fixBy" => "26-05-2026 11:42"
-            "respondedAt" => null
-            "fixedAt" => null
-            "taskBreached" => 1
-            "breachType" => ""
-            "closeToBreachWarning" => 0
-            "resolved" => null
-            "currentlyWorking" => false
-            "closed" => false
-        */
         
         $status['unassigned'] = collect($cases)->sum('unassigned');
         $status['noUpdate'] = collect($cases)->sum('noUpdate');
