@@ -14,7 +14,7 @@ The application is designed to support a set of management workflows, including:
 - Event planning
 - Notifications
 - File upload handling
-- AI-powered tooling
+- AI-powered tooling (Case Assistant)
 
 The base application is a Laravel app, and the business capabilities are split into focused package modules to keep the codebase maintainable and scalable.
 
