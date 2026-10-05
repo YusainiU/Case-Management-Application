@@ -10,6 +10,9 @@ use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Models\Customer;
 use Livewire\Attributes\Url;
+use Livewire\Attributes\Layout;
+
+#[Layout('components.layouts.app')]
 class ViewCases extends Component
 {
     use WithPagination;

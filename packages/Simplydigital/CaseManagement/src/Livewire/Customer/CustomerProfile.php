@@ -4,7 +4,9 @@ namespace Simplydigital\CaseManagement\Livewire\Customer;
 
 use Livewire\Component;
 use Simplydigital\CaseManagement\Models\Customer;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class CustomerProfile extends Component
 {
 

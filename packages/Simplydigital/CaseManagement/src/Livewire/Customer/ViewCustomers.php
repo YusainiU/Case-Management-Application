@@ -5,7 +5,9 @@ namespace Simplydigital\CaseManagement\Livewire\Customer;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Models\Customer;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class ViewCustomers extends Component
 {
     use WithPagination;
@@ -18,7 +20,7 @@ class ViewCustomers extends Component
     public ?string $sortDirection = null;
     public ?string $filter = null;
     protected $listeners = ['closeCreateModal'];
-
+    
     public function mount()
     {
         $this->authorize('viewAny', Customer::class);

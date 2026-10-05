@@ -5,7 +5,9 @@ Namespace Simplydigital\UserManagement\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Layout;
+
+#[Layout('components.layouts.app')]
 class ListAllUser extends Component
 {
 

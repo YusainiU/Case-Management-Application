@@ -5,7 +5,9 @@ namespace Simplydigital\CaseManagement\Livewire\Asset;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Models\Asset;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class ViewAssets extends Component
 {
 
@@ -25,6 +27,7 @@ class ViewAssets extends Component
     public bool $displayProductProfile = false;
     public bool $displayCustomerProfile = false;
     public bool $displaySupplierProfile = false;
+    
 
     /**
     * @var array<string, string>

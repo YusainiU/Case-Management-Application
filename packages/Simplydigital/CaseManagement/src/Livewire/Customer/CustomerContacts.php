@@ -6,7 +6,9 @@ use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Models\CustomerContacts as Contacts;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')] 
 class CustomerContacts extends Component
 {
 
