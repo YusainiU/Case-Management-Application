@@ -77,7 +77,7 @@ class UpdateUser extends ModalComponent
 
     public function closeThis()
     {
-        $this->dispatch('userUpdated');
+        $this->dispatch('user-updated');
         $this->closeModal();
     }
 

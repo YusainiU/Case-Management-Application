@@ -1,34 +1,29 @@
 <?php
 
-Namespace Simplydigital\UserManagement\Livewire;
+namespace Simplydigital\UserManagement\Livewire;
 
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\User;
-use Livewire\Attributes\Layout;
 
-#[Layout('components.layouts.app')]
 class ListAllUser extends Component
 {
-
     use WithPagination;
 
     public $userId;
+
     public $filter = '';
+
     public $showCreateModal = false;
+
     public $showUpdateModal = false;
+
     public $showRoles = false;
+
     public $showPermissions = false;
+
     public $showUserProfile = false;
-    protected $listeners = [
-        'closeRoleModal',
-        'closePermissionModal',
-        'closeCreateNewUser',
-        'userUpdated',
-        'closeUserProfile',
-    ];    
-
-
+    
     public function closeRoleModal()
     {
         $this->closeModal();
@@ -52,7 +47,7 @@ class ListAllUser extends Component
     public function closeUserProfile()
     {
         $this->closeModal();
-    }    
+    }
 
     public function closeModal()
     {
@@ -76,7 +71,7 @@ class ListAllUser extends Component
     }
 
     public function delete($userId)
-    {   
+    {
         $user = User::find($userId);
         $user->delete();
         $this->resetPage();
@@ -118,8 +113,9 @@ class ListAllUser extends Component
     {
 
         $query = User::query();
-        $query->where('name', 'like', '%' . $this->filter . '%')
-              ->orWhere('email', 'like', '%' . $this->filter . '%');
+        $query->where('name', 'like', '%'.$this->filter.'%')
+            ->orWhere('email', 'like', '%'.$this->filter.'%');
+
         return $query;
     }
 
@@ -127,9 +123,9 @@ class ListAllUser extends Component
     {
         $users = $this->filter();
         $showList = $users->exists() ? true : false;
-        if($showList){
+        if ($showList) {
             $users = $users->paginate(10);
-        }else{
+        } else {
             $users = [];
         }
 
@@ -138,4 +134,4 @@ class ListAllUser extends Component
             'showList' => $showList,
         ]);
     }
-}       
+}

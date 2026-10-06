@@ -13,7 +13,7 @@
 <div class="text-gray-800">
 
     <x-usermanagement::modal title="Roles" wire:model="showModal" widthsize="6xl" cancelText="Close"
-        confirm="{{ $confirmCall }}" confirmText="{{ $confirmText }}" cancelThisWith="closeThis">
+        confirm="{{ $confirmCall }}" confirmText="{{ $confirmText }}" cancelThisWith="closeThis" showFooter="false">
 
         @if ($showList)
 
