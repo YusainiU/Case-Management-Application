@@ -98,7 +98,7 @@ class ViewCases extends Component
     
     public function closeCreateModal()
     {
-        $this->resetAllModal();  
+        $this->resetAllModal();
     }
 
     public function closeUpdateModal()

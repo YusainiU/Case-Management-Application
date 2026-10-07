@@ -119,7 +119,7 @@ class AddUpdateEngineerCertificateModalComponent extends ModalComponent
 
     public function closedAndRefresh()
     {
-        $this->dispatch('closedAddUpdateEngineerCertificateModalComponent');
+        $this->dispatch('close-modal');
         $this->closeModal();
     }
 

@@ -60,13 +60,26 @@
         </div>
     @else
         @if($selectedEngineer)
-            <livewire:engineerdetail-component :engineerId="$engineerId" />
+            <livewire:engineerdetail-component 
+                :engineerId="$engineerId"
+                @close-filter="closeFilter"
+                @close-modal="closeModal"
+            />
         @endif
         @if($selectedSkill) 
-            <livewire:engineerskill-component :skillId="$skillId" />
+            <livewire:engineerskill-component 
+                :skillId="$skillId" 
+                @close-filter="closeFilter"
+                @close-modal="closeModal"
+            />
         @endif
         @if($selectedCertification)
-            <livewire:engineercertificate-component :certificateId="$certificationId" :engineerId="$engineerId" />
+            <livewire:engineercertificate-component 
+                :certificateId="$certificationId" 
+                :engineerId="$engineerId" 
+                @close-filter="closeFilter"
+                @close-modal="closeModal"
+            />
         @endif   
     @endif
 

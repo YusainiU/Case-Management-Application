@@ -24,17 +24,28 @@
 
     {{-- Modal Add Engineer --}}
     @if ($modalMode)
-        <livewire:addupdateengineermodal-component :mode="$modalMode" :modalTitle="$modalTitle" :engineerManagerId="$engineerManagerId" />
+        <livewire:addupdateengineermodal-component 
+            :mode="$modalMode" 
+            :modalTitle="$modalTitle" 
+            :engineerManagerId="$engineerManagerId"
+            @close-modal="closeModal" 
+        />
     @endif
 
     {{-- Modal List ENgineer Skills --}}
     @if($modalSkill)
-        <livewire:addupdateengineerskillsmodal-component :engineerId="$engineerId" />
+        <livewire:addupdateengineerskillsmodal-component 
+            :engineerId="$engineerId" 
+            @close-modal="closeModal"
+        />
     @endif
 
     {{-- Modal List of Engineer Certificates --}}
     @if($modalCertificate)
-        <livewire:addupdateengineercertificatesmodal-component :engineerId="$engineerId" />
+        <livewire:addupdateengineercertificatesmodal-component 
+            :engineerId="$engineerId" 
+            @close-modal="closeModal"
+        />
     @endif
 
     <x-engineermanagement::section-title>

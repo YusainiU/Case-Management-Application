@@ -27,7 +27,12 @@
         </button>
     </div>
     @if ($displayEngineerCertificateDetails)
-        <livewire:addupdateengineercertificatesmodal-component :originExternalForUpdate="true" :engineerCertificateId="$engineerCertificateId" :engineerId="$engineerId" />
+        <livewire:addupdateengineercertificatesmodal-component 
+            :originExternalForUpdate="true" 
+            :engineerCertificateId="$engineerCertificateId" 
+            :engineerId="$engineerId"
+            @close-modal="refreshEngineerCertifications"
+        />
     @endif
 
     @if ($engineerWithCertificates->isNotEmpty())

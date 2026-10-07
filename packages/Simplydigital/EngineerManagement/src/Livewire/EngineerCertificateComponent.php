@@ -5,7 +5,6 @@ Namespace Simplydigital\EngineerManagement\Livewire;
 use Livewire\Component;
 use Simplydigital\EngineerManagement\Models\Certificates;
 use Simplydigital\EngineerManagement\Models\EngineerCertifications;
-use Livewire\Attributes\On;
 
 class EngineerCertificateComponent extends Component
 {
@@ -28,7 +27,6 @@ class EngineerCertificateComponent extends Component
         $this->certificate = $this->getCertificate();
     }
 
-    #[On('closedAddUpdateEngineerCertificateModalComponent')]
     public function refreshEngineerCertifications()
     {
         $this->resetCertificateDetails();        
@@ -53,7 +51,7 @@ class EngineerCertificateComponent extends Component
 
     public function closeComponent()
     {
-        $this->dispatch('closeEngineerSummaryComponent');
+        $this->dispatch('close-filter');
     }
     
     public function openEngineerCertificate($engineercertificateId, $engineerid)

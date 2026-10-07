@@ -7,15 +7,25 @@
 <div class="grid grid-cols-1 gap-4 p-4">
 
     @if($displayCreateModal)
-        <livewire:create-case :customerId="$customerId"/>
+        <livewire:create-case 
+            :customerId="$customerId"
+            @close-create-modal="closeCreateModal"
+            @close-update-modal="closeUpdateModal"
+        />
     @endif
 
     @if($displaySummaryModal)
-        <livewire:case-summary :caseId="$caseId" />
+        <livewire:case-summary 
+            :caseId="$caseId"
+            @close-summary-modal="closeSummaryModal"
+        />
     @endif
 
     @if($displayCustomerModal)
-        <livewire:customer-summary :customerId="$customer->id" />
+        <livewire:customer-summary 
+            :customerId="$customer->id"
+            @close-summary-modal="closeSummaryModal"
+        />
     @endif
 
     @if($displayDescription)
@@ -29,11 +39,17 @@
     @endif
 
     @if ($displayProfileModal)
-        <livewire:manage-case :case="$ticket" />
+        <livewire:manage-case 
+            :case="$ticket"
+            @close-profile-modal="closeProfileModal"
+        />
     @endif
         
     @if($displaySlaStatus)
-        <livewire:case-sla :case="$ticket" />
+        <livewire:case-sla 
+            :case="$ticket"
+            @close-summary-modal="closeSummaryModal"
+        />
     @endif
 
     <div class="my-4">

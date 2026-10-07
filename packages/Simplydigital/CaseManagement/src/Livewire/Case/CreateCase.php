@@ -28,7 +28,7 @@ class CreateCase extends ModalComponent
     public array $sourceOptions = [];
     public array $contactOptions = [];
     public array $customerOptions = [];
-    public string $closureEvent = 'closeCreateCaseModal';
+    public string $closureEvent = 'close-create-modal';
     public bool $displayForm = false;
     public ?Customer $customerSelected = null;
     public bool $modeUpdate = false;
@@ -175,7 +175,7 @@ class CreateCase extends ModalComponent
         $this->customerSelected = $this->case?->customer;
         $this->ui['title'] = 'Update Case';
         $this->ui['confirmText'] = 'Update';
-        $this->closureEvent = 'closeUpdateCaseModal';
+        $this->closureEvent = 'close-update-modal';
         $this->loadCaseForm();       
 
     }
@@ -189,9 +189,9 @@ class CreateCase extends ModalComponent
     }
 
     public function closeThisModal()
-    {
+    {             
         $this->resetAll();
-        $this->dispatch($this->closureEvent);
+        $this->dispatch('close-create-modal');
     }
 
     public function loadCustomerOptions()
@@ -251,8 +251,7 @@ class CreateCase extends ModalComponent
         $this->authorize('update', $this->case);
         $this->validate();
         $this->repoService()->updateTicket($this->case, $this->form);
-        $this->dispatch('caseUpdated');
-        
+        $this->closeThisModal();
     }
 
     public function render()

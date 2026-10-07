@@ -69,13 +69,13 @@ class AddUpdateSkillModalComponent extends ModalComponent
             ]);
         }
 
-        $this->dispatch('skillSaved');
+        $this->close();
     }
 
     public function close()
     {
         $this->resetForm();
-         $this->dispatch('closeModal');
+         $this->dispatch('close-modal');
     }
 
     public function resetForm()

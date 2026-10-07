@@ -23,7 +23,12 @@
 
 <div class="{{ $divTopClass }}">
     @if ($modalMode)
-        <livewire:addupdatecertificatemodal-component :mode="$modalMode" :modalTitle="$modalTitle" :certificateId="$certificateId" />
+        <livewire:addupdatecertificatemodal-component 
+            :mode="$modalMode" 
+            :modalTitle="$modalTitle" 
+            :certificateId="$certificateId" 
+            @close-modal="closeModal"
+        />
     @endif
 
     <x-engineermanagement::section-title>

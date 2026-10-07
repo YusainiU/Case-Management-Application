@@ -22,7 +22,12 @@
 
 <div class="{{ $divTopClass }}">
     @if ($modalMode)
-        <livewire:addupdateskillmodal-component :mode="$modalMode" :modalTitle="$modalTitle" :skillId="$skillId" />
+        <livewire:addupdateskillmodal-component 
+            :mode="$modalMode" 
+            :modalTitle="$modalTitle" 
+            :skillId="$skillId" 
+            @close-modal="closeModal"
+        />
     @endif
 
     <x-engineermanagement::section-title>
