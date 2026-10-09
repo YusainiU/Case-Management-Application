@@ -1,18 +1,30 @@
 <div class="grid grid-cols-1 gap-4 p-4">
     @if($displayCreateModal)
-        <livewire:create-asset :customerId="$customerId"/>
+        <livewire:create-asset 
+            :customerId="$customerId"
+            @close-create-modal="closeCreateModal"
+        />
     @endif
 
     @if($displayUpdateModal)
-        <livewire:create-asset :assetId="$assetId" />
+        <livewire:create-asset 
+            :assetId="$assetId"
+            @close-update-modal="closeUpdateModal"
+        />
     @endif
 
     @if($displayProfileModal)
-        <livewire:asset-profile :assetId="$assetId" />
+        <livewire:asset-profile 
+            :assetId="$assetId" 
+            @close-profile-modal="closeProfileModal"
+        />
     @endif
     
     @if($displayProductProfile)
-        <livewire:product-profile :productId="$productId" />
+        <livewire:product-profile 
+            :productId="$productId" 
+            @close-profile-modal="closeProfileModal"
+        />
     @endif
 
     @if($displayCustomerProfile)
@@ -20,7 +32,10 @@
     @endif
     
     @if($displaySupplierProfile)
-        <livewire:supplier-profile :supplierId="$supplierId" />
+        <livewire:supplier-profile 
+            :supplierId="$supplierId" 
+            @close-profile-modal="closeProfileModal"
+        />
     @endif    
 
     <div class="my-4">

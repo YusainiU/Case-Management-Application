@@ -73,7 +73,8 @@ class CreateCustomerContact extends ModalComponent
     public function closeThisModal()
     {
         $this->resetAll();
-        $this->dispatch('closeCreateCustomerContactModal');
+        $this->dispatch('close-create-modal');
+        $this->dispatch('close-update-modal');
     }
 
     public function getAllActiveCustomers()
@@ -126,8 +127,6 @@ class CreateCustomerContact extends ModalComponent
             $service->createCustomerContact($input);            
         }
         $this->resetAll();
-        $this->dispatch('closeCreateCustomerContactModal');
-
     }
     public function render()
     {

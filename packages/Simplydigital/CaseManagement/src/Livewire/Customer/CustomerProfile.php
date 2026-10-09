@@ -72,6 +72,7 @@ class CustomerProfile extends Component
     {
         $this->showUpdateModal = false;
         $this->showConfirmDelete = false;
+        $this->dispatch('close-profile-modals');
     }
 
     public function selectTab(string $selectedTab)

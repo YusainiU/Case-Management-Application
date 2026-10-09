@@ -28,7 +28,7 @@ class ProductProfile extends ModalComponent
     
     public function closeThisModal()
     {
-        $this->dispatch('closeProfileModal');   
+        $this->dispatch('close-profile-modal');   
     }
 
     public function render()

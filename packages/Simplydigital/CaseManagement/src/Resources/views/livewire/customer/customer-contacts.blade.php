@@ -1,15 +1,24 @@
 <div class="grid grid-cols-1 gap-4 p-4">
 
     @if($showCreateContactModal)
-        <livewire:create-update-customer-contact :customerId="$customerId" />
+        <livewire:create-update-customer-contact 
+            :customerId="$customerId" 
+            @close-create-modal="closeCreateCustomerContactModal"
+        />
     @endif
 
     @if($showContactProfileModal)
-        <livewire:userprofile-component :userId="$userProfileId" />
+        <livewire:userprofile-component 
+            :userId="$userProfileId" 
+            @close-user-profile="closeProfile"
+        />
     @endif
 
     @if($showContactUpdateModal)
-        <livewire:update-customer-contact :customerContactId="$customerContactId" />
+        <livewire:update-customer-contact 
+            :customerContactId="$customerContactId" 
+            @close-update-modal="closeUpdateModal"
+        />
     @endif
 
     <div class="my-4">

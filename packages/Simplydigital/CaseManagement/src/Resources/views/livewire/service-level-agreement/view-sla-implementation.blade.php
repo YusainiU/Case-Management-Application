@@ -1,23 +1,38 @@
 <div class="grid grid-cols-1 gap-4 p-4">
 
     @if ($displayCreateModal)
-        <livewire:create-sla-implementation :customerId="$customerId"/>
+        <livewire:create-sla-implementation 
+            :customerId="$customerId"
+            @close-create-modal="closeCreateModal"
+        />
     @endif
 
     @if($displaySLAProfileModal)
-        <livewire:sla-profile :slaId="$slaId" />
+        <livewire:sla-profile 
+            :slaId="$slaId" 
+            @close-profile-modal="closeSLAProfileModal"
+        />
     @endif
 
     @if($displayCustomerSummaryModal)
-        <livewire:customer-summary :customerId="$customerId" />
+        <livewire:customer-summary 
+            :customerId="$customerId"
+            @close-summary-modal="closeProfileModal"
+        />
     @endif
     
     @if($displayUpdateModal)
-        <livewire:create-sla-implementation :slapId="$slapId" />
+        <livewire:create-sla-implementation 
+            :slapId="$slapId"
+            @close-update-modal="closeUpdateModal" 
+        />
     @endif
 
     @if($displayProfileModal)
-        <livewire:sla-implementation-profile :slapId="$slapId" />
+        <livewire:sla-implementation-profile 
+            :slapId="$slapId"
+            @close-profile-modal="closeProfileModal"
+        />
     @endif
 
     <div class="my-4">
