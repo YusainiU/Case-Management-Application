@@ -8,13 +8,14 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table('activity_log', function (Blueprint $table) {
-            // Add the missing column
-            $table->json('attribute_changes')->nullable();
-            
-            // Drop the v4 column
-            $table->dropColumn('batch_uuid');
-        });
+        if (! Schema::hasColumn('activity_log', 'attribute_changes')) {
+            Schema::table('activity_log', function (Blueprint $table) {
+                // Add the missing column
+                $table->json('attribute_changes')->nullable();
+                // Drop the v4 column
+                $table->dropColumn('batch_uuid');
+            });
+        }
     }
 
     public function down()

@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('suppliers', function (Blueprint $table) {
-            $table->string('short_description')->nullable(); //customer/internal/other
-        });
+        if(! Schema::hasColumn('suppliers', 'short_description')) {
+            Schema::table('suppliers', function (Blueprint $table) {
+                $table->string('short_description')->nullable(); //customer/internal/other
+            });
+        }
     }
 
     /**
