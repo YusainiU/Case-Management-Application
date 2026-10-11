@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if(Schema::hasColumn('sla_task_pauses', 'remaining_fix_time')) {
+            return;
+        }
         Schema::table('sla_task_pauses', function (Blueprint $table) {
             $table->integer('remaining_fix_time')->nullable();
         });

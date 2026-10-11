@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+	if(!Schema::hasTable('task_logs')) {
         Schema::create('task_logs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
@@ -47,7 +48,8 @@ return new class extends Migration
             ->on('tickets');            
             
             
-        });
+	});
+	}
     }
 
     /**

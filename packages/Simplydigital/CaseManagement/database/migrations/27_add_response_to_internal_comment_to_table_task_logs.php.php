@@ -11,16 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('task_logs', function (Blueprint $table) {
-            $table->unsignedBigInteger('response_to_internal_comment')
-                ->nullable();
+        if (! Schema::hasColumn('task_logs', 'response_to_internal_comment')) {
 
-            $table->foreign('response_to_internal_comment')
-                ->references('id')
-                ->on('task_logs')
-                ->nullOnDelete();
-        });
+            Schema::table('task_logs', function (Blueprint $table) {
+                $table->unsignedBigInteger('response_to_internal_comment')
+                    ->nullable();
 
+                $table->foreign('response_to_internal_comment')
+                    ->references('id')
+                    ->on('task_logs')
+                    ->nullOnDelete();
+            });
+
+        }
     }
 
     /**

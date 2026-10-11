@@ -10,6 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
+
+	if (!Schema::hasTable('task_site_visits')) {	    
         Schema::create('task_site_visits', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
@@ -38,7 +40,8 @@ return new class extends Migration {
                 ->references('id')
                 ->on('users');
 
-        });
+	});
+	}
     }
 
     /**

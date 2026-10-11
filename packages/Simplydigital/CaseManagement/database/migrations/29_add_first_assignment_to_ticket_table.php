@@ -11,6 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+
+        if(Schema::hasColumn('tickets', 'first_case_assignment')) {
+            return;
+        }
+
         Schema::table('tickets', function (Blueprint $table) {
             $table->dateTime('first_case_assignment')
                 ->nullable();
