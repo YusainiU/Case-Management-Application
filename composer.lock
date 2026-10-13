@@ -4494,7 +4494,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/EventPlannerManagement",
-                "reference": "c359a1fd52141e35b9eba57b431f57e2d20f9391"
+                "reference": "8a60f7c1cd450117adb91ff603bb7d11b2e5282b"
             },
             "require": {
                 "illuminate/database": "^10.0|^11.0|^12.0|^13.0",
@@ -8131,12 +8131,12 @@
             "version": "v5.7.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/vlucas/phpdotenv.git",
+                "url": "https://github.com/phpdotenv/phpdotenv.git",
                 "reference": "301c07936b16d88628b126b01d082ba153cf4c40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
+                "url": "https://api.github.com/repos/phpdotenv/phpdotenv/zipball/301c07936b16d88628b126b01d082ba153cf4c40",
                 "reference": "301c07936b16d88628b126b01d082ba153cf4c40",
                 "shasum": ""
             },
@@ -9328,16 +9328,16 @@
         },
         {
             "name": "laravel/mcp",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/mcp.git",
-                "reference": "92987a9d03847801299ff4abe909ba7686147dde"
+                "reference": "26c7803551028653beab49af0e672ae38607b772"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/mcp/zipball/92987a9d03847801299ff4abe909ba7686147dde",
-                "reference": "92987a9d03847801299ff4abe909ba7686147dde",
+                "url": "https://api.github.com/repos/laravel/mcp/zipball/26c7803551028653beab49af0e672ae38607b772",
+                "reference": "26c7803551028653beab49af0e672ae38607b772",
                 "shasum": ""
             },
             "require": {
@@ -9355,6 +9355,7 @@
                 "symfony/process": "^7.4.5|^8.0.5"
             },
             "require-dev": {
+                "jasonmccreary/double": "^1.0",
                 "laravel/pint": "^1.20",
                 "orchestra/testbench": "^9.15|^10.8|^11.0",
                 "pestphp/pest": "^3.8.5|^4.3.2",
@@ -9398,7 +9399,7 @@
                 "issues": "https://github.com/laravel/mcp/issues",
                 "source": "https://github.com/laravel/mcp"
             },
-            "time": "2026-09-24T10:45:09+00:00"
+            "time": "2026-10-11T20:52:46+00:00"
         },
         {
             "name": "laravel/pail",
