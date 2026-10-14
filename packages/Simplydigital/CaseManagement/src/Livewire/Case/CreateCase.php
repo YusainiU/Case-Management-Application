@@ -207,7 +207,7 @@ class CreateCase extends ModalComponent
         //SlAP Options
         $slapService = $this->slapServices();
         $this->slapOptions = $slapService->buildOptionsForSLAPSelect($this->customerId);
-
+        
         //Asset Options
         $assetService = $this->assetServices();
         $assetOptions = $assetService->buildOptionsForAssetSelect($this->customerId);
@@ -215,8 +215,8 @@ class CreateCase extends ModalComponent
 
         //Category && Source
         $this->categoryOptions = CaseCategory::options();
-        $this->sourceOptions = CaseSource::options();
-
+        $this->sourceOptions = CaseSource::options();   
+    
         //Options for Contacts
         $customerService = $this->customerServices();
         $this->contactOptions = $customerService->buildOptionsForCustomerContacts($this->customerId);

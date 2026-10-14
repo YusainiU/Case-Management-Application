@@ -17,7 +17,7 @@ class AddEventColumnToActivityLogTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('activity_log');
+        Schema::table('activity_log', function (Blueprint $table) {
             $table->dropColumn('event');
         });
     }

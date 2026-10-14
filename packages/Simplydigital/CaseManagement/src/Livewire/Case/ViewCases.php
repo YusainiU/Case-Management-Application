@@ -262,7 +262,8 @@ class ViewCases extends Component
         $service = $this->ticketService();
         $filterString = $this->filter ?? null;
         $query = null;
-        
+
+                
         if($this->sortField){
             $service->sortByField($this->sortField, $this->sortDirection);
         }

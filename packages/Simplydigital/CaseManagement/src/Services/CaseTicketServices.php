@@ -49,6 +49,9 @@ class CaseTicketServices
         if($filter){
             $this->buildFilter($filter);    
         }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        }
         return $this->query;
     }
 
@@ -59,7 +62,10 @@ class CaseTicketServices
             ->where('resolved_datetime', '=', null);
         if($filter){
             $this->buildFilter($filter);    
-        }        
+        }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        } 
         return $this->query;
     }
 
@@ -68,7 +74,10 @@ class CaseTicketServices
         $this->query->where('closed_datetime', '!=', null);
         if($filter){
             $this->buildFilter($filter);    
-        }        
+        }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        }
         return $this->query;
     }
 
@@ -80,6 +89,9 @@ class CaseTicketServices
         if($filter){
             $this->buildFilter($filter);    
         }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        }        
         return $this->query;
     }
 
@@ -91,6 +103,9 @@ class CaseTicketServices
         if($filter){
             $this->buildFilter($filter);    
         }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        }
         return $this->query;
     }
 
@@ -101,11 +116,15 @@ class CaseTicketServices
         if($filter){
             $this->buildFilter($filter);    
         }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        }        
         return $this->query;
     }
 
     public function getAllBreachedCases(?string $filter)
     {
+        
         $this->query
             ->whereNull('closed_datetime')
             ->whereHas('slaTasks', function($r) {
@@ -113,6 +132,9 @@ class CaseTicketServices
             });
         if($filter){
             $this->buildFilter($filter);
+        }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
         }
         return $this->query;
     }
@@ -127,6 +149,9 @@ class CaseTicketServices
         if($filter) {
             $this->buildFilter($filter);
         }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        }
         return $this->query;
     }
 
@@ -137,6 +162,9 @@ class CaseTicketServices
             ->whereNull('assigned_to');
         if($filter) {
             $this->buildFilter($filter);
+        }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
         }
         return $this->query;
     }
@@ -149,6 +177,9 @@ class CaseTicketServices
         if($filter) {
             $this->buildFilter($filter);
         }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        }
         return $this->query;                     
     }
 
@@ -160,6 +191,9 @@ class CaseTicketServices
         if($filter) {
             $this->buildFilter($filter);
         }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        }        
         return $this->query;              
     }
 
@@ -174,6 +208,9 @@ class CaseTicketServices
         if($filter){
             $this->buildFilter($filter);    
         }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortDirection);
+        }        
         return $this->query;
     }
 
@@ -257,10 +294,6 @@ class CaseTicketServices
                         $qq->where('name','like',$filterValue);
                     });                    
             });
-        }
-
-        if ($this->sortBy) {
-            $this->query->orderBy($this->sortBy, $this->sortDirection);
         }
     }
 
