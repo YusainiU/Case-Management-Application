@@ -21,12 +21,11 @@
     @if ($displayDescription)
         <x-casemanagement::page-elements.modal-simple title="{{ $descriptionDetails['name'] }}"
             cancelThisWith="closeDescriptionModal">
-            <h4 class="mb-3 font-semibold text-gray-900 dark:text-white">
+            <h4 class="mb-3 font-semibold text-gray-900">
                 Case Description
             </h4>
 
-            <div class="whitespace-pre-wrap text-sm leading-6
-                        text-gray-600 dark:text-gray-300">
+            <div class="text-sm text-gray-600">
                 {{ $descriptionDetails['description'] }}
             </div>
         </x-casemanagement::page-elements.modal-simple>

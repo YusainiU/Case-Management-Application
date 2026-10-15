@@ -1,3 +1,4 @@
+
 @props([
     'title' => 'Modal Title',
     'description' => null,
@@ -8,66 +9,116 @@
     'confirmText' => 'Confirm',
     'showFooter' => true,
     'showConfirm' => true,
-    'bgColor' => '!bg-gray-100',
-    'borderColor' => 'border-gray-400',
-    'border' => 'border rounded-lg shadow-xl',
+    'bgColor' => 'bg-white',
+    'borderColor' => 'border-slate-200',
+    'border' => 'border rounded-2xl shadow-2xl',
     'width' => 'w-full',
-    'mx' => 'mx-4'
+    'mx' => 'mx-0',
 ])
 
-<div>
+<div
+    class="fixed inset-0 z-50 flex items-center justify-center
+           overflow-y-auto bg-slate-950/60 p-3 backdrop-blur-sm
+           sm:p-6"
+    role="presentation"
+>
+    <section
+        @class([
+            "max-w-{$widthsize}",
+            $bgColor,
+            $borderColor,
+            $border,
+            $width,
+            $mx,
+            'flex max-h-[calc(100dvh-1.5rem)] min-h-0 flex-col overflow-hidden',
+            'sm:max-h-[calc(100dvh-3rem)]',
+        ])
+        role="dialog"
+        aria-modal="true"
+        aria-label="{{ $title }}"
+    >
+        {{-- Header --}}
+        <header
+            class="flex shrink-0 items-start justify-between gap-4
+                   border-b border-slate-200 px-5 py-5 sm:px-7"
+        >
+            <div class="min-w-0">
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+                    {{ $title }}
+                </h2>
 
-
-
-        <div class="fixed inset-0 bg-opacity-75 flex items-center justify-center z-50 overflow-y-auto scrollable-area">
-            <div 
-                @class([
-                    "max-w-$widthsize",
-                    $bgColor,
-                    $borderColor,
-                    $border,
-                    $width,
-                    $mx,
-                ])
-            >
-                <!-- Header -->
-                <div class="flex items-center justify-between p-6 border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900 uppercase">
-                        {{ $title ?? 'Modal' }}
-                        @if ($description)
-                            <p class="text-sm text-gray-500 normal-case">
-                                {{ $description }}
-                            </p>
-                        @endif
-                    </h3>
-                    <button wire:click="{{ $cancelThisWith ?? 'closeModal' }}" class="text-gray-400 hover:text-gray-600">
-                        <span class="text-2xl">&times;</span>
-                    </button>
-                </div>
-                <x-casemanagement::page-elements.seperator margin="0" />
-                <!-- Content -->
-                <div class="p-6 max-h-[70vh] overflow-y-auto">
-                    {{ $slot }}
-                </div>
-
-                <!-- Footer -->
-                @if ($showFooter ?? true)
-                    <div class="flex justify-end gap-3 p-6 border-t border-gray-200">
-                        <button wire:click="{{ $cancelThisWith ?? 'closeModal' }}"
-                            class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
-                            {{ $cancelText ?? 'Cancel' }}
-                        </button>
-                        @if ($showConfirm ?? true)
-                            <button wire:click="{{ $confirm ?? 'confirm' }}"
-                                class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
-                                {{ $confirmText ?? 'Confirm' }}
-                            </button>
-                        @endif
-                    </div>
+                @if ($description)
+                    <p class="mt-1.5 text-sm leading-6 text-slate-500">
+                        {{ $description }}
+                    </p>
                 @endif
             </div>
+
+            <button
+                type="button"
+                wire:click="{{ $cancelThisWith }}"
+                aria-label="Close modal"
+                class="inline-flex h-9 w-9 shrink-0 items-center justify-center
+                       rounded-lg text-slate-400 transition
+                       hover:bg-slate-100 hover:text-slate-700
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                >
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </header>
+
+        {{-- Scrollable body --}}
+        <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain
+                    px-5 py-5 sm:px-7 sm:py-6">
+            {{ $slot }}
         </div>
 
-    
+        {{-- Optional footer --}}
+        @if ($showFooter)
+            <footer
+                class="flex shrink-0 justify-end gap-3 border-t
+                       border-slate-200 bg-slate-50/80 px-5 py-4
+                       sm:px-7"
+            >
+                <button
+                    type="button"
+                    wire:click="{{ $cancelThisWith }}"
+                    class="rounded-lg border border-slate-300 bg-white
+                           px-4 py-2.5 text-sm font-medium text-slate-700
+                           transition hover:bg-slate-50
+                           focus:outline-none focus:ring-2
+                           focus:ring-indigo-500"
+                >
+                    {{ $cancelText }}
+                </button>
 
+                @if ($showConfirm)
+                    <button
+                        type="button"
+                        wire:click="{{ $confirm ?? 'confirm' }}"
+                        class="rounded-lg bg-indigo-600 px-4 py-2.5
+                               text-sm font-semibold text-white shadow-sm
+                               transition hover:bg-indigo-700
+                               focus:outline-none focus:ring-2
+                               focus:ring-indigo-500 focus:ring-offset-2"
+                    >
+                        {{ $confirmText }}
+                    </button>
+                @endif
+            </footer>
+        @endif
+    </section>
 </div>
