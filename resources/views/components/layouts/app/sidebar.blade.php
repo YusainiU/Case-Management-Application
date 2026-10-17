@@ -8,7 +8,7 @@
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('casemanagement.dashboard.view') }}" class="me-5 flex items-center justify-center space-x-2 rtl:space-x-reverse" wire:navigate>
-                <div class="w-15 h-15">
+                <div class="">
                 <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />
                 </div>
             </a>

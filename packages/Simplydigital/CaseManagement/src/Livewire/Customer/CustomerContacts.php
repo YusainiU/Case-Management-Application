@@ -19,6 +19,7 @@ class CustomerContacts extends Component
     public ?string $filter = null;
     public ?string $sortBy = null;
     public $sortDirection = 'asc';
+    public ?string $sortField = null;    
     public $showCreateContactModal = false;
     public $showContactProfileModal = false;
     public $showContactUpdateModal = false;
@@ -33,6 +34,18 @@ class CustomerContacts extends Component
     {
         $this->authorize('viewAny', Contacts::class);
     }
+
+    public function sortByField(string $fieldName, string $direction)
+    {
+        if($this->sortField == $fieldName)
+        {
+            $this->sortField = null;
+        }else{
+            $this->sortField = $fieldName;
+            $this->sortDirection = $direction;
+        }
+        $this->getAllCustomerContacts();
+    }    
 
     public function closeCreateCustomerContactModal()
     {
@@ -86,12 +99,15 @@ class CustomerContacts extends Component
     public function getAllCustomerContacts()
     {
         $utilityService = app('case-customer-services');
+        if($this->sortField){  
+            $utilityService->sortByField($this->sortField, $this->sortDirection);
+        }            
         return $utilityService->getAllCustomerContacts();
     }
 
     public function getCustomerContactDetails()
     {
-        $caseCustomerServices = new CaseCustomerServices();
+        $caseCustomerServices = new CaseCustomerServices();    
         return $caseCustomerServices->getCustomerContactDetails($this->customerContactId);
     }
 

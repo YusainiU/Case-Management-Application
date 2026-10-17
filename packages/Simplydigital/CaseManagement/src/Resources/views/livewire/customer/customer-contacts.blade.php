@@ -68,11 +68,11 @@
                                 #
                             </x-casemanagement::table-elements.table-th>
 
-                            <x-casemanagement::table-elements.table-th>
+                            <x-casemanagement::table-elements.table-th sortable field="user_id" direction="asc" px="px-5">
                                 Contact Name
                             </x-casemanagement::table-elements.table-th>
 
-                            <x-casemanagement::table-elements.table-th>
+                            <x-casemanagement::table-elements.table-th sortable field="customer_id" direction="asc" px="px-5">
                                 Customer
                             </x-casemanagement::table-elements.table-th>
 

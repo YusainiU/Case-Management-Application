@@ -5,10 +5,10 @@ namespace Simplydigital\CaseManagement\Services;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Repositories\CaseRepository;
-use Simplydigital\CaseManagement\Enums\CaseState;
 
 class CaseSiteVisitService
 {
@@ -107,7 +107,18 @@ class CaseSiteVisitService
         }
 
         if ($this->sortBy) {
-            $this->query->orderBy($this->sortBy, $this->sortByDirection);
+            if ($this->sortBy === 'customer_id') {
+                $this->query
+                    ->leftJoin('tickets', 'task_site_visits.ticket_id', '=', 'tickets.id')
+                    ->leftJoin('customers', 'tickets.customer_id', '=', 'customers.id')
+                    ->orderBy('customers.name', $this->sortByDirection)
+                    ->select('task_site_visits.*');
+            } else {
+                $this->query->orderBy(
+                    $this->sortBy,
+                    $this->sortByDirection
+                );
+            }
         }
     }
 
@@ -128,7 +139,7 @@ class CaseSiteVisitService
     public function getAllActiveSiteVisits(?string $filter = null)
     {
         $filter ??= $this->filter;
-        $this->query->where('active', true);
+        $this->query->where('task_site_visits.active', true);
         $this->buildFilter($filter);
 
         return $this->query;
@@ -149,9 +160,10 @@ class CaseSiteVisitService
     {
         $status = [
             'enroute_at' => CaseState::Enroute,
-            'onsite_at' =>  CaseState::Onsite,
+            'onsite_at' => CaseState::Onsite,
             'offsite_at' => CaseState::In_Progress,
         ];
+
         return $status[$fieldName];
     }
 
@@ -165,35 +177,37 @@ class CaseSiteVisitService
                 $data[$field] = $form[$field];
             }
         }
-            
+
         if (! $visit->update($data)) {
             return false;
         }
 
         $fromNull = $this->repo->trackChangesOnVisitFromNull($old, $data);
-        if(!empty($fromNull)) {
+        if (! empty($fromNull)) {
             $last = array_key_last($fromNull);
             $caseState = $this->visitState($fromNull[$last]);
-            $this->repo->updateCaseState($case, $caseState); 
+            $this->repo->updateCaseState($case, $caseState);
         }
 
         $type = config('case-management.logs.type.site_visit');
         $logConfig = $this->logService->visitLogConfig($old, $form);
 
         foreach ($logConfig as $field => $config) {
-            if(!$changes[$field] ?? false) continue;
+            if (! $changes[$field] ?? false) {
+                continue;
+            }
             $isCleared = blank($data[$field] ?? null);
-            $entry = $config[$isCleared ? 'cleared' :'set'];
+            $entry = $config[$isCleared ? 'cleared' : 'set'];
             $type = $entry['type'];
             $isDate = $entry['dateFormat'];
             $formatted = $isDate ? Carbon::parse($data[$field])->format('d-m-Y H:i') : null;
-            $replaceWith = $entry['values']($formatted);            
+            $replaceWith = $entry['values']($formatted);
             $logText = $this->logService->buildVisitUpdateLog(
                 $entry['phrase'],
                 $entry['tokens'],
                 $replaceWith
             );
-            $this->logService->createSystemLog($case, $logText, $type);                        
+            $this->logService->createSystemLog($case, $logText, $type);
         }
 
         return true;
@@ -209,7 +223,7 @@ class CaseSiteVisitService
         $created = $this->repo->createVisit($data);
         if ($created) {
 
-            //Changethe ticket state to progress
+            // Changethe ticket state to progress
             $caseState = CaseState::Site_Visit;
             $this->repo->updateCaseState($case, $caseState);
 
@@ -231,7 +245,7 @@ class CaseSiteVisitService
 
     public function canComplete(TaskSiteVisit $visit)
     {
-        return  $visit->visit_scheduled_at !== null &&
+        return $visit->visit_scheduled_at !== null &&
                 $visit->enroute_at !== null &&
                 $visit->onsite_at !== null &&
                 $visit->offsite_at !== null;
@@ -242,11 +256,11 @@ class CaseSiteVisitService
         $data = ['active' => false];
         $case = $visit->ticket;
         $updated = $this->repo->updateVisit($visit, $data);
-        if($updated) {
+        if ($updated) {
 
-            //Change case state if there is no outstanding visit
+            // Change case state if there is no outstanding visit
             $visitExists = $case->outstandingVisit()->exists();
-            if(!$visitExists){
+            if (! $visitExists) {
                 $this->repo->updateCaseState($case, CaseState::In_Progress);
             }
 
@@ -265,20 +279,21 @@ class CaseSiteVisitService
         $case = $visit->ticket;
         $remover = Auth::user()?->name;
         $deleted = $this->repo->deleteVisit($visit);
-        if($deleted){
+        if ($deleted) {
 
-            //Changed case state
+            // Changed case state
             $visitExists = $case->outstandingVisit()->exists();
-            if(!$visitExists) {
+            if (! $visitExists) {
                 $this->repo->updateCaseState($case, CaseState::In_Progress);
             }
 
-            //Create Log
+            // Create Log
             $text = "$number - $shortDescription";
             $logText = $this->logService->buildVisitDeletion($shortDescription, $remover);
             $type = Config('case-management.logs.type.site_visit');
             $this->logService->createSystemLog($case, $logText, $type);
         }
+
         return $deleted;
     }
 }

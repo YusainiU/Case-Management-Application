@@ -87,6 +87,16 @@ class ViewSiteVisit extends Component
             'displaySummaryModal',
             'selectedVisit'
         ]);
+    }
+    
+    public function sortByField(?string $field)
+    {   
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
     }    
 
     public function buildUIParams()

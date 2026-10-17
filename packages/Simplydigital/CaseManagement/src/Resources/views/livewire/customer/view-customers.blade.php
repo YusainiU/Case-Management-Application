@@ -42,8 +42,7 @@
         </div>
 
         {{-- Filters and pagination --}}
-        <div class="flex flex-col gap-4 border-b border-slate-100
-                   px-5 py-4 sm:px-6">
+        <div class="flex flex-col gap-4 px-5 py-4 sm:px-6">
             <div class="min-w-0">
                 <x-casemanagement::form-elements.input-filter />
             </div>
@@ -68,8 +67,7 @@
                         Customer
                     </x-casemanagement::table-elements.table-th>
 
-                    <x-casemanagement::table-elements.table-th sortable field="primary_type" direction="asc"
-                        px="px-5">
+                    <x-casemanagement::table-elements.table-th sortable field="primary_type" direction="asc" px="px-5">
                         Primary type
                     </x-casemanagement::table-elements.table-th>
 
@@ -178,13 +176,11 @@
 
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-16 text-center">
-                        <td colspan="8" class="px-6 py-16 text-center">
+                        <td colspan="6" class="px-6 py-16 text-center">                        
                             <x-casemanagement::page-elements.empty-state 
                                 title="No customers found"
                                 description="There are no customer records to display. Try adjusting your filters or create a new customer." 
-                            />
-                        </td>
+                            />                        
                         </td>
                     </tr>
                 @endforelse
