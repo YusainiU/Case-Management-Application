@@ -1,128 +1,162 @@
-<div class="container mx-auto px-4 py-8">
+<div class="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
 
+    {{-- Create User Modal --}}
     @if ($showCreateModal)
-        <livewire:addnewuser-component 
-            @close-create-new-user="closeCreateNewUser"
-        />
+        <livewire:addnewuser-component @close-create-new-user="closeCreateNewUser" />
     @endif
 
+    {{-- Update User Modal --}}
     @if ($showUpdateModal)
-        <livewire:updateuser-component 
-            :userId="$userId" 
-            @user-updated="userUpdated"
-        />
+        <livewire:updateuser-component :userId="$userId" @user-updated="userUpdated" />
     @endif
 
+    {{-- Permissions Modal --}}
     @if ($showPermissions)
-        <livewire:addnewpermission-component 
-            @close-permission-modal="closePermissionModal"
-        />
+        <livewire:addnewpermission-component @close-permission-modal="closePermissionModal" />
     @endif
 
+    {{-- Roles Modal --}}
     @if ($showRoles)
-        <livewire:listroles-component 
-            @close-role-modal="closeRoleModal"            
-        />
+        <livewire:listroles-component @close-role-modal="closeRoleModal" />
     @endif
 
+    {{-- User Profile Modal --}}
     @if ($showUserProfile)
-        <livewire:userprofile-component 
-            :userId="$userId" 
-            @close-user-profile="closeUserProfile"
-        />
+        <livewire:userprofile-component :userId="$userId" @close-user-profile="closeUserProfile" />
     @endif
 
+    {{-- Page Header --}}
     <x-usermanagement::section-title>
         <x-slot name="title">
-            <div class="">
-                <x-usermanagement-ui-icon name="user" class="h-10 w-10" />
-                User Management
+            <div class="flex items-center gap-3 text-slate-800">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+                    <x-usermanagement-ui-icon name="user" class="h-7 w-7" />
+                </div>
+                <span class="text-2xl font-bold tracking-tight sm:text-3xl">
+                    User Management
+                </span>
             </div>
         </x-slot>
+
         <x-slot name="description">
-            Manage your users effectively.
+            Manage users, assign roles, and control access to your application.
         </x-slot>
     </x-usermanagement::section-title>
 
-    <div class="flex justify-between items-center mt-4 mb-4">
-        <button wire:click="openRoles" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Roles
-        </button>
-        <button wire:click="openPermissions"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Permissions
-        </button>
-        <button wire:click="openCreateUser"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Create New User
-        </button>
-    </div>
+    <x-usermanagement::section-action-buttons :actions="[
+        [
+            'label' => 'Roles',
+            'icon' => 'user',
+            'wire' => 'openRoles',
+        ],
+        [
+            'label' => 'Permissions',
+            'icon' => 'shield',
+            'wire' => 'openPermissions',
+        ],
+        [
+            'label' => 'Create New User',
+            'icon' => 'user-plus',
+            'wire' => 'openCreateUser',
+            'class' => '!bg-violet-600 !text-white hover:!bg-violet-700 whitespace-nowrap',
+            'align' => true,
+        ],
+    ]" />
 
-    <div class="mt-3 mb-3 flex justify-between gap-x-6">
-        <x-input name="filter" class="" placeholder="Search records" wire:model.live='filter' />
-    </div>
+    <x-usermanagement::section-search label="Search users" title="Users" description="Search and manage registered users." />
 
-    <div class="mt-6">
-        {{ $users->links() }}
+    {{-- Pagination: Top --}}
+    
+    <div class="flex flex-col">
+        {{ $users?->links() }}
     </div>
+    
 
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email
-                    </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($users as $user)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 align-top">
-                            <a href="#" wire:click='openUserProfile({{ $user->id }})' class="hover:underline">
-                                {{ $user->name }}
-                            </a>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 align-top">{{ $user->email }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 align-top">
-                            @php
-                                $buildList = false;
-                                $uroles = $user->getRoleNames();
-                                if (!empty($uroles)) {
-                                    $buildList = true;
-                                }
-                            @endphp
-                            @if ($buildList)
-                                @foreach ($uroles as $urole)
-                                    <span class="block">{{ $urole }}</span>
+    {{-- Users Table --}}
+    <x-usermanagement::table>
+
+        <x-usermanagement::table-th :items="[
+            'User',
+            'Email Address',
+            'Roles',
+            'Actions',
+        ]" />
+
+        <x-usermanagement::table-body >
+
+            @forelse ($users as $user)
+                @php
+                    $roles = $user->getRoleNames();
+                @endphp
+
+                <tr wire:key="user-row-{{ $user->id }}" class="transition hover:bg-slate-50/80">
+
+                    {{-- User Name --}}
+                    <x-usermanagement::table-td>
+                        <button type="button" wire:click="openUserProfile({{ $user->id }})"
+                            class="group inline-flex items-center gap-3 text-left focus:outline-none">
+                            <span
+                                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-50 text-sm font-bold uppercase text-violet-700 ring-1 ring-inset ring-violet-100">
+                                {{ \Illuminate\Support\Str::substr($user->name, 0, 1) }}
+                            </span>
+
+                            <span>
+                                <span class="block font-semibold text-slate-800 transition group-hover:text-violet-700">
+                                    {{ $user->name }}
+                                </span>
+                                <span class="mt-0.5 block text-xs text-slate-500">
+                                    View profile
+                                </span>
+                            </span>
+                        </button>
+                    </x-usermanagement::table-td>
+
+                    {{-- Email --}}
+                    <x-usermanagement::table-td>
+                        <span class="break-all text-sm text-slate-600">
+                            {{ $user->email }}
+                        </span>
+                    </x-usermanagement::table-td>
+
+                    {{-- Roles --}}
+                     <x-usermanagement::table-td>
+                        @if ($roles->isNotEmpty())
+                            <div class="flex flex-wrap gap-1.5">
+                                @foreach ($roles as $role)
+                                    <span
+                                        class="inline-flex items-center rounded-full bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-700 ring-1 ring-inset ring-violet-100">
+                                        {{ $role }}
+                                    </span>
                                 @endforeach
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium align-top">
-                            <a href="#" class="text-blue-600 hover:text-blue-900"
-                                wire:click="openUpdateUser({{ $user->id }})">
-                                Update Roles
-                            </a>
-                            <a x-data href="#" class="ml-4 text-red-600 hover:text-red-900"
-                                @click="if (confirm('Delete this record?')) $wire.delete({{ $user->id }})">
-                                Delete
-                            </a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-gray-600">No users found</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                            </div>
+                        @else
+                            <span
+                                class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500">
+                                No roles assigned
+                            </span>
+                        @endif
+                    </x-usermanagement::table-td>
 
-    <div class="mt-6">
-        {{ $users->links() }}
-    </div>
+                    {{-- Actions --}}
+                    <x-usermanagement::table-td>
+                        <div class="inline-flex flex-wrap items-center justify-end gap-2">
+                            <x-usermanagement::button-update action="openUpdateUser({{ $user->id }})" label="Update Roles" />
+                            <x-usermanagement::button-delete  label="Delete" recordId="{{ $user->id }}" />    
+                        </div>
+                    </x-usermanagement::table-td>
+
+                </tr>
+            @empty
+                <x-usermanagement::table-tr-nodata />
+            @endforelse
+            
+        </x-usermanagement::table-body>
+
+    </x-usermanagement::table>
+
+        {{-- Pagination: Bottom --}}
+        <div class="flex justify-end">
+            {{ $users?->links() }}
+        </div>
 
 </div>

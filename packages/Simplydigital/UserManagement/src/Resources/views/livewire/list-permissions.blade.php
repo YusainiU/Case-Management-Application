@@ -9,7 +9,8 @@
     $table = Config::get('user-management.tableClasses.table');
 @endphp
 
-<div class="text-gray-800">
+<div class="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+
     <x-usermanagement::modal title="Permissions" wire:model="showModal" widthsize="6xl" cancelText="Close"
         confirm="{{ $confirmCall }}" confirmText="{{ $confirmText }}" cancelThisWith="closeThis">
 
@@ -82,4 +83,5 @@
         @endif
 
     </x-usermanagement::modal>
+    
 </div>
