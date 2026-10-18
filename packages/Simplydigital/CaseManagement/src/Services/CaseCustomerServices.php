@@ -151,6 +151,11 @@ class CaseCustomerServices
                 'foreign_key' => 'customer_contacts.customer_id',
                 'column' => 'customers.name',
             ],
+            'email' => [
+                'table' => 'users',
+                'foreign_key' => 'customer_contacts.user_id',
+                'column' => 'users.email',
+            ],
         ];
 
         if ($this->sortBy) {

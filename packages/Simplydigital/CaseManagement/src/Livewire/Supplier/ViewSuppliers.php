@@ -49,6 +49,7 @@ class ViewSuppliers extends Component
 
     public function loadSuppliers()
     {
+
         $caseSupplierServices = app('case-supplier-services');
         if($this->sortField){
             $caseSupplierServices->sortByField($this->sortField, $this->sortDirection);

@@ -34,7 +34,7 @@ class ServiceLevelAgreementProfile extends ModalComponent
 
     public function closeThisModal()
     {
-        $this->dispatch('close-profile-modal');   
+        $this->dispatch('closeProfileModal');   
     }      
 
     public function render()

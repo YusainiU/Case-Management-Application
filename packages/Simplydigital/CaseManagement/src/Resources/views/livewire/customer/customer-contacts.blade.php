@@ -18,7 +18,7 @@
         createButtonLabel="Create New Customer Contact" createAction="openCreateContactModal" showBackButton="true" />
 
     {{-- Customer directory --}}
-    <section class="overflow-hidden rounded-2xl shadow-sm">
+    <section class="">
 
         {{-- Directory header --}}
         <div
@@ -58,7 +58,7 @@
         </div>
 
         {{-- Customer directory table --}}
-        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div class="">
 
             <div class="overflow-x-auto">
                 <x-casemanagement::table-elements.table>
@@ -76,11 +76,11 @@
                                 Customer
                             </x-casemanagement::table-elements.table-th>
 
-                            <x-casemanagement::table-elements.table-th>
+                            <x-casemanagement::table-elements.table-th sortable field="email" direction="asc" px="px-5">
                                 Email Address
                             </x-casemanagement::table-elements.table-th>
 
-                            <x-casemanagement::table-elements.table-th>
+                            <x-casemanagement::table-elements.table-th sortable field="customerRole" direction="asc" px="px-5">
                                 Contact Role
                             </x-casemanagement::table-elements.table-th>
 
@@ -88,7 +88,7 @@
                                 Phone
                             </x-casemanagement::table-elements.table-th>
 
-                            <x-casemanagement::table-elements.table-th>
+                            <x-casemanagement::table-elements.table-th sortable field="has_portal_access" direction="asc" px="px-5">
                                 Portal Access
                             </x-casemanagement::table-elements.table-th>
 

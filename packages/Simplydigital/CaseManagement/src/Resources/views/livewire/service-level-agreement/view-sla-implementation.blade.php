@@ -35,18 +35,47 @@
         />
     @endif
 
-    <div class="my-4">
-        <x-casemanagement::page-elements.section-title 
-            title="{{ $ui_params['title'] }}"
-            description="Service Level Management Application." 
-            aside="" />
-    </div>
+    <x-casemanagement::page-elements.page-header-section section="Service Level Agreement Management Application"
+        title="{{ $ui_params['title'] }}" description="Service Level Management Application." :showCreateButton="true"
+        createButtonLabel="Create New SLA Application" createAction="openCreateModal" showBackButton="true" />    
 
-    <x-casemanagement::page-elements.seperator margin="2" />
-    <x-casemanagement::form-elements.button-primary label="Implement SLA" action="openCreateModal" />
-    <x-casemanagement::form-elements.input-filter />
-    
-    {{ $slaps?->links() }}
+
+    <section class="">
+
+        <div
+            class="flex flex-col gap-3 border-b border-slate-200
+            px-5 py-4 sm:flex-row sm:items-center
+            sm:justify-between sm:px-6">
+            @if ($slaps)
+                <div class="text-sm text-slate-500">
+                    @if ($slaps->total() > 0)
+                        Showing
+                        <span class="font-semibold text-slate-700">
+                            {{ $slaps->firstItem() }}–{{ $slaps->lastItem() }}
+                        </span>
+                        of
+                        <span class="font-semibold text-slate-700">
+                            {{ $slaps->total() }}
+                        </span>
+                        Service Level Agreement Applications
+                    @else
+                        No service level agreement application found
+                    @endif
+                </div>
+            @endif
+        </div>               
+
+        <div class="flex flex-col gap-4 px-5 py-4 sm:px-6">
+            <div class="min-w-0">
+                <x-casemanagement::form-elements.input-filter />
+            </div>
+
+            @if ($slaps?->hasPages())
+                <div class="text-slate-100!">
+                    {{ $slaps->links('livewire::tailwind') }}
+                </div>
+            @endif
+        </div>
 
     <x-casemanagement::table-elements.table>
         <thead>
@@ -96,10 +125,8 @@
                         </x-casemanagement::table-elements.table-td>
                         <x-casemanagement::table-elements.table-td>
                             <div class="flex flex-row gap-4">
-                                <x-casemanagement::form-elements.button-secondary label="View"
-                                    action="openProfileModal({{ $slap->id }})" />
-                                <x-casemanagement::form-elements.button-primary label="Edit"
-                                    action="openUpdateModal({{ $slap->id }})" />
+                                <x-casemanagement::form-elements.button-edit action="openProfileModal({{ $slap->id }})" label="View" />
+                                <x-casemanagement::form-elements.button-view label="Edit" action="openUpdateModal({{ $slap->id }})" />
                             </div>
                         </x-casemanagement::table-elements.table-td>
                     </tr>
@@ -108,5 +135,7 @@
         </tbody>        
 
     </x-casemanagement::table-elements.table>
+
+    </section>
 
 </div>

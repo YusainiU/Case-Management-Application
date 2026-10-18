@@ -151,11 +151,12 @@ class CreateServiceLevelAgreement extends ModalComponent
     {
         $service = $this->utilityService();
         $slaService = $this->slaService();
-        try {
-            $this->validate();
-        } catch(ValidationException $e) {
-            dd($e->validator->errors());
-        }
+        $this->validate();
+        // try {
+        //     $this->validate();
+        // } catch(ValidationException $e) {
+        //     dd($e->validator->errors());
+        // }
         $this->form['service_start_time']=$service->HMSToSeconds($this->form['service_start_time']);
         $this->form['service_end_time']=$service->HMSToSeconds($this->form['service_end_time']);        
         if($this->slaId) {

@@ -30,7 +30,7 @@
         createAction="scheduleVisit" showBackButton="true" />
 
 
-    <section class="overflow-hidden rounded-2xl shadow-sm">
+    <section class="">
 
         {{-- Directory header --}}
         <div

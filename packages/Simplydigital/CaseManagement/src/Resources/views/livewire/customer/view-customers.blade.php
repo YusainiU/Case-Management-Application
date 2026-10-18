@@ -15,7 +15,7 @@
         createAction="openCreateModal" showBackButton="true" />
 
     {{-- Customer directory --}}
-    <section class="overflow-hidden rounded-2xl shadow-sm">
+    <section class="">
         {{-- Directory header --}}
         <div
             class="flex flex-col gap-3 border-b border-slate-200

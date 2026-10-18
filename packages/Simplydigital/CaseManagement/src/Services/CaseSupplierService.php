@@ -28,7 +28,7 @@ class CaseSupplierService
     {
 
         $this->sortBy = $field;
-        $this->sortByDirection = $direction ?? 'asc';
+        $this->sortByDirection = $direction ?? 'asc';        
     }
 
     public function checkIfDate(string $value)
@@ -65,16 +65,18 @@ class CaseSupplierService
 
     public function buildFilter()
     {
+
         if ($this->filter) {
             $filterValue = '%' . $this->filter . '%';
             $this->query->where(function ($q) use ($filterValue) {
                 $q->orWhere('name', 'like', $filterValue)
                     ->orWhere('number', 'like', $filterValue);
             });
-            if ($this->sortBy) {
-                $this->query->orderBy($this->sortBy, $this->sortByDirection);
-            }
+
         }
+        if ($this->sortBy) {
+            $this->query->orderBy($this->sortBy, $this->sortByDirection);
+        }     
         return $this->query;
     }
 
