@@ -9819,10 +9819,27 @@ function restoreScrollPositionOrScrollToTop() {
   };
   queueMicrotask(() => {
     queueMicrotask(() => {
+      let shouldScrollToFragment = !document.body.hasAttribute("data-scroll-x");
       scroll(document.body);
       document.querySelectorAll(["[x-navigate\\:scroll]", "[wire\\:scroll]"]).forEach(scroll);
+      if (shouldScrollToFragment) {
+        getFragmentTarget()?.scrollIntoView({ behavior: "instant" });
+      }
     });
   });
+}
+function getFragmentTarget() {
+  let fragment = window.location.hash.substring(1);
+  if (!fragment)
+    return;
+  let target = document.getElementById(fragment);
+  if (target)
+    return target;
+  try {
+    fragment = decodeURIComponent(fragment);
+  } catch (e) {
+  }
+  return document.getElementById(fragment) || Array.from(document.getElementsByName(fragment)).find((el) => el.tagName === "A");
 }
 
 // js/plugins/navigate/persist.js
