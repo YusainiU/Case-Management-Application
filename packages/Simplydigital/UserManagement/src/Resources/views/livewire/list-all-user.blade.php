@@ -28,8 +28,8 @@
     {{-- Page Header --}}
     <x-usermanagement::section-title>
         <x-slot name="title">
-            <div class="flex items-center gap-3 text-slate-800">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+            <div class="flex items-center gap-3 text-slate-500 rounded-2xl border border-slate-300 bg-slate-200 p-4 shadow-sm">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-200 text-violet-600">
                     <x-usermanagement-ui-icon name="user" class="h-7 w-7" />
                 </div>
                 <span class="text-2xl font-bold tracking-tight sm:text-3xl">

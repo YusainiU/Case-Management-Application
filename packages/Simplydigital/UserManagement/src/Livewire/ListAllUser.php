@@ -123,11 +123,7 @@ class ListAllUser extends Component
     {
         $users = $this->filter();
         $showList = $users->exists() ? true : false;
-        if ($showList) {
-            $users = $users->paginate(10);
-        } else {
-            $users = [];
-        }
+        $users = $users->paginate(10);
 
         return view('usermanagement::livewire.list-all-user', [
             'users' => $users,

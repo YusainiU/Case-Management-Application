@@ -4,7 +4,7 @@
     $trThClass = Config::get('engineer-management.tableClasses.colTr');
     $divTopClass = Config::get('engineer-management.tableClasses.divTop');
     $divSeparator = Config::get('engineer-management.tableClasses.divSeparator');
-    $tdActionLink = Config::get('engineer-management.buttonClasses.btnGrey');
+    $tdActionLink = Config::get('engineer-management.buttonClasses.btnBlue');
     $tdActionLinkDelete = Config::get('engineer-management.buttonClasses.btnRed');
     $table = Config::get('engineer-management.tableClasses.table');
 
@@ -20,7 +20,7 @@
 
 @endphp
 
-<div class="{{ $divTopClass }}">
+<div class="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
 
     {{-- Modal Add Engineer --}}
     @if ($modalMode)
@@ -50,28 +50,28 @@
 
     <x-engineermanagement::section-title>
         <x-slot name="title">
-            <div>
-            <x-engineermanagement-ui-icon name="engineer" class="h-10 w-10" />
-            Engineer Management
-            </div>
+            <div class="flex items-center gap-3 text-slate-500 rounded-2xl border border-slate-300 bg-slate-200 p-4 shadow-sm">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-200 text-violet-600">
+                    <x-engineermanagement-ui-icon name="engineer" class="h-10 w-10" />
+                </div>
+                <span class="text-2xl font-bold tracking-tight sm:text-3xl text-slade-50 dark:text-slade-50">
+                    Engineer Management
+                </span>
+            </div>            
         </x-slot>
         <x-slot name="description">
             Manage your engineers effectively.
         </x-slot>
     </x-engineermanagement::section-title>
 
-    <div class="{{ $divSeparator }}">
-        &nbsp;
-    </div>
-
-    <div class="mt-3 mb-3 px-5">
+    <div class="mt-3 mb-3">
         <button type="button" class="{{ $tdActionLink }}" wire:click="toggleAddModal">
             <x-engineermanagement-ui-icon name="add" class="h-6 w-6" />
             Add Engineer
         </button>
     </div>
 
-    <div class="mt-3 mb-3 flex justify-between gap-x-6 py-5 px-5">
+    <div class="mt-3 mb-3 flex justify-between gap-x-6 py-5">
         <x-input name="filter" class="" placeholder="Search records" wire:model.live='filter' />
     </div>
 
@@ -81,65 +81,34 @@
 
     <x-engineermanagement::table>
         <x-slot name="tableColumns">
-            <tr class="{{ $trThClass }}">
-                <th class="{{ $thClass }}">ID</th>
-                <th class="{{ $thClass }}">Name</th>
-                <th class="{{ $thClass }}">Manager</th>
-                <th class="{{ $thClass }}">Position</th>
-                <th class="{{ $thClass }}">Active</th>
-                <th class="{{ $thClass }}">Actions</th>
-            </tr>
+            <x-engineermanagement::table-th :items="[
+                'ID',
+                'Name',
+                'Manager',
+                'Position',
+                'Active',
+                'Actions',
+            ]" />
         </x-slot>
         <x-slot name="tableRows">
             @if ($showList && !$engineers->isEmpty())
                 @foreach ($engineers as $engineer)
-                    <tr class="hover:bg-gray-50">
-                        <td class="{{ $tdClass }}">{{ $engineer->id }}</td>
-                        <td class="{{ $tdClass }}">{{ $engineer->user->name ?? '-' }}</td>
-                        <td class="{{ $tdClass }}">{{ $engineer->engmanager->name ?? '-' }}</td>
-                        <td class="{{ $tdClass }}">{{ $engineer->position ?? '-' }}</td>
-                        <td class="{{ $tdClass }}">{{ $engineer->active ? 'Yes' : 'No' }}</td>
-                        <td class="{{ $tdClass }}">
-                            <button 
-                                type="button" 
-                                class="{{ $tdActionLink }}"
-                                wire:click="toggleEditModal({{ $engineer->id }})"
-                            >
-                                <x-engineermanagement-ui-icon name="edit" class="h-6 w-6" />
-                                Update
-                            </button>
-                            <button 
-                                type="button" 
-                                class="{{ $tdActionLink }}"
-                                wire:click="toggleSkillModal({{ $engineer->id }})"
-                            >
-                                <x-engineermanagement-ui-icon name="skill" class="h-6 w-6" />
-                                View Skills
-                            </button>
-                            <button 
-                                type="button" 
-                                class="{{ $tdActionLink }}"
-                                wire:click="toggleCertificateModal({{ $engineer->id }})"
-                            >
-                                <x-engineermanagement-ui-icon name="certificate" class="h-6 w-6" />
-                                View Certificates
-                            </button>                            
-                            <button 
-                                type="button" 
-                                class="{{ $tdActionLinkDelete }}"
-                                wire:click="delete({{ $engineer->id }})"
-                                wire:confirm="Continue to remove engineer?"
-                            >
-                                <x-engineermanagement-ui-icon name="minuscircle" class="h-6 w-6" />
-                                Delete
-                            </button>
-                        </td>
+                    <tr class="divide-y divide-slate-100 bg-white">
+                        <x-engineermanagement::table-td>{{ $engineer->id }}</x-engineermanagement::table-td>
+                        <x-engineermanagement::table-td>{{ $engineer->user->name ?? '-' }}</x-engineermanagement::table-td>
+                        <x-engineermanagement::table-td>{{ $engineer->engmanager->name ?? '-' }}</x-engineermanagement::table-td>
+                        <x-engineermanagement::table-td>{{ $engineer->position ?? '-' }}</x-engineermanagement::table-td>
+                        <x-engineermanagement::table-td>{{ $engineer->active ? 'Yes' : 'No' }}</x-engineermanagement::table-td>
+                        <x-engineermanagement::table-td>
+                            <x-engineermanagement::button-update label="Update" action="toggleEditModal({{ $engineer->id }})" />
+                            <x-engineermanagement::button-view-skill label="View Skills" action="toggleSkillModal({{ $engineer->id }})" />
+                            <x-engineermanagement::button-certificate label="View Certificates" action="toggleCertificateModal({{ $engineer->id }})" />
+                            <x-engineermanagement::button-delete label="Delete" recordId="{{ $engineer->id }}" />                        
+                        </x-engineermanagement::table-td>
                     </tr>
                 @endforeach
             @else
-                <tr>
-                    <td class="{{ $tdClass }}" colspan="6">No records found.</td>
-                </tr>
+                    <x-engineermanagement::table-tr-nodata colspan='6' />
             @endif
         </x-slot>
     </x-engineermanagement::table>
