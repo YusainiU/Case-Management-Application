@@ -26,7 +26,7 @@ class Product extends Model
 
     protected static function newFactory()
     {
-        return \Simplydigital\CaseManagement\Database\Factories\ProductFactory::new();
+        return \Database\Factories\ProductFactory::new();
     }
     
     protected static function booted()

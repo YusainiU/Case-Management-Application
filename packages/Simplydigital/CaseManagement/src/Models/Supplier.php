@@ -25,6 +25,11 @@ class Supplier extends Model
         'short_description',
     ];
 
+    protected static function newFactory()
+    {
+        return \Database\Factories\SupplierFactory::new();
+    }    
+
     protected function casts(): array
     {
         return [

@@ -5,7 +5,6 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 use Illuminate\Http\UploadedFile;
 use Livewire\WithFileUploads;
 use LivewireUI\Modal\ModalComponent;
-use phpDocumentor\Reflection\Types\Object_;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\FileUploadService;
@@ -19,7 +18,7 @@ class ManageCase extends ModalComponent
     public ?tickets $case = null;
 
     public ?UploadedFile $attachment = null;
-    
+
     public UploadedAttachment $uploadedAttachment;
 
     public ?string $message = null;
@@ -32,6 +31,7 @@ class ManageCase extends ModalComponent
         'pauses' => 'SLA Pauses',
         'update' => 'Update',
         'progress' => 'Progress',
+        'stockRequests' => 'Stock Requests',
         'visit' => 'Visit',
         'close' => 'Close & Resolve',
         'tracker' => 'Changes Tracker',
@@ -53,6 +53,14 @@ class ManageCase extends ModalComponent
     public function mount()
     {
         $this->authorize('viewAny', $this->case);
+
+        if (
+            ! auth()->user()?->can('case.update')
+            && ! auth()->user()?->can('stock_request.manage')
+        ) {
+            unset($this->tabHeaders['stockRequests']);
+        }
+
         if ($this->case) {
             if ($this->case->closed_datetime) {
                 $this->tabHeaders['close'] = 'Reopen Case';
@@ -152,12 +160,13 @@ class ManageCase extends ModalComponent
                 'attachment',
                 'A case must be selected before uploading a file.'
             );
+
             return;
         }
 
         try {
             app(FileUploadService::class)->upload(
-                ownerType:'Cases',
+                ownerType: 'Cases',
                 ownerNumber: $this->case->number,
                 file: $this->attachment,
                 uploadedBy: auth()->id(),

@@ -240,6 +240,18 @@ class CaseCustomerServices
         return CustomerContacts::find($contactId);
     }
 
+    public function addExistingUserAsCustomerContact(array $input)
+    {
+        $contact = new CustomerContacts;
+        $contact->customer_id = $input['customer_id'];
+        $contact->description = $input['description'];
+        $contact->active = $input['active'] ?? true;
+        $contact->customerRole = $input['contact_role'];
+        $contact->has_portal_access = $input['has_portal_access'] ?? false;
+        $contact->user_id = $input['user_id'];
+        $contact->save();        
+    }
+
     public function createCustomerContact(array $input)
     {
 

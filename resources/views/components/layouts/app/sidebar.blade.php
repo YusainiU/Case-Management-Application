@@ -19,6 +19,9 @@
                         <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.dashboard.view')" :current="request()->routeIs('casemanagement.dashboard.view')" wire:navigate>Dashboard</flux:navlist.item>
                         <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.cases.view')" :current="request()->routeIs('casemanagement.cases.view')" wire:navigate>View Cases</flux:navlist.item>
                         <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.sitevisit.view')" :current="request()->routeIs('casemanagement.sitevisit.view')" wire:navigate>View Site Visits</flux:navlist.item>
+                        @can('stock_request.manage')
+                            <flux:navlist.item icon="ellipsis-vertical" :href="route('stock-requests.index')" :current="request()->routeIs('stock-requests.*')" wire:navigate>Stock Requests</flux:navlist.item>
+                        @endcan
                     </flux:navlist.group>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.customers.view')" :current="request()->routeIs('casemanagement.customers.view')" wire:navigate>Customers</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.customer.contacts')" :current="request()->routeIs('casemanagement.customer.contacts')" wire:navigate>Customer Contacts</flux:navlist.item>

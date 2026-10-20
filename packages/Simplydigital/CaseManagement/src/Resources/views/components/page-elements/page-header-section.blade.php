@@ -7,6 +7,9 @@
     'createAction' => 'actionName',
     'showBackButton' => false,
     'backButtonLabel' => 'Back',
+    'showCustomButton' => false,
+    'customButtonAction' => null,
+    'customButtonLabel' => null,
 ])
 
 <section
@@ -65,7 +68,7 @@
             </div>
 
             {{-- Page actions --}}
-            @if ($showBackButton || $showCreateButton)
+            @if ($showBackButton || $showCreateButton || $showCustomButton)
                 <div class="flex shrink-0 flex-wrap items-center gap-2">
 
                     @if ($showBackButton)
@@ -105,6 +108,13 @@
                             :action="$createAction"
                         />
                     @endif
+
+                  @if ($showCustomButton && $customButtonAction && $customButtonLabel)
+                        <x-casemanagement::form-elements.button-primary
+                            :label="$customButtonLabel"
+                            :action="$customButtonAction"
+                        />
+                    @endif                    
 
                 </div>
             @endif

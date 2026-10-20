@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4730962a8dcf82c2af823e1828e43656",
+    "content-hash": "36e9297e5cb92645b32b8ebee40b7d71",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4612,6 +4612,45 @@
                 }
             ],
             "description": "Notification Management Module",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "simplydigital/stockmanagement",
+            "version": "dev-develop",
+            "dist": {
+                "type": "path",
+                "url": "packages/Simplydigital/StockManagement",
+                "reference": "e333b8e07d4ff038fedcd42257e20c1c85aa4c30"
+            },
+            "require": {
+                "illuminate/database": "^12.0|^13.0",
+                "illuminate/support": "^12.0|^13.0",
+                "illuminate/view": "^12.0|^13.0",
+                "livewire/livewire": "^4.0",
+                "php": ">=8.2",
+                "simplydigital/casemanagement": "*",
+                "simplydigital/usermanagement": "*"
+            },
+            "type": "project",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Simplydigital\\StockManagement\\Providers\\StockManagementServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Simplydigital\\StockManagement\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Stock requests for case management",
             "transport-options": {
                 "symlink": true,
                 "relative": true

@@ -88,4 +88,12 @@ class UserManagementServices
             
         return $internals;
     }
+
+    public static function getAllCustomerContacts()
+    {
+        return User::role('Customer')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
 }

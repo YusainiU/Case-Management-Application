@@ -7,6 +7,7 @@ use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
 use Simplydigital\CaseManagement\Services\UI;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Models\CustomerContacts;
+use Simplydigital\CaseManagement\Services\CaseUserServices;
 
 class CreateCustomerContact extends ModalComponent
 {
@@ -17,6 +18,7 @@ class CreateCustomerContact extends ModalComponent
     public array $customers = [];
     public int|string|null $customer = null;
     public array  $contactRoles = [];
+    public array $allCustomerContacts = [];
     public ?string $contactRole;
     public bool $isUpdate = false;
     public string $title = 'Create Customer Contact';
@@ -38,11 +40,17 @@ class CreateCustomerContact extends ModalComponent
         return app(CaseCustomerServices::class);
     }
 
+    public function UserService(): CaseUserServices
+    {
+        return app(CaseUserServices::class);
+    }
+
     public function mount()
     {
 
         $this->authorize('viewAny', CustomerContacts::class);        
         $this->customers = $this->customerService()->buildOptionsForCustomerSelect();
+        $this->getAllCustomerContacts();
         if(\sizeof($this->customers)){
             $this->customers = UI::createArrayforMultiselect($this->customers,'id','name');
         }
@@ -81,7 +89,14 @@ class CreateCustomerContact extends ModalComponent
     {
         $service = app('case-customer-services');
         return $service->getAllActiveCustomers_id_name();
-    }    
+    }
+
+    public function getAllCustomerContacts()
+    {
+        $service = $this->UserService();
+        $customers = $service->getAllCustomerContacts();
+        $this->allCustomerContacts = UI::createArrayforMultiselect($customers,'id','name');
+    }
 
     public function rules()
     {
@@ -102,6 +117,7 @@ class CreateCustomerContact extends ModalComponent
 
     public function save()
     {
+        dd($this->name);
         $this->validate();
         $service = app('case-customer-services');
         $input = [

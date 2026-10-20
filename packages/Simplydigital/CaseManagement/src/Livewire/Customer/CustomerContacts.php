@@ -23,11 +23,13 @@ class CustomerContacts extends Component
     public $showCreateContactModal = false;
     public $showContactProfileModal = false;
     public $showContactUpdateModal = false;
+    public $showAddExistingUserModal = false;
 
     public $listeners = [
         'closeCreateCustomerContactModal',
         'closeUserProfile' => 'closeProfile',
         'closeUpdateCustomerContactModal' => 'closeUpdateModal',
+        'closeAddExistingUser' => 'closeAddExistingUser',
     ];
 
     public function mount()
@@ -52,6 +54,12 @@ class CustomerContacts extends Component
         $this->resetAllModals();
     }
 
+    public function closeAddExistingUserModal()
+    {
+        $this->resetAllModals();
+        $this->customerContactId = null;
+    }
+
     public function closeUpdateModal()
     {
         $this->resetAllModals();
@@ -69,11 +77,17 @@ class CustomerContacts extends Component
         $this->showCreateContactModal = false;
         $this->showContactProfileModal = false;
         $this->showContactUpdateModal = false;
+        $this->showAddExistingUserModal = false;
     }
 
     public function openCreateContactModal()
     {
         $this->showCreateContactModal = true;
+    }
+
+    public function openAddExistingModal()
+    {
+        $this->showAddExistingUserModal = true;
     }
 
     public function openContactProfileModal(int|string $userId)

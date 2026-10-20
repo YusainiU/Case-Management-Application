@@ -30,4 +30,9 @@ class CaseUserServices
         return  UserManagementServices::getUserById($id);
     }
 
+    public function getAllCustomerContacts(): array
+    {
+        return UserManagementServices::getAllCustomerContacts();
+    }
+
 }

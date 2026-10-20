@@ -24,6 +24,7 @@
         "simplydigital/eventplannermanagement": "*",
         "simplydigital/fileupload-management": "*",
         "simplydigital/notificationmanagement": "*",
+        "simplydigital/stockmanagement": "*",
         "simplydigital/usermanagement": "*",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-permission": "^6.24",
@@ -59,6 +60,13 @@
         {
             "type": "path",
             "url": "packages/Simplydigital/CaseManagement",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "packages/Simplydigital/StockManagement",
             "options": {
                 "symlink": true
             }

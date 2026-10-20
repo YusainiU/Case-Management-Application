@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if(!Schema::hasColumn('tickets', 'first_case_assignment')) {
+        if(Schema::hasColumn('tickets', 'first_case_assignment')) {
             return;
         }
         

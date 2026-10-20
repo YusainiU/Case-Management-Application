@@ -124,6 +124,10 @@
                         <livewire:case-progress-log :case="$case" />
                     @endif
 
+                    @if ($tabHeaders[$this->selectedTab] == $tabHeaders['stockRequests'])
+                        <livewire:stock-request-case :case="$case" />
+                    @endif
+
                     @if ($tabHeaders[$this->selectedTab] == $tabHeaders['update'])
                         <livewire:create-case
                             :caseId="$case->id"

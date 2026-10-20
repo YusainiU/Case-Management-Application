@@ -1,8 +1,7 @@
 <div class="grid grid-cols-1 gap-4 p-4">
 
     @if ($showCreateContactModal)
-        <livewire:create-update-customer-contact :customerId="$customerId"
-            @close-create-modal="closeCreateCustomerContactModal" />
+        <livewire:create-update-customer-contact :customerId="$customerId" @close-create-modal="closeCreateCustomerContactModal" />
     @endif
 
     @if ($showContactProfileModal)
@@ -13,9 +12,23 @@
         <livewire:update-customer-contact :customerContactId="$customerContactId" @close-update-modal="closeUpdateModal" />
     @endif
 
-    <x-casemanagement::page-elements.page-header-section section="Customer Management" title="Customer Contacts"
-        description="Manage your customer contacts here." :showCreateButton="true"
-        createButtonLabel="Create New Customer Contact" createAction="openCreateContactModal" showBackButton="true" />
+    @if ($showAddExistingUserModal)
+        <livewire:add-existing-user :customerId="$customerId" @close-add-modal="closeAddExistingUserModal" />
+    @endif
+
+    <x-casemanagement::page-elements.page-header-section 
+        section="Customer Management" 
+        title="Customer Contacts"
+        description="Manage your customer contacts here." 
+        :showCreateButton="true"
+        createButtonLabel="Create New Contact" 
+        createAction="openCreateContactModal" 
+        showBackButton="true" 
+        :showCustomButton="true"
+        customButtonAction="openAddExistingModal"
+        customButtonLabel="Add Existing User"
+    />
+      
 
     {{-- Customer directory --}}
     <section class="">

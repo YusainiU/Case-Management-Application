@@ -14,7 +14,7 @@
 
     {{-- Event modal --}}
     @if ($showEventModal && $case)
-        <livewire:manage-case :case="$case" />
+        <livewire:manage-case :case="$case" @close-profile-modal="closeEventModal"/>
     @endif
 
     {{-- Calendar toolbar --}}

@@ -21,10 +21,6 @@ class Planner extends Component
     /**
      * @var array<string, string>
      */
-    protected $listeners = [
-        'closeProfileModal' => 'closeEventModal',
-    ];
-
     public function mount(): void
     {
         $this->authorize('viewAny', PlannerEvent::class);
