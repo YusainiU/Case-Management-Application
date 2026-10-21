@@ -8,18 +8,20 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('stock_request_updates', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('stock_request_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('from_status')->nullable();
-            $table->string('to_status');
-            $table->text('notes')->nullable();
-            $table->foreignId('task_log_id')->nullable()->constrained('task_logs')->nullOnDelete();
-            $table->timestamps();
+        if (! Schema::hasTable('stock_request_updates')) {
+            Schema::create('stock_request_updates', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('stock_request_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+                $table->string('from_status')->nullable();
+                $table->string('to_status');
+                $table->text('notes')->nullable();
+                $table->foreignId('task_log_id')->nullable()->constrained('task_logs')->nullOnDelete();
+                $table->timestamps();
 
-            $table->index(['stock_request_id', 'created_at']);
-        });
+                $table->index(['stock_request_id', 'created_at']);
+            });
+        }
     }
 
     public function down(): void

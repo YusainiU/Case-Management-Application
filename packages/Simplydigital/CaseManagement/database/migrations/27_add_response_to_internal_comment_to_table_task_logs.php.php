@@ -32,8 +32,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('task_logs', function (Blueprint $table) {
-            $table->dropColumn('response_to_internal_comment');
-        });
+        if (Schema::hasColumn('task_logs', 'response_to_internal_comment')) {
+            Schema::table('task_logs', function (Blueprint $table) {
+                $table->dropColumn('response_to_internal_comment');
+            });
+        }
     }
 };

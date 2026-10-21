@@ -11,25 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customer_contacts', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('number');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('customer_id');
-            $table->string('customerRole')->nullable();
-            $table->string('description')->nullable();
+        if (! Schema::hasTable('customer_contacts')) {
+            Schema::create('customer_contacts', function (Blueprint $table) {
+                $table->id();
+                $table->timestamps();
+                $table->string('number');
+                $table->unsignedBigInteger('user_id');
+                $table->unsignedBigInteger('customer_id');
+                $table->string('customerRole')->nullable();
+                $table->string('description')->nullable();
 
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
-                
-            $table->foreign('customer_id')
-                ->references('id')
-                ->on('customers')
-                ->onDelete('cascade');
-        });
+                $table->foreign('user_id')
+                    ->references('id')
+                    ->on('users')
+                    ->onDelete('cascade');
+
+                $table->foreign('customer_id')
+                    ->references('id')
+                    ->on('customers')
+                    ->onDelete('cascade');
+            });
+        }
     }
 
     /**

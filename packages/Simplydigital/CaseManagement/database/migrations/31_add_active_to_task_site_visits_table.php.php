@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if(Schema::hasColumn('task_site_visits', 'active')) {
+        if (Schema::hasColumn('task_site_visits', 'active')) {
             return;
         }
         Schema::table('task_site_visits', function (Blueprint $table) {
             $table->boolean('active')->default(true);
-        });        
+        });
     }
 
     /**
@@ -24,8 +24,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('task_site_visits', function (Blueprint $table) {
-            $table->dropColumn('active');
-        });
+        if (Schema::hasColumn('task_site_visits', 'active')) {
+            Schema::table('task_site_visits', function (Blueprint $table) {
+                $table->dropColumn('active');
+            });
+        }
     }
 };

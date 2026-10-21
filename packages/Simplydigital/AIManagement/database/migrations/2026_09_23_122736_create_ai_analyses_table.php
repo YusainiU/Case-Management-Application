@@ -11,29 +11,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_analyses', function (Blueprint $table) {
-            
-            $table->id();
-            $table->unsignedBigInteger('case_id');
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('type');
-            $table->string('model')->nullable();
-            $table->string('prompt_version')->nullable();
-            $table->string('status')->default('pending');
-            $table->json('result')->nullable();
-            $table->text('error')->nullable();
-            $table->timestamps();
+        if (! Schema::hasTable('ai_analyses')) {
+            Schema::create('ai_analyses', function (Blueprint $table) {
 
-            $table->index([
-                'case_id',
-                'type',
-            ]);
+                $table->id();
+                $table->unsignedBigInteger('case_id');
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->string('type');
+                $table->string('model')->nullable();
+                $table->string('prompt_version')->nullable();
+                $table->string('status')->default('pending');
+                $table->json('result')->nullable();
+                $table->text('error')->nullable();
+                $table->timestamps();
 
-            $table->index([
-                'user_id',
-            ]);
+                $table->index([
+                    'case_id',
+                    'type',
+                ]);
 
-        });
+                $table->index([
+                    'user_id',
+                ]);
+
+            });
+        }
     }
 
     /**

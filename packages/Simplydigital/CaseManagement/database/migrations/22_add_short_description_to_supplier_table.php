@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        if(! Schema::hasColumn('suppliers', 'short_description')) {
+        if (! Schema::hasColumn('suppliers', 'short_description')) {
             Schema::table('suppliers', function (Blueprint $table) {
-                $table->string('short_description')->nullable(); //customer/internal/other
+                $table->string('short_description')->nullable(); // customer/internal/other
             });
         }
     }
@@ -27,8 +27,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('suppliers', function (Blueprint $table) {
-            $table->dropColumn('short_description');
-        });
+        if (Schema::hasColumn('suppliers', 'short_description')) {
+            Schema::table('suppliers', function (Blueprint $table) {
+                $table->dropColumn('short_description');
+            });
+        }
     }
-};  
+};

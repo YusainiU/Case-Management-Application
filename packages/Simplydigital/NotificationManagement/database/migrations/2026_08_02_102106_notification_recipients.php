@@ -11,19 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notification_recipients', function (Blueprint $table) {
+        if (! Schema::hasTable('notification_recipients')) {
+            Schema::create('notification_recipients', function (Blueprint $table) {
 
-            $table->id();
+                $table->id();
 
-            $table->foreignId('notification_id');
+                $table->foreignId('notification_id');
 
-            $table->string('type');      // to cc bcc
+                $table->string('type');      // to cc bcc
 
-            $table->string('name')->nullable();
+                $table->string('name')->nullable();
 
-            $table->string('email');
+                $table->string('email');
 
-        });     
+            });
+        }
     }
 
     /**

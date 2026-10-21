@@ -12,23 +12,25 @@ return new class extends Migration
     public function up(): void
     {
 
-        Schema::create('service_level_agreements', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('name');
-            $table->string('short_description');
-            $table->string('number');
-            $table->string('start_day')->index();
-            $table->string('end_day')->index();
-            $table->integer('service_start_time')->default(0);
-            $table->integer('service_end_time')->default(0);
-            $table->boolean('include_public_holiday')->default(false);
-            $table->string('cover_details')->nullable();
-            $table->boolean('active')->default(true);
-            $table->string('type')->index();
-            $table->integer('response_time')->default(0);
-            $table->integer('fixed_time')->default(0);            
-        });
+        if (! Schema::hasTable('service_level_agreements')) {
+            Schema::create('service_level_agreements', function (Blueprint $table) {
+                $table->id();
+                $table->timestamps();
+                $table->string('name');
+                $table->string('short_description');
+                $table->string('number');
+                $table->string('start_day')->index();
+                $table->string('end_day')->index();
+                $table->integer('service_start_time')->default(0);
+                $table->integer('service_end_time')->default(0);
+                $table->boolean('include_public_holiday')->default(false);
+                $table->string('cover_details')->nullable();
+                $table->boolean('active')->default(true);
+                $table->string('type')->index();
+                $table->integer('response_time')->default(0);
+                $table->integer('fixed_time')->default(0);
+            });
+        }
     }
 
     /**

@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if(Schema::hasColumn('tickets', 'first_case_assignment')) {
+        if (Schema::hasColumn('tickets', 'first_case_assignment')) {
             return;
         }
-        
+
         Schema::table('tickets', function (Blueprint $table) {
             $table->dateTime('first_case_assignment')
                 ->nullable();
         });
 
-        //Use updated_at as a default date for existing record if exist
+        // Use updated_at as a default date for existing record if exist
         $tickets = DB::table('tickets')->get();
         if ($tickets->isNotEmpty()) {
             foreach ($tickets as $ticket) {
@@ -38,8 +38,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tickets', function (Blueprint $table) {
-            $table->dropColumn('first_case_assignment');
-        });
+        if (Schema::hasColumn('tickets', 'first_case_assignment')) {
+            Schema::table('tickets', function (Blueprint $table) {
+                $table->dropColumn('first_case_assignment');
+            });
+        }
     }
 };

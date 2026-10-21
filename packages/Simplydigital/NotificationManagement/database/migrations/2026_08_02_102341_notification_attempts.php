@@ -11,27 +11,29 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notification_attempts', function (Blueprint $table) {
+        if (! Schema::hasTable('notification_attempts')) {
+            Schema::create('notification_attempts', function (Blueprint $table) {
 
-            $table->id();
+                $table->id();
 
-            $table->foreignId('notification_id');
+                $table->foreignId('notification_id');
 
-            $table->integer('attempt');
+                $table->integer('attempt');
 
-            $table->string('status');
+                $table->string('status');
 
-            $table->string('transport');
+                $table->string('transport');
 
-            $table->string('message_id')->nullable();
+                $table->string('message_id')->nullable();
 
-            $table->text('response')->nullable();
+                $table->text('response')->nullable();
 
-            $table->text('exception')->nullable();
+                $table->text('exception')->nullable();
 
-            $table->timestamp('attempted_at');
+                $table->timestamp('attempted_at');
 
-        });
+            });
+        }
     }
 
     /**

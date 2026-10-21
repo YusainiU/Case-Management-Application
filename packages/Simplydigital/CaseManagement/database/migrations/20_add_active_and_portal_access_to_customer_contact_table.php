@@ -13,10 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('customer_contacts', function (Blueprint $table) {
-            $table->boolean('active')->default(true)->after('description'); //customer/internal/other
-            $table->boolean('has_portal_access')->default(false)->after('active');
-        });
+        if (! Schema::hasColumn('customer_contacts', 'active')) {
+            Schema::table('customer_contacts', function (Blueprint $table) {
+                $table->boolean('active')->default(true)->after('description');
+            });
+        }
+
+        if (! Schema::hasColumn('customer_contacts', 'has_portal_access')) {
+            Schema::table('customer_contacts', function (Blueprint $table) {
+                $table->boolean('has_portal_access')->default(false)->after('active');
+            });
+        }
     }
 
     /**
@@ -26,9 +33,12 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('customer_contacts', function (Blueprint $table) {
-            $table->dropColumn('active');
-            $table->dropColumn('has_portal_access');
-        });
+        foreach (['active', 'has_portal_access'] as $column) {
+            if (Schema::hasColumn('customer_contacts', $column)) {
+                Schema::table('customer_contacts', function (Blueprint $table) use ($column) {
+                    $table->dropColumn($column);
+                });
+            }
+        }
     }
-};  
+};

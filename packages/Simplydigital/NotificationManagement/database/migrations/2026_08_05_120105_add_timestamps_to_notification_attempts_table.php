@@ -11,9 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('notification_attempts', function (Blueprint $table) {
-             $table->timestamps();
-        });
+        if (! Schema::hasColumn('notification_attempts', 'created_at')) {
+            Schema::table('notification_attempts', function (Blueprint $table) {
+                $table->timestamp('created_at')->nullable();
+            });
+        }
+
+        if (! Schema::hasColumn('notification_attempts', 'updated_at')) {
+            Schema::table('notification_attempts', function (Blueprint $table) {
+                $table->timestamp('updated_at')->nullable();
+            });
+        }
     }
 
     /**
@@ -21,8 +29,16 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('notification_attempts', function (Blueprint $table) {
-            $table->dropTimestamps();
-        });
+        if (Schema::hasColumn('notification_attempts', 'created_at')) {
+            Schema::table('notification_attempts', function (Blueprint $table) {
+                $table->dropColumn('created_at');
+            });
+        }
+
+        if (Schema::hasColumn('notification_attempts', 'updated_at')) {
+            Schema::table('notification_attempts', function (Blueprint $table) {
+                $table->dropColumn('updated_at');
+            });
+        }
     }
 };

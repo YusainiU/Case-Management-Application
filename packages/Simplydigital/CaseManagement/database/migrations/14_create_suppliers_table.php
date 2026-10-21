@@ -11,20 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('suppliers', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('number');
-            $table->string('name');
-            $table->string('address_1');
-            $table->string('address_2')->nullable();
-            $table->string('address_3')->nullable();
-            $table->string('address_4')->nullable();
-            $table->string('telephone')->nullable();
-            $table->string('email')->nullable();
-            $table->string('url')->nullable();
-            $table->boolean('active')->default(true);
-        });
+        if (! Schema::hasTable('suppliers')) {
+            Schema::create('suppliers', function (Blueprint $table) {
+                $table->id();
+                $table->timestamps();
+                $table->string('number');
+                $table->string('name');
+                $table->string('address_1');
+                $table->string('address_2')->nullable();
+                $table->string('address_3')->nullable();
+                $table->string('address_4')->nullable();
+                $table->string('telephone')->nullable();
+                $table->string('email')->nullable();
+                $table->string('url')->nullable();
+                $table->boolean('active')->default(true);
+            });
+        }
     }
 
     /**

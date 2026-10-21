@@ -11,43 +11,43 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assets', function (Blueprint $table) {
+        if (! Schema::hasTable('assets')) {
+            Schema::create('assets', function (Blueprint $table) {
 
-            $table->id();
-            $table->timestamps();
-            $table->string('short_description');
-            $table->string('number');
-            $table->unsignedBigInteger('product_id')->nullable();
-            $table->unsignedBigInteger('supplier_id')->nullable();
-            $table->unsignedBigInteger('customer_id');
-            $table->boolean('active')->default(true);
-            $table->decimal('buy_price',10,2)->default(0.00);
-            $table->decimal('sell_price',10,2)->default(0.00);
-            $table->string('notes')->nullable();
-            $table->string('license_number')->nullable();
-            $table->string('location')->nullable();
-            $table->text('technical_specifications')->nullable();
-            $table->string('mac_address')->nullable();
-            $table->ipAddress('ip_address')->nullable();
+                $table->id();
+                $table->timestamps();
+                $table->string('short_description');
+                $table->string('number');
+                $table->unsignedBigInteger('product_id')->nullable();
+                $table->unsignedBigInteger('supplier_id')->nullable();
+                $table->unsignedBigInteger('customer_id');
+                $table->boolean('active')->default(true);
+                $table->decimal('buy_price', 10, 2)->default(0.00);
+                $table->decimal('sell_price', 10, 2)->default(0.00);
+                $table->string('notes')->nullable();
+                $table->string('license_number')->nullable();
+                $table->string('location')->nullable();
+                $table->text('technical_specifications')->nullable();
+                $table->string('mac_address')->nullable();
+                $table->ipAddress('ip_address')->nullable();
 
+                $table->foreign('supplier_id')
+                    ->references('id')
+                    ->on('suppliers')
+                    ->onDelete('set null');
 
-            $table->foreign('supplier_id')
-            ->references('id')
-            ->on('suppliers')
-            ->onDelete('set null');
+                $table->foreign('customer_id')
+                    ->references('id')
+                    ->on('customers')
+                    ->onDelete('cascade');
 
-            $table->foreign('customer_id')
-            ->references('id')
-            ->on('customers')
-            ->onDelete('cascade');
-            
-            $table->foreign('product_id')
-            ->references('id')
-            ->on('products')
-            ->onDelete('set null');            
+                $table->foreign('product_id')
+                    ->references('id')
+                    ->on('products')
+                    ->onDelete('set null');
 
-
-        });
+            });
+        }
     }
 
     /**

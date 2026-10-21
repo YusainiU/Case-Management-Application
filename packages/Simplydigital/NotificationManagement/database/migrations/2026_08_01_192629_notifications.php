@@ -11,36 +11,38 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        if (! Schema::hasTable('notifications')) {
+            Schema::create('notifications', function (Blueprint $table) {
 
-            $table->id();
+                $table->id();
 
-            $table->uuid()->unique();
+                $table->uuid()->unique();
 
-            $table->string('subject');
+                $table->string('subject');
 
-            $table->string('channel');
+                $table->string('channel');
 
-            $table->string('status');
+                $table->string('status');
 
-            $table->string('priority');
+                $table->string('priority');
 
-            $table->string('template')->nullable();
+                $table->string('template')->nullable();
 
-            $table->morphs('trigger');
+                $table->morphs('trigger');
 
-            $table->json('view_data')->nullable();
+                $table->json('view_data')->nullable();
 
-            $table->foreignId('created_by')->nullable();
+                $table->foreignId('created_by')->nullable();
 
-            $table->timestamp('queued_at')->nullable();
+                $table->timestamp('queued_at')->nullable();
 
-            $table->timestamp('sent_at')->nullable();
+                $table->timestamp('sent_at')->nullable();
 
-            $table->timestamp('failed_at')->nullable();
+                $table->timestamp('failed_at')->nullable();
 
-            $table->timestamps();
-        });
+                $table->timestamps();
+            });
+        }
     }
 
     /**

@@ -11,27 +11,29 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notification_attachments', function (Blueprint $table) {
+        if (! Schema::hasTable('notification_attachments')) {
+            Schema::create('notification_attachments', function (Blueprint $table) {
 
-            $table->id();
+                $table->id();
 
-            $table->foreignId('notification_id')
-                ->constrained()
-                ->cascadeOnDelete();
+                $table->foreignId('notification_id')
+                    ->constrained()
+                    ->cascadeOnDelete();
 
-            $table->string('disk');
+                $table->string('disk');
 
-            $table->string('path');
+                $table->string('path');
 
-            $table->string('filename');
+                $table->string('filename');
 
-            $table->string('mime_type')->nullable();
+                $table->string('mime_type')->nullable();
 
-            $table->unsignedBigInteger('size')->nullable();
+                $table->unsignedBigInteger('size')->nullable();
 
-            $table->timestamps();
+                $table->timestamps();
 
-        });
+            });
+        }
     }
 
     /**
