@@ -21,6 +21,7 @@
         "livewire-development",
         "volt-development",
         "tailwindcss-development",
+        "activitylog-development",
         "laravel-brain"
     ]
 }

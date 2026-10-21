@@ -117,7 +117,6 @@ class CreateCustomerContact extends ModalComponent
 
     public function save()
     {
-        dd($this->name);
         $this->validate();
         $service = app('case-customer-services');
         $input = [
@@ -143,6 +142,7 @@ class CreateCustomerContact extends ModalComponent
             $service->createCustomerContact($input);            
         }
         $this->resetAll();
+        $this->closeThisModal();
     }
     public function render()
     {

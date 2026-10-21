@@ -7,7 +7,9 @@ use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Services\CaseSiteVisitService;
 use Simplydigital\CaseManagement\Models\tickets;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class ViewSiteVisit extends Component
 {
 
