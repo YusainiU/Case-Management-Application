@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('sla_task_pauses', function (Blueprint $table) {
-            $table->integer('remaining')->nullable();
-        });
+        if (! Schema::hasColumn('sla_task_pauses', 'remaining')) {
+            Schema::table('sla_task_pauses', function (Blueprint $table) {
+                $table->integer('remaining')->nullable();
+            });
+        }
     }
 
     /**
@@ -21,8 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('sla_task_pauses', function (Blueprint $table) {
-            $table->dropColumn('remaining');
-        });
+        if (Schema::hasColumn('sla_task_pauses', 'remaining')) {
+            Schema::table('sla_task_pauses', function (Blueprint $table) {
+                $table->dropColumn('remaining');
+            });
+        }
     }
 };

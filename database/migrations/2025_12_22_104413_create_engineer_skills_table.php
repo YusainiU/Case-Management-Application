@@ -15,28 +15,30 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('engineer_skills', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
-            $table->string('number')->unique();
-            $table->unsignedBigInteger('engineer_id');
-            $table->unsignedBigInteger('skill_id');
-            $table->string('skill_level')->nullable();
-            $table->string('description')->nullable();
-            $table->boolean('active')->default(true);
-            $table->softDeletes();
+        if (! Schema::hasTable('engineer_skills')) {
+            Schema::create('engineer_skills', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->timestamps();
+                $table->string('number')->unique();
+                $table->unsignedBigInteger('engineer_id');
+                $table->unsignedBigInteger('skill_id');
+                $table->string('skill_level')->nullable();
+                $table->string('description')->nullable();
+                $table->boolean('active')->default(true);
+                $table->softDeletes();
 
-            $table->foreign('engineer_id')
-                ->references('id')
-                ->on('engineer_management')
-                ->cascadeOnDelete();
+                $table->foreign('engineer_id')
+                    ->references('id')
+                    ->on('engineer_management')
+                    ->cascadeOnDelete();
 
-            $table->foreign('skill_id')
-                ->references('id')
-                ->on('skills')
-                ->cascadeOnDelete();
-                
-        });
+                $table->foreign('skill_id')
+                    ->references('id')
+                    ->on('skills')
+                    ->cascadeOnDelete();
+
+            });
+        }
     }
 
     /**

@@ -15,30 +15,32 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('engineer_certifications', function (Blueprint $table) {
+        if (! Schema::hasTable('engineer_certifications')) {
+            Schema::create('engineer_certifications', function (Blueprint $table) {
 
-            $table->bigIncrements('id');
-            $table->timestamps();                
-            $table->string('certification_number');
-            $table->unsignedBigInteger('certificate_id');
-            $table->unsignedBigInteger('engineer_id');
-            $table->datetime('issued_date')->nullable();
-            $table->dateTime('expiry_date')->nullable();
-            $table->boolean('expired')->default(false);
-            $table->boolean('active')->default(true);
-            $table->softDeletes();
+                $table->bigIncrements('id');
+                $table->timestamps();
+                $table->string('certification_number');
+                $table->unsignedBigInteger('certificate_id');
+                $table->unsignedBigInteger('engineer_id');
+                $table->datetime('issued_date')->nullable();
+                $table->dateTime('expiry_date')->nullable();
+                $table->boolean('expired')->default(false);
+                $table->boolean('active')->default(true);
+                $table->softDeletes();
 
-            $table->foreign('certificate_id')
-            ->references('id')
-            ->on('certificates')
-            ->cascadeOnDelete();
+                $table->foreign('certificate_id')
+                    ->references('id')
+                    ->on('certificates')
+                    ->cascadeOnDelete();
 
-            $table->foreign('engineer_id')
-            ->references('id')
-            ->on('engineer_management')
-            ->cascadeOnDelete();
-            
-        });
+                $table->foreign('engineer_id')
+                    ->references('id')
+                    ->on('engineer_management')
+                    ->cascadeOnDelete();
+
+            });
+        }
     }
 
     /**

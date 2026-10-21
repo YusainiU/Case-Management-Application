@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users_details', function (Blueprint $table) {
-            $table->string('identification')->nullable()->after('avatar'); //customer/internal/other
-        });
+        if (! Schema::hasColumn('users_details', 'identification')) {
+            Schema::table('users_details', function (Blueprint $table) {
+                $table->string('identification')->nullable()->after('avatar');
+            });
+        }
     }
 
     /**
@@ -25,8 +27,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('user_details', function (Blueprint $table) {
-            $table->dropColumn('identification');
-        });
+        if (Schema::hasColumn('users_details', 'identification')) {
+            Schema::table('users_details', function (Blueprint $table) {
+                $table->dropColumn('identification');
+            });
+        }
     }
-};  
+};

@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        if(! Schema::hasColumn('products', 'active')) {
+        if (! Schema::hasColumn('products', 'active')) {
             Schema::table('products', function (Blueprint $table) {
-                $table->boolean('active')->default(true); //customer/internal/other
+                $table->boolean('active')->default(true); // customer/internal/other
             });
         }
     }
@@ -27,8 +27,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('active');
-        });
+        if (Schema::hasColumn('products', 'active')) {
+            Schema::table('products', function (Blueprint $table) {
+                $table->dropColumn('active');
+            });
+        }
     }
-};  
+};

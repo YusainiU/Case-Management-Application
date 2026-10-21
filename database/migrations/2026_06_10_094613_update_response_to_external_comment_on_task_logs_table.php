@@ -11,18 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('task_logs', function (Blueprint $table) {
-            // Drop the existing varchar column
-            $table->dropColumn('response_to_external_comment');
-        });
+        $hasForeignKey = collect(Schema::getForeignKeys('task_logs'))
+            ->contains(fn (array $foreignKey): bool => in_array('response_to_external_comment', $foreignKey['columns'], true));
 
-        Schema::table('task_logs', function (Blueprint $table) {
-            // Recreate as a self-referencing foreign key
-            $table->foreignId('response_to_external_comment')
-                ->nullable()
-                ->constrained('task_logs')
-                ->nullOnDelete();
-        });
+        if (Schema::hasColumn('task_logs', 'response_to_external_comment') && ! $hasForeignKey) {
+            Schema::table('task_logs', function (Blueprint $table) {
+                $table->dropColumn('response_to_external_comment');
+            });
+        }
+
+        if (! $hasForeignKey && ! Schema::hasColumn('task_logs', 'response_to_external_comment')) {
+            Schema::table('task_logs', function (Blueprint $table) {
+                $table->foreignId('response_to_external_comment')
+                    ->nullable()
+                    ->constrained('task_logs')
+                    ->nullOnDelete();
+            });
+        }
     }
 
     /**
@@ -30,14 +35,25 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('task_logs', function (Blueprint $table) {
-            $table->dropForeign(['response_to_external_comment']);
-            $table->dropColumn('response_to_external_comment');
-        });
+        $hasForeignKey = collect(Schema::getForeignKeys('task_logs'))
+            ->contains(fn (array $foreignKey): bool => in_array('response_to_external_comment', $foreignKey['columns'], true));
 
-        Schema::table('task_logs', function (Blueprint $table) {
-            $table->string('response_to_external_comment')
-                ->nullable();
-        });
+        if ($hasForeignKey) {
+            Schema::table('task_logs', function (Blueprint $table) {
+                $table->dropForeign(['response_to_external_comment']);
+                $table->dropColumn('response_to_external_comment');
+            });
+        } elseif (Schema::hasColumn('task_logs', 'response_to_external_comment')) {
+            Schema::table('task_logs', function (Blueprint $table) {
+                $table->dropColumn('response_to_external_comment');
+            });
+        }
+
+        if (! Schema::hasColumn('task_logs', 'response_to_external_comment')) {
+            Schema::table('task_logs', function (Blueprint $table) {
+                $table->string('response_to_external_comment')
+                    ->nullable();
+            });
+        }
     }
 };

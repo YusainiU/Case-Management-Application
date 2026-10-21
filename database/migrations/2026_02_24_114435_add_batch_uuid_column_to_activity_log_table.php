@@ -2,21 +2,24 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     public function up()
     {
-        Schema::table('activity_log', function (Blueprint $table) {
-            // Add the new column v5 expects
-            $table->json('attribute_changes')->nullable()->after('causer_id');
-            // Remove legacy v4 batch column (if exists)
-            if (Schema::hasColumn('activity_log', 'batch_uuid')) {
+        if (! Schema::hasColumn('activity_log', 'attribute_changes')) {
+            Schema::table('activity_log', function (Blueprint $table) {
+                $table->json('attribute_changes')->nullable()->after('causer_id');
+            });
+        }
+
+        if (Schema::hasColumn('activity_log', 'batch_uuid')) {
+            Schema::table('activity_log', function (Blueprint $table) {
                 $table->dropColumn('batch_uuid');
-            }
-        });
+            });
+        }
 
         // Migrate existing data from properties to attribute_changes
         DB::table('activity_log')->whereNotNull('properties')->eachById(function ($row) {
@@ -33,10 +36,12 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::table('activity_log', function (Blueprint $table) {
-            $table->dropColumn('attribute_changes');
-        });
-        
+        if (Schema::hasColumn('activity_log', 'attribute_changes')) {
+            Schema::table('activity_log', function (Blueprint $table) {
+                $table->dropColumn('attribute_changes');
+            });
+        }
+
         // You would need to re-add batch_uuid here if you need to rollback
     }
 };

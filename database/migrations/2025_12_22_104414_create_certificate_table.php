@@ -15,18 +15,20 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('certificates', function (Blueprint $table) {
+        if (! Schema::hasTable('certificates')) {
+            Schema::create('certificates', function (Blueprint $table) {
 
-            $table->bigIncrements('id');
-            $table->timestamps();                
-            $table->string('number');
-            $table->string('name');
-            $table->string('type'); //Training|Professional|Academic
-            $table->string('issued_by')->nullable();
-            $table->boolean('active')->default(true);
-            $table->softDeletes();
-            
-        });
+                $table->bigIncrements('id');
+                $table->timestamps();
+                $table->string('number');
+                $table->string('name');
+                $table->string('type'); // Training|Professional|Academic
+                $table->string('issued_by')->nullable();
+                $table->boolean('active')->default(true);
+                $table->softDeletes();
+
+            });
+        }
     }
 
     /**

@@ -10,9 +10,12 @@ return new class extends Migration
     {
         if (! Schema::hasColumn('activity_log', 'attribute_changes')) {
             Schema::table('activity_log', function (Blueprint $table) {
-                // Add the missing column
                 $table->json('attribute_changes')->nullable();
-                // Drop the v4 column
+            });
+        }
+
+        if (Schema::hasColumn('activity_log', 'batch_uuid')) {
+            Schema::table('activity_log', function (Blueprint $table) {
                 $table->dropColumn('batch_uuid');
             });
         }
@@ -20,9 +23,16 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::table('activity_log', function (Blueprint $table) {
-            $table->dropColumn('attribute_changes');
-            $table->char('batch_uuid', 36)->nullable();
-        });
+        if (Schema::hasColumn('activity_log', 'attribute_changes')) {
+            Schema::table('activity_log', function (Blueprint $table) {
+                $table->dropColumn('attribute_changes');
+            });
+        }
+
+        if (! Schema::hasColumn('activity_log', 'batch_uuid')) {
+            Schema::table('activity_log', function (Blueprint $table) {
+                $table->char('batch_uuid', 36)->nullable();
+            });
+        }
     }
 };

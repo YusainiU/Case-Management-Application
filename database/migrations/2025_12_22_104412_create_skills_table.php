@@ -15,15 +15,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('skills', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
-            $table->string('number')->unique();
-            $table->string('description')->nullable();
-            $table->text('skills')->nullable();
-            $table->boolean('active')->default(true);
-            $table->softDeletes();
-        });
+        if (! Schema::hasTable('skills')) {
+            Schema::create('skills', function (Blueprint $table) {
+                $table->bigIncrements('id');
+                $table->timestamps();
+                $table->string('number')->unique();
+                $table->string('description')->nullable();
+                $table->text('skills')->nullable();
+                $table->boolean('active')->default(true);
+                $table->softDeletes();
+            });
+        }
     }
 
     /**
