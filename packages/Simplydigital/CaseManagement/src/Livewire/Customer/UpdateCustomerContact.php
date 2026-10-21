@@ -43,7 +43,7 @@ class UpdateCustomerContact extends ModalComponent
 
     public function closeThisModal()
     {
-        $this->dispatch('closeUpdateCustomerContactModal');
+        $this->dispatch('close-update-modal');
     }
     
     public function loadCustomerContact()
@@ -83,7 +83,7 @@ class UpdateCustomerContact extends ModalComponent
         $caseCustomerServices = app('case-customer-services');
         $caseCustomerServices->updateCustomerContactOnly($this->customerContactId, $inputData);
 
-        $this->dispatch('closeUpdateCustomerContactModal');
+        $this->dispatch('close-update-modal');
     }
 
     public function render()

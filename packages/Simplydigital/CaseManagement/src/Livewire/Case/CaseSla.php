@@ -18,7 +18,7 @@ class CaseSla extends ModalComponent
 
     public function closeThisModal()
     {
-        $this->dispatch('closeSummaryModal');
+        $this->dispatch('close-summary-modal');
     }
 
     public function render()

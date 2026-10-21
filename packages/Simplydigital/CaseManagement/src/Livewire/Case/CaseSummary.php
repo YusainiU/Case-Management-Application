@@ -35,7 +35,7 @@ class CaseSummary extends ModalComponent
 
     public function closeThisModal()
     {
-        $this->dispatch('closeProfileModal');   
+        $this->dispatch('close-summary-modal');   
     }
 
     public function render()

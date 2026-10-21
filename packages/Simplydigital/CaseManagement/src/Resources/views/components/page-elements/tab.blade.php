@@ -1,45 +1,67 @@
 @props([
     'tabHeaders' => [],
     'selectedTab' => null,
-    'tabBgColorActive' => 'dark:bg-gray-800',
-    'tabBgColorInactive' => 'dark:bg-gray-800',
-    'tabBgColorInactiveHover' => 'dark:hover:bg-gray-800',
-    'tabBgHover' => 'dark:hover:text-gray-300',
 ])
 
 @php
-    $baseTabClasses = 'inline-flex items-center px-4 py-3 rounded-t-lg transition-colors duration-150';
+    $baseTabClasses = 'relative inline-flex shrink-0 items-center justify-center
+        whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium
+        transition-colors duration-150 ease-in-out
+        focus:outline-none focus-visible:ring-2
+        focus-visible:ring-inset focus-visible:ring-indigo-500';
 
-    $activeTabClasses = $baseTabClasses .
-        " text-blue-600 bg-gray-100 border-b-2 border-blue-600 $tabBgColorActive dark:text-blue-500";
+    $activeTabClasses = $baseTabClasses . '
+        border-indigo-600 bg-white text-indigo-700';
 
-    $inactiveTabClasses = $baseTabClasses .
-        " text-gray-500 hover:text-gray-600 hover:bg-gray-50 $tabBgColorInactive $tabBgColorInactiveHover $tabBgHover";
+    $inactiveTabClasses = $baseTabClasses . '
+        border-transparent bg-white text-slate-500
+        hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800';
 @endphp
 
-<div class="w-full">
-    <ul
-        class="flex flex-wrap text-sm font-medium text-center border-b border-gray-200 dark:border-gray-700"
-        role="tablist"
-    >
-        @foreach($tabHeaders as $header => $headerName)
-            <li
-                class="me-2"
-                wire:key="tab-{{ $header }}"
-                role="presentation"
-            >
-                <button
-                    type="button"
-                    wire:click="selectTab('{{ $header }}')"
-                    class="{{ $header === $selectedTab ? $activeTabClasses : $inactiveTabClasses }}"
-                >
-                    {{ $headerName }}
-                </button>
-            </li>
-        @endforeach
-    </ul>
+<div {{ $attributes->merge([
+    'class' => 'w-full min-w-0 bg-white text-slate-800',
+]) }}>
 
-    <div class="p-4">
+    {{-- Tab navigation --}}
+    <div class="overflow-x-auto border-b border-slate-200">
+        <ul
+            class="flex min-w-max items-center gap-1 px-2"
+            role="tablist"
+            aria-label="Customer information sections"
+        >
+            @foreach ($tabHeaders as $header => $headerName)
+                <li
+                    wire:key="tab-{{ $header }}"
+                    role="presentation"
+                >
+                    <button
+                        type="button"
+                        id="tab-{{ $header }}"
+                        role="tab"
+                        wire:click="selectTab('{{ $header }}')"
+                        aria-selected="{{ $header === $selectedTab ? 'true' : 'false' }}"
+                        aria-controls="panel-{{ $header }}"
+                        tabindex="{{ $header === $selectedTab ? '0' : '-1' }}"
+                        class="{{ $header === $selectedTab ? $activeTabClasses : $inactiveTabClasses }}"
+                    >
+                        {{ $headerName }}
+                    </button>
+                </li>
+            @endforeach
+        </ul>
+    </div>
+
+    {{-- Tab content --}}
+    <div
+        id="panel-{{ $selectedTab }}"
+        role="tabpanel"
+        aria-labelledby="tab-{{ $selectedTab }}"
+        tabindex="0"
+        class="min-w-0 bg-white p-4 text-slate-800 focus:outline-none
+               focus-visible:ring-2 focus-visible:ring-inset
+               focus-visible:ring-indigo-500 sm:p-5"
+    >
         {{ $slot }}
     </div>
+
 </div>

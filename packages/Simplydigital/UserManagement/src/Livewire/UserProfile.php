@@ -62,7 +62,7 @@ class UserProfile extends ModalComponent
 
     public function closeProfile()
     {
-        $this->dispatch('closeUserProfile');
+        $this->dispatch('close-user-profile');
     }
 
     public function closeUploadSection()

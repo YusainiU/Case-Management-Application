@@ -24,7 +24,7 @@ class AddNewPermission extends ModalComponent
     public function closeForm()
     {
         $this->showModal = false;
-        $this->dispatch('closePermissionModal');
+        $this->dispatch('close-permission-modal');
     }
 
     public static function modalMaxWidth(): string

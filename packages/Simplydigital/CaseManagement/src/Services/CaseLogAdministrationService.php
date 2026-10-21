@@ -179,7 +179,7 @@ class CaseLogAdministrationService
         $defaultType = config('case-management.logs.type.site_visit');
         $enrouteType = config('case-management.logs.type.site_visit_enroute');
         $onsiteType = config('case-management.logs.type.site_visit_onsite');
-        $oldAssignedName = $visit->assignedTo->name;
+        $oldAssignedName = $visit->assignedTo?->name;
         $assignedName = $this->userServices
             ->getUserById($form['assigned_to'])
             ?->name ?? 'Unassigned';         

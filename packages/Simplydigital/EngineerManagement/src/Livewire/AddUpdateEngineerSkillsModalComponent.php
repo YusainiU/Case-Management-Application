@@ -147,7 +147,7 @@ class AddUpdateEngineerSkillsModalComponent extends ModalComponent
 
     public function closedAndRefresh()
     {
-        $this->dispatch('closedAddUpdateEngineerSkillModalComponent');
+        $this->dispatch('close-modal');
         $this->closeModal();
     }
 

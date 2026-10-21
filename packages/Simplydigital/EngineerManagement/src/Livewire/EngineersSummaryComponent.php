@@ -3,7 +3,6 @@
 namespace Simplydigital\EngineerManagement\Livewire;
 
 use Livewire\Component;
-use Livewire\Attributes\On;
 use Simplydigital\EngineerManagement\Models\EngineerManagement;
 use Simplydigital\EngineerManagement\Models\Certificates;
 use Simplydigital\EngineerManagement\Models\Skills;
@@ -34,8 +33,12 @@ class EngineersSummaryComponent extends Component
         $this->certifications = $this->getAllCertifications();      
     }   
 
-    #[On('closeEngineerSummaryComponent')]
     public function closeFilter()
+    {
+        $this->resetSelection();
+    }
+
+    public function closeModal()
     {
         $this->resetSelection();
     }

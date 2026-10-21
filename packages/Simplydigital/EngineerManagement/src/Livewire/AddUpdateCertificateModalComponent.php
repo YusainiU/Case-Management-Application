@@ -85,13 +85,13 @@ class AddUpdateCertificateModalComponent extends ModalComponent
                 'active' => $this->active,
             ]);
         }
-        $this->dispatch('certificateSaved');
+        $this->close();
     }
     
     public function close()
     {
         $this->resetForm();
-        $this->dispatch('closeModal');          
+        $this->dispatch('close-modal');          
     }
 
     public function resetForm()

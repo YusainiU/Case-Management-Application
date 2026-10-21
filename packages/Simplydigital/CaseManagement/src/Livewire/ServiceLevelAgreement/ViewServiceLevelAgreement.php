@@ -6,7 +6,9 @@ use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseServiceLevelAgreement;
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class ViewServiceLevelAgreement extends Component
 {
     use WithPagination;

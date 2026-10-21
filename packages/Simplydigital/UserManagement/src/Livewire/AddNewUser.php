@@ -7,7 +7,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password; 
 use Illuminate\Support\Facades\Validator;
 use Simplydigital\UserManagement\Services\UserManagementServices;
-use Illuminate\Support\Str;
 use App\Models\User;
 
 class AddNewUser extends ModalComponent
@@ -79,7 +78,7 @@ class AddNewUser extends ModalComponent
     public function closeThis()
     {
         $this->reset();
-        $this->dispatch('closeCreateNewUser');
+        $this->dispatch('close-create-new-user');
     }    
 
     public function render()

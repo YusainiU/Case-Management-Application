@@ -6,7 +6,9 @@ use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseCustomerServices;
 use Simplydigital\CaseManagement\Models\CustomerContacts as Contacts;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')] 
 class CustomerContacts extends Component
 {
 
@@ -17,14 +19,17 @@ class CustomerContacts extends Component
     public ?string $filter = null;
     public ?string $sortBy = null;
     public $sortDirection = 'asc';
+    public ?string $sortField = null;    
     public $showCreateContactModal = false;
     public $showContactProfileModal = false;
     public $showContactUpdateModal = false;
+    public $showAddExistingUserModal = false;
 
     public $listeners = [
         'closeCreateCustomerContactModal',
         'closeUserProfile' => 'closeProfile',
         'closeUpdateCustomerContactModal' => 'closeUpdateModal',
+        'closeAddExistingUser' => 'closeAddExistingUser',
     ];
 
     public function mount()
@@ -32,9 +37,27 @@ class CustomerContacts extends Component
         $this->authorize('viewAny', Contacts::class);
     }
 
+    public function sortByField(string $fieldName, string $direction)
+    {
+        if($this->sortField == $fieldName)
+        {
+            $this->sortField = null;
+        }else{
+            $this->sortField = $fieldName;
+            $this->sortDirection = $direction;
+        }
+        $this->getAllCustomerContacts();
+    }    
+
     public function closeCreateCustomerContactModal()
     {
         $this->resetAllModals();
+    }
+
+    public function closeAddExistingUserModal()
+    {
+        $this->resetAllModals();
+        $this->customerContactId = null;
     }
 
     public function closeUpdateModal()
@@ -54,11 +77,17 @@ class CustomerContacts extends Component
         $this->showCreateContactModal = false;
         $this->showContactProfileModal = false;
         $this->showContactUpdateModal = false;
+        $this->showAddExistingUserModal = false;
     }
 
     public function openCreateContactModal()
     {
         $this->showCreateContactModal = true;
+    }
+
+    public function openAddExistingModal()
+    {
+        $this->showAddExistingUserModal = true;
     }
 
     public function openContactProfileModal(int|string $userId)
@@ -84,12 +113,15 @@ class CustomerContacts extends Component
     public function getAllCustomerContacts()
     {
         $utilityService = app('case-customer-services');
+        if($this->sortField){  
+            $utilityService->sortByField($this->sortField, $this->sortDirection);
+        }            
         return $utilityService->getAllCustomerContacts();
     }
 
     public function getCustomerContactDetails()
     {
-        $caseCustomerServices = new CaseCustomerServices();
+        $caseCustomerServices = new CaseCustomerServices();    
         return $caseCustomerServices->getCustomerContactDetails($this->customerContactId);
     }
 

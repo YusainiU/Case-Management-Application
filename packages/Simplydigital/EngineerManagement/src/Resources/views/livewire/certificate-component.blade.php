@@ -3,9 +3,9 @@
     $tdClass = Config::get('engineer-management.tableClasses.td');
     $thClass = Config::get('engineer-management.tableClasses.th');
     $trThClass = Config::get('engineer-management.tableClasses.colTr');
-    $divTopClass = Config::get('engineer-management.tableClasses.divTop');
+    $divTopClass = "mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8";
     $divSeparator = Config::get('engineer-management.tableClasses.divSeparator');
-    $tdActionLink = Config::get('engineer-management.buttonClasses.btnGrey');
+    $tdActionLink = Config::get('engineer-management.buttonClasses.btnBlue');
     $tdActionLinkDelete = Config::get('engineer-management.buttonClasses.btnRed');
     $table = Config::get('engineer-management.tableClasses.table');
 
@@ -23,31 +23,39 @@
 
 <div class="{{ $divTopClass }}">
     @if ($modalMode)
-        <livewire:addupdatecertificatemodal-component :mode="$modalMode" :modalTitle="$modalTitle" :certificateId="$certificateId" />
+        <livewire:addupdatecertificatemodal-component 
+            :mode="$modalMode" 
+            :modalTitle="$modalTitle" 
+            :certificateId="$certificateId" 
+            @close-modal="closeModal"
+        />
     @endif
+
 
     <x-engineermanagement::section-title>
         <x-slot name="title">
-            <x-engineermanagement-ui-icon name="certificate" class="h-10 w-10" />
-            Certificate Management
+            <div class="flex items-center gap-3 text-slate-500 rounded-2xl border border-slate-300 bg-slate-200 p-4 shadow-sm">
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-200 text-violet-600">
+                    <x-engineermanagement-ui-icon name="certificate" class="h-10 w-10" />
+                </div>
+                <span class="text-2xl font-bold tracking-tight sm:text-3xl text-slade-50 dark:text-slade-50">
+                    Certificate Management
+                </span>
+            </div>            
         </x-slot>
         <x-slot name="description">
-            List of Certificates
+            List of Cerificates.
         </x-slot>
-    </x-engineermanagement::section-title>
+    </x-engineermanagement::section-title>        
 
-    <div class="{{ $divSeparator }}">
-        &nbsp;
-    </div>
-
-    <div class="mt-3 mb-3 px-5">
+    <div class="mt-3 mb-3">
         <button type="button" class="{{ $tdActionLink }}" wire:click="toggleAddModal">
             <x-engineermanagement-ui-icon name="add" class="h-6 w-6" />
             Add Certificate
         </button>
     </div>
 
-    <div class="mt-3 mb-3 flex justify-between gap-x-6 py-5 px-5">
+    <div class="mt-3 mb-3 flex justify-between gap-x-6 py-5">
         <x-input name="filter" class="" placeholder="Search records" wire:model.live='filter' />
     </div>
 
@@ -57,38 +65,37 @@
 
     <x-engineermanagement::table>
         <x-slot name="tableColumns">
-            <tr class="{{ $trThClass }}">
-                <th class="{{ $thClass }}">Name</th>
-                <th class="{{ $thClass }}">Issued By</th>
-                <th class="{{ $thClass }}">Active</th>
-                <th class="{{ $thClass }}">Actions</th>
-            </tr>
+            <x-engineermanagement::table-th :items="[
+                'Name',
+                'Issued By',
+                'Active',
+                'Actions'
+            ]" />
         </x-slot>
         <x-slot name="tableRows">
             @if ($showList)
                 @foreach ($certificates as $certificate)
                     <tr class="">
-                        <td class="{{ $tdClass }}">{{ $certificate->name }}</td>
-                        <td class="{{ $tdClass }}">{{ $certificate->issued_by }}</td>
-                        <td class="{{ $tdClass }}">
+                        <x-engineermanagement::table-td>
+                            {{ $certificate->name }}
+                        </x-engineermanagement::table-td>
+                        <x-engineermanagement::table-td>
+                            {{ $certificate->issued_by }}
+                        </x-engineermanagement::table-td>
+                        <x-engineermanagement::table-td>
                             @if ($certificate->active)
                                 Yes
                             @else
                                 No
                             @endif
-                        </td>
-                        <td class="{{ $tdClass }}">
-                            <button type="button" class="{{ $tdActionLink }}" wire:click="toggleUpdateModal({{ $certificate->id }})">
-                                <x-engineermanagement-ui-icon name="edit" class="h-5 w-5" />
-                                Edit
-                            </button>
-                        </td>
+                        </x-engineermanagement::table-td>
+                        <x-engineermanagement::table-td>
+                            <x-engineermanagement::button-update label="Edit" action="toggleUpdateModal({{ $certificate->id }})" />
+                        </x-engineermanagement::table-td>
                     </tr>
                 @endforeach
             @else
-                <tr>
-                    <td class="{{ $tdClass }}" colspan="6">No records found.</td>
-                </tr>
+                <x-engineermanagement::table-tr-nodata colspan='4' />
             @endif
         </x-slot>
     </x-engineermanagement::table>

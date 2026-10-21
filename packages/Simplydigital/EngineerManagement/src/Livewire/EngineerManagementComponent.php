@@ -22,11 +22,6 @@ class EngineerManagementComponent extends Component
     public $showAddModal = false;
     public $filter = '';
     
-
-    protected $listeners = [
-        'closeModal',
-    ];
-
     public function closeModal()
     {
         $this->showAddModal = false;

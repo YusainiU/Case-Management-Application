@@ -17,7 +17,7 @@ return new class extends Migration
             Schema::table('products', function (Blueprint $table) {
                 $table->boolean('active')->default(true); //customer/internal/other
             });
-        }	    
+        }
     }
 
     /**

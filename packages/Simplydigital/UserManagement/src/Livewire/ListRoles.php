@@ -2,12 +2,13 @@
 
 namespace Simplydigital\UserManagement\Livewire;
 
+use Livewire\Component;
 use Livewire\WithPagination;
-use LivewireUI\Modal\ModalComponent;
+//use LivewireUI\Modal\ModalComponent;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
-class ListRoles extends ModalComponent
+class ListRoles extends Component
 {
 
 
@@ -105,7 +106,7 @@ class ListRoles extends ModalComponent
     public function closeThis()
     {
         $this->resetDisplay();
-        $this->dispatch('closeRoleModal');
+        $this->dispatch('close-role-modal');
     }
 
     public function render()

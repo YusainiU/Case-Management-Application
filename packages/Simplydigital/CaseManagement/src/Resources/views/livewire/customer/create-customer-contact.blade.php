@@ -8,7 +8,6 @@
     >
         <div class="grid grid-cols-2 gap-4">
             <div>
-                <x-casemanagement::form-elements.input-label name="Customer" :required=true />
                 <x-casemanagement::form-elements.searchable-select
                     name="Customer"
                     :required="true"
@@ -23,7 +22,6 @@
                 <x-casemanagement::form-elements.select model="contactRole" name="contactRole" placeholder="Contact Role" :options=$contactRoles />
                 <x-casemanagement::form-elements.input-error field="contactRole" />
             </div>
-
             <div>
                 <x-casemanagement::form-elements.input-label name="Name" :required=true />
                 <x-casemanagement::form-elements.input-text model="name" placeholder="Contact Name" :required=true />

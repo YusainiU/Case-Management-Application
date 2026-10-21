@@ -6,7 +6,9 @@ use Livewire\Component;
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Services\CaseSLAPService;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class ViewSlaImplementation extends Component
 {
 

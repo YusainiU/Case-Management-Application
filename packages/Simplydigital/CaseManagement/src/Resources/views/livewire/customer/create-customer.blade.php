@@ -22,7 +22,13 @@
                     !empty($customers))
                 <div>
                     <x-casemanagement::form-elements.input-label name="Parent Company" :required=true />
-                    <x-casemanagement::form-elements.searchable-dropdown :options=$customers property="parentCompany" />
+                    {{-- <x-casemanagement::form-elements.searchable-dropdown :options=$customers property="parentCompany" /> --}}
+                    <x-casemanagement::form-elements.searchable-select
+                        name="Parent Customer"
+                        :required="true"
+                        :options="$customers"
+                        wireModel="customerId"
+                    />                    
                 </div>
             @endif
 

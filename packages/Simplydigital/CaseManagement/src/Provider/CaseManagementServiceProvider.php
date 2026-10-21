@@ -33,6 +33,7 @@ use Simplydigital\CaseManagement\Livewire\Case\ViewCases;
 use Simplydigital\CaseManagement\Livewire\Case\ViewSiteVisit;
 use Simplydigital\CaseManagement\Livewire\Case\ViewSlaPause;
 use Simplydigital\CaseManagement\Livewire\Case\CaseAssistant as CaseAssistantComponent;
+use Simplydigital\CaseManagement\Livewire\Customer\AddExistingUserAsContact;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomerContact;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerContacts;
@@ -119,6 +120,7 @@ class CaseManagementServiceProvider extends ServiceProvider
         'dashboard' => Dashboard::class,
         'customer-files' => CustomerFiles::class,
         'case-assistant' => CaseAssistantComponent::class,
+        'add-existing-user' => AddExistingUserAsContact::class,
     ];
 
     private array $services = [

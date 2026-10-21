@@ -9,7 +9,6 @@ use Simplydigital\CaseManagement\Models\Customer;
 use Simplydigital\CaseManagement\Services\FileUploadService;
 use Simplydigital\FileUploadManagement\Exceptions\FileUploadException;
 use Simplydigital\FileUploadManagement\Models\UploadedFile as UploadedAttachment;
-use Simplydigital\CaseManagement\Models\CustomerContacts;
 
 class CustomerFiles extends Component
 {
@@ -18,6 +17,7 @@ class CustomerFiles extends Component
 
     public Customer $customer;
     public ?UploadedFile $attachment = null;
+    public ?UploadedAttachment $uploadedAttachment = null;
     
     public function mount()
     {

@@ -10,6 +10,9 @@ use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Models\Customer;
 use Livewire\Attributes\Url;
+use Livewire\Attributes\Layout;
+
+#[Layout('components.layouts.app')]
 class ViewCases extends Component
 {
     use WithPagination;
@@ -95,7 +98,7 @@ class ViewCases extends Component
     
     public function closeCreateModal()
     {
-        $this->resetAllModal();  
+        $this->resetAllModal();
     }
 
     public function closeUpdateModal()
@@ -259,7 +262,8 @@ class ViewCases extends Component
         $service = $this->ticketService();
         $filterString = $this->filter ?? null;
         $query = null;
-        
+
+                
         if($this->sortField){
             $service->sortByField($this->sortField, $this->sortDirection);
         }

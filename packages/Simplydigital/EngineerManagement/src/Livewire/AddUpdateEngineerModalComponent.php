@@ -142,7 +142,7 @@ class AddUpdateEngineerModalComponent extends ModalComponent
     public function closedAndRefresh()
     {
         $this->resetForm();
-        $this->dispatch('closeModal');
+        $this->dispatch('close-modal');
         $this->closeModal();
     }
 

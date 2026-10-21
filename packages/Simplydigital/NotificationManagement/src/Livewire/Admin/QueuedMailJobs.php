@@ -7,7 +7,9 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\NotificationManagement\Notifications\Services\QueuedJobRunner;
 use Throwable;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class QueuedMailJobs extends Component
 {
     use WithPagination;

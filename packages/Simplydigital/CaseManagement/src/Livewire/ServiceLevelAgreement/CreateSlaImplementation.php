@@ -20,7 +20,7 @@ class CreateSlaImplementation extends ModalComponent
     public array $customers = [];
     public array $slas = [];
     public array $priorities = [];
-    public string $closureEvent = 'closeCreateSLAPModal';
+    public string $closureEvent = 'close-create-modal';
 
     protected $validationAttributes = [
         'form.name' => 'Name',
@@ -104,7 +104,7 @@ class CreateSlaImplementation extends ModalComponent
         $this->slap = $service->getSLAPById($this->slapId);
         $this->ui['title'] = 'Update Implementation';
         $this->ui['confirmText'] = 'Update';
-        $this->closureEvent = 'closeUpdateSLAPModal';
+        $this->closureEvent = 'close-update-modal';
         $this->loadSLAPForm();        
     }
 

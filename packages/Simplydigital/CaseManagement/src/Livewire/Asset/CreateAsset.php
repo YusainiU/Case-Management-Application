@@ -23,7 +23,7 @@ class CreateAsset extends ModalComponent
 
     public array $form = [];
 
-    public string $closureEvent = 'closeCreateAssetModal';
+    public string $closureEvent = 'close-create-modal';
 
     protected $rules = [
         'form.customer_id' => 'required',
@@ -98,7 +98,7 @@ class CreateAsset extends ModalComponent
         $this->asset = $service->getAssetById($this->assetId);
         $this->ui['title'] = 'Update Asset';
         $this->ui['confirmText'] = 'Update';
-        $this->closureEvent = 'closeUpdateAssetModal';
+        $this->closureEvent = 'close-update-modal';
         $this->loadAssetForm();
     }
 

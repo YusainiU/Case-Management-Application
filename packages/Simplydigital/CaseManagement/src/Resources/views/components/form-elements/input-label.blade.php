@@ -1,14 +1,23 @@
-<div class="flex flex-row justify-start">
-    <label 
-        for="{{ $name }}" 
-        @class([
-            'form-label',
-            'text-gray-800',
-        ])
+@props([
+    'name' => '',
+    'required' => false,
+])
+
+<div class="mb-2">
+    <label
+        @if($name)
+            for="{{ $name }}"
+        @endif
+        class="block text-sm font-medium text-gray-700"
     >
         {{ $name }}
-        @if($required ?? false)
-            <span class="text-danger">*</span>
-        @endif  
+
+        @if ($required)
+            <span
+                class="ml-0.5 text-red-500 dark:text-red-400"
+                aria-hidden="true"
+            >*</span>
+            <span class="sr-only"> (required)</span>
+        @endif
     </label>
 </div>

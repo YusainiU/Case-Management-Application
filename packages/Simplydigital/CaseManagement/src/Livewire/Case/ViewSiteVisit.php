@@ -7,7 +7,9 @@ use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Services\CaseSiteVisitService;
 use Simplydigital\CaseManagement\Models\tickets;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class ViewSiteVisit extends Component
 {
 
@@ -87,6 +89,16 @@ class ViewSiteVisit extends Component
             'displaySummaryModal',
             'selectedVisit'
         ]);
+    }
+    
+    public function sortByField(?string $field)
+    {   
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
     }    
 
     public function buildUIParams()

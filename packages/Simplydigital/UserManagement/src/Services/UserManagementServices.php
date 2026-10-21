@@ -78,7 +78,7 @@ class UserManagementServices
         $internals = UsersDetails::query()
             ->join('users', 'users.id', '=', 'users_details.user_id')
             ->whereHas('user.roles', function ($query) {
-                $query->where('name', 'Internal User');
+                $query->where('name', 'Engineer');
             })
             ->select(
                 'users_details.*',
@@ -88,4 +88,12 @@ class UserManagementServices
             
         return $internals;
     }
+
+    public static function getAllCustomerContacts()
+    {
+        return User::role('Customer')
+            ->pluck('name', 'id')
+            ->toArray();
+    }
+
 }

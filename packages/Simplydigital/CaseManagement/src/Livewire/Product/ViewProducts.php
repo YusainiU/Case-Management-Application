@@ -5,7 +5,9 @@ namespace Simplydigital\CaseManagement\Livewire\Product;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Models\Product;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class ViewProducts extends Component
 {
 

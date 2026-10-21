@@ -50,7 +50,7 @@ class EngineerSkillComponent extends Component
 
     public function closeComponent()
     {
-        $this->dispatch('closeEngineerSummaryComponent');
+        $this->dispatch('close-filter');
     }
 
     public function resetSkillDetails()

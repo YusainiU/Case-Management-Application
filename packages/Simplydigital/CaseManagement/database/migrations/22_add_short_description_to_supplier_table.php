@@ -17,7 +17,7 @@ return new class extends Migration
             Schema::table('suppliers', function (Blueprint $table) {
                 $table->string('short_description')->nullable(); //customer/internal/other
             });
-        }	    
+        }
     }
 
     /**

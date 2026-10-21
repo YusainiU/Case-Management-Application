@@ -13,7 +13,7 @@ return new class extends Migration
     {
         if(Schema::hasColumn('sla_task_pauses', 'remaining')) {
             return;
-        }	    
+        }
         Schema::table('sla_task_pauses', function (Blueprint $table) {
             $table->integer('remaining')->nullable();
         });

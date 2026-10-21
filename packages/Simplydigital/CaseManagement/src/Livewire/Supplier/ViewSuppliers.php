@@ -4,7 +4,9 @@ namespace Simplydigital\CaseManagement\Livewire\Supplier;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Models\Supplier;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class ViewSuppliers extends Component
 {
     use WithPagination;
@@ -47,6 +49,7 @@ class ViewSuppliers extends Component
 
     public function loadSuppliers()
     {
+
         $caseSupplierServices = app('case-supplier-services');
         if($this->sortField){
             $caseSupplierServices->sortByField($this->sortField, $this->sortDirection);

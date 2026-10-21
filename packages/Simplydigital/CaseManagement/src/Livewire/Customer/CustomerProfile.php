@@ -4,7 +4,9 @@ namespace Simplydigital\CaseManagement\Livewire\Customer;
 
 use Livewire\Component;
 use Simplydigital\CaseManagement\Models\Customer;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class CustomerProfile extends Component
 {
 
@@ -70,6 +72,7 @@ class CustomerProfile extends Component
     {
         $this->showUpdateModal = false;
         $this->showConfirmDelete = false;
+        $this->dispatch('close-profile-modals');
     }
 
     public function selectTab(string $selectedTab)
