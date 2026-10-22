@@ -28,9 +28,4 @@ class UserAdminSeeder extends Seeder
 
         $user->assignRole($role);
     }
-<<<<<<< HEAD
 }
-
-=======
-}
->>>>>>> develop
