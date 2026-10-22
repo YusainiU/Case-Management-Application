@@ -149,11 +149,15 @@ return [
         Features::emailVerification(),
         // Features::updateProfileInformation(),
         // Features::updatePasswords(),
-        Features::twoFactorAuthentication([
+        ...(env('FORTIFY_TWO_FACTOR_ENABLED', true) 
+        ? [
+            Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,
             // 'window' => 0,
-        ]),
+            ]),
+        ]
+        : []),
     ],
 
 ];

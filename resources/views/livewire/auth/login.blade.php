@@ -54,5 +54,10 @@
                 <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
             </div>
         @endif
+
+        <div class="border-t border-zinc-200 pt-5 text-center text-sm text-zinc-600 dark:border-zinc-800 dark:text-zinc-400">
+            Customer?
+            <flux:link :href="route('portal.login')" wire:navigate>Sign in to the customer portal</flux:link>
+        </div>
     </div>
 </x-layouts.auth>

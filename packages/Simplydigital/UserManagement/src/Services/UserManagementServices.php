@@ -73,6 +73,11 @@ class UserManagementServices
         return User::find($id,'*');
     }
 
+    public static function getUserDetails(int $userDetailsId)
+    {
+        return UsersDetails::where('user_id', $userDetailsId)->first();
+    }
+
     public static function getAllInternalUsers()
     {
         $internals = UsersDetails::query()

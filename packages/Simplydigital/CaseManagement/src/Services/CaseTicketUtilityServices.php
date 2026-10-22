@@ -41,7 +41,7 @@ class CaseTicketUtilityServices
         $this->emailService = app()->make(EmailService::class);
         $this->setCaseLogAdministrationService(app()->make(CaseLogAdministrationService::class));
         $this->setSLACalculationService(app()->make(SLACalculationService::class));
-        $this->logger = $logger ?? app()->make(SLALoggerService::class);
+        $this->logger = app()->make(SLALoggerService::class);
     }
 
     public function setCaseLogAdministrationService(CaseLogAdministrationService $service)

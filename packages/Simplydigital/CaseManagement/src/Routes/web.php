@@ -1,7 +1,7 @@
 <?php
 
-use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Route;
+use GuzzleHttp\Middleware;
 use Simplydigital\CaseManagement\Livewire\Case\ManageCase;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
 use Simplydigital\CaseManagement\Livewire\Customer\CustomerProfile;
@@ -14,7 +14,26 @@ use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
 use Simplydigital\CaseManagement\Livewire\Case\ViewCases;
 use Simplydigital\CaseManagement\Livewire\Case\ViewSiteVisit;
 use Simplydigital\CaseManagement\Livewire\Case\Dashboard;
+use Illuminate\Http\Request;
+use Simplydigital\CaseManagement\Livewire\Portal\Dashboard as PortalDashboard;
+use Simplydigital\CaseManagement\Livewire\Portal\ViewCases as PortalViewCases;
+use Simplydigital\CaseManagement\Livewire\Portal\ViewCase as PortalViewCase;
+use Simplydigital\CaseManagement\Livewire\Portal\CreateCase as PortalCreateCase;
 
+Route::get('/portal/login', function (Request $request) {
+    if ($request->user()) {
+        return $request->user()->can('portal.access')
+            ? redirect()->route('portal.dashboard')
+            : redirect()->route('dashboard');
+    }
+
+    $request->session()->put(
+        'url.intended',
+        route('portal.dashboard', absolute: false)
+    );
+
+    return response()->view('casemanagement::livewire.portal.login');
+})->name('portal.login');
 
 Route::middleware([
         'auth',
@@ -68,4 +87,22 @@ Route::middleware([
             Route::get('/casemanagement/case/{case}', ManageCase::class)
                 ->name('casemanagement.case.view')
                 ->middleware('permission:case.view');
+    });
+
+Route::prefix('portal')
+    ->name('portal.')
+    ->middleware('customer.portal')
+    ->group(function (): void {
+        Route::get('/', PortalDashboard::class)
+            ->name('dashboard');
+
+        Route::get('/cases', PortalViewCases::class)
+            ->name('cases.index');
+
+        Route::get('/cases/create', PortalCreateCase::class)
+            ->name('cases.create');
+
+        Route::get('/cases/{case}', PortalViewCase::class)
+            ->whereNumber('case')
+            ->name('cases.show');
     });

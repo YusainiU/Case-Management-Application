@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -14,6 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Simplydigital\CaseManagement\Models\CustomerContacts;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
@@ -117,6 +119,11 @@ class User extends Authenticatable
         return $this->hasRole('Internal User');
     }
 
+    public function customerContacts(): HasMany
+    {
+        return $this->hasMany(CustomerContacts::class, 'user_id');
+    }
+
     public function isExternalUser(): bool
     {
         return $this->hasRole('External User');
@@ -133,5 +140,4 @@ class User extends Authenticatable
             $q->where('name', 'Internal User');
         });
     }
-
 }

@@ -35,4 +35,9 @@ class CaseUserServices
         return UserManagementServices::getAllCustomerContacts();
     }
 
+    public static function getUserDetails(int $userId)
+    {
+        return UserManagementServices::getUserDetails($userId);
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace Simplydigital\CaseManagement\Provider;
 
+use App\Models\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
@@ -9,7 +10,6 @@ use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use PHPUnit\Framework\Assert;
 use Simplydigital\AIManagement\Authorization\Permissions\AIPermission;
-use Simplydigital\AIManagement\Livewire\CaseAssistant;
 use Simplydigital\CaseManagement\Authorization\CaseManagementPermissionProvider;
 use Simplydigital\CaseManagement\Enums\Permissions\CasePermission;
 use Simplydigital\CaseManagement\Events\CasePlannerEventProvider;
@@ -18,6 +18,7 @@ use Simplydigital\CaseManagement\Events\SlaExpiryEventProvider;
 use Simplydigital\CaseManagement\Livewire\Asset\AssetProfile;
 use Simplydigital\CaseManagement\Livewire\Asset\CreateAsset;
 use Simplydigital\CaseManagement\Livewire\Asset\ViewAssets;
+use Simplydigital\CaseManagement\Livewire\Case\CaseAssistant as CaseAssistantComponent;
 use Simplydigital\CaseManagement\Livewire\Case\CaseFieldChanges;
 use Simplydigital\CaseManagement\Livewire\Case\CaseProgressLog;
 use Simplydigital\CaseManagement\Livewire\Case\CaseSla;
@@ -32,7 +33,6 @@ use Simplydigital\CaseManagement\Livewire\Case\ManageCaseSLA;
 use Simplydigital\CaseManagement\Livewire\Case\ViewCases;
 use Simplydigital\CaseManagement\Livewire\Case\ViewSiteVisit;
 use Simplydigital\CaseManagement\Livewire\Case\ViewSlaPause;
-use Simplydigital\CaseManagement\Livewire\Case\CaseAssistant as CaseAssistantComponent;
 use Simplydigital\CaseManagement\Livewire\Customer\AddExistingUserAsContact;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\CreateCustomerContact;
@@ -43,6 +43,11 @@ use Simplydigital\CaseManagement\Livewire\Customer\CustomerSummary;
 use Simplydigital\CaseManagement\Livewire\Customer\DeleteCustomer;
 use Simplydigital\CaseManagement\Livewire\Customer\UpdateCustomerContact;
 use Simplydigital\CaseManagement\Livewire\Customer\ViewCustomers;
+use Simplydigital\CaseManagement\Livewire\Portal\AddCaseComment;
+use Simplydigital\CaseManagement\Livewire\Portal\CreateCase as PortalCreateCase;
+use Simplydigital\CaseManagement\Livewire\Portal\Dashboard as PortalDashboard;
+use Simplydigital\CaseManagement\Livewire\Portal\ViewCase as PortalViewCase;
+use Simplydigital\CaseManagement\Livewire\Portal\ViewCases as PortalViewCases;
 use Simplydigital\CaseManagement\Livewire\Product\CreateProduct;
 use Simplydigital\CaseManagement\Livewire\Product\ProductProfile;
 use Simplydigital\CaseManagement\Livewire\Product\ViewProducts;
@@ -55,6 +60,7 @@ use Simplydigital\CaseManagement\Livewire\ServiceLevelAgreement\ViewSlaImplement
 use Simplydigital\CaseManagement\Livewire\Supplier\CreateSupplier;
 use Simplydigital\CaseManagement\Livewire\Supplier\SupplierProfile;
 use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
+use Simplydigital\CaseManagement\Middleware\RequireCustomerPortalAccess;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 use Simplydigital\CaseManagement\Models\Customer;
 use Simplydigital\CaseManagement\Models\Product;
@@ -65,6 +71,7 @@ use Simplydigital\CaseManagement\Policies\AssetPolicy;
 use Simplydigital\CaseManagement\Policies\CasePolicy;
 use Simplydigital\CaseManagement\Policies\CustomerContactPolicy;
 use Simplydigital\CaseManagement\Policies\CustomerPolicy;
+use Simplydigital\CaseManagement\Policies\CustomerPortalPolicy;
 use Simplydigital\CaseManagement\Policies\ProductPolicy;
 use Simplydigital\CaseManagement\Policies\ServiceLevelAgreementPolicy;
 use Simplydigital\CaseManagement\Policies\SupplierPolicy;
@@ -120,6 +127,11 @@ class CaseManagementServiceProvider extends ServiceProvider
         'dashboard' => Dashboard::class,
         'customer-files' => CustomerFiles::class,
         'case-assistant' => CaseAssistantComponent::class,
+        'portal-dashboard' => PortalDashboard::class,
+        'portal-view-cases' => PortalViewCases::class,
+        'portal-view-case' => PortalViewCase::class,
+        'portal-create-case' => PortalCreateCase::class,
+        'portal-add-case-comment' => AddCaseComment::class,
         'add-existing-user' => AddExistingUserAsContact::class,
     ];
 
@@ -188,6 +200,22 @@ class CaseManagementServiceProvider extends ServiceProvider
             tickets::class,
             CasePolicy::class
         );
+        Gate::define(
+            'portal.access',
+            fn (User $user): bool => app(CustomerPortalPolicy::class)->accessPortal($user)
+        );
+        Gate::define(
+            'portal.view-case',
+            fn (User $user, tickets $case): bool => app(CustomerPortalPolicy::class)->viewCase($user, $case)
+        );
+        Gate::define(
+            'portal.create-case',
+            fn (User $user, Customer $customer): bool => app(CustomerPortalPolicy::class)->createCase($user, $customer)
+        );
+        Gate::define(
+            'portal.comment-case',
+            fn (User $user, tickets $case): bool => app(CustomerPortalPolicy::class)->commentOnCase($user, $case)
+        );
         Gate::policy(
             Supplier::class,
             SupplierPolicy::class
@@ -217,7 +245,6 @@ class CaseManagementServiceProvider extends ServiceProvider
             }
         );
 
-
         Gate::define(
             'case-assistant.apply',
             function ($user, $case) {
@@ -228,7 +255,7 @@ class CaseManagementServiceProvider extends ServiceProvider
                         CasePermission::View->value
                     );
             }
-        );        
+        );
     }
 
     public function loadEventPlanner()
@@ -267,6 +294,7 @@ class CaseManagementServiceProvider extends ServiceProvider
     {
         Route::middleware('web')->group(__DIR__.'/../Routes/web.php');
         Route::aliasMiddleware('restrict.internal.user', RestrictInternalUserOnly::class);
+        Route::aliasMiddleware('customer.portal', RequireCustomerPortalAccess::class);
     }
 
     public function loadMigrations()

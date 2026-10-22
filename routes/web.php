@@ -3,6 +3,7 @@
 use App\Livewire\EngineerManagement;
 use App\Livewire\EngineerSkills;
 use App\Livewire\EngineerCertificates;
+use App\Http\Controllers\Auth\ResetLoginSessionController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
@@ -12,6 +13,10 @@ use Simplydigital\CaseManagement\Livewire\Case\Dashboard;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::post('/login/session/{destination}', ResetLoginSessionController::class)
+    ->whereIn('destination', ['internal', 'customer'])
+    ->name('login.session-reset');
 
 Route::get('/dashboard', Dashboard::class)
     ->middleware([

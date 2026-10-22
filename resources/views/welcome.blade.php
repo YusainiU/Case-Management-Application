@@ -68,6 +68,8 @@
         .button-primary { color: #fff; background: var(--primary); box-shadow: 0 7px 16px rgba(49, 94, 251, .18); }
         .button-primary:hover { background: var(--primary-dark); box-shadow: 0 10px 20px rgba(49, 94, 251, .23); }
         .button svg { width: 17px; height: 17px; }
+        .login-entry { margin: 0; }
+        .login-entry .button { cursor: pointer; font-family: inherit; }
 
         .hero { padding: 74px 0 60px; text-align: center; }
         .eyebrow {
@@ -161,6 +163,7 @@
             .brand-mark { width: 38px; height: 38px; flex-basis: 38px; }
             .nav-actions { gap: 7px; }
             .nav-actions .button { min-height: 40px; padding-inline: 12px; font-size: .82rem; }
+            .nav-actions .login-entry .button { padding-inline: 10px; }
             .hero { padding: 54px 0 42px; }
             h1 { font-size: clamp(2.45rem, 10vw, 3.6rem); }
             .hero-copy { font-size: 1rem; }
@@ -181,11 +184,12 @@
             .brand small { display: none; }
             .brand-mark { width: 35px; height: 35px; flex-basis: 35px; }
             .nav-actions .button { padding-inline: 10px; }
-            .nav-actions .button-secondary { display: none; }
+            .nav-actions .login-entry .button-secondary { display: inline-flex; }
             .hero { padding-top: 45px; }
             .eyebrow { font-size: .68rem; }
             .hero-actions { flex-direction: column; }
-            .hero-actions .button { width: 100%; }
+            .hero-actions .button, .hero-actions .login-entry { width: 100%; }
+            .hero-actions .login-entry .button { width: 100%; }
             .preview-topbar { padding: 12px; }
             .preview-label { font-size: .68rem; }
             .preview-user { display: none; }
@@ -224,14 +228,22 @@
                             Go to dashboard
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </a>
-                    @else
-                        <a class="button button-secondary" href="{{ route('login') }}">Log in</a>
+                    @endauth
+                    <form class="login-entry" method="POST" action="{{ route('login.session-reset', ['destination' => 'internal']) }}">
+                        @csrf
+                        <button class="button button-secondary" type="submit">Internal login</button>
+                    </form>
+                    <form class="login-entry" method="POST" action="{{ route('login.session-reset', ['destination' => 'customer']) }}">
+                        @csrf
+                        <button class="button button-primary" type="submit">Customer login</button>
+                    </form>
+                    @guest
                         @if (Route::has('register'))
                             <a class="button button-primary" href="{{ route('register') }}">Get started
                                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </a>
                         @endif
-                    @endauth
+                    @endguest
                 </nav>
             @endif
         </div>
@@ -251,14 +263,20 @@
                             <a class="button button-primary" href="{{ url('/dashboard') }}">Open your dashboard
                                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </a>
-                        @else
-                            <a class="button button-primary" href="{{ route('login') }}">Access your workspace
-                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </a>
+                        @endauth
+                        <form class="login-entry" method="POST" action="{{ route('login.session-reset', ['destination' => 'internal']) }}">
+                            @csrf
+                            <button class="button button-primary" type="submit">Internal team login</button>
+                        </form>
+                        <form class="login-entry" method="POST" action="{{ route('login.session-reset', ['destination' => 'customer']) }}">
+                            @csrf
+                            <button class="button button-secondary" type="submit">Customer portal login</button>
+                        </form>
+                        @guest
                             @if (Route::has('register'))
                                 <a class="button button-secondary" href="{{ route('register') }}">Create an account</a>
                             @endif
-                        @endauth
+                        @endguest
                     @endif
                 </div>
                 <div class="trust-note">
@@ -367,9 +385,16 @@
                             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </a>
                     @else
-                        <a class="button" href="{{ route('login') }}">Log in to SimplyDigital
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </a>
+                        <div class="hero-actions">
+                            <form class="login-entry" method="POST" action="{{ route('login.session-reset', ['destination' => 'internal']) }}">
+                                @csrf
+                                <button class="button button-primary" type="submit">Internal team login</button>
+                            </form>
+                            <form class="login-entry" method="POST" action="{{ route('login.session-reset', ['destination' => 'customer']) }}">
+                                @csrf
+                                <button class="button button-secondary" type="submit">Customer portal login</button>
+                            </form>
+                        </div>
                     @endauth
                 </div>
             </section>

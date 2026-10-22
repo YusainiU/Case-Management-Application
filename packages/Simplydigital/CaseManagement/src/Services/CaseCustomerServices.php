@@ -138,6 +138,11 @@ class CaseCustomerServices
         return CustomerContacts::find($contactId);
     }
 
+    public static function getCustomerContactByUserId(int $userId)
+    {
+        return CustomerContacts::where('user_id', $userId)->first();
+    }
+
     private function sortThis(Builder $query)
     {
         $sortOptions = [
