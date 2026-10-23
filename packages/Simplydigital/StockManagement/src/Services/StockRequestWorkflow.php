@@ -10,6 +10,7 @@ use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\StockManagement\Enums\StockRequestStatus;
 use Simplydigital\StockManagement\Models\StockRequest;
+use Simplydigital\CaseManagement\Enums\CaseState;
 
 class StockRequestWorkflow
 {
@@ -39,6 +40,9 @@ class StockRequestWorkflow
 
             $stockRequest->number = 'SR-'.str_pad((string) $stockRequest->id, 6, '0', STR_PAD_LEFT);
             $stockRequest->save();
+
+            $case->state = CaseState::Part_Request->value;
+            $case->save();
 
             $this->recordStatus(
                 $stockRequest,
@@ -150,5 +154,13 @@ class StockRequestWorkflow
             'notes' => filled($notes) ? trim($notes) : null,
             'task_log_id' => $taskLog->id,
         ]);
+
+        if($toStatus->label() === StockRequestStatus::Received->label())
+        {
+            $case = $stockRequest->case;
+            $case->state = CaseState::In_Progress->value;
+            $case->save();
+        }
+
     }
 }

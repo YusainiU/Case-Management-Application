@@ -12,6 +12,7 @@ use PHPUnit\Framework\Assert;
 use Simplydigital\AIManagement\Authorization\Permissions\AIPermission;
 use Simplydigital\CaseManagement\Authorization\CaseManagementPermissionProvider;
 use Simplydigital\CaseManagement\Enums\Permissions\CasePermission;
+use Simplydigital\CaseManagement\Enums\Permissions\CustomerPortalPermission;
 use Simplydigital\CaseManagement\Events\CasePlannerEventProvider;
 use Simplydigital\CaseManagement\Events\SiteVisitEventProvider;
 use Simplydigital\CaseManagement\Events\SlaExpiryEventProvider;
@@ -201,19 +202,19 @@ class CaseManagementServiceProvider extends ServiceProvider
             CasePolicy::class
         );
         Gate::define(
-            'portal.access',
+            CustomerPortalPermission::Access->value,
             fn (User $user): bool => app(CustomerPortalPolicy::class)->accessPortal($user)
         );
         Gate::define(
-            'portal.view-case',
+            CustomerPortalPermission::View->value,
             fn (User $user, tickets $case): bool => app(CustomerPortalPolicy::class)->viewCase($user, $case)
         );
         Gate::define(
-            'portal.create-case',
+            CustomerPortalPermission::Create->value,
             fn (User $user, Customer $customer): bool => app(CustomerPortalPolicy::class)->createCase($user, $customer)
         );
         Gate::define(
-            'portal.comment-case',
+            CustomerPortalPermission::Comment->value,
             fn (User $user, tickets $case): bool => app(CustomerPortalPolicy::class)->commentOnCase($user, $case)
         );
         Gate::policy(

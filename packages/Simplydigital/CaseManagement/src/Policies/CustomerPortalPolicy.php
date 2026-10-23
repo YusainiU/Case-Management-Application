@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Simplydigital\CaseManagement\Enums\CaseState;
+use Simplydigital\CaseManagement\Enums\Permissions\CustomerPortalPermission;
 use Simplydigital\CaseManagement\Models\Customer;
 use Simplydigital\CaseManagement\Models\CustomerContacts;
 use Simplydigital\CaseManagement\Models\tickets;
-
 class CustomerPortalPolicy
 {
     public function accessPortal(User $user): bool
@@ -60,4 +60,5 @@ class CustomerPortalPolicy
                     ->where('portal_enabled', true);
             });
     }
+
 }

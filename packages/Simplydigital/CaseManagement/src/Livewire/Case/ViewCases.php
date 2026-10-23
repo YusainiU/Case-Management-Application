@@ -2,45 +2,65 @@
 
 namespace Simplydigital\CaseManagement\Livewire\Case;
 
+use Illuminate\Support\Collection;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Collection;
-use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Enums\CaseState;
-use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Models\Customer;
-use Livewire\Attributes\Url;
-use Livewire\Attributes\Layout;
+use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Services\CaseTicketServices;
 
 #[Layout('components.layouts.app')]
 class ViewCases extends Component
 {
     use WithPagination;
+
     public ?int $customerId = null;
+
     public ?int $caseId = null;
+
     public ?Collection $tickets = null;
+
     public ?tickets $ticket = null;
+
     public ?Customer $customer = null;
+
     public ?string $filter = null;
+
     public ?string $sortField = null;
-    public ?string $sortDirection = null;    
+
+    public ?string $sortDirection = null;
+
     public bool $displayCreateModal = false;
+
     public bool $displayUpdateModal = false;
+
     public bool $displayProfileModal = false;
+
     public bool $displaySummaryModal = false;
+
     public bool $displayDescription = false;
-    public bool $displaySlaStatus = false; 
+
+    public bool $displaySlaStatus = false;
+
     public array $descriptionDetails = [];
+
     public ?string $displayCaseStatus = null;
+
     public bool $displayCustomerModal = false;
+
     public string $listTitle = CaseState::Open->value;
+
+    public string $viewMode = 'table';
 
     #[Url]
     public ?string $dashboardFilter = null;
 
     /**
-    * @var array<string, string>
-    */
+     * @var array<string, string>
+     */
     protected $listeners = [
         'closeCreateCaseModal' => 'closeCreateModal',
         'closeUpdateCaseModal' => 'closeUpdateModal',
@@ -61,7 +81,7 @@ class ViewCases extends Component
 
     public function mount()
     {
-        $this->authorize('viewAny', tickets::class);        
+        $this->authorize('viewAny', tickets::class);
         $this->displayCaseStatus = $this->dashboardFilter ?? CaseState::Open->value;
     }
 
@@ -95,30 +115,30 @@ class ViewCases extends Component
         ]);
         $this->resetAllModal();
     }
-    
+
     public function closeCreateModal()
     {
         $this->resetAllModal();
     }
 
     public function closeUpdateModal()
-    {        
+    {
         $this->resetAllModal();
     }
 
     public function closeProfileModal()
-    {        
+    {
         $this->resetAllModal();
     }
-    
+
     public function closeSummaryModal()
-    {        
+    {
         $this->resetAllModal();
     }
 
     public function closeDescriptionModal()
     {
-        $this->resetAllModal(); 
+        $this->resetAllModal();
     }
 
     public function openAllResolvedCases()
@@ -172,7 +192,7 @@ class ViewCases extends Component
             'title' => 'Cases',
         ];
     }
-    
+
     public function sortByField(?string $field)
     {
         if ($this->sortField === $field) {
@@ -181,6 +201,37 @@ class ViewCases extends Component
             $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
+    }
+
+    public function toggleViewMode(): void
+    {
+        $this->viewMode = $this->viewMode === 'table' ? 'workflow' : 'table';
+    }
+
+    private function workflowStage(tickets $case): int
+    {
+        $state = $case->state;
+
+        if (
+            $case->closed_datetime !== null
+            || in_array($state, [CaseState::Completed, CaseState::Closed, CaseState::Cancelled], true)
+        ) {
+            return 4;
+        }
+
+        if ($case->resolved_datetime !== null || $state === CaseState::Resolved) {
+            return 3;
+        }
+
+        if ($state !== null && $state !== CaseState::Open) {
+            return 2;
+        }
+
+        if ($case->assigned_to !== null) {
+            return 1;
+        }
+
+        return 0;
     }
 
     public function openDescription(int|string $caseId)
@@ -202,11 +253,11 @@ class ViewCases extends Component
     {
         $this->resetAllModal();
         $caseId = (int) $caseId;
-        $column = "id";
+        $column = 'id';
         $this->ticket = $this->tickets->firstWhere($column, $caseId);
         $this->displaySlaStatus = true;
     }
-    
+
     public function openCreateModal()
     {
         $this->resetAllModal();
@@ -219,7 +270,7 @@ class ViewCases extends Component
         $this->caseId = $caseId;
         $this->displayUpdateModal = true;
     }
-    
+
     public function openSummaryModal(int $caseId)
     {
         $this->resetAllModal();
@@ -238,19 +289,19 @@ class ViewCases extends Component
     {
         $this->resetAllModal();
         $caseId = (int) $caseId;
-        $column = "id";
+        $column = 'id';
         $this->ticket = $this->tickets->firstWhere($column, $caseId);
-        if(!$this->ticket){
-            $this->ticket = $this->ticketService()->getCaseById($caseId);            
-        }        
+        if (! $this->ticket) {
+            $this->ticket = $this->ticketService()->getCaseById($caseId);
+        }
         $this->displayProfileModal = true;
     }
 
     public function changeDisplayTo(?string $status)
     {
-        $this->displayCaseStatus = $status;   
+        $this->displayCaseStatus = $status;
     }
-    
+
     public function openTab(CaseState $status)
     {
         $this->resetAllFiltersAndSorting();
@@ -263,77 +314,78 @@ class ViewCases extends Component
         $filterString = $this->filter ?? null;
         $query = null;
 
-                
-        if($this->sortField){
+        if ($this->sortField) {
             $service->sortByField($this->sortField, $this->sortDirection);
         }
 
-        if($this->customerId) {
+        if ($this->customerId) {
             $service->setCustomer($this->customerId);
         }
 
-        if($this->displayCaseStatus == 'breached' ) {
+        if ($this->displayCaseStatus == 'breached') {
             $query = $service->getAllBreachedCases($filterString);
             $this->listTitle = 'Breached';
         }
 
-        if($this->displayCaseStatus == 'nearBreached') {
+        if ($this->displayCaseStatus == 'nearBreached') {
             $query = $service->getAllNearBreachCases($filterString);
             $this->listTitle = 'Near Breach';
         }
 
-        if($this->displayCaseStatus == 'unassigned') {
+        if ($this->displayCaseStatus == 'unassigned') {
             $query = $service->getAllUnassignedCases($filterString);
             $this->listTitle = 'Unassigned';
         }
 
-        if($this->displayCaseStatus == 'noUpdate') {
+        if ($this->displayCaseStatus == 'noUpdate') {
             $query = $service->getAllNoUpdateCases($filterString);
             $this->listTitle = 'Awaiting Action';
         }
 
-        if($this->displayCaseStatus == CaseState::Open->value) {
+        if ($this->displayCaseStatus == CaseState::Open->value) {
             $query = $service->getAllOpenCases($filterString);
             $this->listTitle = $this->displayCaseStatus;
         }
-        
-        if($this->displayCaseStatus === CaseState::In_Progress->value) {
+
+        if ($this->displayCaseStatus === CaseState::In_Progress->value) {
             $query = $service->getOutstandingCases($filterString);
             $this->listTitle = $this->displayCaseStatus;
         }
 
-        if($this->displayCaseStatus === CaseState::Resolved->value) {
+        if ($this->displayCaseStatus === CaseState::Resolved->value) {
             $query = $service->getAllOpenResolvedCases($filterString);
             $this->listTitle = $this->displayCaseStatus;
         }
-        
-        if($this->displayCaseStatus === CaseState::Completed->value) {
+
+        if ($this->displayCaseStatus === CaseState::Completed->value) {
             $query = $service->getAllClosedResolvedCases($filterString);
             $this->listTitle = $this->displayCaseStatus;
         }
 
-        if($this->displayCaseStatus === CaseState::Closed->value) {
+        if ($this->displayCaseStatus === CaseState::Closed->value) {
             $query = $service->getAllClosedCases($filterString);
             $this->listTitle = $this->displayCaseStatus;
         }
 
-        if($this->displayCaseStatus === CaseState::Paused->value) {
+        if ($this->displayCaseStatus === CaseState::Paused->value) {
             $query = $service->getAllPausedCases($filterString);
             $this->listTitle = $this->displayCaseStatus;
         }
 
-        if($this->displayCaseStatus === CaseState::Site_Visit->value){
+        if ($this->displayCaseStatus === CaseState::Site_Visit->value) {
             $query = $service->getAllVisitCases($filterString);
             $this->listTitle = $this->displayCaseStatus;
         }
 
-        if(isset($query)){
+        if (isset($query)) {
+            $query->with(['customer', 'assignedToUser', 'slaApplication']);
             $this->tickets = $query->orderByDesc('created_at')->get();
+
             return $query;
         }
 
         return null;
-        
+
     }
 
     public function render()
@@ -341,15 +393,22 @@ class ViewCases extends Component
         $cases = null;
         $ui = $this->buildUI();
         $cases = $this->loadCases()?->paginate(10);
+        $workflowStageByCaseId = [];
+
+        if ($cases) {
+            foreach ($cases as $case) {
+                $workflowStageByCaseId[$case->id] = $this->workflowStage($case);
+            }
+        }
+
         $hideStatus = $this->customerId || $this->dashboardFilter;
-        return view('casemanagement::livewire.case.view-cases',[
+
+        return view('casemanagement::livewire.case.view-cases', [
             'ui_params' => $ui,
             'cases' => $cases,
             'hideStatus' => $hideStatus,
+            'workflowStageByCaseId' => $workflowStageByCaseId,
         ]);
-               
-    }
-    
-    
 
+    }
 }

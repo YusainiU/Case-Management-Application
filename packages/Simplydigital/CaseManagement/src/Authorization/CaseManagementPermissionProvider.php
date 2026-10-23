@@ -11,6 +11,7 @@ use Simplydigital\CaseManagement\Enums\Permissions\ServiceLevelAgreementPermissi
 use Simplydigital\CaseManagement\Enums\Permissions\ProductPermission;
 use Simplydigital\CaseManagement\Enums\Permissions\SupplierPermission;
 use Simplydigital\CaseManagement\Enums\Permissions\AssetPermission;
+use Simplydigital\CaseManagement\Enums\Permissions\CustomerPortalPermission;
 class CaseManagementPermissionProvider implements PermissionProvider
 {
     public function permissions(): array
@@ -189,9 +190,32 @@ class CaseManagementPermissionProvider implements PermissionProvider
                 name: AssetPermission::Delete->value,
                 description: 'Delete Assets',
                 group: 'Assets',
-            ),            
+            ),
+            
+            new PermissionDefinition(
+                name: CustomerPortalPermission::Access->value,
+                description: 'Gives Customer access to portal',
+                group: 'Customer Portal',
+            ),
+            
+            new PermissionDefinition(
+                name: CustomerPortalPermission::View->value,
+                description: 'Customer can view cases in portal',
+                group: 'Customer Portal',
+            ),
 
-
+            new PermissionDefinition(
+                name: CustomerPortalPermission::Create->value,
+                description: 'Customer can create case in portal',
+                group: 'Customer Portal',
+            ),
+            
+            new PermissionDefinition(
+                name: CustomerPortalPermission::Comment->value,
+                description: 'Customer can write comment in portal',
+                group: 'Customer Portal',
+            ),              
+            
         ];
     }
 }

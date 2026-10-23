@@ -15,6 +15,7 @@ enum CaseState: string
     case Site_Visit = 'Site Visit';
     case Enroute = 'Enroute To Site';
     case Onsite = 'Onsite At';
+    case Part_Request = 'Part Request';
 
     public function label(): string
     {
@@ -29,6 +30,7 @@ enum CaseState: string
             self::Site_Visit => 'Site Visit',
             self::Enroute => 'Enroute to Site',
             self::Onsite => 'Onsite',
+            self::Part_Request => self::Part_Request->value,
         };
     }
     
@@ -48,6 +50,7 @@ enum CaseState: string
             self::Site_Visit,
             self::Enroute,
             self::Onsite,
+            self::Part_Request,
         ];
     }
 
@@ -134,6 +137,7 @@ enum CaseState: string
             self::Site_Visit => UI::IN_PROGRESS_STATE_CLASS,
             self::Enroute => UI::IN_PROGRESS_STATE_CLASS,
             self::Onsite => UI::IN_PROGRESS_STATE_CLASS,
+            self::Part_Request => UI::IN_PROGRESS_STATE_CLASS,
         };
     }
 
