@@ -2,11 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Simplydigital\UserManagement\Model\UsersDetails;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -14,6 +16,21 @@ class UserFactory extends Factory
      * The current password being used by the factory.
      */
     protected static ?string $password;
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (User $user): void {
+            UsersDetails::create([
+                'user_id' => $user->id,
+                'address_1' => fake()->streetAddress(),
+                'address_2' => fake()->secondaryAddress(),
+                'county' => fake()->city(),
+                'postcode' => fake()->postcode(),
+                'country' => fake()->country(),
+                'phone' => fake()->phoneNumber(),
+            ]);
+        });
+    }
 
     /**
      * Define the model's default state.

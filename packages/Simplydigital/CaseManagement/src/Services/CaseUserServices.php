@@ -21,13 +21,18 @@ class CaseUserServices
 
     public static function getAllInternalUserIds(): array
     {
-        $result = UserManagementServices::getAllInternalUsers()->pluck('user_name','user_id')->toArray();
-        return $result;
+        return UserManagementServices::getAllInternalUsers()->pluck('user_name', 'user_id')->toArray();
+
+    }
+
+    public function getAllEngineers()
+    {
+        return UserManagementServices::getAllEngineers()->pluck('user_name', 'user_id')->toArray();
     }
 
     public function getUserById(int $id)
     {
-        return  UserManagementServices::getUserById($id);
+        return UserManagementServices::getUserById($id);
     }
 
     public function getAllCustomerContacts(): array
@@ -39,5 +44,4 @@ class CaseUserServices
     {
         return UserManagementServices::getUserDetails($userId);
     }
-
 }

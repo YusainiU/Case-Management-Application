@@ -70,7 +70,7 @@ class UserManagementServices
 
     public static function getUserById(int $id)
     {
-        return User::find($id,'*');
+        return User::find($id, '*');
     }
 
     public static function getUserDetails(int $userDetailsId)
@@ -83,6 +83,22 @@ class UserManagementServices
         $internals = UsersDetails::query()
             ->join('users', 'users.id', '=', 'users_details.user_id')
             ->whereHas('user.roles', function ($query) {
+                $query->where('name', 'Internal User');
+            })
+            ->select(
+                'users_details.*',
+                'users.name as user_name'
+            )
+            ->get();
+
+        return $internals;
+    }
+
+    public static function getAllEngineers()
+    {
+        $engineers = UsersDetails::query()
+            ->join('users', 'users.id', '=', 'users_details.user_id')
+            ->whereHas('user.roles', function ($query) {
                 $query->where('name', 'Engineer');
             })
             ->select(
@@ -90,8 +106,8 @@ class UserManagementServices
                 'users.name as user_name'
             )
             ->get();
-            
-        return $internals;
+
+        return $engineers;
     }
 
     public static function getAllCustomerContacts()
@@ -100,5 +116,4 @@ class UserManagementServices
             ->pluck('name', 'id')
             ->toArray();
     }
-
 }

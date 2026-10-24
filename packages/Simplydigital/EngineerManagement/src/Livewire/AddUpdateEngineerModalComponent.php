@@ -2,33 +2,44 @@
 
 namespace Simplydigital\EngineerManagement\Livewire;
 
+use App\Models\User;
+use LivewireUI\Modal\ModalComponent;
 use Simplydigital\EngineerManagement\Models\EngineerManagement;
 use Simplydigital\EngineerManagement\Services\EngineerManagementServices;
-use LivewireUI\Modal\ModalComponent;
-use Illuminate\Support\Facades\DB;
-use Random\Engine;
 
 class AddUpdateEngineerModalComponent extends ModalComponent
 {
-
     public $manager;
+
     public $user_id;
+
     public $department;
+
     public $position;
+
     public $active = true;
 
     public $users;
-    public $managers;
-    public $engineerManagerId;
-    public $showEditModal = false;
-    public $showAddModal = false;
-    public $mode;
-    public $modalMode = '';
-    public $modalTitle = '';
-    public $modalSave = 'save';
-    public $listOfPositions = [];
-    public $listOfDepartments = [];
 
+    public $managers;
+
+    public $engineerManagerId;
+
+    public $showEditModal = false;
+
+    public $showAddModal = false;
+
+    public $mode;
+
+    public $modalMode = '';
+
+    public $modalTitle = '';
+
+    public $modalSave = 'save';
+
+    public $listOfPositions = [];
+
+    public $listOfDepartments = [];
 
     public static function maxWidth(): string
     {
@@ -40,14 +51,14 @@ class AddUpdateEngineerModalComponent extends ModalComponent
     {
         if ($this->modalMode === 'toggleEditModal') {
             return [
-                'manager' => 'required|integer',
+                'manager' => 'nullable|integer',
                 'position' => 'nullable|string|max:255',
                 'department' => 'required|string|max:255',
                 'active' => 'boolean',
-            ];            
+            ];
         } else {
             return [
-                'manager' => 'required|integer',
+                'manager' => 'nullable|integer',
                 'user_id' => 'required|integer',
                 'position' => 'nullable|string|max:255',
                 'department' => 'required|string|max:255',
@@ -67,9 +78,6 @@ class AddUpdateEngineerModalComponent extends ModalComponent
         }
         $this->users = $this->getUsers($engineerManagementServices);
         $this->managers = $this->getManagers($engineerManagementServices);
-        if ($this->managers->isEmpty()) {
-            $this->managers = $this->users;
-        }
         $this->listOfPositions = config('engineer-management.positions');
         $this->listOfDepartments = config('engineer-management.departments');
     }
@@ -86,14 +94,12 @@ class AddUpdateEngineerModalComponent extends ModalComponent
 
     public function getUsers($engineerManagementServices)
     {
-        $users = $engineerManagementServices->getNonEngineeringUsers();
-        return $users;
+        return User::internalUsers()->get(['id', 'name', 'email'])->pluck('name', 'id');
     }
 
     public function getManagers($engineerManagementServices)
     {
-        $managers = $engineerManagementServices->getEngineerManagers();
-        return $managers;
+        return $engineerManagementServices->getEngineerManagers();
     }
 
     public function save()
@@ -101,7 +107,7 @@ class AddUpdateEngineerModalComponent extends ModalComponent
         $this->validate();
         $inputs = [
             'number' => null,
-            'manager' => $this->manager,
+            'manager' => $this->manager ?? null,
             'user_id' => $this->user_id,
             'position' => $this->position,
             'department' => $this->department,

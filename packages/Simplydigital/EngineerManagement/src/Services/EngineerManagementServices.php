@@ -1,13 +1,14 @@
 <?php
 
 Namespace Simplydigital\EngineerManagement\Services;
-use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\DB;
 use Simplydigital\EngineerManagement\Models\EngineerManagement;
 use Simplydigital\EngineerManagement\Models\Skills;
 use Simplydigital\EngineerManagement\Models\Certificates;
 use App\Models\User;
 use Simplydigital\EngineerManagement\Models\EngineerCertifications;
+use Simplydigital\UserManagement\Services\UserManagementServices;
 
 class EngineerManagementServices
 {
@@ -89,6 +90,11 @@ class EngineerManagementServices
                     ->whereColumn('engineer_management.user_id', 'users.id');
             })
             ->pluck('name', 'id');
+    }
+
+    public function getInternalUsers()
+    {
+        return UserManagementServices::getAllInternalUsers()->pluck('user_name','user_id');
     }
     
     public function getEngineerManagers()
