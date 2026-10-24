@@ -25,7 +25,7 @@ class CaseUserServices
 
     }
 
-    public function getAllEngineers()
+    public static function getAllEngineers()
     {
         return UserManagementServices::getAllEngineers()->pluck('user_name', 'user_id')->toArray();
     }
@@ -38,6 +38,11 @@ class CaseUserServices
     public function getAllCustomerContacts(): array
     {
         return UserManagementServices::getAllCustomerContacts();
+    }
+
+    public static function getCustomerUserNotInCustomerContacts()
+    {
+        return UserManagementServices::getCustomerUserNotInCustomerContacts();
     }
 
     public static function getUserDetails(int $userId)

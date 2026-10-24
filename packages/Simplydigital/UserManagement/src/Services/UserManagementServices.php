@@ -3,7 +3,9 @@
 namespace Simplydigital\UserManagement\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Simplydigital\EngineerManagement\Models\EngineerManagement;
 use Simplydigital\UserManagement\Model\UsersDetails;
 
 class UserManagementServices
@@ -96,18 +98,26 @@ class UserManagementServices
 
     public static function getAllEngineers()
     {
-        $engineers = UsersDetails::query()
-            ->join('users', 'users.id', '=', 'users_details.user_id')
+        $engineers = EngineerManagement::query()
+            ->join('users', 'users.id', '=', 'engineer_management.user_id')
             ->whereHas('user.roles', function ($query) {
                 $query->where('name', 'Engineer');
             })
             ->select(
-                'users_details.*',
+                'engineer_management.*',
                 'users.name as user_name'
             )
             ->get();
 
         return $engineers;
+    }
+
+    public static function getCustomerUserNotInCustomerContacts()
+    {
+        return User::role('Customer')
+            ->whereNotIn('id', DB::table('customer_contacts')->select('user_id'))
+            ->pluck('name', 'id')
+            ->toArray();
     }
 
     public static function getAllCustomerContacts()

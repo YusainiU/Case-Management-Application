@@ -53,8 +53,12 @@ class AddCaseComment extends Component
             'case' => $case,
             'comments' => $case->taskLogs()
                 ->with('user')
-                ->where('source', config('case-management.logs.source.external'))
-                ->where('type', config('case-management.logs.type.external_update'))
+                ->where(function ($query) {
+                    $query->where(function ($query) {
+                        $query->where('source', config('case-management.logs.source.external'))
+                            ->where('type', config('case-management.logs.type.external_update'));
+                    })->orWhere('visible_to_external', true);
+                })
                 ->oldest('created_at')
                 ->oldest('id')
                 ->get(),

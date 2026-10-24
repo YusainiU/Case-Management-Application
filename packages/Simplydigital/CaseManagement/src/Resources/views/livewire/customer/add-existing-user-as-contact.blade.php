@@ -32,33 +32,6 @@
                 />                
             </div>
             <div>
-                <x-casemanagement::form-elements.input-label name="Address 1" :required=true />
-                <x-casemanagement::form-elements.input-text model="address_1" placeholder="Address Line 1" :required=true />
-                <x-casemanagement::form-elements.input-error field="address_1" />
-            </div>
-            <div>
-                <x-casemanagement::form-elements.input-label name="Address 2" :required=false />
-                <x-casemanagement::form-elements.input-text model="address_2" placeholder="Address Line 2" :required=false />
-            </div>
-            <div>
-                <x-casemanagement::form-elements.input-label name="County" :required=false />
-                <x-casemanagement::form-elements.input-text model="county" placeholder="County" :required=false />
-            </div>
-            <div>
-                <x-casemanagement::form-elements.input-label name="Postcode" :required=true />
-                <x-casemanagement::form-elements.input-text model="postcode" placeholder="Postcode" :required=true />
-                <x-casemanagement::form-elements.input-error field="postcode" />
-            </div>
-            <div>
-                <x-casemanagement::form-elements.input-label name="Country" :required=false />
-                <x-casemanagement::form-elements.input-text model="country" placeholder="Country" :required=false />
-            </div>                                                 
-            <div>
-                <x-casemanagement::form-elements.input-label name="Telephone" :required=false />
-                <x-casemanagement::form-elements.input-text model="phone" placeholder="Contact Telephone"
-                    :required=false />
-            </div>
-            <div>
                 <x-casemanagement::form-elements.input-label name="Description" :required="false" />
                 <x-casemanagement::form-elements.textarea name="description" model="description"
                     hint="Contact Notes" />

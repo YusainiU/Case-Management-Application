@@ -29,7 +29,7 @@
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <x-casemanagement::page-elements.box-dashboard-element
-                :content="$status['totalOpenCases']"
+                :content="$status['totalBreached']"
                 title="SLA Breached"
                 subTitle="Cases requiring urgent attention"
                 action="openBreached"

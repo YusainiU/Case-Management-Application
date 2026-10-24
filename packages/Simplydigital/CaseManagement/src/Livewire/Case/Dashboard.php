@@ -53,7 +53,7 @@ class Dashboard extends Component
         $status['paused'] = collect($cases)->sum('paused');
         $status['totalVisits'] = collect($cases)->sum('totalVisits');
         $status['total'] = $cases['total'];
-
+        
         return $status;
     }
     

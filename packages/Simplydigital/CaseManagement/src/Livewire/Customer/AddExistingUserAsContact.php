@@ -74,7 +74,7 @@ class AddExistingUserAsContact extends ModalComponent
     public function getAllCustomerContacts()
     {
         $service = $this->UserService();
-        $customers = $service->getAllCustomerContacts();
+        $customers = $service::getCustomerUserNotInCustomerContacts();
         $this->allCustomerContacts = UI::createArrayforMultiselect($customers,'id','name');
     }
 
@@ -83,14 +83,7 @@ class AddExistingUserAsContact extends ModalComponent
         return [
             'customer' => 'required',
             'contactRole' => 'required',
-            'user_id' => 'required',
-            'address_1' => 'required',
-            'address_2' => 'nullable',
-            'county' => 'nullable',
-            'postcode' => 'required',
-            'country' => 'nullable',
-            'phone' => 'nullable',
-            'description' => 'nullable',            
+            'user_id' => 'required',           
         ];
     }
 
@@ -102,13 +95,6 @@ class AddExistingUserAsContact extends ModalComponent
         $input = [
             'customer_id' => $this->customer,
             'user_id' => $this->user_id,
-            'email' => $contact->email,
-            'address_1' => $this->address_1,
-            'address_2' => $this->address_2,
-            'county' => $this->county,
-            'postcode' => $this->postcode,
-            'country' => $this->country,
-            'phone' => $this->phone,
             'description' => $this->description,
             'active' => $this->active,
             'has_portal_access' => $this->hasPortalAccess,

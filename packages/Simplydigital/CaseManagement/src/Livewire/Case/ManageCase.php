@@ -26,6 +26,7 @@ class ManageCase extends ModalComponent
     public bool $caseClosed = false;
 
     public array $tabHeaders = [
+        'description' => 'Case Description',
         'sla' => 'SLA',
         'status' => 'SLA Status',
         'pauses' => 'SLA Pauses',
@@ -39,7 +40,7 @@ class ManageCase extends ModalComponent
         'caseAssistant' => 'Case Assistant (AI)',
     ];
 
-    public string $selectedTab = 'sla';
+    public string $selectedTab = 'description';
 
     /**
      * @var array<string, string>

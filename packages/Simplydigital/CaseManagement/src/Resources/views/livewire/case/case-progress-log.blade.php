@@ -104,7 +104,7 @@
                             />
                         </div>
 
-                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
 
                             <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-3 transition hover:bg-slate-50">
                                 <div class="pt-0.5">
@@ -125,6 +125,16 @@
                                     />
                                 </div>
                             </label>
+
+                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-3 transition hover:bg-slate-50">
+                                <div class="pt-0.5">
+                                    <x-casemanagement::form-elements.checkbox
+                                        label="Visible to Customer"
+                                        model="makeVisibleToCustomer"
+                                        name="Visible to Customer"
+                                    />
+                                </div>
+                            </label>                            
 
                         </div>
 

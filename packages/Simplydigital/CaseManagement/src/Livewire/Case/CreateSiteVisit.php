@@ -225,7 +225,7 @@ class CreateSiteVisit extends ModalComponent
             $this->caseOptions = UI::createArrayforMultiselect($cOpts, 'id', 'name');
         }
         // Get All active internal users
-        $this->userOptions = CaseUserServices::getAllInternalUserIds();
+        $this->userOptions = CaseUserServices::getAllEngineers();
 
     }
 

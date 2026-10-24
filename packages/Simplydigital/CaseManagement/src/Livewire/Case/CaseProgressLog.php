@@ -22,6 +22,7 @@ class CaseProgressLog extends ModalComponent
     public ?int $logToDelete = null;
     public ?TaskLogs $logToEdit = null;
     public bool $notifyCustomer = false;
+    public bool $makeVisibleToCustomer = false;
 
     public function logService(): CaseLogAdministrationService
     {
@@ -56,6 +57,8 @@ class CaseProgressLog extends ModalComponent
                 if($this->urgentAttention){
                     $util->requireAttention($result, $this->urgentAttention);
                 }
+                $result->visible_to_external = $this->makeVisibleToCustomer;
+                $result->update();
             }
             $this->case->refresh();
             $this->dispatch('reloadCaseStatus'); 
@@ -101,7 +104,11 @@ class CaseProgressLog extends ModalComponent
             }
             if($this->notifyCustomer){
                 $this->utilityService()->emailLog($this->logToEdit);
-            }           
+            }
+            $this->logToEdit->visible_to_external = $this->makeVisibleToCustomer;
+            if($this->logToEdit->isDirty('visible_to_external')) {
+                $this->logToEdit->update();
+            }    
         }
         $this->case->refresh();
         $this->cancelRespond();
@@ -138,6 +145,8 @@ class CaseProgressLog extends ModalComponent
         if($this->notifyCustomer) {
             $util->emailLog($respond);
         }
+        $respond->visible_to_external = $this->makeVisibleToCustomer;
+        $respond->update();
         $this->cancelRespond();
         $this->case->refresh();
     }

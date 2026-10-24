@@ -67,7 +67,7 @@ class ManageCaseSLA extends ModalComponent
 
     public function loadSelections()
     {
-        $this->internals = CaseUserServices::getAllInternalUserIds();
+        $this->internals = CaseUserServices::getAllEngineers();
     }
 
     public function checkPause()
