@@ -2,6 +2,7 @@
 
 namespace Simplydigital\CaseManagement\Livewire\Case;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
@@ -214,7 +215,7 @@ class ViewCases extends Component
 
         if (
             $case->closed_datetime !== null
-            || in_array($state, [CaseState::Completed, CaseState::Closed, CaseState::Cancelled], true)
+            || \in_array($state, [CaseState::Completed, CaseState::Closed, CaseState::Cancelled], true)
         ) {
             return 4;
         }
@@ -379,6 +380,16 @@ class ViewCases extends Component
 
         if (isset($query)) {
             $query->with(['customer', 'assignedToUser', 'slaApplication']);
+            $query->withExists([
+                'taskLogs as has_unanswered_external_comment' => function (Builder $query): void {
+                    $query->whereNotNull('external_user')
+                        ->where(function (Builder $query): void {
+                            $query->whereNull('response_to_internal_comment')
+                                ->orWhere('response_to_internal_comment', false);
+                        })
+                        ->whereDoesntHave('repliesToInternalComment');
+                },
+            ]);
             $this->tickets = $query->orderByDesc('created_at')->get();
 
             return $query;

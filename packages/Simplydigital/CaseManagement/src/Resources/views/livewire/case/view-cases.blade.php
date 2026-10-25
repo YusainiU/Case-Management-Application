@@ -266,11 +266,25 @@
 
                                 {{-- Case number --}}
                                 <td class="px-4 py-4">
-                                    <span
-                                        class="font-semibold text-gray-900
-                                                 dark:text-white">
-                                        {{ ltrim(strstr($case->number, '-'), '-') }}
-                                    </span>
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span
+                                            class="font-semibold text-gray-900
+                                                     dark:text-white">
+                                            {{ ltrim(strstr($case->number, '-'), '-') }}
+                                        </span>
+
+                                        @if ($case->has_unanswered_external_comment)
+                                            <span title="External comment awaiting response"
+                                                aria-label="External comment awaiting response"
+                                                class="inline-flex items-center gap-1 rounded-full
+                                                       bg-amber-50 px-2 py-1 text-xs font-medium
+                                                       text-amber-700 dark:bg-amber-500/10
+                                                       dark:text-amber-400">
+                                                <flux:icon name="chat-bubble-left-right" class="size-3.5" />
+                                                External comment
+                                            </span>
+                                        @endif
+                                    </div>
                                 </td>
 
 
@@ -561,9 +575,20 @@
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-start
                                     sm:justify-between">
                             <div class="min-w-0">
-                                <p class="text-xs font-semibold uppercase
-                                          tracking-wider text-gray-500 dark:text-gray-400">
+                                <p class="flex flex-wrap items-center gap-2 text-xs font-semibold
+                                          uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                     {{ $case->number }}
+                                    @if ($case->has_unanswered_external_comment)
+                                        <span title="External comment awaiting response"
+                                            aria-label="External comment awaiting response"
+                                            class="inline-flex items-center gap-1 rounded-full
+                                                   bg-amber-50 px-2 py-1 text-xs font-medium
+                                                   normal-case tracking-normal text-amber-700
+                                                   dark:bg-amber-500/10 dark:text-amber-400">
+                                            <flux:icon name="chat-bubble-left-right" class="size-3.5" />
+                                            External comment
+                                        </span>
+                                    @endif
                                 </p>
                                 <h3 class="mt-1 truncate text-base font-semibold
                                            text-gray-900 dark:text-white">

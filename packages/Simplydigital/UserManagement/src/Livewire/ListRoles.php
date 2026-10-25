@@ -81,6 +81,11 @@ class ListRoles extends Component
         $this->selectedPermissions = $this->selectedRole->permissions()->pluck('name')->toArray();
     }
 
+    public function selectAllPermissions(): void
+    {
+        $this->selectedPermissions = array_values($this->allPermissions);
+    }
+
     public function updateExistingRolePermission()
     {
         $this->validate([

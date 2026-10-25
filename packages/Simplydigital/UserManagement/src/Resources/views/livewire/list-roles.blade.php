@@ -233,12 +233,21 @@
                         </h3>
                     </div>
 
-                    <x-usermanagement::input-label
-                        for="Permissions"
-                        name="Permissions"
-                        class="block text-sm font-medium text-gray-700"
-                        :required="true"
-                    />
+                    <div class="flex items-center justify-between gap-3">
+                        <x-usermanagement::input-label
+                            for="Permissions"
+                            name="Permissions"
+                            class="block text-sm font-medium text-gray-700"
+                            :required="true"
+                        />
+                        <button
+                            type="button"
+                            wire:click="selectAllPermissions"
+                            class="rounded-lg px-3 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50 hover:text-indigo-800"
+                        >
+                            Select all permissions
+                        </button>
+                    </div>
 
                     <div class="mt-3 space-y-4">
                         @foreach ($groupPermissions($allPermissions) as $permissionGroup => $permissions)
