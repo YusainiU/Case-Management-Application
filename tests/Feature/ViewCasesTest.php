@@ -88,9 +88,15 @@ class ViewCasesTest extends TestCase
 
         $component = Livewire::withQueryParams(['dashboardFilter' => CaseState::Open->value])
             ->test(ViewCases::class)
-            ->assertSee('External comment awaiting response')
+            ->assertSee('Customer Comment')
+            ->call('openCustomerCommentModal', $case->id)
+            ->assertSee('The issue is still happening.')
+            ->assertSee('Close')
+            ->call('closeCustomerCommentModal')
+            ->assertDontSee('The issue is still happening.')
             ->call('toggleViewMode')
-            ->assertSee('External comment awaiting response');
+            ->assertSee('Customer Comment')
+            ->assertSee('wire:click.stop="openCustomerCommentModal('.$case->id.')"', false);
 
         TaskLogs::query()->create([
             'name' => $case->number,
@@ -103,8 +109,8 @@ class ViewCasesTest extends TestCase
 
         $component
             ->call('$refresh')
-            ->assertDontSee('External comment awaiting response')
+            ->assertDontSee('Customer Comment')
             ->call('toggleViewMode')
-            ->assertDontSee('External comment awaiting response');
+            ->assertDontSee('Customer Comment');
     }
 }

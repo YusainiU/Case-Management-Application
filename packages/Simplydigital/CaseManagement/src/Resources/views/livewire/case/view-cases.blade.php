@@ -31,6 +31,29 @@
         </x-casemanagement::page-elements.modal-simple>
     @endif
 
+    @if ($displayCustomerCommentModal)
+        <x-casemanagement::page-elements.modal-simple title="Customer comments"
+            cancelThisWith="closeCustomerCommentModal" cancelText="Close">
+            @forelse ($customerComments as $comment)
+                <div class="space-y-2 {{ $loop->first ? '' : 'mt-5 border-t border-gray-200 pt-5' }}">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h4 class="font-semibold text-gray-900">
+                            {{ $comment['author'] }}
+                        </h4>
+                        <time class="text-sm text-gray-500">
+                            {{ $comment['created_at'] }}
+                        </time>
+                    </div>
+                    <p class="whitespace-pre-wrap text-sm text-gray-700">{{ $comment['description'] }}</p>
+                </div>
+            @empty
+                <p class="text-sm text-gray-600">
+                    There are no unanswered customer comments for this case.
+                </p>
+            @endforelse
+        </x-casemanagement::page-elements.modal-simple>
+    @endif
+
     @if ($displayProfileModal)
         <livewire:manage-case :case="$ticket" @close-profile-modal="closeProfileModal" />
     @endif
@@ -274,15 +297,18 @@
                                         </span>
 
                                         @if ($case->has_unanswered_external_comment)
-                                            <span title="External comment awaiting response"
-                                                aria-label="External comment awaiting response"
+                                            <button type="button"
+                                                wire:click="openCustomerCommentModal({{ $case->id }})"
                                                 class="inline-flex items-center gap-1 rounded-full
                                                        bg-amber-50 px-2 py-1 text-xs font-medium
-                                                       text-amber-700 dark:bg-amber-500/10
-                                                       dark:text-amber-400">
+                                                       text-amber-700 hover:bg-amber-100
+                                                       focus-visible:outline-2 focus-visible:outline-offset-2
+                                                       focus-visible:outline-amber-600
+                                                       dark:bg-amber-500/10 dark:text-amber-400
+                                                       dark:hover:bg-amber-500/20">
                                                 <flux:icon name="chat-bubble-left-right" class="size-3.5" />
-                                                External comment
-                                            </span>
+                                                Customer Comment
+                                            </button>
                                         @endif
                                     </div>
                                 </td>
@@ -565,13 +591,15 @@
                         $workflowStage = $workflowStageByCaseId[$case->id];
                     @endphp
 
-                    <button type="button" wire:key="workflow-case-{{ $case->id }}"
-                        wire:click="openProfileModal({{ $case->id }})"
-                        aria-label="Open details for {{ $case->number }}"
-                        class="block w-full px-5 py-5 text-left transition-colors
-                               hover:bg-gray-50/80 focus-visible:outline-2
-                               focus-visible:outline-offset-2 focus-visible:outline-indigo-600
-                               dark:hover:bg-gray-800/40">
+                    <article wire:key="workflow-case-{{ $case->id }}"
+                        class="relative transition-colors hover:bg-gray-50/80 dark:hover:bg-gray-800/40">
+                        <button type="button" wire:click="openProfileModal({{ $case->id }})"
+                            aria-label="Open details for {{ $case->number }}"
+                            class="absolute inset-0 z-0 size-full focus-visible:outline-2
+                                   focus-visible:outline-offset-[-2px] focus-visible:outline-indigo-600">
+                            <span class="sr-only">Open details for {{ $case->number }}</span>
+                        </button>
+                        <div class="pointer-events-none relative z-10 px-5 py-5">
                         <div class="flex flex-col gap-3 sm:flex-row sm:items-start
                                     sm:justify-between">
                             <div class="min-w-0">
@@ -579,15 +607,18 @@
                                           uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                     {{ $case->number }}
                                     @if ($case->has_unanswered_external_comment)
-                                        <span title="External comment awaiting response"
-                                            aria-label="External comment awaiting response"
-                                            class="inline-flex items-center gap-1 rounded-full
-                                                   bg-amber-50 px-2 py-1 text-xs font-medium
+                                        <button type="button"
+                                            wire:click.stop="openCustomerCommentModal({{ $case->id }})"
+                                            class="pointer-events-auto inline-flex items-center gap-1
+                                                   rounded-full bg-amber-50 px-2 py-1 text-xs font-medium
                                                    normal-case tracking-normal text-amber-700
-                                                   dark:bg-amber-500/10 dark:text-amber-400">
+                                                   hover:bg-amber-100 focus-visible:outline-2
+                                                   focus-visible:outline-offset-2 focus-visible:outline-amber-600
+                                                   dark:bg-amber-500/10 dark:text-amber-400
+                                                   dark:hover:bg-amber-500/20">
                                             <flux:icon name="chat-bubble-left-right" class="size-3.5" />
-                                            External comment
-                                        </span>
+                                            Customer Comment
+                                        </button>
                                     @endif
                                 </p>
                                 <h3 class="mt-1 truncate text-base font-semibold
@@ -672,7 +703,8 @@
                                 · {{ $workflowStage }} of 4 steps complete
                             </span>
                         </div>
-                    </button>
+                        </div>
+                    </article>
                 @endforeach
             </div>
         @else

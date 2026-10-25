@@ -10,6 +10,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\Customer;
+use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 
@@ -44,9 +45,16 @@ class ViewCases extends Component
 
     public bool $displayDescription = false;
 
+    public bool $displayCustomerCommentModal = false;
+
     public bool $displaySlaStatus = false;
 
     public array $descriptionDetails = [];
+
+    /**
+     * @var array<int, array{author: string, description: string, created_at: string}>
+     */
+    public array $customerComments = [];
 
     public ?string $displayCaseStatus = null;
 
@@ -99,8 +107,10 @@ class ViewCases extends Component
             'displayUpdateModal',
             'displaySummaryModal',
             'displayDescription',
+            'displayCustomerCommentModal',
             'displaySlaStatus',
             'displayCustomerModal',
+            'customerComments',
         ]);
     }
 
@@ -140,6 +150,36 @@ class ViewCases extends Component
     public function closeDescriptionModal()
     {
         $this->resetAllModal();
+    }
+
+    public function closeCustomerCommentModal(): void
+    {
+        $this->resetAllModal();
+    }
+
+    public function openCustomerCommentModal(int $caseId): void
+    {
+        $this->resetAllModal();
+        $case = tickets::query()->findOrFail($caseId);
+        $this->authorize('view', $case);
+
+        $this->customerComments = $case->taskLogs()
+            ->whereNotNull('external_user')
+            ->where(function (Builder $query): void {
+                $query->whereNull('response_to_internal_comment')
+                    ->orWhere('response_to_internal_comment', false);
+            })
+            ->whereDoesntHave('repliesToInternalComment')
+            ->oldest('created_at')
+            ->get(['external_user', 'description', 'created_at'])
+            ->map(fn (TaskLogs $comment): array => [
+                'author' => $comment->external_user ?? 'Customer',
+                'description' => $comment->description,
+                'created_at' => $comment->created_at?->format('d/m/Y H:i') ?? '',
+            ])
+            ->all();
+
+        $this->displayCustomerCommentModal = true;
     }
 
     public function openAllResolvedCases()
