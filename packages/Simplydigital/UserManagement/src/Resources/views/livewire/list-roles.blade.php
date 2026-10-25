@@ -6,6 +6,15 @@
 
     $tdClass .= ' align-top px-4 py-3 text-sm text-gray-600';
     $thClass .= ' px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500';
+
+    $groupPermissions = static function ($permissions) {
+        return collect($permissions)->groupBy(static function ($permission) {
+            $name = is_string($permission) ? $permission : $permission->name;
+            $resource = \Illuminate\Support\Str::before($name, '.');
+
+            return $resource !== '' ? $resource : 'other';
+        });
+    };
 @endphp
 
 <div class="text-gray-800">
@@ -76,17 +85,24 @@
                                     </td>
 
                                     <td class="{{ $tdClass }}">
-                                        <div class="flex flex-wrap gap-1.5">
-                                            @forelse ($role->permissions as $permi)
-                                                <span class="inline-flex rounded-md border border-indigo-100 bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700">
-                                                    {{ $permi->name }}
-                                                </span>
-                                            @empty
-                                                <span class="text-xs italic text-gray-400">
-                                                    No permissions
-                                                </span>
-                                            @endforelse
-                                        </div>
+                                        @forelse ($groupPermissions($role->permissions) as $permissionGroup => $permissions)
+                                            <div class="mb-2 last:mb-0" wire:key="role-{{ $role->id }}-permission-group-{{ $permissionGroup }}">
+                                                <p class="mb-1 text-xs font-semibold text-gray-500">
+                                                    {{ \Illuminate\Support\Str::headline($permissionGroup) }}
+                                                </p>
+                                                <div class="flex flex-wrap gap-1.5">
+                                                    @foreach ($permissions as $permi)
+                                                        <span class="inline-flex rounded-md border border-indigo-100 bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700">
+                                                            {{ \Illuminate\Support\Str::after($permi->name, '.') }}
+                                                        </span>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <span class="text-xs italic text-gray-400">
+                                                No permissions
+                                            </span>
+                                        @endforelse
                                     </td>
 
                                     <td class="{{ $tdClass }} whitespace-nowrap">
@@ -166,15 +182,24 @@
                             :required="true"
                         />
 
-                        <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                            @foreach ($allPermissions as $permissionId => $permissionName)
-                                <div class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 transition hover:border-indigo-200 hover:bg-indigo-50/50">
-                                    <x-usermanagement::checkbox
-                                        name="selectedPermissions"
-                                        value="{{ $permissionName }}"
-                                        model="selectedPermissions"
-                                        label="{{ $permissionName }}"
-                                    />
+                        <div class="mt-3 space-y-4">
+                            @foreach ($groupPermissions($allPermissions) as $permissionGroup => $permissions)
+                                <div wire:key="create-permission-group-{{ $permissionGroup }}">
+                                    <h4 class="mb-2 text-sm font-semibold text-gray-700">
+                                        {{ \Illuminate\Support\Str::headline($permissionGroup) }}
+                                    </h4>
+                                    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                        @foreach ($permissions as $permissionId => $permissionName)
+                                            <div class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 transition hover:border-indigo-200 hover:bg-indigo-50/50" wire:key="create-permission-{{ $permissionId }}">
+                                                <x-usermanagement::checkbox
+                                                    name="selectedPermissions"
+                                                    value="{{ $permissionName }}"
+                                                    model="selectedPermissions"
+                                                    label="{{ \Illuminate\Support\Str::after($permissionName, '.') }}"
+                                                />
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
@@ -215,15 +240,24 @@
                         :required="true"
                     />
 
-                    <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        @foreach ($allPermissions as $permissionId => $permissionName)
-                            <div class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 transition hover:border-indigo-200 hover:bg-indigo-50/50">
-                                <x-usermanagement::checkbox
-                                    name="selectedPermissions"
-                                    value="{{ $permissionName }}"
-                                    model="selectedPermissions"
-                                    label="{{ $permissionName }}"
-                                />
+                    <div class="mt-3 space-y-4">
+                        @foreach ($groupPermissions($allPermissions) as $permissionGroup => $permissions)
+                            <div wire:key="edit-permission-group-{{ $permissionGroup }}">
+                                <h4 class="mb-2 text-sm font-semibold text-gray-700">
+                                    {{ \Illuminate\Support\Str::headline($permissionGroup) }}
+                                </h4>
+                                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                    @foreach ($permissions as $permissionId => $permissionName)
+                                        <div class="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 transition hover:border-indigo-200 hover:bg-indigo-50/50" wire:key="edit-permission-{{ $permissionId }}">
+                                            <x-usermanagement::checkbox
+                                                name="selectedPermissions"
+                                                value="{{ $permissionName }}"
+                                                model="selectedPermissions"
+                                                label="{{ \Illuminate\Support\Str::after($permissionName, '.') }}"
+                                            />
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         @endforeach
                     </div>

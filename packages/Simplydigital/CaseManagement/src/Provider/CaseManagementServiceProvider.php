@@ -64,6 +64,7 @@ use Simplydigital\CaseManagement\Livewire\Supplier\ViewSuppliers;
 use Simplydigital\CaseManagement\Middleware\RequireCustomerPortalAccess;
 use Simplydigital\CaseManagement\Middleware\RestrictInternalUserOnly;
 use Simplydigital\CaseManagement\Models\Customer;
+use Simplydigital\CaseManagement\Models\CustomerContacts as CustomerContactModel;
 use Simplydigital\CaseManagement\Models\Product;
 use Simplydigital\CaseManagement\Models\serviceLevelAgreements;
 use Simplydigital\CaseManagement\Models\Supplier;
@@ -194,7 +195,7 @@ class CaseManagementServiceProvider extends ServiceProvider
             CustomerPolicy::class
         );
         Gate::policy(
-            CustomerContacts::class,
+            CustomerContactModel::class,
             CustomerContactPolicy::class
         );
         Gate::policy(

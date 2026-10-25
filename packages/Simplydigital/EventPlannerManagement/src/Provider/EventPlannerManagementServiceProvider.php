@@ -14,6 +14,7 @@ use Livewire\Livewire;
 use Simplydigital\EventPlannerManagement\Contracts\PlannerEventRepository;
 use Simplydigital\EventPlannerManagement\Livewire\Planner;
 use Simplydigital\EventPlannerManagement\Middleware\RestrictInternalUserOnly;
+use Simplydigital\EventPlannerManagement\Models\PlannerEvent;
 use Simplydigital\EventPlannerManagement\Repositories\PlannerEventRepository as EloquentPlannerEventRepository;
 use Simplydigital\EventPlannerManagement\Services\PlannerEventProviderRegistry;
 use Simplydigital\EventPlannerManagement\Services\PlannerService;
@@ -61,9 +62,11 @@ class EventPlannerManagementServiceProvider extends ServiceProvider
         Route::middleware('web')->group(__DIR__.'/../Routes/web.php');
         Route::aliasMiddleware('restrict.internal.user', RestrictInternalUserOnly::class);
     }
+    
     public function loadPolicies()
     {
         Gate::policy(UploadedFile::class, EventPolicy::class);
+        Gate::policy(PlannerEvent::class, EventPolicy::class);
     }     
 
 }

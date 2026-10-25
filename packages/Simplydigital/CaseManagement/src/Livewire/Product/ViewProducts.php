@@ -10,7 +10,7 @@ use Livewire\Attributes\Layout;
 #[Layout('components.layouts.app')]
 class ViewProducts extends Component
 {
-
+    
     use WithPagination;
     public string $title = 'Products';
     public ?int $productId = null;
@@ -29,10 +29,9 @@ class ViewProducts extends Component
 
     public function mount()
     {
-        $this->authorize('view', Product::class);
+        $this->authorize('viewAny', Product::class);
     }
-
-
+    
     public function closeCreateModal()
     {
         $this->displayCreateModal = false;  

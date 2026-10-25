@@ -38,12 +38,14 @@ class FileUpload extends Component
         FileOwnerType $ownerType,
         string $ownerIdentifier,
     ): void {
+        $this->authorize('view', UploadedFile::class);
         $this->ownerType = $ownerType;
         $this->ownerIdentifier = $ownerIdentifier;
     }
 
     public function upload(): void
     {
+        $this->authorize('create', UploadedFile::class);
         $this->validate();
         try {
             $uploadFile = app(UploadFile::class);
