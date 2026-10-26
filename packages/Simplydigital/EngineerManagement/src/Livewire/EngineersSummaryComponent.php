@@ -23,6 +23,7 @@ class EngineersSummaryComponent extends Component
 
     public function mount()
     {
+        $this->authorize('viewAny', EngineerManagement::class);
         $this->initialise();
     }
 

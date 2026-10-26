@@ -20,11 +20,13 @@ use Simplydigital\UserManagement\Livewire\UpdateUser;
 use Simplydigital\UserManagement\Livewire\UserProfile;
 use Simplydigital\UserManagement\Model\UsersDetails;
 use Simplydigital\UserManagement\Model\UsersStatuses;
+use Simplydigital\UserManagement\Policies\RolePolicy;
 use Simplydigital\UserManagement\Policies\UserPolicy;
 use Simplydigital\UserManagement\Services\PermissionRegistry;
 use Simplydigital\UserManagement\Services\PermissionSynchronizer;
 use Simplydigital\UserManagement\Services\UserManagementServices;
 use Simplydigital\UserManagement\View\Components\Icon;
+use Spatie\Permission\Models\Role;
 
 class UserManagementServiceProvider extends ServiceProvider
 {
@@ -55,6 +57,7 @@ class UserManagementServiceProvider extends ServiceProvider
                 : null;
         });
         Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(UsersDetails::class, UserPolicy::class);
         Gate::policy(UsersStatuses::class, UserPolicy::class);
     }

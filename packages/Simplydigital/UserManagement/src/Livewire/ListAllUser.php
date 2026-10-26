@@ -23,6 +23,11 @@ class ListAllUser extends Component
     public $showPermissions = false;
 
     public $showUserProfile = false;
+
+    public function mount()
+    {
+        $this->authorize('viewAny', User::class);
+    }
     
     public function closeRoleModal()
     {
@@ -72,6 +77,7 @@ class ListAllUser extends Component
 
     public function delete($userId)
     {
+        $this->authorize('delete', User::class);
         $user = User::find($userId);
         $user->delete();
         $this->resetPage();

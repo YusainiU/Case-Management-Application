@@ -15,6 +15,7 @@ class AddNewRole extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('create', Role::class);
         $this->allPermissions = Permission::all()->pluck('name', 'id')->toArray();
     }
 
@@ -38,6 +39,7 @@ class AddNewRole extends ModalComponent
 
     public function createRole()
     {
+        $this->authorize('create', Role::class);
         $this->validate([
             'roleName' => 'required|string|unique:roles,name',
             'selectedPermissions' => 'array',

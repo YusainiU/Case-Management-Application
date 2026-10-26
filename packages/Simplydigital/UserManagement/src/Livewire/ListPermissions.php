@@ -5,6 +5,7 @@ namespace Simplydigital\UserManagement\Livewire;
 use Livewire\WithPagination;
 use LivewireUI\Modal\ModalComponent;
 use Spatie\Permission\Models\Permission;
+use App\Models\User;
 
 class ListPermissions extends ModalComponent
 {
@@ -28,7 +29,7 @@ class ListPermissions extends ModalComponent
 
     public function mount()
     {
-        
+        $this->authorize('update', User::class);
     }
 
     public function backToList()

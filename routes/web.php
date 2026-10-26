@@ -30,9 +30,9 @@ Route::view('/engineer-dashboard', 'dashboard')
     ->middleware([
         'auth',
         'verified',
+        'permission:engineer.view|user.view ',
     ])
-    ->name('engineer_dashboard')
-    ->middleware('permission:engineer.view');    
+    ->name('engineer_dashboard');    
 
 Route::middleware([
     'auth',

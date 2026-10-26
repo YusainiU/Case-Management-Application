@@ -4,6 +4,7 @@ namespace Simplydigital\UserManagement\Authorization;
 
 use Simplydigital\UserManagement\Contracts\PermissionProvider;
 use Simplydigital\UserManagement\Data\PermissionDefinition;
+use Simplydigital\UserManagement\Enums\Permissions\RolePermission;
 use Simplydigital\UserManagement\Enums\Permissions\UserPermission;
 
 class UserManagementPermissionProvider implements PermissionProvider
@@ -32,8 +33,27 @@ class UserManagementPermissionProvider implements PermissionProvider
                 name: UserPermission::Delete->value,
                 description: 'Delete User',
                 group: 'Users',
-            ),                        
-
+            ),
+            new PermissionDefinition(
+                name: RolePermission::View->value,
+                description: 'View Role',
+                group: 'Roles',
+            ),
+            new PermissionDefinition(
+                name: RolePermission::Create->value,
+                description: 'Create Role',
+                group: 'Roles',
+            ),
+            new PermissionDefinition(
+                name: RolePermission::Update->value,
+                description: 'Update Role',
+                group: 'Roles',
+            ),
+            new PermissionDefinition(
+                name: RolePermission::Delete->value,
+                description: 'Delete Role',
+                group: 'Roles',
+            ),                                                        
         ];
     }
 

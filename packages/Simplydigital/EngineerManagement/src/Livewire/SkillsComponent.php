@@ -26,6 +26,7 @@ class SkillsComponent extends Component
 
     public function mount()
     {
+        $this->authorize('viewAny', Skills::class);
         $this->loadSkills();
     }
 
@@ -60,8 +61,9 @@ class SkillsComponent extends Component
     }
 
     public function delete($id)
-    {
+    {        
         $skill = Skills::find($id);
+        $this->authorize('delete', $skill);
         $skill->delete();
         session()->flash('message', 'Skill has been deleted successfully.');
         $this->loadSkills();

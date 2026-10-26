@@ -19,6 +19,7 @@ Class EngineerDetailComponent extends Component
 
     public function mount()
     {
+        $this->authorize('viewAny', EngineerManagement::class);
         $this->initialise();
     }
 

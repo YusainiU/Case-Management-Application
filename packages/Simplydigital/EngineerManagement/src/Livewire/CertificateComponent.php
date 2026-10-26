@@ -25,6 +25,7 @@ class CertificateComponent extends Component
 
     public function mount()
     {
+        $this->authorize('viewAny', Certificates::class);
         $this->loadCertificates();
     }
 

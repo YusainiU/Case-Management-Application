@@ -69,6 +69,7 @@ class AddUpdateEngineerModalComponent extends ModalComponent
 
     public function mount(EngineerManagementServices $engineerManagementServices)
     {
+        $this->authorize('viewAny', EngineerManagement::class);
         $this->modalMode = $this->mode;
         if ($this->engineerManagerId && $this->modalMode === 'toggleEditModal') {
             $this->modalSave = 'update';
@@ -104,6 +105,7 @@ class AddUpdateEngineerModalComponent extends ModalComponent
 
     public function save()
     {
+        $this->authorize('create', EngineerManagement::class);
         $this->validate();
         $inputs = [
             'number' => null,
@@ -129,6 +131,7 @@ class AddUpdateEngineerModalComponent extends ModalComponent
             'active' => $this->active,
         ];
         $engineerManager = EngineerManagement::find($this->engineerManagerId);
+        $this->authorize('update', $engineerManager);
         $engineerManager->update($inputs);
         session()->flash('message', 'Details have been successfully updated.');
         $this->resetForm();

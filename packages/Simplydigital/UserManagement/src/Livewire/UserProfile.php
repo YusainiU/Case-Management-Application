@@ -103,6 +103,7 @@ class UserProfile extends ModalComponent
     public function loadUser()
     {
         $this->user = User::find($this->userId);
+        $this->authorize('update', $this->user);
         $this->name = $this->user->name;
         $this->email = $this->user->email;
         $this->phone = $this->user->phone ?? '';
@@ -135,6 +136,7 @@ class UserProfile extends ModalComponent
 
     public function save()
     {
+        $this->authorize('update', User::class);
 
         $profileDisk = config('user-management.PROFILE_IMAGE_DISK');
 

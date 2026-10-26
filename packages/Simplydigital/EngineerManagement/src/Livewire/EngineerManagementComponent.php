@@ -21,7 +21,11 @@ class EngineerManagementComponent extends Component
     public $showEditModal = false;
     public $showAddModal = false;
     public $filter = '';
-    
+
+    public function mount(){
+        $this->authorize('viewAny', EngineerManagement::class);
+    }
+
     public function closeModal()
     {
         $this->showAddModal = false;
@@ -35,8 +39,9 @@ class EngineerManagementComponent extends Component
     
 
     public function delete($id)
-    {
+    {        
         $engineerManager = EngineerManagement::find($id);
+        $this->authorize('delete', $engineerManager);
         $engineerManager->delete();
         session()->flash('message', 'User has been removed from the engineering team.');
     }

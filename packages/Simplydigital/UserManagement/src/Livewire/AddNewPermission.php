@@ -7,6 +7,7 @@ use LivewireUI\Modal\ModalComponent;
 use Simplydigital\UserManagement\Services\PermissionRegistry;
 use Simplydigital\UserManagement\Services\PermissionSynchronizer;
 use Spatie\Permission\Models\Permission;
+use App\Models\User;
 
 class AddNewPermission extends ModalComponent
 {
@@ -15,6 +16,11 @@ class AddNewPermission extends ModalComponent
     public $showModal = true;
 
     public int $perPage = 5;
+
+    public function mount()
+    {
+        $this->authorize('update', User::class);
+    }
 
     public function openModal()
     {
@@ -34,6 +40,7 @@ class AddNewPermission extends ModalComponent
 
     public function confirm(PermissionSynchronizer $synchronizer): void
     {
+        $this->authorize('update', User::class);
         $synchronizer->sync();
         $this->dispatch('permissions-synchronised');
         $this->dispatch('permission-added');

@@ -3,6 +3,7 @@
 namespace Simplydigital\EngineerManagement\Livewire;
 
 use LivewireUI\Modal\ModalComponent;
+use Simplydigital\EngineerManagement\Models\EngineerCertifications;
 use Simplydigital\EngineerManagement\Models\Skills;
 use Simplydigital\EngineerManagement\Models\EngineerSkills;
 use Simplydigital\EngineerManagement\Models\EngineerManagement;
@@ -36,6 +37,7 @@ class AddUpdateEngineerSkillsModalComponent extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', EngineerCertifications::class);
         if($this->originExternalForUpdate){
             $this->updateSkill($this->engineerSkillId);
         }else{
@@ -102,7 +104,7 @@ class AddUpdateEngineerSkillsModalComponent extends ModalComponent
             'description' => $this->description,
             'active' => $this->active,
         ];
-
+        $this->authorize('update', $this->engineer);
         $this->currentSkill->update($input);
         $this->resetForm();
         
@@ -118,6 +120,7 @@ class AddUpdateEngineerSkillsModalComponent extends ModalComponent
 
     public function save()
     {
+        $this->authorize('update', $this->engineer);
         $this->validate();
         $input = [
             'number' => null,

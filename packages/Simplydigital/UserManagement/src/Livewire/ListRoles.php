@@ -4,7 +4,6 @@ namespace Simplydigital\UserManagement\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-//use LivewireUI\Modal\ModalComponent;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -31,6 +30,7 @@ class ListRoles extends Component
 
     public function mount()
     {
+        $this->authorize('ViewAny', Role::class);
         $this->allPermissions = Permission::all()->pluck('name', 'id')->toArray();
     }
 
@@ -88,6 +88,7 @@ class ListRoles extends Component
 
     public function updateExistingRolePermission()
     {
+        $this->authorize('update', $this->selectedRole);
         $this->validate([
             'selectedPermissions' => 'array',
         ]);
@@ -98,6 +99,7 @@ class ListRoles extends Component
     
     public function createNewRole()
     {
+        $this->authorize('create', Role::class);
         $this->validate([
             'name' => 'required|string|unique:roles,name',
             'selectedPermissions' => 'array',

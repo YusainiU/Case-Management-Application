@@ -3,6 +3,7 @@
 namespace Simplydigital\EngineerManagement\Policies;
 
 use App\Models\User;
+use Laravel\Boost\Install\Skill;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\EngineerManagement\Enums\Permissions\SkillPermission;
 class SkillPolicy
@@ -15,7 +16,7 @@ class SkillPolicy
 
     public function view(
         User $user,
-        tickets $case
+        Skill $skill
     ): bool {
         return $user->can(SkillPermission::View->value);
     }
@@ -27,14 +28,14 @@ class SkillPolicy
 
     public function update(
         User $user,
-        tickets $case
+        Skill $skill
     ): bool {
         return $user->can(SkillPermission::Update->value);
     }
 
     public function delete(
         User $user,
-        tickets $case
+        Skill $skill
     ): bool {
         return $user->can(SkillPermission::Delete->value);
     }    

@@ -5,6 +5,7 @@ namespace Simplydigital\EngineerManagement\Policies;
 use App\Models\User;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\EngineerManagement\Enums\Permissions\EngineerPermission;
+use Simplydigital\EngineerManagement\Models\EngineerManagement;
 class EngineerPolicy
 {
 
@@ -15,7 +16,7 @@ class EngineerPolicy
 
     public function view(
         User $user,
-        tickets $case
+        EngineerManagement $engineerManagement
     ): bool {
         return $user->can(EngineerPermission::View->value);
     }
@@ -27,14 +28,14 @@ class EngineerPolicy
 
     public function update(
         User $user,
-        tickets $case
+        EngineerManagement $engineerManagement
     ): bool {
         return $user->can(EngineerPermission::Update->value);
     }
 
     public function delete(
         User $user,
-        tickets $case
+        EngineerManagement $engineerManagement
     ): bool {
         return $user->can(EngineerPermission::Delete->value);
     }    

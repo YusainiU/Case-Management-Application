@@ -18,6 +18,7 @@ class AddNewUser extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('create', User::class);
         $this->generateRandomPassword();
     }
 
@@ -35,6 +36,7 @@ class AddNewUser extends ModalComponent
     public function confirm()
     {
 
+        $this->authorize('create', User::class);
         $input = [
             'name' => $this->name,
             'email' => $this->email,

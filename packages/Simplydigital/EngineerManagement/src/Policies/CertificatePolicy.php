@@ -5,6 +5,7 @@ namespace Simplydigital\EngineerManagement\Policies;
 use App\Models\User;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\EngineerManagement\Enums\Permissions\CertificatePermission;
+use Simplydigital\EngineerManagement\Models\Certificates;
 class CertificatePolicy
 {
 
@@ -15,7 +16,7 @@ class CertificatePolicy
 
     public function view(
         User $user,
-        tickets $case
+        Certificates $certificate
     ): bool {
         return $user->can(CertificatePermission::View->value);
     }
@@ -27,14 +28,14 @@ class CertificatePolicy
 
     public function update(
         User $user,
-        tickets $case
+        Certificates $certificates
     ): bool {
         return $user->can(CertificatePermission::Update->value);
     }
 
     public function delete(
         User $user,
-        tickets $case
+        Certificates $certificates
     ): bool {
         return $user->can(CertificatePermission::Delete->value);
     }    

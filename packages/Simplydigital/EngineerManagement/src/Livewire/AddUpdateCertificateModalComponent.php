@@ -45,6 +45,7 @@ class AddUpdateCertificateModalComponent extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', Certificates::class);
         if ($this->certificateId) {            
             $this->loadCertificate($this->certificateId);
         }
@@ -70,6 +71,7 @@ class AddUpdateCertificateModalComponent extends ModalComponent
         $this->validate();    
         if ($this->certificateId) {
             $certificate = Certificates::find($this->certificateId);
+            $this->authorize('update', $certificate);
             $certificate->update([
                 'name' => $this->name, 
                 'type' => $this->type,
@@ -77,6 +79,7 @@ class AddUpdateCertificateModalComponent extends ModalComponent
                 'active' => $this->active,
             ]);
         } else {
+            $this->authorize('create', Certificates::class);
             Certificates::create([
                 'number' => null,
                 'name' => $this->name, 

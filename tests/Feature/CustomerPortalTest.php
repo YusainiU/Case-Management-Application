@@ -118,6 +118,41 @@ class CustomerPortalTest extends TestCase
             ->assertDontSee('Internal-only note');
     }
 
+    public function test_case_conversation_displays_newest_comments_first(): void
+    {
+        $customer = $this->createPortalCustomer();
+        $user = $this->createPortalUser($customer);
+        $case = $this->createCase($customer, $user);
+
+        $olderComment = TaskLogs::query()->create([
+            'name' => $case->number,
+            'type' => config('case-management.logs.type.external_update'),
+            'source' => config('case-management.logs.source.external'),
+            'user_id' => $user->id,
+            'external_user' => $user->name,
+            'ticket_id' => $case->id,
+            'description' => 'Older customer update',
+            'created_at' => now()->subDay(),
+        ]);
+        $newerComment = TaskLogs::query()->create([
+            'name' => $case->number,
+            'type' => config('case-management.logs.type.external_update'),
+            'source' => config('case-management.logs.source.external'),
+            'user_id' => $user->id,
+            'external_user' => $user->name,
+            'ticket_id' => $case->id,
+            'description' => 'Newer customer update',
+            'created_at' => now(),
+        ]);
+
+        $this->actingAs($user);
+
+        $comments = Livewire::test(AddCaseComment::class, ['caseId' => $case->id])
+            ->viewData('comments');
+
+        $this->assertSame([$newerComment->id, $olderComment->id], $comments->modelKeys());
+    }
+
     public function test_customer_can_add_reply_to_open_case(): void
     {
         $customer = $this->createPortalCustomer();

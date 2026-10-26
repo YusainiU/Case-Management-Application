@@ -46,6 +46,7 @@ class AddUpdateEngineerCertificateModalComponent extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', EngineerManagement::class);
         if($this->originExternalForUpdate)
         {
             $this->updateCertificate($this->engineerCertificateId);
@@ -86,6 +87,7 @@ class AddUpdateEngineerCertificateModalComponent extends ModalComponent
 
     public function update()
     {
+        $this->authorize('update', $this->engineer);
         $this->validate();
         $input = [
             'engineer_id' => $this->engineerId,
@@ -102,6 +104,7 @@ class AddUpdateEngineerCertificateModalComponent extends ModalComponent
 
     public function save()
     {
+        $this->authorize('update', $this->engineer);
         $this->validate();
         $input = [
             'certification_number' => null,

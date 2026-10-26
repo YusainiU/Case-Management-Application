@@ -5,6 +5,7 @@ Namespace Simplydigital\EngineerManagement\Livewire;
 use Livewire\Component;
 use Simplydigital\EngineerManagement\Models\Certificates;
 use Simplydigital\EngineerManagement\Models\EngineerCertifications;
+use Simplydigital\EngineerManagement\Models\EngineerManagement;
 
 class EngineerCertificateComponent extends Component
 {
@@ -18,6 +19,7 @@ class EngineerCertificateComponent extends Component
 
     public function mount()
     {
+        $this->authorize('viewAny', EngineerManagement::class);
         $this->initialise();
     }
 

@@ -34,6 +34,7 @@ class AddUpdateSkillModalComponent extends ModalComponent
 
     public function mount()
     {
+        $this->authorize('viewAny', Skills::class);
         if($this->skillId){
             $this->modalTitle = 'Update Skill';
             $this->loadSkill($this->skillId);            
@@ -44,6 +45,7 @@ class AddUpdateSkillModalComponent extends ModalComponent
     public function loadSkill($skillId)
     {
         $this->skills = Skills::find($skillId);
+        $this->authorize('view', $this->skills);
         if($this->skills->exists()){
             $this->name = $this->skills->skills;
             $this->description = $this->skills->description;
@@ -55,12 +57,14 @@ class AddUpdateSkillModalComponent extends ModalComponent
         $this->validate();    
         if ($this->skillId) {
             $skill = Skills::find($this->skillId);
+            $this->authorize('update', $skill);
             $skill->update([
                 'skills' => $this->name, 
                 'description' => $this->description,
                 'active' => $this->active,
             ]);
         } else {
+            $this->authorize('create', Skills::class);
             Skills::create([
                 'number' => null,
                 'skills' => $this->name, 

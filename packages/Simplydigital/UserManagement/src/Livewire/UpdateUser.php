@@ -4,10 +4,9 @@ Namespace Simplydigital\UserManagement\Livewire;
 
 use LivewireUI\Modal\ModalComponent;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+
 
 class UpdateUser extends ModalComponent
 {
@@ -24,6 +23,7 @@ class UpdateUser extends ModalComponent
 
     public function mount($userId)
     {
+        $this->authorize('update', User::class);
         $this->userId = $userId;
         $this->loadUser($this->userId);
         $this->loadRoles();

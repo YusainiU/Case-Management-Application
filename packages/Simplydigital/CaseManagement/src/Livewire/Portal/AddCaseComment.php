@@ -59,8 +59,8 @@ class AddCaseComment extends Component
                             ->where('type', config('case-management.logs.type.external_update'));
                     })->orWhere('visible_to_external', true);
                 })
-                ->oldest('created_at')
-                ->oldest('id')
+                ->latest('created_at')
+                ->latest('id')
                 ->get(),
         ]);
     }
