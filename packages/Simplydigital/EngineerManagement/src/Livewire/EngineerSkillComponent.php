@@ -1,11 +1,13 @@
 <?php
 
 Namespace Simplydigital\EngineerManagement\Livewire;
+
 use App\Livewire\EngineerManagement;
 use Livewire\Component;
 use Simplydigital\EngineerManagement\Models\EngineerSkills;
 use Simplydigital\EngineerManagement\Models\Skills;
 use Livewire\Attributes\On;
+use Simplydigital\EngineerManagement\Models\EngineerManagement as Engineers;
 
 class EngineerSkillComponent extends Component
 {
@@ -19,7 +21,7 @@ class EngineerSkillComponent extends Component
 
     public function mount()
     {
-        $this->authorize('viewAny', EngineerManagement::class);
+        $this->authorize('viewAny', Engineers::class);
         $this->initalise();   
     }
 

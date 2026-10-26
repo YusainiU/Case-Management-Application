@@ -51,6 +51,7 @@ class EngineerManagementServiceProvider extends ServiceProvider
         $this->publishFiles();
         $this->registerBladeComponents();      
         $this->registerLivewireComponents();
+        $this->loadPolicies();
      
     }
 
@@ -60,7 +61,7 @@ class EngineerManagementServiceProvider extends ServiceProvider
         Gate::policy(Certificates::class, CertificatePolicy::class);
         Gate::policy(EngineerCertifications::class, CertificatePolicy::class);
         Gate::policy(Skills::class, SkillPolicy::class);
-        Gate::polict(EngineerSkills::class, SkillPolicy::class);
+        Gate::policy(EngineerSkills::class, SkillPolicy::class);
     }       
 
     public function loadViews(): void
