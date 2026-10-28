@@ -1,4 +1,5 @@
-<div class="grid grid-cols-1 gap-4 p-4">
+<x-casemanagement::page-elements.outer-wrapper>
+
 
     @if ($displayCreateModal)
         <livewire:create-supplier />
@@ -44,15 +45,13 @@
 
         {{-- Filters and pagination --}}
         <div class="flex flex-col gap-4 px-5 py-4 sm:px-6">
-            <div class="min-w-0">
-                <x-casemanagement::form-elements.input-filter />
-            </div>
 
-            @if ($suppliers?->hasPages())
-                <div class="text-slate-100!">
-                    {{ $suppliers->links('livewire::tailwind') }}
-                </div>
-            @endif
+            <div class="min-w-0">
+                <x-casemanagement::form-elements.input-filter
+                    class="rounded-xl border shadow-sm transition border-slate-500" />
+            </div>
+            <x-casemanagement::page-elements.pagination :paginator="$suppliers" />
+
         </div>
 
         <div class="my-4">
@@ -109,6 +108,11 @@
             </x-casemanagement::table-elements.table>
         </div>
 
+        {{-- Bottom pagination --}}
+        <div class="px-5 py-4 sm:px-6">
+            <x-casemanagement::page-elements.pagination :paginator="$suppliers" />
+        </div>        
+
     </section>
 
-</div>
+</x-casemanagement::page-elements.outer-wrapper>

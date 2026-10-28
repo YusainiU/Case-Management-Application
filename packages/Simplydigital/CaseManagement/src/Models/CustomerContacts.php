@@ -2,7 +2,6 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
-use App\CustomerContacts as AppCustomerContacts;
 use App\Models\User;
 use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
 use Illuminate\Database\Eloquent\Model;

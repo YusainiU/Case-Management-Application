@@ -1,4 +1,5 @@
-<div class="grid grid-cols-1 gap-4 p-4">
+<x-casemanagement::page-elements.outer-wrapper>
+
 
     @if ($showCreateContactModal)
         <livewire:create-update-customer-contact :customerId="$customerId" @close-create-modal="closeCreateCustomerContactModal" />
@@ -59,15 +60,13 @@
 
         {{-- Filters and pagination --}}
         <div class="flex flex-col gap-4 px-5 py-4 sm:px-6">
-            <div class="min-w-0">
-                <x-casemanagement::form-elements.input-filter />
-            </div>
 
-            @if ($customerContacts?->hasPages())
-                <div class="text-slate-100!">
-                    {{ $customerContacts->links('livewire::tailwind') }}
-                </div>
-            @endif
+            <div class="min-w-0">
+                <x-casemanagement::form-elements.input-filter
+                    class="rounded-xl border shadow-sm transition border-slate-500" />
+            </div>
+            <x-casemanagement::page-elements.pagination :paginator="$customerContacts" />            
+
         </div>
 
         {{-- Customer directory table --}}
@@ -225,12 +224,10 @@
         </div>
 
         {{-- Bottom pagination --}}
-        @if ($customerContacts->hasPages())
-            <div class="px-5 py-4 sm:px-6">
-                {{ $customerContacts->links() }}
-            </div>
-        @endif
+        <div class="px-5 py-4 sm:px-6">
+            <x-casemanagement::page-elements.pagination :paginator="$customerContacts" />
+        </div>        
 
     </section>
 
-</div>
+</x-casemanagement::page-elements.outer-wrapper>

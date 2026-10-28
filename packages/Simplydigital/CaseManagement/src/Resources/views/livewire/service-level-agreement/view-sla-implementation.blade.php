@@ -1,43 +1,29 @@
-<div class="grid grid-cols-1 gap-4 p-4">
+<x-casemanagement::page-elements.outer-wrapper>
+
 
     @if ($displayCreateModal)
-        <livewire:create-sla-implementation 
-            :customerId="$customerId"
-            @close-create-modal="closeCreateModal"
-        />
+        <livewire:create-sla-implementation :customerId="$customerId" @close-create-modal="closeCreateModal" />
     @endif
 
-    @if($displaySLAProfileModal)
-        <livewire:sla-profile 
-            :slaId="$slaId" 
-            @close-profile-modal="closeSLAProfileModal"
-        />
+    @if ($displaySLAProfileModal)
+        <livewire:sla-profile :slaId="$slaId" @close-profile-modal="closeSLAProfileModal" />
     @endif
 
-    @if($displayCustomerSummaryModal)
-        <livewire:customer-summary 
-            :customerId="$customerId"
-            @close-summary-modal="closeProfileModal"
-        />
-    @endif
-    
-    @if($displayUpdateModal)
-        <livewire:create-sla-implementation 
-            :slapId="$slapId"
-            @close-update-modal="closeUpdateModal" 
-        />
+    @if ($displayCustomerSummaryModal)
+        <livewire:customer-summary :customerId="$customerId" @close-summary-modal="closeProfileModal" />
     @endif
 
-    @if($displayProfileModal)
-        <livewire:sla-implementation-profile 
-            :slapId="$slapId"
-            @close-profile-modal="closeProfileModal"
-        />
+    @if ($displayUpdateModal)
+        <livewire:create-sla-implementation :slapId="$slapId" @close-update-modal="closeUpdateModal" />
+    @endif
+
+    @if ($displayProfileModal)
+        <livewire:sla-implementation-profile :slapId="$slapId" @close-profile-modal="closeProfileModal" />
     @endif
 
     <x-casemanagement::page-elements.page-header-section section="Service Level Agreement Management Application"
         title="{{ $ui_params['title'] }}" description="Service Level Management Application." :showCreateButton="true"
-        createButtonLabel="Create New SLA Application" createAction="openCreateModal" showBackButton="true" />    
+        createButtonLabel="Create New SLA Application" createAction="openCreateModal" showBackButton="true" />
 
 
     <section class="">
@@ -63,79 +49,78 @@
                     @endif
                 </div>
             @endif
-        </div>               
+        </div>
 
         <div class="flex flex-col gap-4 px-5 py-4 sm:px-6">
             <div class="min-w-0">
-                <x-casemanagement::form-elements.input-filter />
+                <x-casemanagement::form-elements.input-filter
+                    class="rounded-xl border shadow-sm transition border-slate-500" />
             </div>
-
-            @if ($slaps?->hasPages())
-                <div class="text-slate-100!">
-                    {{ $slaps->links('livewire::tailwind') }}
-                </div>
-            @endif
+            <x-casemanagement::page-elements.pagination :paginator="$slaps" />
         </div>
 
-    <x-casemanagement::table-elements.table>
-        <thead>
-            <x-casemanagement::table-elements.table-th>
-                &nbsp;
-            </x-casemanagement::table-elements.table-th>
-            <x-casemanagement::table-elements.table-th sortable field="name" direction="asc">
-                Name
-            </x-casemanagement::table-elements.table-th>
-            <x-casemanagement::table-elements.table-th>
-                Customer
-            </x-casemanagement::table-elements.table-th>
-            <x-casemanagement::table-elements.table-th>                
-                SLA
-            </x-casemanagement::table-elements.table-th>
-            <x-casemanagement::table-elements.table-th>
-                Priority
-            </x-casemanagement::table-elements.table-th>
-            <x-casemanagement::table-elements.table-th>
-                &nbsp;
-            </x-casemanagement::table-elements.table-th>
-        </thead>
-        <tbody>
-            @if ($slaps->isNotEmpty())
-                @foreach ($slaps as $slap)
-                    <tr>
-                        <x-casemanagement::table-elements.table-td>
-                            {{ $slaps->firstItem() + $loop->index }}
-                        </x-casemanagement::table-elements.table-td>
-                        <x-casemanagement::table-elements.table-td>
-                            {{ $slap->name }}
-                        </x-casemanagement::table-elements.table-td>                        
-                        <x-casemanagement::table-elements.table-td>
-                            <x-casemanagement::page-elements.href 
-                                label="{{ $slap->customer->name }}"
-                                action="openCustomerSummaryModal({{ $slap->customer_id }})"                                
-                            />                               
-                        </x-casemanagement::table-elements.table-td>
-                        <x-casemanagement::table-elements.table-td>
-                            <x-casemanagement::page-elements.href 
-                                label="{{ $slap->serviceLevelAgreement->name }}"
-                                action="openSLAProfileModal({{ $slap->service_level_agreement_id }})"                                
-                            />                            
-                        </x-casemanagement::table-elements.table-td>
-                        <x-casemanagement::table-elements.table-td>
-                            {{ $slap->priority->label() }}
-                        </x-casemanagement::table-elements.table-td>
-                        <x-casemanagement::table-elements.table-td>
-                            <div class="flex flex-row gap-4">
-                                <x-casemanagement::form-elements.button-edit action="openProfileModal({{ $slap->id }})" label="View" />
-                                <x-casemanagement::form-elements.button-view label="Edit" action="openUpdateModal({{ $slap->id }})" />
-                            </div>
-                        </x-casemanagement::table-elements.table-td>
-                    </tr>
-                @endforeach
-            @endif            
-        </tbody>        
+        <x-casemanagement::table-elements.table>
+            <thead>
+                <x-casemanagement::table-elements.table-th>
+                    &nbsp;
+                </x-casemanagement::table-elements.table-th>
+                <x-casemanagement::table-elements.table-th sortable field="name" direction="asc">
+                    Name
+                </x-casemanagement::table-elements.table-th>
+                <x-casemanagement::table-elements.table-th>
+                    Customer
+                </x-casemanagement::table-elements.table-th>
+                <x-casemanagement::table-elements.table-th>
+                    SLA
+                </x-casemanagement::table-elements.table-th>
+                <x-casemanagement::table-elements.table-th>
+                    Priority
+                </x-casemanagement::table-elements.table-th>
+                <x-casemanagement::table-elements.table-th>
+                    &nbsp;
+                </x-casemanagement::table-elements.table-th>
+            </thead>
+            <tbody>
+                @if ($slaps->isNotEmpty())
+                    @foreach ($slaps as $slap)
+                        <tr>
+                            <x-casemanagement::table-elements.table-td>
+                                {{ $slaps->firstItem() + $loop->index }}
+                            </x-casemanagement::table-elements.table-td>
+                            <x-casemanagement::table-elements.table-td>
+                                {{ $slap->name }}
+                            </x-casemanagement::table-elements.table-td>
+                            <x-casemanagement::table-elements.table-td>
+                                <x-casemanagement::page-elements.href label="{{ $slap->customer->name }}"
+                                    action="openCustomerSummaryModal({{ $slap->customer_id }})" />
+                            </x-casemanagement::table-elements.table-td>
+                            <x-casemanagement::table-elements.table-td>
+                                <x-casemanagement::page-elements.href label="{{ $slap->serviceLevelAgreement->name }}"
+                                    action="openSLAProfileModal({{ $slap->service_level_agreement_id }})" />
+                            </x-casemanagement::table-elements.table-td>
+                            <x-casemanagement::table-elements.table-td>
+                                {{ $slap->priority->label() }}
+                            </x-casemanagement::table-elements.table-td>
+                            <x-casemanagement::table-elements.table-td>
+                                <div class="flex flex-row gap-4">
+                                    <x-casemanagement::form-elements.button-edit
+                                        action="openProfileModal({{ $slap->id }})" label="View" />
+                                    <x-casemanagement::form-elements.button-view label="Edit"
+                                        action="openUpdateModal({{ $slap->id }})" />
+                                </div>
+                            </x-casemanagement::table-elements.table-td>
+                        </tr>
+                    @endforeach
+                @endif
+            </tbody>
 
-    </x-casemanagement::table-elements.table>
+        </x-casemanagement::table-elements.table>
+
+        {{-- Bottom pagination --}}
+        <div class="px-5 py-4 sm:px-6">
+            <x-casemanagement::page-elements.pagination :paginator="$slaps" />
+        </div>
 
     </section>
 
-</div>
+</x-casemanagement::page-elements.outer-wrapper>

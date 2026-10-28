@@ -22,6 +22,12 @@
                         @can('stock_request.manage')
                             <flux:navlist.item icon="ellipsis-vertical" :href="route('stock-requests.index')" :current="request()->routeIs('stock-requests.*')" wire:navigate>Stock Requests</flux:navlist.item>
                         @endcan
+                        @can('expense.view')
+                            <flux:navlist.item icon="ellipsis-vertical" :href="route('expenses.index')" :current="request()->routeIs('expenses.index')" wire:navigate>My Expenses</flux:navlist.item>
+                        @endcan
+                        @can('expense.admin')
+                            <flux:navlist.item icon="ellipsis-vertical" :href="route('expenses.admin')" :current="request()->routeIs('expenses.admin')" wire:navigate>Expense Approvals</flux:navlist.item>
+                        @endcan
                     </flux:navlist.group>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.customers.view')" :current="request()->routeIs('casemanagement.customers.view')" wire:navigate>Customers</flux:navlist.item>
                     <flux:navlist.item icon="ellipsis-vertical" :href="route('casemanagement.customer.contacts')" :current="request()->routeIs('casemanagement.customer.contacts')" wire:navigate>Customer Contacts</flux:navlist.item>

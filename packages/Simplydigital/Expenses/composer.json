@@ -1,0 +1,29 @@
+{
+    "name": "simplydigital/expenses",
+    "description": "Case-linked expense claims and approvals",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Simplydigital\\Expenses\\": "src/",
+            "Simplydigital\\Expenses\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Simplydigital\\Expenses\\Providers\\ExpensesServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "php": ">=8.2",
+        "illuminate/database": "^13.0",
+        "illuminate/support": "^13.0",
+        "illuminate/view": "^13.0",
+        "livewire/livewire": "^4.0",
+        "simplydigital/casemanagement": "*",
+        "simplydigital/usermanagement": "*"
+    },
+    "minimum-stability": "dev"
+}

@@ -62,6 +62,13 @@ class ManageCase extends ModalComponent
             unset($this->tabHeaders['stockRequests']);
         }
 
+        if (
+            auth()->user()?->can('expense.create')
+            || auth()->user()?->can('expense.view')
+        ) {
+            $this->tabHeaders['expenses'] = 'Expenses';
+        }
+
         if ($this->case) {
             if ($this->case->closed_datetime) {
                 $this->tabHeaders['close'] = 'Reopen Case';

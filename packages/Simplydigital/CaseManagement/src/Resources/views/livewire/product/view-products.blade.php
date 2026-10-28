@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 gap-4 p-4">
+<div class="min-h-screen text-slate-900 bg-gray-50 grid grid-cols-1 gap-4 p-4">
 
     @if ($displayCreateModal)
         <livewire:create-product />
@@ -45,14 +45,10 @@
         {{-- Filters and pagination --}}
         <div class="flex flex-col gap-4 px-5 py-4 sm:px-6">
             <div class="min-w-0">
-                <x-casemanagement::form-elements.input-filter />
+                <x-casemanagement::form-elements.input-filter
+                    class="rounded-xl border shadow-sm transition border-slate-500" />
             </div>
-
-            @if ($products?->hasPages())
-                <div class="text-slate-100!">
-                    {{ $products->links('livewire::tailwind') }}
-                </div>
-            @endif
+            <x-casemanagement::page-elements.pagination :paginator="$products" />
         </div>
 
         <div class="overflow-hidden ">
@@ -104,8 +100,10 @@
                                 </x-casemanagement::table-elements.table-td>
                                 <x-casemanagement::table-elements.table-td>
                                     <div class="flex items-center gap-2">
-                                        <x-casemanagement::form-elements.button-edit action="openUpdateModal({{ $product->id }})" label="Edit" />
-                                        <x-casemanagement::form-elements.button-view action="openProfileModal({{ $product->id }})" label="View" />
+                                        <x-casemanagement::form-elements.button-edit
+                                            action="openUpdateModal({{ $product->id }})" label="Edit" />
+                                        <x-casemanagement::form-elements.button-view
+                                            action="openProfileModal({{ $product->id }})" label="View" />
                                     </div>
                                 </x-casemanagement::table-elements.table-td>
                             </tr>

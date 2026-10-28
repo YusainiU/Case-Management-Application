@@ -161,6 +161,10 @@
                     <livewire:view-site-visit :case="$case" />
                 @endif
 
+                @if ($this->selectedTab === 'expenses' && isset($tabHeaders['expenses']))
+                    <livewire:expense-claims :case="$case" />
+                @endif
+
                 @if ($tabHeaders[$this->selectedTab] == $tabHeaders['close'])
                     <livewire:close-and-resolve-case :case="$case" />
                 @endif

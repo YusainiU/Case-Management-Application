@@ -14,7 +14,8 @@
 
 <section
     {{ $attributes->merge([
-        'class' => 'w-full overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.05)]',
+        'class' => 'h-44 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.05)]',
+        //'class' => 'w-full overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.05)]',
     ]) }}
 >
     <div class="p-5 sm:p-6">

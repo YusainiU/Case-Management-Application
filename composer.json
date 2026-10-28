@@ -22,6 +22,7 @@
         "simplydigital/casemanagement": "*",
         "simplydigital/engineermanagement": "*",
         "simplydigital/eventplannermanagement": "*",
+        "simplydigital/expenses": "*",
         "simplydigital/fileupload-management": "*",
         "simplydigital/notificationmanagement": "*",
         "simplydigital/stockmanagement": "*",
@@ -60,6 +61,13 @@
         {
             "type": "path",
             "url": "packages/Simplydigital/CaseManagement",
+            "options": {
+                "symlink": true
+            }
+        },
+        {
+            "type": "path",
+            "url": "packages/Simplydigital/Expenses",
             "options": {
                 "symlink": true
             }

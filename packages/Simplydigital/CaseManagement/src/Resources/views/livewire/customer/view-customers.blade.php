@@ -1,4 +1,4 @@
-<div class="space-y-6 p-4 sm:p-6 lg:p-8">
+<x-casemanagement::page-elements.outer-wrapper  >
 
     {{-- Customer modals --}}
     @if ($displayCreateModal)
@@ -44,14 +44,10 @@
         {{-- Filters and pagination --}}
         <div class="flex flex-col gap-4 px-5 py-4 sm:px-6">
             <div class="min-w-0">
-                <x-casemanagement::form-elements.input-filter />
+                <x-casemanagement::form-elements.input-filter
+                    class="rounded-xl border shadow-sm transition border-slate-500" />
             </div>
-
-            @if ($customers?->hasPages())
-                <div>
-                    {{ $customers->links('livewire::tailwind') }}
-                </div>
-            @endif
+            <x-casemanagement::page-elements.pagination :paginator="$customers" />
         </div>
 
         {{-- Customer table --}}
@@ -67,7 +63,8 @@
                         Customer
                     </x-casemanagement::table-elements.table-th>
 
-                    <x-casemanagement::table-elements.table-th sortable field="primary_type" direction="asc" px="px-5">
+                    <x-casemanagement::table-elements.table-th sortable field="primary_type" direction="asc"
+                        px="px-5">
                         Primary type
                     </x-casemanagement::table-elements.table-th>
 
@@ -176,11 +173,9 @@
 
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-16 text-center">                        
-                            <x-casemanagement::page-elements.empty-state 
-                                title="No customers found"
-                                description="There are no customer records to display. Try adjusting your filters or create a new customer." 
-                            />                        
+                        <td colspan="6" class="px-6 py-16 text-center">
+                            <x-casemanagement::page-elements.empty-state title="No customers found"
+                                description="There are no customer records to display. Try adjusting your filters or create a new customer." />
                         </td>
                     </tr>
                 @endforelse
@@ -189,11 +184,11 @@
         </x-casemanagement::table-elements.table>
 
         {{-- Bottom pagination --}}
-        @if ($customers?->hasPages())
-            <div class="px-5 py-4 sm:px-6">
-                {{ $customers->links() }}
-            </div>
-        @endif
+
+        <div class="px-5 py-4 sm:px-6">
+            <x-casemanagement::page-elements.pagination :paginator="$customers" />
+        </div>
+
     </section>
 
-</div>
+</x-casemanagement::page-elements.outer-wrapper>

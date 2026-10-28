@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36e9297e5cb92645b32b8ebee40b7d71",
+    "content-hash": "10bb1b614b1dec09b821b69d25f4c229",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -4532,6 +4532,46 @@
                 }
             ],
             "description": "Event Planner Management Module for Simply Digital",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "simplydigital/expenses",
+            "version": "dev-customer-portal",
+            "dist": {
+                "type": "path",
+                "url": "packages/Simplydigital/Expenses",
+                "reference": "05e2440494d10ed9b4f7db3655d50aa5ea7ad17c"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "illuminate/view": "^13.0",
+                "livewire/livewire": "^4.0",
+                "php": ">=8.2",
+                "simplydigital/casemanagement": "*",
+                "simplydigital/usermanagement": "*"
+            },
+            "type": "project",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Simplydigital\\Expenses\\Providers\\ExpensesServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Simplydigital\\Expenses\\": "src/",
+                    "Simplydigital\\Expenses\\Database\\Factories\\": "database/factories/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Case-linked expense claims and approvals",
             "transport-options": {
                 "symlink": true,
                 "relative": true
