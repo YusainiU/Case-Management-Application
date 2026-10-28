@@ -6,6 +6,8 @@ A Laravel-based management platform for Simplydigital operations, built around m
 
 This repository is a monorepo-style application with a Laravel application shell and several feature packages that can be developed and tested independently while still sharing the same app runtime.
 
+> **Beta testing:** The current version is ready for real-use testing, but remains in the beta testing stage. If you are interested in helping, you are welcome to clone the repository, run the application, and test it.
+
 ## Stack
 
 - PHP 8.2+
@@ -22,12 +24,16 @@ This repository is a monorepo-style application with a Laravel application shell
 The application includes operational modules for:
 
 - Case management
+- A customer portal
 - Engineer management
 - User management
 - Event planning
+- Stock management, including part requests, orders, dispatches, and receipts
+- Expense claims
 - Notifications
 - File upload handling
-- AI-assisted case support
+- Table and workflow views for managing cases
+- An AI-powered Case Assistant helper
 
 The business logic and UI are primarily delivered through package modules, with the main `/app` layer handling the Laravel application shell, authentication and bootstrap concerns.
 
@@ -51,8 +57,10 @@ The business logic and UI are primarily delivered through package modules, with 
 │       ├── CaseManagement/
 │       ├── EngineerManagement/
 │       ├── EventPlannerManagement/
+│       ├── Expenses/
 │       ├── FileUploadManagement/
 │       ├── NotificationManagement/
+│       ├── StockManagement/
 │       └── UserManagement/
 ├── public/
 ├── resources/
@@ -73,11 +81,13 @@ The business logic and UI are primarily delivered through package modules, with 
 The project is structured around reusable package directories under `packages/Simplydigital`, for example:
 
 - `AIManagement` — AI service integrations and case-assistant tooling
-- `CaseManagement` — customer and case workflows, dashboard, SLA logic, site visits
+- `CaseManagement` — customer portal and case workflows, including table and workflow views, dashboard, SLA logic, and site visits
 - `EngineerManagement` — engineers, skills, certificates and related views
 - `EventPlannerManagement` — event scheduling and planner tooling
+- `Expenses` — expense claim workflows
 - `FileUploadManagement` — upload, storage and file handling workflows
 - `NotificationManagement` — notifications and communication features
+- `StockManagement` — part requests, orders, dispatches, and receipt tracking
 - `UserManagement` — access, roles, and user administration
 
 These packages are registered through Composer path repositories in the root `composer.json`.
@@ -174,13 +184,30 @@ php artisan key:generate
 php artisan migrate
 ```
 
-7. Build frontend assets for the first time:
+7. Seed the database with the required initial account and demo data:
+
+```bash
+php artisan db:seed
+php artisan db:seed --class=DemoDatabaseSeeder
+```
+
+`DatabaseSeeder` creates the initial Super Admin account required to log in:
+
+| Username | Password |
+| --- | --- |
+| `admin@example.com` | `password123` |
+
+**Change the Super Admin username and password immediately after your first login.** These are default credentials and should not be left in place.
+
+`DemoDatabaseSeeder` creates sample users, customers, suppliers, and products for testing. It is intended for non-production environments and will refuse to seed demo data in production.
+
+8. Build frontend assets for the first time:
 
 ```bash
 npm run build
 ```
 
-8. Start the app in development mode:
+9. Start the app in development mode:
 
 ```bash
 composer run dev
