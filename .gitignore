@@ -109,3 +109,5 @@ coverage.xml
 .mcp.json
 opencode.json 
 boost.json
+.ide_helper.php
+.editorconfig
