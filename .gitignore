@@ -107,5 +107,5 @@ coverage.xml
 # Ignore local config customizations
 *.local.php
 .mcp.json
-opencode.json
+opencode.jsongit push 
 boost.json
