@@ -107,4 +107,8 @@ coverage.xml
 # Ignore local config customizations
 *.local.php
 .mcp.json
+opencode.json 
 boost.json
+_ide_helper.php
+.editorconfig
+phpunit.xml
