@@ -106,3 +106,5 @@ coverage.xml
 
 # Ignore local config customizations
 *.local.php
+.mcp.json
+boost.json
