@@ -25,16 +25,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.5'
-          tools: composer:v2
-          coverage: none
-
-      - name: Install PHP dependencies
-        run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -62,6 +52,8 @@ jobs:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
         run: |
+          set -e
+
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
@@ -90,7 +82,7 @@ jobs:
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          RELEASE_ID: ${{ github.sha }}
+          RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           ssh \
             -i ~/.ssh/deploy_key \
@@ -103,12 +95,14 @@ jobs:
           RELEASE="$BASE/releases/$RELEASE_ID"
 
           mkdir -p "$BASE/releases"
+
           test -d "$BASE/shared"
           test -f "$BASE/shared/.env"
           test -d "$BASE/shared/storage"
+          test -d "$BASE/shared/storage/app/public"
 
           if [ -e "$RELEASE" ]; then
-            echo "Release already exists; refusing to overwrite it."
+            echo "Release already exists. Refusing to overwrite it."
             exit 1
           fi
 
@@ -116,19 +110,40 @@ jobs:
           tar -xzf "$BASE/release.tar.gz" -C "$RELEASE"
           rm -f "$BASE/release.tar.gz"
 
+          chown -R yusdeploy:www-data "$RELEASE"
+          chmod -R g+rX "$RELEASE"
+
           ln -s "$BASE/shared/.env" "$RELEASE/.env"
           ln -s "$BASE/shared/storage" "$RELEASE/storage"
 
           mkdir -p "$RELEASE/bootstrap/cache"
-          mkdir -p "$RELEASE/shared-placeholder"
+          chown -R yusdeploy:www-data "$RELEASE/bootstrap/cache"
+          chmod -R 2775 "$RELEASE/bootstrap/cache"
 
-          chown -R yusdeploy:www-data "$RELEASE"
-          chmod -R g+rX "$RELEASE"
+          if [ ! -e "$RELEASE/public/storage" ] && [ ! -L "$RELEASE/public/storage" ]; then
+            ln -s "$BASE/shared/storage/app/public" "$RELEASE/public/storage"
+          else
+            echo "Unexpected public/storage already exists."
+            exit 1
+          fi
 
-          echo "Release prepared: $RELEASE"
-          echo "The live website has not been switched."
+          echo "Installing PHP dependencies with PHP 8.5..."
+
+          cd "$RELEASE"
+          php8.5 "$(command -v composer)" install \
+            --no-dev \
+            --prefer-dist \
+            --no-interaction \
+            --optimize-autoloader
+
+          echo "Checking Laravel installation..."
+          php8.5 artisan --version
+
+          echo "Release prepared successfully: $RELEASE"
+          echo "The live website has NOT been switched."
           REMOTE
 
       - name: Report prepared release
-        run: echo "Release prepared. The live website remains unchanged."
-
+        run: |
+          echo "Release prepared."
+          echo "The live website remains unchanged."
