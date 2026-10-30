@@ -201,13 +201,19 @@ php artisan db:seed --class=DemoDatabaseSeeder
 
 `DemoDatabaseSeeder` creates sample users, customers, suppliers, and products for testing. It is intended for non-production environments and will refuse to seed demo data in production.
 
-8. Build frontend assets for the first time:
+8. Create the public storage symlink so uploaded documents can be accessed for download:
+
+```bash
+php artisan storage:link
+```
+
+9. Build frontend assets for the first time:
 
 ```bash
 npm run build
 ```
 
-9. Start the app in development mode:
+10. Start the app in development mode:
 
 ```bash
 composer run dev
@@ -229,51 +235,6 @@ npm run dev
 - Database migration updates: `php artisan migrate`
 - Package package-level changes: edit files under `packages/Simplydigital/*`
 - Production asset build: `npm run build`
-
-## UI previews and Blade-based snapshots
-
-Yes. It is possible to produce page snapshots from the Blade templates directly, especially for static or semi-static layouts such as the case dashboard, customer summaries, and other UI sections.
-
-The project already uses Blade views and reusable component partials under the package view directories, for example:
-
-- `packages/Simplydigital/CaseManagement/src/Resources/views/livewire/case/dashboard.blade.php`
-- `packages/Simplydigital/CaseManagement/src/Resources/views/components/page-elements/...`
-
-These can be rendered in one of two ways:
-
-1. Real app preview: use the actual Livewire component in the browser with seeded data.
-2. Static layout preview: render a Blade view or page fragment with sample values for a design review or screenshot capture.
-
-Example for a static preview route:
-
-```php
-Route::get('/preview/case-dashboard', function () {
-    $status = [
-        'totalOpenCases' => 18,
-        'nearBreach' => 7,
-        'unassigned' => 4,
-        'noUpdate' => 12,
-        'resolved' => 91,
-        'paused' => 3,
-        'total' => 142,
-        'totalVisits' => 28,
-    ];
-
-    return view('casemanagement::preview.case-dashboard', compact('status'));
-});
-```
-
-This is useful for visual QA or generating layout snapshots when you only need a UI reference and not live data.
-
-For a real dashboard page, the route already exists in `routes/web.php` using the Livewire case dashboard component:
-
-```php
-Route::get('/dashboard', Dashboard::class)
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-```
-
-In other words, the Blade files can absolutely be used as the source for snapshots, but the fully live experience still depends on the Laravel + Livewire runtime and any real data behind it.
 
 ## Contributing
 
