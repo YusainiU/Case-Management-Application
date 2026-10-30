@@ -50,14 +50,12 @@ jobs:
       - name: Create release archive
         run: |
           tar \
-            --warning=no-file-changed \
             --exclude=.git \
             --exclude=node_modules \
             --exclude=.env \
             --exclude=storage \
             --exclude=vendor \
-            --exclude=release.tar.gz \
-            -czf release.tar.gz .
+            -czf "$RUNNER_TEMP/release.tar.gz" .
 
 
       - name: Prepare SSH
@@ -89,7 +87,7 @@ jobs:
           scp \
             -i ~/.ssh/deploy_key \
             -o StrictHostKeyChecking=yes \
-            release.tar.gz \
+            "$RUNNER_TEMP/release.tar.gz" \
             "$DEPLOY_USER@$DEPLOY_HOST:/var/www/case-management-deploy/release.tar.gz"
 
       - name: Extract and prepare release
