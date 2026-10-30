@@ -1,0 +1,149 @@
+
+name: Prepare Laravel deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '**'
+      - '.github/workflows/deploy.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: case-management-deployment
+  cancel-in-progress: false
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Build frontend assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Create release archive
+        run: |
+          tar \
+            --exclude=.git \
+            --exclude=node_modules \
+            --exclude=.env \
+            --exclude=storage \
+            --exclude=vendor \
+            -czf release.tar.gz .
+
+      - name: Prepare SSH
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          set -e
+
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+          test -s ~/.ssh/deploy_key
+          test -s ~/.ssh/known_hosts
+          test -n "$DEPLOY_HOST"
+
+      - name: Upload release archive
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          scp \
+            -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=yes \
+            release.tar.gz \
+            "$DEPLOY_USER@$DEPLOY_HOST:/var/www/case-management-deploy/release.tar.gz"
+
+      - name: Extract and prepare release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          ssh \
+            -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "RELEASE_ID='$RELEASE_ID' bash -s" <<'REMOTE'
+          set -euo pipefail
+
+          BASE="/var/www/case-management-deploy"
+          RELEASE="$BASE/releases/$RELEASE_ID"
+
+          mkdir -p "$BASE/releases"
+
+          test -d "$BASE/shared"
+          test -f "$BASE/shared/.env"
+          test -d "$BASE/shared/storage"
+          test -d "$BASE/shared/storage/app/public"
+
+          if [ -e "$RELEASE" ]; then
+            echo "Release already exists. Refusing to overwrite it."
+            exit 1
+          fi
+
+          mkdir -p "$RELEASE"
+          tar -xzf "$BASE/release.tar.gz" -C "$RELEASE"
+          rm -f "$BASE/release.tar.gz"
+
+          chown -R yusdeploy:www-data "$RELEASE"
+          chmod -R g+rX "$RELEASE"
+
+          ln -s "$BASE/shared/.env" "$RELEASE/.env"
+          ln -s "$BASE/shared/storage" "$RELEASE/storage"
+
+          mkdir -p "$RELEASE/bootstrap/cache"
+          chown -R yusdeploy:www-data "$RELEASE/bootstrap/cache"
+          chmod -R 2775 "$RELEASE/bootstrap/cache"
+
+          if [ ! -e "$RELEASE/public/storage" ] && [ ! -L "$RELEASE/public/storage" ]; then
+            ln -s "$BASE/shared/storage/app/public" "$RELEASE/public/storage"
+          else
+            echo "Unexpected public/storage already exists."
+            exit 1
+          fi
+
+          echo "Installing PHP dependencies with PHP 8.5..."
+
+          cd "$RELEASE"
+          php8.5 "$(command -v composer)" install \
+            --no-dev \
+            --prefer-dist \
+            --no-interaction \
+            --optimize-autoloader
+
+          echo "Checking Laravel installation..."
+          php8.5 artisan --version
+
+          echo "Release prepared successfully: $RELEASE"
+          echo "The live website has NOT been switched."
+          REMOTE
+
+      - name: Report prepared release
+        run: |
+          echo "Release prepared."
+          echo "The live website remains unchanged."
