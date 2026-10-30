@@ -79,6 +79,11 @@ jobs:
           test -s ~/.ssh/known_hosts
           test -n "$DEPLOY_HOST"
 
+      - name: Verify SSH key
+        run: |
+          ssh-keygen -y -f ~/.ssh/deploy_key > /tmp/github-deploy-public-key
+          ssh-keygen -lf /tmp/github-deploy-public-key          
+
       - name: Upload release archive
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
