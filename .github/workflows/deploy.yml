@@ -156,6 +156,49 @@ jobs:
           echo "The live website has NOT been switched."
           REMOTE
 
+
+      - name: Preview old release cleanup
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh \
+            -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            'bash -s' <<'REMOTE'
+          set -euo pipefail
+
+          BASE="/var/www/case-management-deploy"
+          RELEASES_DIR="$BASE/releases"
+          CURRENT_RELEASE="$(readlink -f "$BASE/current" 2>/dev/null || true)"
+
+          echo "Currently active release: ${CURRENT_RELEASE:-none}"
+
+          mapfile -t RELEASES < <(
+            find "$RELEASES_DIR" \
+              -mindepth 1 -maxdepth 1 -type d \
+              -printf '%T@ %p\n' |
+              sort -rn |
+              cut -d' ' -f2-
+          )
+
+          echo "Total releases: ${#RELEASES[@]}"
+
+          for i in "${!RELEASES[@]}"; do
+            RELEASE="${RELEASES[$i]}"
+
+            if [ "$i" -lt 5 ] || [ "$RELEASE" = "$CURRENT_RELEASE" ]; then
+              echo "KEEP: $RELEASE"
+            else
+              echo "WOULD DELETE: $RELEASE"
+            fi
+          done
+
+          echo "Preview complete. No releases were deleted."
+          REMOTE
+
+
       - name: Report prepared release
         run: |
           echo "Release prepared."
