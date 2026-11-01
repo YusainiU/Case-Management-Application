@@ -156,8 +156,7 @@ jobs:
           echo "The live website has NOT been switched."
           REMOTE
 
-
-      - name: Preview old release cleanup
+      - name: Clean up old releases
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -173,8 +172,6 @@ jobs:
           RELEASES_DIR="$BASE/releases"
           CURRENT_RELEASE="$(readlink -f "$BASE/current" 2>/dev/null || true)"
 
-          echo "Currently active release: ${CURRENT_RELEASE:-none}"
-
           mapfile -t RELEASES < <(
             find "$RELEASES_DIR" \
               -mindepth 1 -maxdepth 1 -type d \
@@ -183,21 +180,27 @@ jobs:
               cut -d' ' -f2-
           )
 
-          echo "Total releases: ${#RELEASES[@]}"
+          echo "Total releases before cleanup: ${#RELEASES[@]}"
+          echo "Active release: ${CURRENT_RELEASE:-none}"
 
           for i in "${!RELEASES[@]}"; do
             RELEASE="${RELEASES[$i]}"
 
-            if [ "$i" -lt 5 ] || [ "$RELEASE" = "$CURRENT_RELEASE" ]; then
+            if [ "$i" -lt 3 ] || [ "$RELEASE" = "$CURRENT_RELEASE" ]; then
               echo "KEEP: $RELEASE"
             else
-              echo "WOULD DELETE: $RELEASE"
+              echo "Deleting old release: $RELEASE"
+              rm -rf -- "$RELEASE"
             fi
           done
 
-          echo "Preview complete. No releases were deleted."
-          REMOTE
+          echo "Cleanup completed."
 
+          echo "Remaining releases:"
+          find "$RELEASES_DIR" \
+            -mindepth 1 -maxdepth 1 -type d \
+            -printf '%f\n' | sort
+          REMOTE
 
       - name: Report prepared release
         run: |
