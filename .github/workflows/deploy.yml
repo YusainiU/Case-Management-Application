@@ -46,7 +46,6 @@ jobs:
           npm ci
           npm run build
 
-
       - name: Create release archive
         run: |
           tar \
@@ -56,7 +55,6 @@ jobs:
             --exclude=storage \
             --exclude=vendor \
             -czf "$RUNNER_TEMP/release.tar.gz" .
-
 
       - name: Prepare SSH
         env:
@@ -155,6 +153,108 @@ jobs:
           echo "Release prepared successfully: $RELEASE"
           echo "The live website has NOT been switched."
           REMOTE
+
+      - name: Activate and verify release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          RELEASE_ID: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          ssh \
+            -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            "RELEASE_ID='$RELEASE_ID' bash -s" <<'REMOTE'
+          set -euo pipefail
+
+          BASE="/var/www/case-management-deploy"
+          RELEASE="$BASE/releases/$RELEASE_ID"
+          CURRENT="$BASE/current"
+          PREVIOUS="$BASE/previous"
+
+          echo "Checking the new release..."
+
+          if [ ! -d "$RELEASE" ]; then
+            echo "ERROR: New release directory does not exist."
+            exit 1
+          fi
+
+          if [ ! -L "$CURRENT" ] || [ ! -d "$CURRENT" ]; then
+            echo "ERROR: Current release symlink is missing or invalid."
+            exit 1
+          fi
+
+          OLD_RELEASE="$(readlink -f "$CURRENT")"
+
+          case "$OLD_RELEASE" in
+            "$BASE"/releases/*)
+              ;;
+            *)
+              echo "ERROR: Current release points outside the releases directory."
+              exit 1
+              ;;
+          esac
+
+          echo "Previous live release: $OLD_RELEASE"
+          echo "New release: $RELEASE"
+
+          echo "Activating new release..."
+
+          NEXT_LINK="$BASE/current.next.$$"
+          ln -s "$RELEASE" "$NEXT_LINK"
+          mv -Tf "$NEXT_LINK" "$CURRENT"
+
+          echo "New release activated."
+          echo "Checking the live HTTPS website..."
+
+          HEALTHY=false
+
+          for attempt in {1..10}; do
+            HTTP_CODE="$(curl \
+              --location \
+              --connect-timeout 5 \
+              --max-time 15 \
+              -sS -o /dev/null \
+              -w '%{http_code}' \
+              https://yusaini-usulludin.info/case-management/ || true)"
+
+            echo "Health check $attempt/10: HTTP $HTTP_CODE"
+
+            if [ "$HTTP_CODE" = "200" ]; then
+              HEALTHY=true
+              break
+            fi
+
+            sleep 5
+          done
+
+          if [ "$HEALTHY" != "true" ]; then
+            echo "ERROR: New release failed the health check."
+            echo "Rolling back to the previous release..."
+
+            ROLLBACK_LINK="$BASE/current.rollback.$$"
+            ln -s "$OLD_RELEASE" "$ROLLBACK_LINK"
+            mv -Tf "$ROLLBACK_LINK" "$CURRENT"
+
+            echo "Rollback completed."
+            echo "Current release: $(readlink -f "$CURRENT")"
+
+            exit 1
+          fi
+
+          echo "Health check passed."
+
+          echo "Recording previous release for future rollback..."
+
+          PREVIOUS_NEXT="$BASE/previous.next.$$"
+          ln -s "$OLD_RELEASE" "$PREVIOUS_NEXT"
+          mv -Tf "$PREVIOUS_NEXT" "$PREVIOUS"
+
+          echo "Deployment successful."
+          echo "Active release: $(readlink -f "$CURRENT")"
+          echo "Previous release: $(readlink -f "$PREVIOUS")"
+          REMOTE
+
 
       - name: Clean up old releases
         env:
