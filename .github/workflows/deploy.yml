@@ -256,7 +256,6 @@ jobs:
           REMOTE
 
 
-      - name: Clean up old releases
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -300,6 +299,133 @@ jobs:
           find "$RELEASES_DIR" \
             -mindepth 1 -maxdepth 1 -type d \
             -printf '%f\n' | sort
+          REMOTE
+
+      - name: Clean up old releases
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          ssh \
+            -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            'bash -s' <<'REMOTE'
+          set -euo pipefail
+
+          BASE="/var/www/case-management-deploy"
+          RELEASES_DIR="$BASE/releases"
+          CURRENT="$BASE/current"
+          PREVIOUS="$BASE/previous"
+
+          echo "Checking release directory..."
+
+          if [ ! -d "$RELEASES_DIR" ]; then
+            echo "ERROR: Releases directory does not exist."
+            exit 1
+          fi
+
+          RELEASES_DIR="$(readlink -f "$RELEASES_DIR")"
+
+          echo "Checking current release..."
+
+          if [ ! -L "$CURRENT" ] || [ ! -d "$CURRENT" ]; then
+            echo "ERROR: Current release symlink is missing or invalid."
+            exit 1
+          fi
+
+          CURRENT_RELEASE="$(readlink -f "$CURRENT")"
+
+          case "$CURRENT_RELEASE" in
+            "$RELEASES_DIR"/*)
+              ;;
+            *)
+              echo "ERROR: Current release points outside releases directory."
+              exit 1
+              ;;
+          esac
+
+          if [ "$(dirname "$CURRENT_RELEASE")" != "$RELEASES_DIR" ]; then
+            echo "ERROR: Current release is not a direct child of releases."
+            exit 1
+          fi
+
+          echo "Protected current release: $CURRENT_RELEASE"
+
+          echo "Checking previous release..."
+
+          PREVIOUS_RELEASE=""
+
+          if [ -L "$PREVIOUS" ] || [ -e "$PREVIOUS" ]; then
+            if [ ! -L "$PREVIOUS" ] || [ ! -d "$PREVIOUS" ]; then
+              echo "ERROR: Previous release pointer is invalid."
+              exit 1
+            fi
+
+            PREVIOUS_RELEASE="$(readlink -f "$PREVIOUS")"
+
+            case "$PREVIOUS_RELEASE" in
+              "$RELEASES_DIR"/*)
+                ;;
+              *)
+                echo "ERROR: Previous release points outside releases directory."
+                exit 1
+                ;;
+            esac
+
+            if [ "$(dirname "$PREVIOUS_RELEASE")" != "$RELEASES_DIR" ]; then
+              echo "ERROR: Previous release is not a direct child of releases."
+              exit 1
+            fi
+
+            echo "Protected previous release: $PREVIOUS_RELEASE"
+          else
+            echo "No previous release symlink exists yet."
+          fi
+
+          echo "Finding releases, newest first..."
+
+          mapfile -t RELEASES < <(
+            find "$RELEASES_DIR" \
+              -mindepth 1 -maxdepth 1 -type d \
+              -printf '%T@ %p\n' |
+              sort -rn |
+              cut -d' ' -f2-
+          )
+
+          echo "Total releases: ${#RELEASES[@]}"
+          echo "Keeping the five newest releases, plus protected pointers."
+
+          for i in "${!RELEASES[@]}"; do
+            RELEASE="${RELEASES[$i]}"
+
+            if [ "$i" -lt 5 ] ||
+               [ "$RELEASE" = "$CURRENT_RELEASE" ] ||
+               { [ -n "$PREVIOUS_RELEASE" ] && [ "$RELEASE" = "$PREVIOUS_RELEASE" ]; }; then
+
+              echo "KEEP: $RELEASE"
+
+            else
+              # Final safety check: only delete direct child directories
+              # inside the releases directory.
+              if [ "$(dirname "$RELEASE")" != "$RELEASES_DIR" ] ||
+                 [ ! -d "$RELEASE" ] ||
+                 [ -L "$RELEASE" ]; then
+                echo "ERROR: Refusing to delete unexpected path: $RELEASE"
+                exit 1
+              fi
+
+              echo "DELETE: $RELEASE"
+              rm -rf -- "$RELEASE"
+            fi
+          done
+
+          echo "Release cleanup completed."
+          echo "Active release: $(readlink -f "$CURRENT")"
+
+          if [ -L "$PREVIOUS" ]; then
+            echo "Previous release: $(readlink -f "$PREVIOUS")"
+          fi
           REMOTE
 
       - name: Report prepared release
