@@ -34,7 +34,7 @@ jobs:
 
       - name: Install PHP dependencies for frontend build
         run: composer install --prefer-dist --no-interaction --optimize-autoloader
-                
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -65,10 +65,13 @@ jobs:
           set -e
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
+
           printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
+
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+
           test -s ~/.ssh/deploy_key
           test -s ~/.ssh/known_hosts
           test -n "$DEPLOY_HOST"
@@ -76,7 +79,7 @@ jobs:
       - name: Verify SSH key
         run: |
           ssh-keygen -y -f ~/.ssh/deploy_key > /tmp/github-deploy-public-key
-          ssh-keygen -lf /tmp/github-deploy-public-key          
+          ssh-keygen -lf /tmp/github-deploy-public-key
 
       - name: Upload release archive
         env:
@@ -255,52 +258,6 @@ jobs:
           echo "Previous release: $(readlink -f "$PREVIOUS")"
           REMOTE
 
-
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-        run: |
-          ssh \
-            -i ~/.ssh/deploy_key \
-            -o StrictHostKeyChecking=yes \
-            "$DEPLOY_USER@$DEPLOY_HOST" \
-            'bash -s' <<'REMOTE'
-          set -euo pipefail
-
-          BASE="/var/www/case-management-deploy"
-          RELEASES_DIR="$BASE/releases"
-          CURRENT_RELEASE="$(readlink -f "$BASE/current" 2>/dev/null || true)"
-
-          mapfile -t RELEASES < <(
-            find "$RELEASES_DIR" \
-              -mindepth 1 -maxdepth 1 -type d \
-              -printf '%T@ %p\n' |
-              sort -rn |
-              cut -d' ' -f2-
-          )
-
-          echo "Total releases before cleanup: ${#RELEASES[@]}"
-          echo "Active release: ${CURRENT_RELEASE:-none}"
-
-          for i in "${!RELEASES[@]}"; do
-            RELEASE="${RELEASES[$i]}"
-
-            if [ "$i" -lt 3 ] || [ "$RELEASE" = "$CURRENT_RELEASE" ]; then
-              echo "KEEP: $RELEASE"
-            else
-              echo "Deleting old release: $RELEASE"
-              rm -rf -- "$RELEASE"
-            fi
-          done
-
-          echo "Cleanup completed."
-
-          echo "Remaining releases:"
-          find "$RELEASES_DIR" \
-            -mindepth 1 -maxdepth 1 -type d \
-            -printf '%f\n' | sort
-          REMOTE
-
       - name: Clean up old releases
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
@@ -394,20 +351,18 @@ jobs:
           )
 
           echo "Total releases: ${#RELEASES[@]}"
-          echo "Keeping the five newest releases, plus protected pointers."
+          echo "Keeping the three newest releases, plus protected pointers."
 
           for i in "${!RELEASES[@]}"; do
             RELEASE="${RELEASES[$i]}"
 
-            if [ "$i" -lt 5 ] ||
+            if [ "$i" -lt 3 ] ||
                [ "$RELEASE" = "$CURRENT_RELEASE" ] ||
                { [ -n "$PREVIOUS_RELEASE" ] && [ "$RELEASE" = "$PREVIOUS_RELEASE" ]; }; then
 
               echo "KEEP: $RELEASE"
 
             else
-              # Final safety check: only delete direct child directories
-              # inside the releases directory.
               if [ "$(dirname "$RELEASE")" != "$RELEASES_DIR" ] ||
                  [ ! -d "$RELEASE" ] ||
                  [ -L "$RELEASE" ]; then
@@ -428,7 +383,7 @@ jobs:
           fi
           REMOTE
 
-      - name: Report prepared release
+      - name: Report deployment success
         run: |
-          echo "Release prepared."
-          echo "The live website remains unchanged."
+          echo "Deployment completed successfully."
+          echo "The new release is active."
