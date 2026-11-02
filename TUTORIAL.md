@@ -1,9 +1,11 @@
-# Post-installation tutorial
+# Tutorial
+
+## What to do post-installation
 
 Follow these steps after configuring the application and its database. Replace
 example addresses with the real details for your installation.
 
-## 1. Run the migrations and seed the default account
+### 1. Run the migrations and seed the default account
 
 Make sure your `.env` file points to the database you intend to use, then run:
 
@@ -46,7 +48,7 @@ password rather than letting you type one in. Record it before submitting and
 share it securely; use the login screen's **Forgot your password?** flow to set
 a private password once email delivery is working.
 
-## 2. Synchronise application permissions
+### 2. Synchronise application permissions
 
 After the first login, synchronise the permissions defined by the installed
 packages so they are available in the database:
@@ -64,7 +66,7 @@ php artisan permissions:sync
 This adds missing package-defined permissions to the database. It does not
 replace assigning users to the appropriate roles.
 
-## 3. Optional: add demo data
+### 3. Optional: add demo data
 
 To populate sample records for testing, run:
 
@@ -83,7 +85,7 @@ The demo seeder is not run by the regular `php artisan db:seed` command and
 refuses to seed when the application environment is `production`. Use it only
 with a non-production database.
 
-## 4. Create an application user
+### 4. Create an application user
 
 1. Open **User Management** from the sidebar.
 2. Select **Create New User** and enter the person's name and unique email.
@@ -96,7 +98,7 @@ The email address is the user's login username. Users can use **Forgot your
 password?** on the login screen to set a new password if mail delivery is
 configured.
 
-## 5. Create a customer contact
+### 5. Create a customer contact
 
 Customer contacts are linked to user accounts. To create a contact and its
 account together:
@@ -132,3 +134,60 @@ Portal access needs to be enabled at both the customer and contact levels:
 The customer's **Portal Enabled** setting applies to the customer, while
 **Has Portal Access** grants portal access to an individual contact. Both
 settings are required for that contact to use the customer portal.
+
+## Case Management: How to create a case
+
+A case records an issue, request, or work to be carried out for a customer.
+Before creating one, make sure the following are in place for that customer:
+
+- A Service Level Agreement (SLA) has been created.
+- An SLA application has been created and applied to the customer. The case
+  form only offers active SLA applications belonging to the selected customer.
+- The customer has one or more assets associated with them.
+- The customer has at least one contact, so the case can be raised by that
+  contact.
+
+### Where to create a case
+
+You can start a case from either of these places:
+
+- **Case list:** Open the Cases page and select **Create New Case**. Choose the
+  customer and select **Next** to open the case form.
+- **Customer profile:** Open the customer's profile, go to **Customer Records**,
+  and select the **Outstanding Cases** tab. Select **Create New Case** there.
+  The customer is already selected for you.
+
+### Complete and create the case
+
+Select the customer's active SLA application, a **Category**, and a **Source**.
+Enter a **Case Title** (up to 50 characters) and the **Case Description**.
+Associate relevant customer assets where applicable. Choose either a registered
+**Customer Contact (User)** or enter a **Customer Contact (Non-User)**; provide
+the contact telephone number and email address in either case. A customer
+reference is optional. Fields marked required in the form must be completed
+before selecting **Create**.
+
+### Manage the case
+
+After creation, open the case from the case list using its case details/manage
+action. This opens **Manage Case**, where the sections available to you depend
+on your permissions and the case's state:
+
+- **Case Description** — Review the case description.
+- **SLA** and **SLA Status** — Review the case's service-level agreement and
+  monitor its status and deadlines.
+- **SLA Pauses** — Manage or review pauses to the SLA timeline.
+- **Update** — Edit the case details.
+- **Progress** — Review the case's progress log.
+- **Stock Requests** — Manage stock requests for the case (permission
+  dependent).
+- **Visit** — Manage site visits associated with the case.
+- **Close & Resolve** — Close or resolve the case; a closed case offers
+  **Reopen Case** instead.
+- **Changes Tracker** — Review recorded changes to the case fields.
+- **Upload Files** — Attach and manage case files (uploads are limited to
+  10 MB).
+- **Case Assistant (AI)** — Use the AI case assistant if your account has
+  permission.
+- **Expenses** — View or manage case expenses if your account has expense
+  permissions.
