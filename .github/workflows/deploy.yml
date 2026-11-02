@@ -90,7 +90,7 @@ jobs:
             -i ~/.ssh/deploy_key \
             -o StrictHostKeyChecking=yes \
             "$RUNNER_TEMP/release.tar.gz" \
-            "$DEPLOY_USER@$DEPLOY_HOST:/var/www/case-management-deploy/release.tar.gz"
+            "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_RELEASE_PATH"            
 
       - name: Extract and prepare release
         env:
