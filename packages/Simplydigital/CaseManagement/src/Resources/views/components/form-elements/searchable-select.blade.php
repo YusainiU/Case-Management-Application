@@ -199,7 +199,7 @@
     @if ($name)
         <label
             for="{{ $inputId }}"
-            class="mb-2 block text-sm font-medium text-gray-700"
+            class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
         >
             {{ $name }}
 
@@ -217,7 +217,7 @@
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="size-4 text-gray-400"
+                class="size-4 text-gray-400 dark:text-gray-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -249,14 +249,14 @@
             @keydown.enter.prevent="selectHighlighted()"
             @required($required)
             @class([
-                'block w-full rounded-xl border bg-gray-50',
-                'py-3 pl-10 pr-10 text-sm text-gray-900',
-                'placeholder:text-gray-400 shadow-sm transition',
+                'block w-full rounded-xl border bg-gray-50 dark:bg-gray-800',
+                'py-3 pl-10 pr-10 text-sm text-gray-900 dark:text-gray-100',
+                'placeholder:text-gray-400 shadow-sm transition dark:placeholder:text-gray-500',
                 'focus:outline-none focus:ring-2',
                 'focus:ring-indigo-500/20',
-                'focus:border-indigo-500',
-                'border-red-300 focus:border-red-500 focus:ring-red-500/20' => $hasError,
-                'border-gray-200' => !$hasError,
+                'focus:border-indigo-500 dark:focus:border-indigo-400',
+                'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500/60' => $hasError,
+                'border-gray-200 dark:border-gray-700' => !$hasError,
             ])
             @if ($hasError)
                 aria-invalid="true"
@@ -271,7 +271,7 @@
             @click="handleClear()"
             type="button"
             aria-label="Clear selection"
-            class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 transition hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500/30"
+            class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 transition hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500/30 dark:text-gray-500 dark:hover:text-gray-200"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -297,7 +297,7 @@
         x-transition:leave="transition ease-in duration-75"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="absolute inset-x-0 z-50 mt-2 max-h-64 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-1.5 shadow-xl shadow-gray-900/10"
+        class="absolute inset-x-0 z-50 mt-2 max-h-64 overflow-y-auto rounded-xl border border-gray-200 bg-gray-50 p-1.5 shadow-xl shadow-gray-900/10 dark:border-gray-700 dark:bg-gray-900"
     >
         <template x-if="filteredOptions.length > 0">
             <ul role="listbox" class="space-y-0.5">
@@ -311,8 +311,8 @@
                         @click="selectOption(option)"
                         @mouseenter="highlightedIndex = index"
                         :class="highlightedIndex === index
-                            ? 'bg-indigo-50 text-indigo-700'
-                            : 'bg-gray-50 text-gray-900 hover:bg-gray-100'"
+                            ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-400/10 dark:text-indigo-300'
+                            : 'bg-gray-50 text-gray-900 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800'"
                         class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors"
                     >
                         <span
@@ -324,7 +324,7 @@
                             x-cloak
                             x-show="option['{{ $valueField }}'] == selectedValue"
                             xmlns="http://www.w3.org/2000/svg"
-                            class="size-4 shrink-0 text-indigo-600"
+                            class="size-4 shrink-0 text-indigo-600 dark:text-indigo-400"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -345,7 +345,7 @@
         <template x-if="filteredOptions.length === 0">
             <div class="px-3 py-8 text-center">
                 <div
-                    class="mx-auto mb-2 flex size-9 items-center justify-center rounded-full bg-gray-100 text-gray-500"
+                    class="mx-auto mb-2 flex size-9 items-center justify-center rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -364,11 +364,11 @@
                     </svg>
                 </div>
 
-                <p class="text-sm font-medium text-gray-700">
+                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
                     No results found
                 </p>
 
-                <p class="mt-1 text-xs text-gray-500">
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     Try a different search term.
                 </p>
             </div>
@@ -379,7 +379,7 @@
     @if ($hasError)
         <p
             id="{{ $inputId }}-error"
-            class="mt-2 flex items-start gap-1.5 text-sm text-red-600"
+            class="mt-2 flex items-start gap-1.5 text-sm text-red-600 dark:text-red-400"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -399,4 +399,3 @@
         </p>
     @endif
 </div>
-

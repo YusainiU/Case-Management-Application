@@ -21,7 +21,7 @@
     <section class="space-y-4">
         <div class="flex items-center gap-2">
             <flux:icon name="shield-exclamation"
-                       class="size-5 text-red-500" />
+                       class="size-5 text-red-500 dark:text-red-400" />
             <h2 class="text-base font-semibold text-gray-900 dark:text-white">
                 Priority &amp; SLA
             </h2>

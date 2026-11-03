@@ -1,13 +1,13 @@
 
 @props([
-    'textColor' => 'text-slate-700',
+    'textColor' => 'text-slate-700 dark:text-slate-300',
     'mt' => 'mt-5',
     'mb' => 'mb-5',
-    'bgColor' => 'bg-white',
+    'bgColor' => 'bg-white dark:bg-gray-900',
     'maxHeight' => null,
     'px' => 'px-0',
     'py' => 'py-0',
-    'border' => 'border border-slate-200',
+    'border' => 'border border-slate-200 dark:border-slate-800',
     'whitespace' => 'whitespace-nowrap',
     'align' => 'text-left',
     'stickyHeader' => false,
@@ -16,7 +16,7 @@
 <div
     @class([
         'relative w-full overflow-x-auto rounded-xl',
-        'shadow-sm ring-1 ring-slate-900/5',
+        'shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10',
         $textColor,
         $mt,
         $mb,

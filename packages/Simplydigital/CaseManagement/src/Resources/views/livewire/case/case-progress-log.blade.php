@@ -23,7 +23,7 @@
 <div
     x-data
     x-on:modal-scroll-top.window="$refs.modalBody.scrollTo({ top: 0, behavior: 'smooth' })"
-    class="text-slate-800"
+    class="text-slate-800 dark:text-slate-200"
 >
     <div
         x-ref="modalBody"
@@ -32,9 +32,9 @@
 
         {{-- Context: responding to a log --}}
         @if ($respondToComment)
-            <div class="mb-4 overflow-hidden rounded-xl border border-indigo-100 bg-indigo-50/60">
+            <div class="mb-4 overflow-hidden rounded-xl border border-indigo-100 bg-indigo-50/60 dark:border-indigo-400/20 dark:bg-indigo-400/10">
                 <div class="flex items-start gap-3 p-4">
-                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-indigo-600 ring-1 ring-indigo-100">
+                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-indigo-600 ring-1 ring-indigo-100 dark:bg-gray-900 dark:text-indigo-300 dark:ring-indigo-400/20">
                         <svg xmlns="http://www.w3.org/2000/svg"
                             class="h-5 w-5" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor"
@@ -45,11 +45,11 @@
                     </div>
 
                     <div class="min-w-0 flex-1">
-                        <p class="text-sm font-semibold text-indigo-950">
+                        <p class="text-sm font-semibold text-indigo-950 dark:text-indigo-200">
                             Responding to progress log #{{ $respondToLog->number }}
                         </p>
 
-                        <p class="mt-1 whitespace-pre-line break-words text-sm leading-6 text-slate-700">
+                        <p class="mt-1 whitespace-pre-line break-words text-sm leading-6 text-slate-700 dark:text-slate-300">
                             {{ $respondToLog->description }}
                         </p>
                     </div>
@@ -59,9 +59,9 @@
 
         {{-- Context: editing a log --}}
         @if ($logToEdit)
-            <div class="mb-4 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+            <div class="mb-4 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-400/20 dark:bg-amber-400/10">
                 <svg xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 shrink-0 text-amber-700"
+                    class="h-5 w-5 shrink-0 text-amber-700 dark:text-amber-300"
                     fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="1.7"
                     aria-hidden="true">
@@ -70,10 +70,10 @@
                 </svg>
 
                 <div>
-                    <p class="text-sm font-semibold text-amber-900">
+                    <p class="text-sm font-semibold text-amber-900 dark:text-amber-200">
                         Editing progress log #{{ $logToEdit->number }}
                     </p>
-                    <p class="text-xs text-amber-800">
+                    <p class="text-xs text-amber-800 dark:text-amber-300">
                         Your changes will update this existing entry.
                     </p>
                 </div>
@@ -83,14 +83,14 @@
         {{-- Create / edit / respond form --}}
         @if ($caseOpen)
             @can('update', $case)
-                <section class="mb-5 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <section class="mb-5 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gray-900">
 
-                    <div class="border-b border-slate-100 bg-slate-50/80 px-4 py-3 sm:px-5">
-                        <h3 class="text-sm font-semibold text-slate-900">
+                    <div class="border-b border-slate-100 bg-slate-50/80 px-4 py-3 sm:px-5 dark:border-slate-800 dark:bg-gray-800/60">
+                        <h3 class="text-sm font-semibold text-slate-900 dark:text-white">
                             {{ $label }}
                         </h3>
 
-                        <p class="mt-0.5 text-xs text-slate-500">
+                        <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                             Record an update to keep the case history accurate.
                         </p>
                     </div>
@@ -106,7 +106,7 @@
 
                         <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
 
-                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-3 transition hover:bg-slate-50">
+                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-3 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-gray-800">
                                 <div class="pt-0.5">
                                     <x-casemanagement::form-elements.checkbox
                                         label="Urgent Attention"
@@ -116,7 +116,7 @@
                                 </div>
                             </label>
 
-                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-3 transition hover:bg-slate-50">
+                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-3 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-gray-800">
                                 <div class="pt-0.5">
                                     <x-casemanagement::form-elements.checkbox
                                         label="Email Customer Contact"
@@ -126,7 +126,7 @@
                                 </div>
                             </label>
 
-                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-3 transition hover:bg-slate-50">
+                            <label class="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-3 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-gray-800">
                                 <div class="pt-0.5">
                                     <x-casemanagement::form-elements.checkbox
                                         label="Visible to Customer"
@@ -138,7 +138,7 @@
 
                         </div>
 
-                        <div class="flex flex-wrap items-center justify-end gap-2 border-t border-slate-100 pt-4">
+                        <div class="flex flex-wrap items-center justify-end gap-2 border-t border-slate-100 pt-4 dark:border-slate-800">
 
                             @if ($enableCancel)
                                 <x-casemanagement::form-elements.button-secondary
@@ -161,15 +161,15 @@
         {{-- Timeline heading --}}
         <div class="mb-4 flex items-center justify-between gap-3">
             <div>
-                <h3 class="text-base font-semibold tracking-tight text-slate-900">
+                <h3 class="text-base font-semibold tracking-tight text-slate-900 dark:text-white">
                     Case Activity
                 </h3>
-                <p class="mt-0.5 text-xs text-slate-500">
+                <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                     A chronological record of case updates and actions.
                 </p>
             </div>
 
-            <span class="shrink-0 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600">
+            <span class="shrink-0 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-gray-900 dark:text-slate-300">
                 {{ $taskLogs->count() }} {{ $taskLogs->count() === 1 ? 'entry' : 'entries' }}
             </span>
         </div>
@@ -200,7 +200,7 @@
                 {{-- Timeline connector --}}
                 @if (!$loop->last)
                     <span
-                        class="absolute bottom-0 left-4 top-10 w-px bg-slate-200"
+                        class="absolute bottom-0 left-4 top-10 w-px bg-slate-200 dark:bg-slate-700"
                         aria-hidden="true"
                     ></span>
                 @endif
@@ -211,8 +211,8 @@
                     <div
                         @class([
                             'relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border ring-4',
-                            'border-amber-300 bg-amber-100 text-amber-700 ring-amber-100 shadow-md shadow-amber-200/70' => $log->external_user,
-                            'border-indigo-100 bg-indigo-50 text-indigo-600 ring-white' => !$log->external_user,
+                            'border-amber-300 bg-amber-100 text-amber-700 ring-amber-100 shadow-md shadow-amber-200/70 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-300 dark:ring-gray-900 dark:shadow-none' => $log->external_user,
+                            'border-indigo-100 bg-indigo-50 text-indigo-600 ring-white dark:border-indigo-400/20 dark:bg-indigo-400/10 dark:text-indigo-300 dark:ring-gray-900' => !$log->external_user,
                         ])
                         @if ($log->external_user)
                             role="img"
@@ -236,23 +236,23 @@
                     </div>
 
                     {{-- Entry card --}}
-                    <div class="min-w-0 flex-1 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div class="min-w-0 flex-1 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gray-900">
 
                         {{-- Entry header --}}
-                        <div class="flex flex-col gap-3 border-b border-slate-100 px-4 py-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div class="flex flex-col gap-3 border-b border-slate-100 px-4 py-3 sm:flex-row sm:items-start sm:justify-between dark:border-slate-800">
 
                             <div class="min-w-0 flex-1">
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <h4 class="text-sm font-semibold text-slate-900">
+                                    <h4 class="text-sm font-semibold text-slate-900 dark:text-white">
                                         {{ $log->type }}
                                     </h4>
 
-                                    <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+                                    <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                                         #{{ $log->number }}
                                     </span>
 
                                     @if ($log->visible_to_external)
-                                        <span class="inline-flex items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-xs font-semibold text-sky-800">
+                                        <span class="inline-flex items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-xs font-semibold text-sky-800 dark:border-sky-400/20 dark:bg-sky-400/10 dark:text-sky-300">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 class="h-3.5 w-3.5"
                                                 fill="none" viewBox="0 0 24 24"
@@ -268,13 +268,13 @@
                                     @endif
 
                                     @if ($log->external_user)
-                                        <span class="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900">
+                                        <span class="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200">
                                             Customer response needed
                                         </span>
                                     @endif
 
                                     @if ($log->require_attention)
-                                        <span class="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-800">
+                                        <span class="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-800 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-300">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 class="h-3.5 w-3.5"
                                                 fill="none" viewBox="0 0 24 24"
@@ -288,11 +288,11 @@
                                     @endif
                                 </div>
 
-                                <p class="mt-1 text-xs text-slate-500">
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                     {{ $log->user?->name ?? $log->external_user ?? 'System' }}
                                     @if ($log->external_user)
                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="ml-1 inline h-3.5 w-3.5 text-sky-600"
+                                            class="ml-1 inline h-3.5 w-3.5 text-sky-600 dark:text-sky-400"
                                             fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor" stroke-width="1.8"
                                             role="img" aria-label="External user" title="External user">
@@ -300,7 +300,7 @@
                                                 d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.951 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                                         </svg>
                                     @endif
-                                    <span class="mx-1 text-slate-300">·</span>
+                                    <span class="mx-1 text-slate-300 dark:text-slate-600">·</span>
                                     {{ $log->created_at?->format('d M Y, H:i') }}
                                 </p>
                             </div>
@@ -325,22 +325,22 @@
                         <div class="px-4 py-4">
 
                             @if ($log->description)
-                                <div class="whitespace-pre-line break-words text-sm leading-6 text-slate-700">
+                                <div class="whitespace-pre-line break-words text-sm leading-6 text-slate-700 dark:text-slate-300">
                                     {{ $log->description }}
                                 </div>
                             @else
-                                <p class="text-sm italic text-slate-400">
+                                <p class="text-sm italic text-slate-400 dark:text-slate-500">
                                     No description provided.
                                 </p>
                             @endif
 
                             {{-- Parent internal comment --}}
                             @if ($log->response_to_internal_comment && $log->parentInternalComment)
-                                <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50/70 p-3">
+                                <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50/70 p-3 dark:border-amber-400/20 dark:bg-amber-400/10">
 
                                     <div class="mb-1 flex items-center gap-2">
                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="h-4 w-4 shrink-0 text-amber-700"
+                                            class="h-4 w-4 shrink-0 text-amber-700 dark:text-amber-300"
                                             fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor" stroke-width="1.7"
                                             aria-hidden="true">
@@ -348,12 +348,12 @@
                                                 d="M8 10h8m-8 4h5m-9 5l2.5-3H17a3 3 0 003-3V6a3 3 0 00-3-3H7a3 3 0 00-3 3v10a3 3 0 001 2.3V19z" />
                                         </svg>
 
-                                        <p class="text-xs font-semibold text-amber-900">
+                                        <p class="text-xs font-semibold text-amber-900 dark:text-amber-200">
                                             Response to comment #{{ $log->parentInternalComment->number }}
                                         </p>
                                     </div>
 
-                                    <p class="whitespace-pre-line break-words text-sm leading-5 text-amber-950/80">
+                                    <p class="whitespace-pre-line break-words text-sm leading-5 text-amber-950/80 dark:text-amber-200">
                                         {{ $log->parentInternalComment->description }}
                                     </p>
                                 </div>
@@ -361,10 +361,10 @@
                         </div>
 
                         {{-- Entry footer --}}
-                        <div class="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div class="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-gray-800/60">
 
-                            <div class="text-xs text-slate-500">
-                                <span class="font-medium text-slate-600">Source:</span>
+                            <div class="text-xs text-slate-500 dark:text-slate-400">
+                                <span class="font-medium text-slate-600 dark:text-slate-300">Source:</span>
                                 {{ ucwords(str_replace('_', ' ', $log->source ?? 'Unknown')) }}
                             </div>
 
@@ -400,9 +400,9 @@
 
         @empty
             {{-- Empty state --}}
-            <div class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-10 text-center">
+            <div class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-10 text-center dark:border-slate-700 dark:bg-gray-800">
 
-                <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-400 ring-1 ring-slate-200">
+                <div class="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-400 ring-1 ring-slate-200 dark:bg-gray-900 dark:text-slate-500 dark:ring-slate-700">
                     <svg xmlns="http://www.w3.org/2000/svg"
                         class="h-5 w-5"
                         fill="none" viewBox="0 0 24 24"
@@ -413,11 +413,11 @@
                     </svg>
                 </div>
 
-                <h4 class="mt-3 text-sm font-semibold text-slate-900">
+                <h4 class="mt-3 text-sm font-semibold text-slate-900 dark:text-white">
                     No progress logs yet
                 </h4>
 
-                <p class="mx-auto mt-1 max-w-sm text-sm text-slate-500">
+                <p class="mx-auto mt-1 max-w-sm text-sm text-slate-500 dark:text-slate-400">
                     Case updates, responses and recorded actions will appear here.
                 </p>
             </div>

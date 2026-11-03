@@ -1,6 +1,8 @@
 @props([
     "hover_on" => "bg-gray-400 text-gray-100",
     "hover_off" => "bg-gray-500 text-gray-100",
+    "dark_hover_on" => "dark:bg-gray-600 dark:text-gray-100",
+    "dark_hover_off" => "dark:bg-gray-700 dark:text-gray-100",
     "action_hover_on" => "confirmSetAction()",
     "hover_on_label" => "Action On",
     "hover_off_label" => "Action Off",
@@ -23,7 +25,7 @@
         type="button"
         x-on:mouseenter="hover = true"
         x-on:mouseleave="hover = false"
-        x-bind:class="hover ? '{{ $hover_on }}' : '{{ $hover_off }}'"
+        x-bind:class="hover ? '{{ $hover_on }} {{ $dark_hover_on }}' : '{{ $hover_off }} {{ $dark_hover_off }}'"
         x-on:click="
             if (hover) {
                 $wire.{{ $action_hover_on }}
@@ -38,6 +40,7 @@
             tracking-wider 
             cursor-pointer 
             rounded 
+            dark:focus-visible:ring-offset-gray-900
             transition-colors 
             duration-300"        
     >

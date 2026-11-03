@@ -15,7 +15,14 @@
         'information' => UI::ALERT_INFORMATION,
         'important' => UI::ALERT_IMPORTANT,
         'warning' => UI::ALERT_WARNING,
-    }
+    };
+
+    $darkClass = match($mode) {
+        'default' => 'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100',
+        'information' => 'dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-200',
+        'important' => 'dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-200',
+        'warning' => 'dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200',
+    };
     
 @endphp
 
@@ -38,6 +45,7 @@
       z-50 
       w-96
       {{ $class }} 
+      {{ $darkClass }}
       border-t 
       border-b 
       px-4 

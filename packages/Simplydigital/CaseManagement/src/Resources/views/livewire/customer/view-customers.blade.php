@@ -1,4 +1,4 @@
-<x-casemanagement::page-elements.outer-wrapper  >
+<x-casemanagement::page-elements.outer-wrapper class="dark:bg-gray-950 dark:text-slate-100">
 
     {{-- Customer modals --}}
     @if ($displayCreateModal)
@@ -18,19 +18,19 @@
     <section class="">
         {{-- Directory header --}}
         <div
-            class="flex flex-col gap-3 border-b border-slate-200
+            class="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-700
                    px-5 py-4 sm:flex-row sm:items-center
                    sm:justify-between sm:px-6">
 
             @if ($customers)
-                <div class="text-sm text-slate-500">
+                <div class="text-sm text-slate-500 dark:text-slate-400">
                     @if ($customers->total() > 0)
                         Showing
-                        <span class="font-semibold text-slate-700">
+                        <span class="font-semibold text-slate-700 dark:text-slate-200">
                             {{ $customers->firstItem() }}–{{ $customers->lastItem() }}
                         </span>
                         of
-                        <span class="font-semibold text-slate-700">
+                        <span class="font-semibold text-slate-700 dark:text-slate-200">
                             {{ $customers->total() }}
                         </span>
                         customers
@@ -45,7 +45,7 @@
         <div class="flex flex-col gap-4 px-5 py-4 sm:px-6">
             <div class="min-w-0">
                 <x-casemanagement::form-elements.input-filter
-                    class="rounded-xl border shadow-sm transition border-slate-500" />
+                    class="rounded-xl border border-slate-300 bg-white shadow-sm transition dark:border-slate-700 dark:bg-gray-900" />
             </div>
             <x-casemanagement::page-elements.pagination :paginator="$customers" />
         </div>
@@ -82,21 +82,21 @@
                 </tr>
             </thead>
 
-            <tbody class="divide-y divide-slate-100">
+            <tbody class="divide-y divide-slate-100 bg-white dark:divide-slate-700 dark:bg-gray-900">
 
                 @forelse ($customers ?? [] as $customer)
                     <tr wire:key="customer-row-{{ $customer->id }}"
                         class="transition-colors duration-150
-                               hover:bg-slate-50/80">
+                               hover:bg-slate-50/80 dark:hover:bg-gray-800/60">
                         {{-- Row number --}}
-                        <x-casemanagement::table-elements.table-td px="px-5" textcolor="text-slate-400">
+                        <x-casemanagement::table-elements.table-td px="px-5" textcolor="text-slate-400 dark:text-slate-500">
                             <span class="text-xs font-medium tabular-nums">
                                 {{ ($customers?->firstItem() ?? 1) + $loop->index }}
                             </span>
                         </x-casemanagement::table-elements.table-td>
 
                         {{-- Customer name --}}
-                        <x-casemanagement::table-elements.table-td px="px-5" textcolor="text-slate-900">
+                        <x-casemanagement::table-elements.table-td px="px-5" textcolor="text-slate-900 dark:text-slate-100">
                             <div class="flex items-center gap-3">
 
                                 <x-casemanagement::page-elements.name-initial-icon name="{{ $customer->name }}" />
@@ -104,12 +104,12 @@
                                 <div class="min-w-0">
                                     <a href="{{ route('casemanagement.customer.profile', ['customerId' => $customer->id]) }}"
                                         class="font-semibold text-slate-800
-                                               transition hover:text-indigo-700
+                                               transition hover:text-indigo-700 dark:text-slate-100 dark:hover:text-indigo-400
                                                focus:outline-none focus:underline">
                                         {{ $customer->name }}
                                     </a>
 
-                                    <p class="mt-0.5 text-xs text-slate-400">
+                                    <p class="mt-0.5 text-xs text-slate-400 dark:text-slate-500">
                                         Customer #{{ $customer->id }}
                                     </p>
                                 </div>
@@ -121,7 +121,7 @@
                             <span
                                 class="inline-flex items-center rounded-md
                                        bg-slate-100 px-2.5 py-1 text-xs
-                                       font-medium text-slate-700">
+                                       font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                                 {{ $customer->primary_type?->label() ?? 'Not specified' }}
                             </span>
                         </x-casemanagement::table-elements.table-td>
@@ -129,11 +129,11 @@
                         {{-- Parent company --}}
                         <x-casemanagement::table-elements.table-td px="px-5">
                             @if ($customer->parentCompany)
-                                <span class="text-sm font-medium text-slate-700">
+                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">
                                     {{ $customer->parentCompany->name }}
                                 </span>
                             @else
-                                <span class="text-sm text-slate-400">
+                                <span class="text-sm text-slate-400 dark:text-slate-500">
                                     No parent company
                                 </span>
                             @endif
@@ -147,8 +147,9 @@
                                            rounded-full bg-emerald-50
                                            px-2.5 py-1 text-xs font-medium
                                            text-emerald-700 ring-1
-                                           ring-inset ring-emerald-600/20">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                           ring-inset ring-emerald-600/20 dark:bg-emerald-400/10
+                                           dark:text-emerald-300 dark:ring-emerald-400/20">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400"></span>
                                     Enabled
                                 </span>
                             @else
@@ -157,8 +158,9 @@
                                            rounded-full bg-slate-100
                                            px-2.5 py-1 text-xs font-medium
                                            text-slate-600 ring-1
-                                           ring-inset ring-slate-500/10">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                                           ring-inset ring-slate-500/10 dark:bg-slate-800
+                                           dark:text-slate-300 dark:ring-slate-400/20">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400 dark:bg-slate-500"></span>
                                     Disabled
                                 </span>
                             @endif

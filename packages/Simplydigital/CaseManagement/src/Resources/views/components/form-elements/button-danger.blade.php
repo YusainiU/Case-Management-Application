@@ -22,7 +22,14 @@
             tracking-wider 
             cursor-pointer 
             rounded 
-            hover:bg--400 
+            hover:bg-red-600
+            dark:bg-red-500
+            dark:hover:bg-red-600
+            focus:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-red-500
+            focus-visible:ring-offset-2
+            dark:focus-visible:ring-offset-gray-900
             transition-colors 
             duration-300"
         wire:click="{{ $attributes->get('action') }}"

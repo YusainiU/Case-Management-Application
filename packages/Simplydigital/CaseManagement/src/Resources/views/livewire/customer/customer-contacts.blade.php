@@ -36,18 +36,18 @@
 
         {{-- Directory header --}}
         <div
-            class="flex flex-col gap-3 border-b border-slate-200
+            class="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-700
             px-5 py-4 sm:flex-row sm:items-center
             sm:justify-between sm:px-6">
             @if ($customerContacts)
-                <div class="text-sm text-slate-500">
+                <div class="text-sm text-slate-500 dark:text-slate-400">
                     @if ($customerContacts->total() > 0)
                         Showing
-                        <span class="font-semibold text-slate-700">
+                        <span class="font-semibold text-slate-700 dark:text-slate-200">
                             {{ $customerContacts->firstItem() }}–{{ $customerContacts->lastItem() }}
                         </span>
                         of
-                        <span class="font-semibold text-slate-700">
+                        <span class="font-semibold text-slate-700 dark:text-slate-200">
                             {{ $customerContacts->total() }}
                         </span>
                         customers Contacts
@@ -63,7 +63,7 @@
 
             <div class="min-w-0">
                 <x-casemanagement::form-elements.input-filter
-                    class="rounded-xl border shadow-sm transition border-slate-500" />
+                    class="rounded-xl border border-slate-300 bg-white shadow-sm transition dark:border-slate-700 dark:bg-gray-900" />
             </div>
             <x-casemanagement::page-elements.pagination :paginator="$customerContacts" />            
 
@@ -110,18 +110,18 @@
                         </tr>
                     </thead>
 
-                    <tbody class="divide-y divide-slate-100 bg-white">
+                    <tbody class="divide-y divide-slate-100 bg-white dark:divide-slate-700 dark:bg-gray-900">
 
                         @if ($customerContacts?->isNotEmpty())
 
                             @foreach ($customerContacts as $contact)
                                 <tr wire:key="customer-contact-{{ $contact->id }}"
-                                    class="bg-white transition-colors hover:bg-slate-50">
+                                    class="bg-white transition-colors hover:bg-slate-50 dark:bg-gray-900 dark:hover:bg-gray-800/60">
 
                                     {{-- Row number --}}
                                     <x-casemanagement::table-elements.table-td>
                                         <span
-                                            class="text-xs font-medium tabular-nums text-slate-800">
+                                            class="text-xs font-medium tabular-nums text-slate-800 dark:text-slate-300">
                                             {{ $customerContacts->firstItem() + $loop->index }}
                                         </span>
                                     </x-casemanagement::table-elements.table-td>
@@ -135,10 +135,10 @@
                                             <div class="min-w-0">
                                                 <button type="button"
                                                     wire:click="openContactProfileModal({{ $contact->customerUser?->id }})"
-                                                    class="max-w-full truncate text-left text-sm font-semibold text-slate-800 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:hover:text-indigo-400 dark:focus:ring-offset-slate-900">
+                                                    class="max-w-full truncate text-left text-sm font-semibold text-slate-800 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-slate-100 dark:hover:text-indigo-400 dark:focus:ring-offset-slate-900">
                                                     {{ $contact->customerUser?->name ?? 'Unknown contact' }}
                                                 </button>
-                                                <p class="text-xs text-slate-600 ">
+                                                <p class="text-xs text-slate-600 dark:text-slate-400">
                                                     Contact ID: {{ $contact->id }}
                                                 </p>
                                             </div>
@@ -147,7 +147,7 @@
 
                                     {{-- Customer --}}
                                     <x-casemanagement::table-elements.table-td>
-                                        <span class="text-sm font-medium text-slate-800">
+                                        <span class="text-sm font-medium text-slate-800 dark:text-slate-200">
                                             {{ $contact->customer?->name ?? '—' }}
                                         </span>
                                     </x-casemanagement::table-elements.table-td>
@@ -156,7 +156,7 @@
                                     <x-casemanagement::table-elements.table-td>
                                         @if ($contact->customerUser?->email)
                                             <a href="mailto:{{ $contact->customerUser->email }}"
-                                                class="text-sm text-slate-800 hover:text-indigo-600 hover:underline dark:hover:text-indigo-400">
+                                                class="text-sm text-slate-800 hover:text-indigo-600 hover:underline dark:text-slate-200 dark:hover:text-indigo-400">
                                                 {{ $contact->customerUser->email }}
                                             </a>
                                         @else
@@ -167,7 +167,7 @@
                                     {{-- Contact role --}}
                                     <x-casemanagement::table-elements.table-td>
                                         <span
-                                            class="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 font-medium text-slate-800">
+                                            class="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 font-medium text-slate-800 dark:bg-slate-800 dark:text-slate-300">
                                             {{ $contact->customerRole?->label() ?? 'N/A' }}
                                         </span>
                                     </x-casemanagement::table-elements.table-td>
@@ -175,11 +175,11 @@
                                     {{-- Phone --}}
                                     <x-casemanagement::table-elements.table-td>
                                         @if ($contact->customerUserDetails?->phone)
-                                            <span class="whitespace-nowrap text-sm text-slate-800">
+                                            <span class="whitespace-nowrap text-sm text-slate-800 dark:text-slate-200">
                                                 {{ $contact->customerUserDetails->phone }}
                                             </span>
                                         @else
-                                            <span class="text-sm text-slate-600 ">—</span>
+                                            <span class="text-sm text-slate-600 dark:text-slate-400">—</span>
                                         @endif
                                     </x-casemanagement::table-elements.table-td>
 
@@ -187,14 +187,14 @@
                                     <x-casemanagement::table-elements.table-td>
                                         @if ($contact->has_portal_access)
                                             <span
-                                                class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20 ">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                                class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20 dark:bg-emerald-400/10 dark:text-emerald-300 dark:ring-emerald-400/20">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400"></span>
                                                 Enabled
                                             </span>
                                         @else
                                             <span
-                                                class="inline-flex items-center gap-1.5 rounded-full bg-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-800 ring-1 ring-inset ring-slate-500/20">
-                                                <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                                                class="inline-flex items-center gap-1.5 rounded-full bg-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-800 ring-1 ring-inset ring-slate-500/20 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-400/20">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-slate-400 dark:bg-slate-500"></span>
                                                 Disabled
                                             </span>
                                         @endif

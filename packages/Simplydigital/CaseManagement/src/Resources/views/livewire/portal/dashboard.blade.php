@@ -35,7 +35,7 @@
 
         @if ($recentCases->isEmpty())
             <div class="rounded-2xl border border-dashed border-zinc-300 bg-white px-6 py-12 text-center dark:border-zinc-700 dark:bg-zinc-900">
-                <flux:icon name="inbox" class="mx-auto size-8 text-zinc-400" />
+                <flux:icon name="inbox" class="mx-auto size-8 text-zinc-400 dark:text-zinc-500" />
                 <h3 class="mt-3 text-base font-semibold text-zinc-900 dark:text-white">No cases yet</h3>
                 <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">Raise a case when your organisation needs support.</p>
                 <flux:button class="mt-5" href="{{ route('portal.cases.create') }}" variant="primary" wire:navigate>Raise a case</flux:button>

@@ -24,6 +24,7 @@
                 name="Visit Scheduled At"
                 webkit="
                 [&::-webkit-calendar-picker-indicator]:bg-gray-400 
+                dark:[&::-webkit-calendar-picker-indicator]:bg-gray-600
                 [&::-webkit-calendar-picker-indicator]:p-1 
                 [&::-webkit-calendar-picker-indicator]:rounded"
             />                        
@@ -49,6 +50,7 @@
                         name="Engineer Enroute At"
                         webkit="
                         [&::-webkit-calendar-picker-indicator]:bg-gray-400 
+                        dark:[&::-webkit-calendar-picker-indicator]:bg-gray-600
                         [&::-webkit-calendar-picker-indicator]:p-1 
                         [&::-webkit-calendar-picker-indicator]:rounded"
                     />                        
@@ -63,6 +65,7 @@
                         name="Engineer Onsite At"
                         webkit="
                         [&::-webkit-calendar-picker-indicator]:bg-gray-400 
+                        dark:[&::-webkit-calendar-picker-indicator]:bg-gray-600
                         [&::-webkit-calendar-picker-indicator]:p-1  
                         [&::-webkit-calendar-picker-indicator]:rounded"
                     />
@@ -77,6 +80,7 @@
                         name="Engineer Offsite At"
                         webkit="
                         [&::-webkit-calendar-picker-indicator]:bg-gray-400 
+                        dark:[&::-webkit-calendar-picker-indicator]:bg-gray-600
                         [&::-webkit-calendar-picker-indicator]:p-1  
                         [&::-webkit-calendar-picker-indicator]:rounded"
                     />

@@ -16,16 +16,16 @@
 
 <div {{ $attributes->merge([
     'class' => 'w-full rounded-xl border border-slate-200
-                bg-white p-3 shadow-sm',
+                bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-gray-900',
 ]) }}>
 
     {{-- Compact header --}}
     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div>
-            <h2 class="text-base font-semibold text-slate-900">
+            <h2 class="text-base font-semibold text-slate-900 dark:text-white">
                 Case Status Overview
             </h2>
-            <p class="text-xs text-slate-500">
+            <p class="text-xs text-slate-500 dark:text-slate-400">
                 SLA, ownership and case activity
             </p>
         </div>
@@ -44,6 +44,9 @@
             bg="bg-red-50"
             text="text-red-700"
             hover="bg-red-100"
+            darkBg="dark:bg-red-400/10"
+            darkText="dark:text-red-300"
+            darkHover="dark:hover:bg-red-400/20"
             action="allBreachedCases"
         />
 
@@ -52,6 +55,9 @@
             bg="bg-amber-50"
             text="text-amber-700"
             hover="bg-amber-100"
+            darkBg="dark:bg-amber-400/10"
+            darkText="dark:text-amber-300"
+            darkHover="dark:hover:bg-amber-400/20"
             action="allNearBreachCases"
         />
 
@@ -60,6 +66,9 @@
             bg="bg-blue-50"
             text="text-blue-700"
             hover="bg-blue-100"
+            darkBg="dark:bg-blue-400/10"
+            darkText="dark:text-blue-300"
+            darkHover="dark:hover:bg-blue-400/20"
             action="allUnassignedCases"
         />
 
@@ -68,6 +77,9 @@
             bg="bg-violet-50"
             text="text-violet-700"
             hover="bg-violet-100"
+            darkBg="dark:bg-violet-400/10"
+            darkText="dark:text-violet-300"
+            darkHover="dark:hover:bg-violet-400/20"
             action="allNoUpdateCases"
         />
 
@@ -76,6 +88,9 @@
             bg="bg-zinc-100"
             text="text-zinc-700"
             hover="bg-zinc-200"
+            darkBg="dark:bg-zinc-400/10"
+            darkText="dark:text-zinc-300"
+            darkHover="dark:hover:bg-zinc-400/20"
             action="allPausedCases"
         />
 
@@ -84,6 +99,9 @@
             bg="bg-emerald-50"
             text="text-emerald-700"
             hover="bg-emerald-100"
+            darkBg="dark:bg-emerald-400/10"
+            darkText="dark:text-emerald-300"
+            darkHover="dark:hover:bg-emerald-400/20"
             action="allResolvedCases"
         />
 
@@ -92,6 +110,9 @@
             bg="bg-slate-800"
             text="text-white"
             hover="bg-slate-700"
+            darkBg="dark:bg-slate-700"
+            darkText="dark:text-white"
+            darkHover="dark:hover:bg-slate-600"
             action="allClosedCases"
         />
 
@@ -100,6 +121,9 @@
             bg="bg-white"
             text="text-slate-600"
             hover="bg-slate-50"
+            darkBg="dark:bg-slate-800"
+            darkText="dark:text-slate-300"
+            darkHover="dark:hover:bg-slate-700"
             action="resetFilterSelection"
         />
     </div>
@@ -117,6 +141,11 @@
             headerText="text-red-700"
             titleText="text-red-900"
             subTitleText="text-red-600"
+            containerBgDark="dark:bg-red-400/10"
+            containerBorderDark="dark:border-red-400/20"
+            headerTextDark="dark:text-red-200"
+            titleTextDark="dark:text-red-300"
+            subTitleTextDark="dark:text-red-300"
         />
 
         <x-casemanagement::page-elements.box-element
@@ -128,6 +157,11 @@
             headerText="text-amber-700"
             titleText="text-amber-900"
             subTitleText="text-amber-700"
+            containerBgDark="dark:bg-amber-400/10"
+            containerBorderDark="dark:border-amber-400/20"
+            headerTextDark="dark:text-amber-200"
+            titleTextDark="dark:text-amber-300"
+            subTitleTextDark="dark:text-amber-300"
         />
 
         <x-casemanagement::page-elements.box-element
@@ -139,6 +173,11 @@
             headerText="text-blue-700"
             titleText="text-blue-900"
             subTitleText="text-blue-600"
+            containerBgDark="dark:bg-blue-400/10"
+            containerBorderDark="dark:border-blue-400/20"
+            headerTextDark="dark:text-blue-200"
+            titleTextDark="dark:text-blue-300"
+            subTitleTextDark="dark:text-blue-300"
         />
 
         <x-casemanagement::page-elements.box-element
@@ -150,6 +189,11 @@
             headerText="text-violet-700"
             titleText="text-violet-900"
             subTitleText="text-violet-600"
+            containerBgDark="dark:bg-violet-400/10"
+            containerBorderDark="dark:border-violet-400/20"
+            headerTextDark="dark:text-violet-200"
+            titleTextDark="dark:text-violet-300"
+            subTitleTextDark="dark:text-violet-300"
         />
 
         <x-casemanagement::page-elements.box-element
@@ -161,6 +205,11 @@
             headerText="text-zinc-700"
             titleText="text-zinc-900"
             subTitleText="text-zinc-600"
+            containerBgDark="dark:bg-zinc-400/10"
+            containerBorderDark="dark:border-zinc-400/20"
+            headerTextDark="dark:text-zinc-200"
+            titleTextDark="dark:text-zinc-300"
+            subTitleTextDark="dark:text-zinc-300"
         />
 
         <x-casemanagement::page-elements.box-element
@@ -172,6 +221,11 @@
             headerText="text-emerald-700"
             titleText="text-emerald-900"
             subTitleText="text-emerald-700"
+            containerBgDark="dark:bg-emerald-400/10"
+            containerBorderDark="dark:border-emerald-400/20"
+            headerTextDark="dark:text-emerald-200"
+            titleTextDark="dark:text-emerald-300"
+            subTitleTextDark="dark:text-emerald-300"
         />
 
         <x-casemanagement::page-elements.box-element
@@ -183,6 +237,11 @@
             headerText="text-rose-700"
             titleText="text-rose-900"
             subTitleText="text-rose-600"
+            containerBgDark="dark:bg-rose-400/10"
+            containerBorderDark="dark:border-rose-400/20"
+            headerTextDark="dark:text-rose-200"
+            titleTextDark="dark:text-rose-300"
+            subTitleTextDark="dark:text-rose-300"
         />
 
     </div>

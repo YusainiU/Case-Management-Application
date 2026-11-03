@@ -11,19 +11,22 @@
         focus-visible:ring-inset focus-visible:ring-indigo-500';
 
     $activeTabClasses = $baseTabClasses . '
-        border-indigo-600 bg-white text-indigo-700';
+        border-indigo-600 bg-white text-indigo-700
+        dark:border-indigo-400 dark:bg-gray-900 dark:text-indigo-300';
 
     $inactiveTabClasses = $baseTabClasses . '
         border-transparent bg-white text-slate-500
-        hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800';
+        hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800
+        dark:bg-gray-900 dark:text-slate-400
+        dark:hover:border-slate-700 dark:hover:bg-gray-800 dark:hover:text-slate-200';
 @endphp
 
 <div {{ $attributes->merge([
-    'class' => 'w-full min-w-0 bg-white text-slate-800',
+    'class' => 'w-full min-w-0 bg-white text-slate-800 dark:bg-gray-900 dark:text-slate-200',
 ]) }}>
 
     {{-- Tab navigation --}}
-    <div class="overflow-x-auto border-b border-slate-200">
+    <div class="overflow-x-auto border-b border-slate-200 dark:border-slate-800">
         <ul
             class="flex min-w-max items-center gap-1 px-2"
             role="tablist"
@@ -59,7 +62,8 @@
         tabindex="0"
         class="min-w-0 bg-white p-4 text-slate-800 focus:outline-none
                focus-visible:ring-2 focus-visible:ring-inset
-               focus-visible:ring-indigo-500 sm:p-5"
+               focus-visible:ring-indigo-500 sm:p-5
+               dark:bg-gray-900 dark:text-slate-200"
     >
         {{ $slot }}
     </div>

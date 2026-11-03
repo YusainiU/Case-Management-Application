@@ -9,8 +9,8 @@
     'confirmText' => 'Confirm',
     'showFooter' => true,
     'showConfirm' => true,
-    'bgColor' => 'bg-white',
-    'borderColor' => 'border-slate-200',
+    'bgColor' => 'bg-white dark:bg-gray-900',
+    'borderColor' => 'border-slate-200 dark:border-slate-800',
     'border' => 'border rounded-2xl shadow-2xl',
     'width' => 'w-full',
     'mx' => 'mx-0',
@@ -40,15 +40,15 @@
         {{-- Header --}}
         <header
             class="flex shrink-0 items-start justify-between gap-4
-                   border-b border-slate-200 px-5 py-5 sm:px-7"
+                   border-b border-slate-200 px-5 py-5 sm:px-7 dark:border-slate-800"
         >
             <div class="min-w-0">
-                <h2 class="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900 sm:text-xl dark:text-white">
                     {{ $title }}
                 </h2>
 
                 @if ($description)
-                    <p class="mt-1.5 text-sm leading-6 text-slate-500">
+                    <p class="mt-1.5 text-sm leading-6 text-slate-500 dark:text-slate-400">
                         {{ $description }}
                     </p>
                 @endif
@@ -61,7 +61,8 @@
                 class="inline-flex h-9 w-9 shrink-0 items-center justify-center
                        rounded-lg text-slate-400 transition
                        hover:bg-slate-100 hover:text-slate-700
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500
+                       dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-200"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +92,7 @@
             <footer
                 class="flex shrink-0 justify-end gap-3 border-t
                        border-slate-200 bg-slate-50/80 px-5 py-4
-                       sm:px-7"
+                       sm:px-7 dark:border-slate-800 dark:bg-gray-800/60"
             >
                 <button
                     type="button"
@@ -100,7 +101,8 @@
                            px-4 py-2.5 text-sm font-medium text-slate-700
                            transition hover:bg-slate-50
                            focus:outline-none focus:ring-2
-                           focus:ring-indigo-500"
+                           focus:ring-indigo-500 dark:border-slate-700 dark:bg-gray-800
+                           dark:text-slate-200 dark:hover:bg-gray-700"
                 >
                     {{ $cancelText }}
                 </button>
@@ -113,7 +115,8 @@
                                text-sm font-semibold text-white shadow-sm
                                transition hover:bg-indigo-700
                                focus:outline-none focus:ring-2
-                               focus:ring-indigo-500 focus:ring-offset-2"
+                               focus:ring-indigo-500 focus:ring-offset-2
+                               dark:focus:ring-offset-gray-900"
                     >
                         {{ $confirmText }}
                     </button>

@@ -2,10 +2,10 @@
     <div id="modal">
         <div
             class="fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-1000 before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto">
-            <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-6 relative">
+            <div class="relative w-full max-w-md rounded-lg bg-white p-6 shadow-lg dark:border dark:border-gray-700 dark:bg-gray-900">
                 <button wire:click='closeDeleteModal'>
                     <svg id="closeIcon" xmlns="http://www.w3.org/2000/svg"
-                        class="w-3.5 h-3.5 cursor-pointer shrink-0 fill-gray-400 hover:fill-red-500 float-right"
+                        class="float-right h-3.5 w-3.5 shrink-0 cursor-pointer fill-gray-400 hover:fill-red-500 dark:fill-gray-500 dark:hover:fill-red-400"
                         viewBox="0 0 320.591 320.591">
                         <path
                             d="M30.391 318.583a30.37 30.37 0 0 1-21.56-7.288c-11.774-11.844-11.774-30.973 0-42.817L266.643 10.665c12.246-11.459 31.462-10.822 42.921 1.424 10.362 11.074 10.966 28.095 1.414 39.875L51.647 311.295a30.366 30.366 0 0 1-21.256 7.288z"
@@ -25,9 +25,9 @@
                             data-original="#000000" />
                     </svg>
                     <div class="mt-6">
-                        <h4 class="text-slate-900 text-lg font-semibold">Are you sure you want to delete
+                        <h4 class="text-lg font-semibold text-slate-900 dark:text-white">Are you sure you want to delete
                             {{ $recordToDelete }}</h4>
-                        <p class="text-sm text-slate-600 mt-3">
+                        <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
                             {{ $deleteText ?? null }}
                         </p>
                     </div>
@@ -35,12 +35,12 @@
 
                 <div class="flex flex-col space-y-3">
                     <button type="button"
-                        class="px-4 py-2 rounded-md cursor-pointer text-white text-sm font-medium tracking-wide bg-red-500 hover:bg-red-600 active:bg-red-500"
+                        class="cursor-pointer rounded-md bg-red-500 px-4 py-2 text-sm font-medium tracking-wide text-white hover:bg-red-600 active:bg-red-500 dark:bg-red-600 dark:hover:bg-red-500"
                         wire:click="{{ $action }}">
                         Delete
                     </button>
                     <button id="closeButton" type="button" wire:click="closeDeleteModal"
-                        class="px-4 py-2 rounded-md cursor-pointer text-slate-900 text-sm font-medium tracking-wide bg-gray-200 hover:bg-gray-300 active:bg-gray-200">
+                        class="cursor-pointer rounded-md bg-gray-200 px-4 py-2 text-sm font-medium tracking-wide text-slate-900 hover:bg-gray-300 active:bg-gray-200 dark:bg-gray-700 dark:text-slate-200 dark:hover:bg-gray-600 dark:active:bg-gray-700">
                         Cancel
                     </button>
                 </div>

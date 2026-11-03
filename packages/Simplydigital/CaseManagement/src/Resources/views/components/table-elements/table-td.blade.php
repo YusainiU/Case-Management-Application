@@ -1,6 +1,6 @@
 
 @props([
-    'textcolor' => 'text-slate-600',
+    'textcolor' => 'text-slate-600 dark:text-slate-300',
     'px' => 'px-5',
     'py' => 'py-4',
     'whitespace' => 'whitespace-nowrap',
@@ -9,7 +9,7 @@
 
 <td
     @class([
-        'border-b border-slate-100 text-sm leading-5',
+        'border-b border-slate-100 text-sm leading-5 dark:border-slate-700',
         'last:border-b-0',
         $textcolor,
         $px,

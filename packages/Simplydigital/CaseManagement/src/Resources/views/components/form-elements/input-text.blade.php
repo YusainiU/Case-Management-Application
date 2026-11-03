@@ -19,7 +19,7 @@
     // Styling
     'appearance' => 'appearance-none',
     'border' => 'block rounded-xl border shadow-sm transition',
-    'textcolor' => 'text-gray-900',
+    'textcolor' => 'text-gray-900 dark:text-gray-100',
     'textcolorDisabled' => 'text-gray-500 dark:text-gray-400',
     'bordercolor' => 'border-gray-200 dark:border-gray-700',
     'borderColorDisabled' => 'border-gray-200 dark:border-gray-700',
@@ -27,8 +27,8 @@
     'py' => 'py-3',
     'px' => 'px-3.5',
     'mb' => 'mb-0',
-    'bgcolor' => 'bg-gray-50',
-    'bgfocus' => 'focus:bg-gray-200',
+    'bgcolor' => 'bg-gray-50 dark:bg-gray-800',
+    'bgfocus' => 'focus:bg-gray-200 dark:focus:bg-gray-700',
     'width' => 'w-full',
     'webkit' => null,
 
@@ -58,7 +58,7 @@
             $px,
             $mb,
             $bgcolor => !$disabled,
-            'cursor-not-allowed bg-gray-100' => $disabled,
+            'cursor-not-allowed bg-gray-100 dark:bg-gray-900' => $disabled,
             $bgfocus => !$disabled,
             $width,
             'placeholder:text-gray-400 dark:placeholder:text-gray-500',

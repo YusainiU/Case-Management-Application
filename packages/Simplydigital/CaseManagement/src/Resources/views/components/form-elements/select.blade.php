@@ -12,8 +12,8 @@
     // Styling
     'borderColor' => 'border-gray-200 dark:border-gray-700',
     'borderColorDisabled' => 'border-gray-200 dark:border-gray-700',
-    'textColor' => 'text-gray-900',
-    'textColorDisabled' => 'text-gray-50',
+    'textColor' => 'text-gray-900 dark:text-gray-100',
+    'textColorDisabled' => 'text-gray-500 dark:text-gray-400',
     'class' => '',
 ])
 
@@ -48,6 +48,7 @@
             @class([
                 'block w-full appearance-none rounded-xl border',
                 'bg-gray-50 py-3 pl-3.5 pr-10 text-sm shadow-sm',
+                'dark:scheme-dark',
                 'transition focus:outline-none focus:ring-2',
                 'focus:ring-indigo-500/20',
                 $textColor => !$disabled,
@@ -56,19 +57,19 @@
                 $borderColorDisabled => $disabled,
                 'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500/60' => $hasError,
                 'focus:border-indigo-500 dark:focus:border-indigo-400' => !$disabled && !$hasError,
-                'cursor-not-allowed bg-gray-50' => $disabled,
-                'dark:bg-gray-50' => !$disabled,
+                'cursor-not-allowed bg-gray-50 dark:bg-gray-900' => $disabled,
+                'dark:bg-gray-800' => !$disabled,
                 'dark:focus:ring-indigo-400/20',
-                'dark:text-gray-500' => $disabled,
                 $class,
             ])
         >
             @unless ($isMultiple)
-                <option value="">-- {{ $placeholder }} --</option>
+                <option value="" class="text-gray-900 dark:text-gray-100">-- {{ $placeholder }} --</option>
             @endunless
 
             @foreach ($options as $key => $value)
                 <option
+                    class="text-gray-900 dark:text-gray-100"
                     value="{{ $key }}"
                     @selected(
                         !$isMultiple

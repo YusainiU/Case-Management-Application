@@ -41,6 +41,7 @@
                 name="Responded At"
                 webkit="
                 [&::-webkit-calendar-picker-indicator]:bg-gray-400 
+                dark:[&::-webkit-calendar-picker-indicator]:bg-gray-600
                 [&::-webkit-calendar-picker-indicator]:p-1 
                 [&::-webkit-calendar-picker-indicator]:rounded"
                 :disabled="$case->slaTasks?->activePause !== null"
@@ -58,6 +59,7 @@
                 name="Fixed At"
                 webkit="
                 [&::-webkit-calendar-picker-indicator]:bg-gray-400 
+                dark:[&::-webkit-calendar-picker-indicator]:bg-gray-600
                 [&::-webkit-calendar-picker-indicator]:p-1 
                 [&::-webkit-calendar-picker-indicator]:rounded"
                 :disabled="$case->slaTasks?->activePause !== null"

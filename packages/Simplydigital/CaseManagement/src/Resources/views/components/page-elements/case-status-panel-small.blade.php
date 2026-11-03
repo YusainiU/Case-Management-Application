@@ -9,7 +9,7 @@
 
 @props(['case'])
 
-<div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 mb-4">
+<div class="mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
     <div class="flex flex-wrap items-center gap-3">
 
         <!-- Expired -->
@@ -27,6 +27,9 @@
                 containerBorder="border-amber-100"
                 bulletBg="bg-amber-600 animate-pulse"
                 paraText="text-gray-500"
+                containerBgDark="dark:bg-amber-400/10"
+                containerBorderDark="dark:border-amber-400/20"
+                paraTextDark="dark:text-amber-300"
             />
         @endif
 
@@ -38,6 +41,9 @@
                 containerBorder="border-green-100"
                 bulletBg="bg-green-600"
                 paraText="text-green-500"
+                containerBgDark="dark:bg-green-400/10"
+                containerBorderDark="dark:border-green-400/20"
+                paraTextDark="dark:text-green-300"
             />        
         @endif
 
@@ -49,6 +55,9 @@
                 containerBorder="border-blue-100"
                 bulletBg="bg-blue-600"
                 paraText="text-blue-500"
+                containerBgDark="dark:bg-blue-400/10"
+                containerBorderDark="dark:border-blue-400/20"
+                paraTextDark="dark:text-blue-300"
             />
         @endif
 
@@ -60,6 +69,9 @@
                 containerBorder="border-gray-100"
                 bulletBg="bg-gray-600"
                 paraText="text-gray-500"
+                containerBgDark="dark:bg-gray-400/10"
+                containerBorderDark="dark:border-gray-400/20"
+                paraTextDark="dark:text-gray-300"
             />
         @endif
 
@@ -71,6 +83,9 @@
                 containerBorder="border-gray-100"
                 bulletBg="{{ $important }}"
                 paraText="text-gray-500"
+                containerBgDark="dark:bg-red-400/10"
+                containerBorderDark="dark:border-red-400/20"
+                paraTextDark="dark:text-red-300"
             />
         @endif
 
@@ -82,6 +97,9 @@
                 containerBorder="border-gray-100"
                 bulletBg="{{ $paused }}"
                 paraText="text-gray-500"
+                containerBgDark="dark:bg-gray-400/10"
+                containerBorderDark="dark:border-gray-400/20"
+                paraTextDark="dark:text-gray-300"
             />
         @endif
 
@@ -92,6 +110,9 @@
             containerBorder="border-blue-100"
             bulletBg="{{ $information }}"
             paraText="text-blue-500 font-extrabold"
+            containerBgDark="dark:bg-blue-400/10"
+            containerBorderDark="dark:border-blue-400/20"
+            paraTextDark="dark:text-blue-300"
         />
 
         @if ($case->slaTasks->responded_at)
@@ -101,6 +122,9 @@
                 containerBorder="border-blue-100"
                 bulletBg="{{ $information }}"
                 paraText="text-blue-500 font-extrabold"
+                containerBgDark="dark:bg-blue-400/10"
+                containerBorderDark="dark:border-blue-400/20"
+                paraTextDark="dark:text-blue-300"
             />
         @endif
 
@@ -113,6 +137,9 @@
                 containerBorder="border-blue-100"
                 bulletBg="{{ $information }}"
                 paraText="text-blue-500 font-extrabold"
+                containerBgDark="dark:bg-blue-400/10"
+                containerBorderDark="dark:border-blue-400/20"
+                paraTextDark="dark:text-blue-300"
             />
         @endif
 
@@ -124,6 +151,9 @@
                 containerBorder="border-blue-100"
                 bulletBg="{{ $information }}"
                 paraText="text-blue-500 font-extrabold"
+                containerBgDark="dark:bg-blue-400/10"
+                containerBorderDark="dark:border-blue-400/20"
+                paraTextDark="dark:text-blue-300"
             />
         @endif
         
@@ -135,6 +165,9 @@
                 containerBorder="border-red-100"
                 bulletBg="{{ $warning }}"
                 paraText="text-red-500 font-extrabold"
+                containerBgDark="dark:bg-red-400/10"
+                containerBorderDark="dark:border-red-400/20"
+                paraTextDark="dark:text-red-300"
             />            
         @endif
     
@@ -146,6 +179,9 @@
                 containerBorder="border-blue-100"
                 bulletBg="{{ $information }}"
                 paraText="text-blue-500 font-extrabold"
+                containerBgDark="dark:bg-blue-400/10"
+                containerBorderDark="dark:border-blue-400/20"
+                paraTextDark="dark:text-blue-300"
             />
         @endif
 
