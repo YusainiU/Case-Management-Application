@@ -21,18 +21,18 @@
     <section class="">
 
         <div
-            class="flex flex-col gap-3 border-b border-slate-200
+            class="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-700
             px-5 py-4 sm:flex-row sm:items-center
             sm:justify-between sm:px-6">
             @if ($suppliers)
-                <div class="text-sm text-slate-500">
+                <div class="text-sm text-slate-500 dark:text-slate-400">
                     @if ($suppliers->total() > 0)
                         Showing
-                        <span class="font-semibold text-slate-700">
+                        <span class="font-semibold text-slate-700 dark:text-slate-200">
                             {{ $suppliers->firstItem() }}–{{ $suppliers->lastItem() }}
                         </span>
                         of
-                        <span class="font-semibold text-slate-700">
+                        <span class="font-semibold text-slate-700 dark:text-slate-200">
                             {{ $suppliers->total() }}
                         </span>
                         Supplier
@@ -48,7 +48,7 @@
 
             <div class="min-w-0">
                 <x-casemanagement::form-elements.input-filter
-                    class="rounded-xl border shadow-sm transition border-slate-500" />
+                    class="rounded-xl border border-slate-300 bg-white shadow-sm transition dark:border-slate-700 dark:bg-gray-900" />
             </div>
             <x-casemanagement::page-elements.pagination :paginator="$suppliers" />
 
@@ -73,7 +73,7 @@
                         Actions
                     </x-casemanagement::table-elements.table-th>
                 </thead>
-                <tbody class="divide-y divide-slate-100 bg-white">
+                <tbody class="divide-y divide-slate-100 bg-white dark:divide-slate-700 dark:bg-gray-900">
                     @if ($suppliers?->isNotEmpty())
                         @foreach ($suppliers as $supplier)
                             <tr>

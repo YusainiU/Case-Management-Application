@@ -5,10 +5,10 @@
     'rows' => 4,
     'hint' => null,
     'disabled' => false,
-    'borderColor' => 'border-gray-200',
-    'borderColorDisabled' => 'border-gray-200',
-    'textColor' => 'text-gray-900',
-    'textColorDisabled' => 'text-gray-500',
+    'borderColor' => 'border-gray-200 dark:border-gray-700',
+    'borderColorDisabled' => 'border-gray-200 dark:border-gray-700',
+    'textColor' => 'text-gray-900 dark:text-gray-100',
+    'textColorDisabled' => 'text-gray-500 dark:text-gray-400',
     'class' => '',
 ])
 
@@ -29,8 +29,8 @@
         @endif
         @disabled($disabled)
         @class([
-            'block w-full rounded-xl border bg-gray-50 px-3.5 py-3',
-            'text-sm leading-6 text-gray-900 placeholder:text-gray-400',
+            'block w-full rounded-xl border bg-gray-50 px-3.5 py-3 dark:bg-gray-800',
+            'text-sm leading-6 text-gray-900 placeholder:text-gray-400 dark:text-gray-100 dark:placeholder:text-gray-500',
             'shadow-sm transition duration-150 resize-y',
             'focus:outline-none focus:ring-2',
             'focus:ring-indigo-500/20',
@@ -38,9 +38,9 @@
             $textColorDisabled => $disabled,
             $borderColor => !$disabled && !$hasError,
             $borderColorDisabled => $disabled,
-            'border-red-300 focus:border-red-500 focus:ring-red-500/20' => $hasError,
-            'focus:border-indigo-500' => !$disabled && !$hasError,
-            'cursor-not-allowed bg-gray-100' => $disabled,
+            'border-red-300 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500/60' => $hasError,
+            'focus:border-indigo-500 dark:focus:border-indigo-400' => !$disabled && !$hasError,
+            'cursor-not-allowed bg-gray-100 dark:bg-gray-900' => $disabled,
             $class,
         ])
         @if ($hasError)
@@ -50,7 +50,7 @@
     ></textarea>
 
     @if ($hint)
-        <p class="mt-2 text-xs leading-5 text-gray-500">
+        <p class="mt-2 text-xs leading-5 text-gray-500 dark:text-gray-400">
             {{ $hint }}
         </p>
     @endif
@@ -58,7 +58,7 @@
     @if ($hasError)
         <p
             id="{{ ($id ?: $name) . '-error' }}"
-            class="mt-2 flex items-start gap-1.5 text-sm text-red-600"
+            class="mt-2 flex items-start gap-1.5 text-sm text-red-600 dark:text-red-400"
         >
             <svg
                 xmlns="http://www.w3.org/2000/svg"

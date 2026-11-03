@@ -1,4 +1,4 @@
-<div class="min-h-screen text-slate-900 bg-gray-50 grid grid-cols-1 gap-4 p-4">
+<div class="grid min-h-screen grid-cols-1 gap-4 bg-gray-50 p-4 text-slate-900 dark:bg-gray-950 dark:text-slate-100">
 
     @if ($displayCreateModal)
         <livewire:create-product />
@@ -20,18 +20,18 @@
 
         {{-- Directory header --}}
         <div
-            class="flex flex-col gap-3 border-b border-slate-200
+            class="flex flex-col gap-3 border-b border-slate-200 dark:border-slate-700
             px-5 py-4 sm:flex-row sm:items-center
             sm:justify-between sm:px-6">
             @if ($products)
-                <div class="text-sm text-slate-500">
+                <div class="text-sm text-slate-500 dark:text-slate-400">
                     @if ($products->total() > 0)
                         Showing
-                        <span class="font-semibold text-slate-700">
+                        <span class="font-semibold text-slate-700 dark:text-slate-200">
                             {{ $products->firstItem() }}–{{ $products->lastItem() }}
                         </span>
                         of
-                        <span class="font-semibold text-slate-700">
+                        <span class="font-semibold text-slate-700 dark:text-slate-200">
                             {{ $products->total() }}
                         </span>
                         Products
@@ -46,7 +46,7 @@
         <div class="flex flex-col gap-4 px-5 py-4 sm:px-6">
             <div class="min-w-0">
                 <x-casemanagement::form-elements.input-filter
-                    class="rounded-xl border shadow-sm transition border-slate-500" />
+                    class="rounded-xl border border-slate-300 bg-white shadow-sm transition dark:border-slate-700 dark:bg-gray-900" />
             </div>
             <x-casemanagement::page-elements.pagination :paginator="$products" />
         </div>
@@ -76,7 +76,7 @@
                         Actions
                     </x-casemanagement::table-elements.table-th>
                 </thead>
-                <tbody class="divide-y divide-slate-100 bg-white">
+                <tbody class="divide-y divide-slate-100 bg-white dark:divide-slate-700 dark:bg-gray-900">
                     @if ($products?->isNotEmpty())
                         @foreach ($products as $product)
                             <tr>
@@ -112,7 +112,7 @@
                         <tr>
                             <x-casemanagement::table-elements.table-td colspan="7">
                                 <div class="flex flex-col items-center justify-center py-4">
-                                    <p class="mt-2 text-sm text-gray-500">No products found.</p>
+                                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">No products found.</p>
                                 </div>
                             </x-casemanagement::table-elements.table-td>
                         </tr>

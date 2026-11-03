@@ -27,7 +27,7 @@
 
             <section
                 class="rounded-xl border border-slate-200
-                       bg-slate-50/80 p-4 sm:p-5"
+                       bg-slate-50/80 p-4 sm:p-5 dark:border-slate-800 dark:bg-gray-800/60"
                 aria-label="Case overview"
             >
                 <x-casemanagement::page-elements.case-status-panel-small
@@ -37,7 +37,7 @@
         </div>
 
         {{-- Section separator --}}
-        <div class="my-6 border-t border-slate-200"></div>
+        <div class="my-6 border-t border-slate-200 dark:border-slate-700"></div>
 
         {{-- Case navigation and content --}}
         <section
@@ -47,7 +47,7 @@
         >
             <nav
                 class="h-fit rounded-xl border border-slate-200
-                       bg-slate-50 p-2"
+                       bg-slate-50 p-2 dark:border-slate-800 dark:bg-gray-800"
                 aria-label="Case management navigation"
             >
                 <ul class="space-y-1">
@@ -58,12 +58,12 @@
                                 wire:click="selectTab('{{ $header }}')"
                                 aria-current="{{ $header === $selectedTab ? 'page' : 'false' }}"
                                 class="{{ $header === $selectedTab
-                                    ? 'bg-white text-indigo-700 shadow-sm ring-1 ring-slate-200'
-                                    : 'text-slate-600 hover:bg-white hover:text-slate-900' }}
+                                    ? 'bg-white text-indigo-700 shadow-sm ring-1 ring-slate-200 dark:bg-gray-900 dark:text-indigo-300 dark:ring-slate-700'
+                                    : 'text-slate-600 hover:bg-white hover:text-slate-900 dark:text-slate-300 dark:hover:bg-gray-900 dark:hover:text-white' }}
                                     flex w-full items-center rounded-lg px-3 py-2.5
                                     cursor-pointer text-left text-sm font-medium transition
                                     focus:outline-none focus-visible:ring-2
-                                    focus-visible:ring-indigo-500"
+                                    focus-visible:ring-indigo-500 dark:focus-visible:ring-offset-gray-800"
                             >
                                 {{ $headerName }}
                             </button>
@@ -72,13 +72,13 @@
                 </ul>
             </nav>
 
-            <div class="min-w-0 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+            <div class="min-w-0 rounded-xl border border-slate-200 bg-white p-4 sm:p-5 dark:border-slate-800 dark:bg-gray-900">
                 @if ($this->selectedTab === 'description')
                     <section aria-labelledby="case-description-heading">
                         <div class="mb-3 flex items-center gap-2.5">
                             <span
                                 class="flex h-8 w-8 items-center justify-center
-                                       rounded-lg bg-indigo-50 text-indigo-600"
+                                       rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-400/10 dark:text-indigo-300"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +102,7 @@
 
                             <h3
                                 id="case-description-heading"
-                                class="text-sm font-semibold text-slate-900"
+                                class="text-sm font-semibold text-slate-900 dark:text-white"
                             >
                                 Case description
                             </h3>
@@ -110,12 +110,12 @@
 
                         <div
                             class="text-sm leading-7 text-slate-600
-                                   [overflow-wrap:anywhere]"
+                                   [overflow-wrap:anywhere] dark:text-slate-300"
                         >
                             @if (filled($case->description))
                                 {{ $case->description }}
                             @else
-                                <span class="italic text-slate-400">
+                                <span class="italic text-slate-400 dark:text-slate-500">
                                     No description provided.
                                 </span>
                             @endif

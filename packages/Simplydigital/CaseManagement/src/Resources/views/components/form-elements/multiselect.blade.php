@@ -18,18 +18,18 @@
 >
     {{-- Selected items and search input --}}
     <div
-        class="flex min-h-12 flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2.5 shadow-sm transition focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20"
+        class="flex min-h-12 flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-2.5 shadow-sm transition focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 dark:border-gray-700 dark:bg-gray-800 dark:focus-within:border-indigo-400"
         @click="open = true; $nextTick(() => $refs.search.focus())"
     >
         <template x-for="item in selectedOptions" :key="item.value">
             <span
-                class="inline-flex max-w-full items-center gap-1.5 rounded-lg border border-indigo-100 bg-indigo-50 px-2.5 py-1 text-sm font-medium text-gray-900"
+                class="inline-flex max-w-full items-center gap-1.5 rounded-lg border border-indigo-100 bg-indigo-50 px-2.5 py-1 text-sm font-medium text-gray-900 dark:border-indigo-400/20 dark:bg-indigo-400/10 dark:text-indigo-100"
             >
                 <span class="truncate" x-text="item.label"></span>
 
                 <button
                     type="button"
-                    class="shrink-0 rounded text-gray-500 transition hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/30"
+                    class="shrink-0 rounded text-gray-500 transition hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/30 dark:text-gray-400 dark:hover:text-red-400"
                     :aria-label="'Remove ' + item.label"
                     @click.stop="remove(item.value)"
                 >
@@ -55,7 +55,7 @@
             x-model="search"
             type="text"
             autocomplete="off"
-            class="min-w-24 flex-1 border-0 bg-gray-50 px-1 py-1 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-0 focus:outline-none focus:ring-0"
+            class="min-w-24 flex-1 border-0 bg-gray-50 px-1 py-1 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:border-0 focus:outline-none focus:ring-0 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
             :placeholder="selected.length ? '' : @js($placeholder)"
             @focus="open = true"
             @keydown.escape.window="open = false"
@@ -73,14 +73,14 @@
         x-show="open"
         x-transition.origin.top
         @click.outside="open = false"
-        class="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-gray-200 bg-gray-50 shadow-lg"
+        class="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-gray-200 bg-gray-50 shadow-lg dark:border-gray-700 dark:bg-gray-900"
     >
         <div class="max-h-64 overflow-y-auto p-1.5">
             <template x-for="option in filteredOptions" :key="option.value">
                 <button
                     type="button"
-                    class="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-gray-900 transition hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                    :class="selected.includes(option.value) ? 'bg-indigo-50' : 'bg-gray-50'"
+                    class="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-gray-900 transition hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:text-gray-100 dark:hover:bg-gray-800 dark:focus:bg-gray-800"
+                    :class="selected.includes(option.value) ? 'bg-indigo-50 dark:bg-indigo-400/10' : 'bg-gray-50 dark:bg-gray-900'"
                     :aria-pressed="selected.includes(option.value)"
                     @click.prevent="toggle(option)"
                 >
@@ -89,7 +89,7 @@
                     <svg
                         x-show="selected.includes(option.value)"
                         xmlns="http://www.w3.org/2000/svg"
-                        class="size-4 shrink-0 text-indigo-600"
+                        class="size-4 shrink-0 text-indigo-600 dark:text-indigo-400"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -107,11 +107,11 @@
 
             <div
                 x-show="filteredOptions.length === 0"
-                class="px-3 py-6 text-center text-sm text-gray-500"
+                class="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400"
             >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    class="mx-auto mb-2 size-5 text-gray-400"
+                    class="mx-auto mb-2 size-5 text-gray-400 dark:text-gray-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -128,16 +128,16 @@
         {{-- Footer --}}
         <div
             x-show="selected.length > 0"
-            class="flex items-center justify-between border-t border-gray-200 px-3 py-2"
+            class="flex items-center justify-between border-t border-gray-200 px-3 py-2 dark:border-gray-700"
         >
             <span
-                class="text-xs text-gray-500"
+                class="text-xs text-gray-500 dark:text-gray-400"
                 x-text="selected.length + (selected.length === 1 ? ' item selected' : ' items selected')"
             ></span>
 
             <button
                 type="button"
-                class="text-xs font-medium text-gray-600 transition hover:text-red-600"
+                class="text-xs font-medium text-gray-600 transition hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400"
                 @click="selected = []; search = ''"
             >
                 Clear all

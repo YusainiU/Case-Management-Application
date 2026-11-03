@@ -2,7 +2,7 @@
     use Carbon\Carbon;
 @endphp
 
-<div class="space-y-6">
+<div class="space-y-6 text-gray-900 dark:text-gray-100">
 
     {{-- Existing Livewire modals --}}
     @if ($displayCreateModal)
@@ -21,11 +21,11 @@
     @if ($displayDescription)
         <x-casemanagement::page-elements.modal-simple title="{{ $descriptionDetails['name'] }}"
             cancelThisWith="closeDescriptionModal">
-            <h4 class="mb-3 font-semibold text-gray-900">
+            <h4 class="mb-3 font-semibold text-gray-900 dark:text-white">
                 Case Description
             </h4>
 
-            <div class="text-sm text-gray-600">
+            <div class="text-sm text-gray-600 dark:text-gray-300">
                 {{ $descriptionDetails['description'] }}
             </div>
         </x-casemanagement::page-elements.modal-simple>
@@ -35,19 +35,19 @@
         <x-casemanagement::page-elements.modal-simple title="Customer comments"
             cancelThisWith="closeCustomerCommentModal" cancelText="Close">
             @forelse ($customerComments as $comment)
-                <div class="space-y-2 {{ $loop->first ? '' : 'mt-5 border-t border-gray-200 pt-5' }}">
+                <div class="space-y-2 {{ $loop->first ? '' : 'mt-5 border-t border-gray-200 pt-5 dark:border-gray-700' }}">
                     <div class="flex flex-wrap items-center justify-between gap-2">
-                        <h4 class="font-semibold text-gray-900">
+                        <h4 class="font-semibold text-gray-900 dark:text-white">
                             {{ $comment['author'] }}
                         </h4>
-                        <time class="text-sm text-gray-500">
+                        <time class="text-sm text-gray-500 dark:text-gray-400">
                             {{ $comment['created_at'] }}
                         </time>
                     </div>
-                    <p class="whitespace-pre-wrap text-sm text-gray-700">{{ $comment['description'] }}</p>
+                    <p class="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">{{ $comment['description'] }}</p>
                 </div>
             @empty
-                <p class="text-sm text-gray-600">
+                <p class="text-sm text-gray-600 dark:text-gray-300">
                     There are no unanswered customer comments for this case.
                 </p>
             @endforelse
@@ -115,7 +115,7 @@
                 dark:border-gray-800 dark:bg-gray-900">
 
         <div class="mb-3 flex items-center gap-2">
-            <flux:icon name="adjustments-horizontal" class="size-4 text-gray-500" />
+            <flux:icon name="adjustments-horizontal" class="size-4 text-gray-500 dark:text-gray-400" />
 
             <h2 class="text-sm font-semibold text-gray-900 dark:text-white">
                 Find cases
@@ -193,7 +193,7 @@
                             class="cursor-pointer whitespace-nowrap px-4
                                    py-3.5 text-xs font-semibold uppercase
                                    tracking-wider text-gray-500
-                                   hover:text-indigo-600 dark:text-gray-400">
+                                   hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400">
                             <span class="inline-flex items-center gap-1.5">
                                 Created At
                                 <flux:icon name="chevrons-up-down" class="size-3.5" />
@@ -204,7 +204,7 @@
                             class="cursor-pointer px-4 py-3.5 text-xs
                                    font-semibold uppercase tracking-wider
                                    text-gray-500 hover:text-indigo-600
-                                   dark:text-gray-400">
+                                   dark:text-gray-400 dark:hover:text-indigo-400">
                             <span class="inline-flex items-center gap-1.5">
                                 Site
                                 <flux:icon name="chevrons-up-down" class="size-3.5" />
@@ -215,7 +215,7 @@
                             class="cursor-pointer px-4 py-3.5 text-xs
                                    font-semibold uppercase tracking-wider
                                    text-gray-500 hover:text-indigo-600
-                                   dark:text-gray-400">
+                                   dark:text-gray-400 dark:hover:text-indigo-400">
                             <span class="inline-flex items-center gap-1.5">
                                 Summary
                                 <flux:icon name="chevrons-up-down" class="size-3.5" />
@@ -278,7 +278,8 @@
                                                     class="rounded p-1 text-gray-400
                                                            hover:bg-indigo-50
                                                            hover:text-indigo-600
-                                                           dark:hover:bg-gray-700">
+                                                           dark:text-gray-400 dark:hover:bg-gray-700
+                                                           dark:hover:text-indigo-400">
                                                     <x-casemanagement-ui-icon name="reopen" class="size-4" />
                                                 </button>
                                             </x-casemanagement::page-elements.tooltip>
@@ -319,7 +320,7 @@
                                     class="whitespace-nowrap px-4 py-4
                                            text-gray-500 dark:text-gray-400">
                                     <div class="flex items-center gap-2">
-                                        <flux:icon name="calendar-days" class="size-4 text-gray-400" />
+                                        <flux:icon name="calendar-days" class="size-4 text-gray-400 dark:text-gray-500" />
 
                                         {{ Carbon::parse($case->created_at)->format('d/m/Y H:i') }}
                                     </div>
@@ -404,7 +405,7 @@
                                                      dark:text-amber-400">
                                             <span
                                                 class="size-1.5 rounded-full
-                                                         bg-amber-500"></span>
+                                                         bg-amber-500 dark:bg-amber-400"></span>
                                             Unassigned
                                         </span>
                                     @endif
@@ -472,7 +473,8 @@
                                                    dark:border-gray-700
                                                    dark:bg-gray-900
                                                    dark:text-gray-300
-                                                   dark:hover:bg-gray-800">
+                                                   dark:hover:bg-gray-800
+                                                   dark:hover:text-indigo-400">
                                             <flux:icon name="eye" class="size-3.5" />
                                             Summary
                                         </button>
@@ -486,7 +488,8 @@
                                                    focus-visible:outline-offset-2
                                                    focus-visible:outline-indigo-600
                                                    dark:bg-indigo-500
-                                                   dark:hover:bg-indigo-400">
+                                                   dark:hover:bg-indigo-400
+                                                   dark:focus-visible:outline-indigo-400">
                                             <flux:icon name="pencil-square" class="size-3.5" />
                                             Manage
                                         </button>
@@ -596,7 +599,8 @@
                         <button type="button" wire:click="openProfileModal({{ $case->id }})"
                             aria-label="Open details for {{ $case->number }}"
                             class="absolute inset-0 z-0 size-full focus-visible:outline-2
-                                   focus-visible:outline-offset-[-2px] focus-visible:outline-indigo-600">
+                                   focus-visible:outline-offset-[-2px] focus-visible:outline-indigo-600
+                                   dark:focus-visible:outline-indigo-400">
                             <span class="sr-only">Open details for {{ $case->number }}</span>
                         </button>
                         <div class="pointer-events-none relative z-10 px-5 py-5">

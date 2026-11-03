@@ -30,6 +30,13 @@
             cursor-pointer 
             rounded 
             hover:bg-blue-600 
+            dark:bg-blue-500
+            dark:hover:bg-blue-400
+            focus:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-blue-500
+            focus-visible:ring-offset-2
+            dark:focus-visible:ring-offset-gray-900
             transition-colors 
             duration-300"
     >

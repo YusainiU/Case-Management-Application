@@ -24,6 +24,9 @@
             cursor-pointer 
             rounded 
             hover:bg-gray-400 
+            dark:bg-gray-700
+            dark:text-gray-100
+            dark:hover:bg-gray-600
             transition-colors 
             duration-300"
         wire:click="{{ $attributes->get('action') }}"

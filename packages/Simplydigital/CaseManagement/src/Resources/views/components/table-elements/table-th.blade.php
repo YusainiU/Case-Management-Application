@@ -5,10 +5,10 @@
     'direction' => null,
     'px' => 'px-5',
     'py' => 'py-3.5',
-    'border' => 'border-b border-slate-200',
+    'border' => 'border-b border-slate-200 dark:border-slate-700',
     'whitespace' => 'whitespace-nowrap',
-    'bgColor' => 'bg-slate-50',
-    'text' => 'text-left text-xs font-semibold uppercase tracking-wider text-slate-500',
+    'bgColor' => 'bg-slate-50 dark:bg-gray-800',
+    'text' => 'text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400',
     'align' => 'text-left',
 ])
 
@@ -28,8 +28,8 @@
         $text,
         $align,
         'cursor-pointer transition-colors duration-150',
-        'hover:bg-slate-100 hover:text-slate-800' => $sortable,
-        'focus-within:bg-slate-100' => $sortable,
+        'hover:bg-slate-100 hover:text-slate-800 dark:hover:bg-gray-700 dark:hover:text-slate-100' => $sortable,
+        'focus-within:bg-slate-100 dark:focus-within:bg-gray-700' => $sortable,
     ])
     @if ($sortable)
         tabindex="0"
@@ -42,11 +42,11 @@
         <span>{{ $slot }}</span>
 
         @if ($sortable)
-            <span class="inline-flex shrink-0 items-center text-slate-400">
+            <span class="inline-flex shrink-0 items-center text-slate-400 dark:text-slate-500">
                 @if ($direction === 'asc')
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="h-3.5 w-3.5 text-indigo-600"
+                        class="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                         aria-label="Sorted ascending"
@@ -56,7 +56,7 @@
                 @elseif ($direction === 'desc')
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        class="h-3.5 w-3.5 text-indigo-600"
+                        class="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400"
                         viewBox="0 0 20 20"
                         fill="currentColor"
                         aria-label="Sorted descending"

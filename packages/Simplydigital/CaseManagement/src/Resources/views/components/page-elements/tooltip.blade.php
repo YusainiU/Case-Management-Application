@@ -1,6 +1,6 @@
 @props([
-    'bgcolour' => "bg-gray-900",
-    'textcolour' => "text-white",
+    'bgcolour' => 'bg-gray-900 dark:bg-gray-700',
+    'textcolour' => 'text-white dark:text-gray-100',
     'znumber' => 'z-1000',
     'text' => 'tooltip here', 
 ])

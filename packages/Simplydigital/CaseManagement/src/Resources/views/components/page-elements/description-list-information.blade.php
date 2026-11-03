@@ -5,12 +5,12 @@
     'items',
 ])
 
-<div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+<div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gray-900">
 
     {{-- Header --}}
-    <div class="border-b border-slate-100 bg-slate-50/70 px-5 py-6 sm:px-7">
+    <div class="border-b border-slate-100 bg-slate-50/70 px-5 py-6 sm:px-7 dark:border-slate-800 dark:bg-gray-800/60">
         <div class="flex items-start gap-4">
-            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700">
+            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -29,15 +29,15 @@
             </div>
 
             <div class="min-w-0 flex-1">
-                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-indigo-600">
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-indigo-600 dark:text-indigo-400">
                     Summary
                 </p>
 
-                <h3 class="mt-1 text-lg font-semibold tracking-tight text-slate-900 sm:text-xl">
+                <h3 class="mt-1 text-lg font-semibold tracking-tight text-slate-900 sm:text-xl dark:text-white">
                     {{ $title }}
                 </h3>
 
-                <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
+                <p class="mt-1 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">
                     {{ $description }}
                 </p>
             </div>
@@ -49,14 +49,14 @@
         <dl class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($items as $item)
                 <div
-                    class="min-w-0 rounded-xl border border-slate-100 bg-white p-4 transition-colors hover:border-indigo-200 hover:bg-slate-50/70"
+                    class="min-w-0 rounded-xl border border-slate-100 bg-white p-4 transition-colors hover:border-indigo-200 hover:bg-slate-50/70 dark:border-slate-800 dark:bg-gray-900 dark:hover:border-indigo-400/30 dark:hover:bg-gray-800/60"
                     wire:key="case-summary-{{ $loop->index }}"
                 >
-                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                         {{ $item['label'] }}
                     </dt>
 
-                    <dd class="mt-2 break-words text-sm font-medium leading-6 text-slate-900">
+                    <dd class="mt-2 break-words text-sm font-medium leading-6 text-slate-900 dark:text-slate-100">
                         {{ $item['value'] }}
                     </dd>
                 </div>
@@ -65,4 +65,3 @@
     </div>
 
 </div>
-

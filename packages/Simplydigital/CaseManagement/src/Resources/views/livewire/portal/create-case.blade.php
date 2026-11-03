@@ -29,7 +29,7 @@
         </flux:field>        
 
         <flux:field>
-            <flux:label>Assets <span class="text-sm font-normal text-zinc-500">(required)</span></flux:label>
+            <flux:label>Assets <span class="text-sm font-normal text-zinc-500 dark:text-zinc-400">(required)</span></flux:label>
             @if ($hasAvailableAssets)
                 <x-casemanagement::form-elements.multiselect
                     :options="$assetOptions"

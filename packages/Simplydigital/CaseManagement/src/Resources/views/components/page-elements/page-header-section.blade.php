@@ -14,7 +14,7 @@
 
 <section
     {{ $attributes->merge([
-        'class' => 'h-44 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.05)]',
+        'class' => 'h-44 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.05)] dark:border-slate-800 dark:bg-gray-900 dark:text-slate-100',
         //'class' => 'w-full overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-[0_2px_8px_rgba(15,23,42,0.05)]',
     ]) }}
 >
@@ -28,11 +28,11 @@
                 {{-- Breadcrumb --}}
                 <nav aria-label="Breadcrumb" class="mb-2">
                     <ol class="flex flex-wrap items-center gap-2 text-xs font-medium">
-                        <li class="text-slate-500">
+                        <li class="text-slate-500 dark:text-slate-400">
                             {{ $section }}
                         </li>
 
-                        <li class="text-slate-300" aria-hidden="true">
+                        <li class="text-slate-300 dark:text-slate-600" aria-hidden="true">
                             <svg
                                 class="h-3.5 w-3.5"
                                 viewBox="0 0 24 24"
@@ -48,20 +48,20 @@
                             </svg>
                         </li>
 
-                        <li class="text-indigo-700" aria-current="page">
+                        <li class="text-indigo-700 dark:text-indigo-300" aria-current="page">
                             {{ $title }}
                         </li>
                     </ol>
                 </nav>
 
                 {{-- Title --}}
-                <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
                     {{ $title }}
                 </h1>
 
                 {{-- Description --}}
                 @if (filled($description))
-                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">
                         {{ $description }}
                     </p>
                 @endif
@@ -81,7 +81,10 @@
                                    text-sm font-semibold text-slate-700 shadow-sm
                                    transition hover:border-slate-300 hover:bg-slate-50
                                    focus:outline-none focus-visible:ring-2
-                                   focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+                                   focus-visible:ring-indigo-500 focus-visible:ring-offset-2
+                                   dark:border-slate-700 dark:bg-gray-800 dark:text-slate-200
+                                   dark:hover:border-slate-600 dark:hover:bg-gray-700
+                                   dark:focus-visible:ring-offset-gray-900"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -124,5 +127,5 @@
     </div>
 
     {{-- Subtle brand accent --}}
-    <div class="h-px bg-slate-100"></div>
+    <div class="h-px bg-slate-100 dark:bg-slate-800"></div>
 </section>

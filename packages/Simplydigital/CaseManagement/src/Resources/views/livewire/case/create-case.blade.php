@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-xl bg-gray-50/70 p-5">
+                <div class="rounded-xl bg-gray-50/70 p-5 dark:bg-gray-800/60">
                     <x-casemanagement::form-elements.searchable-select
                         name="Customer"
                         :required="true"

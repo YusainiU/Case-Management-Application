@@ -1,1 +1,1 @@
-<hr class="my-{{ $margin ?? '8' }} h-0.5 border-t-0 bg-zinc-400" />
+<hr class="my-{{ $margin ?? '8' }} h-0.5 border-t-0 bg-zinc-400 dark:bg-zinc-700" />

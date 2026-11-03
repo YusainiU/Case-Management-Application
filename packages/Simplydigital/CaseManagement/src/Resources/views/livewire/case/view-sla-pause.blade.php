@@ -2,7 +2,7 @@
     use Carbon\CarbonInterval;
 @endphp
 
-<div class="grid grid-cols-1 gap-4 p-4">
+<div class="grid grid-cols-1 gap-4 p-4 text-slate-900 dark:bg-gray-950 dark:text-slate-100">
 
     <x-casemanagement::page-elements.page-header-section 
         section="Pauses" 
