@@ -123,6 +123,47 @@
                     </section>
                 @endif
 
+                @if ($this->selectedTab === 'assets')
+                    <section aria-labelledby="case-assets-heading">
+                        <div class="mb-4">
+                            <h3
+                                id="case-assets-heading"
+                                class="text-sm font-semibold text-slate-900 dark:text-white"
+                            >
+                                Assets affected by this case
+                            </h3>
+                            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                                Assets associated with this case.
+                            </p>
+                        </div>
+
+                        @if ($this->affectedAssets->isNotEmpty())
+                            <ul class="divide-y divide-slate-200 dark:divide-slate-700">
+                                @foreach ($this->affectedAssets as $asset)
+                                    <li
+                                        wire:key="case-affected-asset-{{ $asset->id }}"
+                                        class="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
+                                    >
+                                        <span class="text-sm font-medium text-slate-900 dark:text-white">
+                                            {{ $asset->short_description }}
+                                        </span>
+                                        <span class="text-sm text-slate-500 dark:text-slate-400">
+                                            {{ $asset->number }}
+                                            @if (filled($asset->location))
+                                                <span class="px-1">|</span>{{ $asset->location }}
+                                            @endif
+                                        </span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p class="text-sm italic text-slate-400 dark:text-slate-500">
+                                No assets are associated with this case.
+                            </p>
+                        @endif
+                    </section>
+                @endif
+
                 @if ($tabHeaders[$this->selectedTab] == $tabHeaders['sla'])
                     <livewire:manage-case-sla :case="$case" />
                 @endif

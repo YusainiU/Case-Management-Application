@@ -11,8 +11,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class serviceLevelAgreements extends Model
 {
-    
+    /** @use HasFactory<\Simplydigital\CaseManagement\Database\Factories\ServiceLevelAgreementFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Simplydigital\CaseManagement\Database\Factories\ServiceLevelAgreementFactory::new();
+    }
+
     protected $fillable = [
         'name',
         'short_description',
@@ -31,7 +37,7 @@ class serviceLevelAgreements extends Model
 
     protected static function booted()
     {
-        
+
         static::creating(function ($model) {
             $prefix = config('case-management.SLA_PREFIX');
             $model->number = CaseManagementUtilityServices::generateNumber($prefix, serviceLevelAgreements::class);
@@ -45,7 +51,7 @@ class serviceLevelAgreements extends Model
             set: fn ($value) => $value * 3600,
         );
     }
-    
+
     public function fixedTime(): Attribute
     {
         return Attribute::make(
@@ -108,12 +114,12 @@ class serviceLevelAgreements extends Model
 
     /*
     Example usage with DaysOfWeek enum:
-    
+
     $sla = new ServiceLevelAgreement();
     $sla->start_day = DaysOfWeek::Monday;
     $sla->end_day = DaysOfWeek::Friday;
     $sla->save();
-    
+
     $sla = ServiceLevelAgreement::find(1);
     echo $sla->start_day->label(); // Output: Monday
     echo $sla->end_day->label(); // Output: Friday  
@@ -122,5 +128,5 @@ class serviceLevelAgreements extends Model
     echo $sla->start_day->value; // Output: 'monday'
     echo $sla->end_day->value; // Output: 'friday'
     */
-  
+
 }

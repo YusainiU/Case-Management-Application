@@ -13,7 +13,7 @@
         'information' => UI::ALERT_INFORMATION,
         'important' => UI::ALERT_IMPORTANT,
         'warning' => UI::ALERT_WARNING,
-    }
+    };
 
     $darkClass = match($mode) {
         'default' => 'dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100',

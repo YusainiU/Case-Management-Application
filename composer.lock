@@ -4360,7 +4360,7 @@
         },
         {
             "name": "simplydigital/ai-management",
-            "version": "dev-css-fixes",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/AIManagement",
@@ -4398,7 +4398,7 @@
         },
         {
             "name": "simplydigital/casemanagement",
-            "version": "dev-css-fixes",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/CaseManagement",
@@ -4449,7 +4449,7 @@
         },
         {
             "name": "simplydigital/engineermanagement",
-            "version": "dev-css-fixes",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/EngineerManagement",
@@ -4493,7 +4493,7 @@
         },
         {
             "name": "simplydigital/eventplannermanagement",
-            "version": "dev-css-fixes",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/EventPlannerManagement",
@@ -4539,7 +4539,7 @@
         },
         {
             "name": "simplydigital/expenses",
-            "version": "dev-css-fixes",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/Expenses",
@@ -4579,7 +4579,7 @@
         },
         {
             "name": "simplydigital/fileupload-management",
-            "version": "dev-css-fixes",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/FileUploadManagement",
@@ -4619,7 +4619,7 @@
         },
         {
             "name": "simplydigital/notificationmanagement",
-            "version": "dev-css-fixes",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/NotificationManagement",
@@ -4662,7 +4662,7 @@
         },
         {
             "name": "simplydigital/stockmanagement",
-            "version": "dev-css-fixes",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/StockManagement",
@@ -4701,7 +4701,7 @@
         },
         {
             "name": "simplydigital/usermanagement",
-            "version": "dev-css-fixes",
+            "version": "dev-main",
             "dist": {
                 "type": "path",
                 "url": "packages/Simplydigital/UserManagement",

@@ -3,13 +3,18 @@
 namespace Simplydigital\CaseManagement\Models;
 
 use App\Models\User;
-use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Simplydigital\UserManagement\Model\UsersDetails;
+use Simplydigital\CaseManagement\Database\Factories\CustomerContactFactory;
+use Simplydigital\CaseManagement\Enums\CustomerContactRoles;
 use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
+use Simplydigital\UserManagement\Model\UsersDetails;
 
 class CustomerContacts extends Model
 {
+    /** @use HasFactory<CustomerContactFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'number',
@@ -17,12 +22,17 @@ class CustomerContacts extends Model
         'customerRole',
         'description',
         'active',
-        'has_portal_access',        
+        'has_portal_access',
     ];
+
+    protected static function newFactory()
+    {
+        return CustomerContactFactory::new();
+    }
 
     protected static function booted()
     {
-        
+
         static::creating(function ($model) {
             $prefix = config('case-management.CUSTOMER_CONTACT_PREFIX');
             $model->number = CaseManagementUtilityServices::generateNumber($prefix, CustomerContacts::class);
@@ -31,12 +41,12 @@ class CustomerContacts extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class,'customer_id');
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function customerUser()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function customerUserDetails()
@@ -52,5 +62,4 @@ class CustomerContacts extends Model
             'has_portal_access' => 'boolean',
         ];
     }
-
 }

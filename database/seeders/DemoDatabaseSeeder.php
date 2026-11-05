@@ -21,6 +21,7 @@ class DemoDatabaseSeeder extends Seeder
             CustomerSeeder::class,
             SupplierSeeder::class,
             ProductSeeder::class,
+            AssetSeeder::class,
         ]);
     }
 }
