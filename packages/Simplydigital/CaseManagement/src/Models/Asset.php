@@ -2,13 +2,14 @@
 
 namespace Simplydigital\CaseManagement\Models;
 
+use Database\Factories\AssetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 use Illuminate\Database\Eloquent\Model;
+use Simplydigital\CaseManagement\Services\CaseManagementUtilityServices;
 
 class Asset extends Model
 {
-    /** @use HasFactory<\Database\Factories\AssetFactory> */
+    /** @use HasFactory<AssetFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -28,18 +29,23 @@ class Asset extends Model
         'ip_address',
     ];
 
+    protected static function newFactory()
+    {
+        return \Simplydigital\CaseManagement\Database\Factories\AssetFactory::new();
+    }
+
     protected function casts(): array
     {
         return [
             'active' => 'boolean',
             'buy_price' => 'decimal:2',
             'sell_price' => 'decimal:2',
-        ];   
+        ];
     }
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class,'customer_id');
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function product()
@@ -54,12 +60,12 @@ class Asset extends Model
 
     protected static function booted()
     {
-        
+
         static::creating(function ($model) {
-            $prefix = config('case-management.ASSET_PREFIX');            
+            $prefix = config('case-management.ASSET_PREFIX');
             $model->number = CaseManagementUtilityServices::generateNumber($prefix, asset::class);
         });
-    }    
+    }
 
     public function getBuyPriceFormattedAttribute($value)
     {
@@ -74,6 +80,7 @@ class Asset extends Model
     private function formatPriceValue($value)
     {
         $service = app('case-management-utility-services');
+
         return $service::formatPriceValue($value);
     }
 
@@ -84,6 +91,4 @@ class Asset extends Model
         echo $asset->getBuyPriceFormattedAttribute(); // Output: £123.45
     */
 
-        
 }
-

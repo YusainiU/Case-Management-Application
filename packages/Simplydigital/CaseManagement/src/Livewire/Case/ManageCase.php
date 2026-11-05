@@ -2,9 +2,12 @@
 
 namespace Simplydigital\CaseManagement\Livewire\Case;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
+use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
 use LivewireUI\Modal\ModalComponent;
+use Simplydigital\CaseManagement\Services\CaseAssetServices;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\FileUploadService;
@@ -27,6 +30,7 @@ class ManageCase extends ModalComponent
 
     public array $tabHeaders = [
         'description' => 'Case Description',
+        'assets' => 'Assets Affected',
         'sla' => 'SLA',
         'status' => 'SLA Status',
         'pauses' => 'SLA Pauses',
@@ -138,6 +142,16 @@ class ManageCase extends ModalComponent
 
         return app(FileUploadService::class)
             ->files($this->case->number, 'Cases');
+    }
+
+    #[Computed]
+    public function affectedAssets(): Collection
+    {
+        if (! $this->case || empty($this->case->list_of_assets)) {
+            return new Collection();
+        }
+
+        return CaseAssetServices::getAssetsFromArrayOfIds($this->case->list_of_assets);
     }
 
     public function removeAttachment(UploadedAttachment $attachment)
