@@ -5,10 +5,8 @@ use Simplydigital\EventPlannerManagement\Middleware\RestrictInternalUserOnly;
 use Simplydigital\EventPlannerManagement\Http\Controllers\PlannerController;
 use Illuminate\Auth\Middleware\Authenticate;
 
-const AUTH_MIDDLEWARE = Authenticate::class; // Define constant
-
 Route::middleware([
-        AUTH_MIDDLEWARE, // @phpstan-ignore-line
+        Authenticate::class,
         'auth',
         'permission:event.view',
     ])
