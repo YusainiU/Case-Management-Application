@@ -73,6 +73,22 @@ class AIActionApprovalTest extends TestCase
         Bus::assertDispatched(ExecuteApprovedAIAction::class);
     }
 
+    public function test_approval_does_not_dispatch_when_execution_is_disabled(): void
+    {
+        config()->set('ai-management.approvals.execution_enabled', false);
+        Bus::fake();
+        $manager = User::factory()->create();
+        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve');
+        $case = $this->caseFor($manager);
+        $proposal = app(CategoryProposalService::class)->fromAnalysis($this->analysisFor($case));
+
+        app(AIApprovalService::class)->approve($proposal->id, $manager);
+
+        $this->assertSame('approved', $proposal->refresh()->status);
+        $this->assertSame(CaseCategory::Failure, $case->refresh()->category);
+        Bus::assertNotDispatched(ExecuteApprovedAIAction::class);
+    }
+
     public function test_user_missing_approval_permission_cannot_approve(): void
     {
         $user = User::factory()->create();
