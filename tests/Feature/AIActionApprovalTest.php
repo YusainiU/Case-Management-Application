@@ -131,6 +131,8 @@ class AIActionApprovalTest extends TestCase
 
     public function test_approved_action_executes_once_and_is_idempotent(): void
     {
+        // Explicitly opt in for this isolated test; execution is off by default.
+        config()->set('ai-management.approvals.execution_enabled', true);
         Bus::fake();
         $manager = User::factory()->create();
         $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve');
