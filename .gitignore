@@ -88,7 +88,7 @@ Desktop.ini
 /.phpunit.result.cache
 /phpunit.xml
 phpunit.xml
-phpunit.xml.dist
+# Track phpunit.xml.dist as the shared testing template.
 coverage.xml
 
 # Generated / local app data
