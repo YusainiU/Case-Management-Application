@@ -40,7 +40,9 @@ class AIApprovalService
                 'updated_at' => now(),
             ]);
 
-            ExecuteApprovedAIAction::dispatch($proposal->id)->afterCommit();
+            if (config('ai-management.approvals.execution_enabled', false)) {
+                ExecuteApprovedAIAction::dispatch($proposal->id)->afterCommit();
+            }
         });
     }
 
