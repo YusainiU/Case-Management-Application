@@ -26,6 +26,10 @@ class ExecuteApprovedAIAction implements ShouldQueue
 
     public function handle(CaseRepository $cases): void
     {
+        if (! config('ai-management.approvals.execution_enabled', false)) {
+            return;
+        }
+
         DB::transaction(function () use ($cases) {
             $proposal = AIActionProposal::query()->lockForUpdate()->findOrFail($this->proposalId);
 
