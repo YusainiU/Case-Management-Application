@@ -12,12 +12,12 @@
         </div>
 
         @can('case-assistant.analyze', $case)
-            @if (!$result)
+            @if (!$analyzing)
                 <button type="button" wire:click="analyze" wire:loading.attr="disabled"
                     class="rounded-md px-4 py-2 text-sm font-medium bg-blue-600 text-gray-200">
                     <div>
                         <span wire:loading.remove wire:target="analyze">
-                            Analyze Case
+                            {{ $result ? 'Re-analyze Case' : 'Analyze Case' }}
                         </span>
 
                         <span wire:loading wire:target="analyze">
