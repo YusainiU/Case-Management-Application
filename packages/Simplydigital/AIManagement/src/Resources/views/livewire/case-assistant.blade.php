@@ -168,6 +168,5 @@
 
         </div>
     @endif
+    <livewire:ai-management.category-approvals :case="$case" :key="'category-approvals-'.$case->getKey()" />
 </div>
-
-<livewire:ai-management.category-approvals :case="$case" :key="'category-approvals-'.$case->getKey()" />
