@@ -8,6 +8,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 use Simplydigital\AIManagement\Models\AIActionProposal;
 use Simplydigital\AIManagement\Services\CaseCategorySnapshot;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
@@ -51,6 +53,11 @@ class ExecuteApprovedAIAction implements ShouldQueue
             if ($case->closed_datetime !== null || CaseCategorySnapshot::hash($case) !== $proposal->source_hash) {
                 $proposal->update(['status' => 'stale']);
                 return;
+            }
+
+            $reviewer = User::find($approval->reviewer_id);
+            if (!$reviewer || !Gate::forUser($reviewer)->allows('ai-category.approve', $case)) {
+                throw new \DomainException('Reviewer no longer has permission.');
             }
 
             $category = CaseCategory::tryFrom($proposal->payload['category'] ?? '');
