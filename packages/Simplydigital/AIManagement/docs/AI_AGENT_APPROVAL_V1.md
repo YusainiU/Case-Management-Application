@@ -42,3 +42,14 @@ This branch is an initial implementation. Do not enable the approval interface f
 - `ai_analyses` remains the source of AI outputs.
 - Schema references are indexed; final foreign keys can be added after confirming deployment compatibility.
 - Future work should introduce an append-only audit ledger and agent runs.
+
+## Development instructions (feature branch only)
+
+Pull `feature/ai-agent-approvals-v1` and run the AI migration on a local database, then `php artisan permissions:sync` (the UserManagement provider now registers that command).
+
+The Case Assistant now contains an embedded `ai-management.category-approvals` Livewire component. It offers preparation of category proposals from existing completed analyses, plus approve/reject controls for authorised case editors with `ai.proposals.approve`.
+
+**Safety default:** `AI_AGENT_EXECUTION_ENABLED=false`. Review actions and decisions are recorded, but no category changes are executed. Approvals made while execution is disabled are not automatically queued later. For controlled execution testing, set `AI_AGENT_EXECUTION_ENABLED=true`, clear cached configuration, and use a *fresh* proposal.
+
+Run the added suite with `php artisan test --filter=AIActionApprovalTest` on a disposable development database. The tests were committed but have not been executed in this environment. Do not merge the draft pull request or use in production until the suite and manual review pass.
+
