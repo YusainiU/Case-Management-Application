@@ -10,6 +10,7 @@ use Simplydigital\AIManagement\Models\AIAnalysis;
 use Simplydigital\AIManagement\Services\AIApprovalService;
 use Simplydigital\AIManagement\Services\CategoryProposalService;
 use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Enums\CaseCategory;
 
 class CategoryApprovals extends Component
 {
@@ -53,9 +54,17 @@ class CategoryApprovals extends Component
 
         try {
             $proposal = $service->fromAnalysis($analysis);
-            $this->notice = $proposal
-                ? 'AI category proposal prepared for approval.'
-                : 'No valid category change was suggested.';
+            if ($proposal) {
+                $this->notice = 'AI category proposal prepared for approval.';
+            } else {
+                $suggestedCategory = CaseCategory::tryFrom(
+                    (string) ($analysis->result['suggested_category'] ?? '')
+                );
+
+                $this->notice = $suggestedCategory === null
+                    ? 'The AI did not provide a valid category recommendation. No proposal was created.'
+                    : 'The AI recommendation matches the current case category. No approval is required.';
+            }
         } catch (\DomainException $exception) {
             $this->notice = $exception->getMessage();
         }
