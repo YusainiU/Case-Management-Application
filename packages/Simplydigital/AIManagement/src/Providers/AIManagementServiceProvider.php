@@ -17,6 +17,7 @@ use Simplydigital\AIManagement\AI\Services\CaseAssistant;
 use Simplydigital\AIManagement\Authorization\AIPermissionProvider;
 use Simplydigital\UserManagement\Services\PermissionRegistry;
 use Simplydigital\AIManagement\Livewire\CaseAssistant as CaseAssistantLivewire;
+use Simplydigital\AIManagement\Livewire\CategoryApprovals;
 
 class AIManagementServiceProvider extends ServiceProvider
 {
@@ -80,6 +81,7 @@ class AIManagementServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'ai-management');  
         
         Livewire::component('ai-management.case-assistant', CaseAssistantLivewire::class);
+        Livewire::component('ai-management.category-approvals', CategoryApprovals::class);
           
     }
 }
