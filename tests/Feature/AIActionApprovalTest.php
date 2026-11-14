@@ -54,6 +54,7 @@ class AIActionApprovalTest extends TestCase
 
     public function test_manager_approval_queues_action_but_does_not_change_case_synchronously(): void
     {
+        config()->set('ai-management.approvals.execution_enabled', true);
         Bus::fake();
         $manager = User::factory()->create();
         $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve');
