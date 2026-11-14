@@ -72,7 +72,9 @@ class CategoryApprovals extends Component
 
         try {
             $service->approve($proposal->id, auth()->user());
-            $this->notice = 'Approved. Execution is queued.';
+            $this->notice = config('ai-management.approvals.execution_enabled', false)
+                ? 'Approved. Execution is queued.'
+                : 'Approved and recorded. Execution is disabled in this environment.';
         } catch (\DomainException $exception) {
             $this->notice = $exception->getMessage();
         }
