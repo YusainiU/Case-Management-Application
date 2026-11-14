@@ -7,4 +7,5 @@ enum AIPermission: string
     case CaseAssistantView = 'ai.case_assistant.view';
     case CaseAssistantAnalyze = 'ai.case_assistant.analyze';
     case CaseAssistantApply = 'ai.case_assistant.apply';
+    case ProposalApprove = 'ai.proposals.approve';
 }
