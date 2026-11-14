@@ -3,6 +3,11 @@
 namespace Simplydigital\AIManagement\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
+use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Enums\Permissions\CasePermission;
+use Simplydigital\AIManagement\Authorization\Permissions\AIPermission;
 use Livewire\Livewire;
 use Simplydigital\AIManagement\AI\Contracts\AIService;
 use Simplydigital\AIManagement\AI\Prompts\CaseAssistantPrompt;
@@ -60,6 +65,11 @@ class AIManagementServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Gate::define('ai-category.approve', function (User $user, tickets $case): bool {
+            return $user->can(AIPermission::ProposalApprove->value)
+                && Gate::forUser($user)->allows('update', $case);
+        });
+
 
         $this->publishes([
             __DIR__.'/../../config/ai-management.php' => config_path('ai-management.php'),
