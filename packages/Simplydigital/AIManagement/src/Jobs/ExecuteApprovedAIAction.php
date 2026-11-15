@@ -35,6 +35,11 @@ class ExecuteApprovedAIAction implements ShouldQueue
         DB::transaction(function () use ($cases) {
             $proposal = AIActionProposal::query()->lockForUpdate()->findOrFail($this->proposalId);
 
+            if ($proposal->action_type === 'assign_case_engineer'
+                && ! config('ai-management.engineer_assignment.execution_enabled', false)) {
+                return;
+            }
+
             if ($proposal->status === 'completed' || $proposal->status === 'stale') {
                 return;
             }
