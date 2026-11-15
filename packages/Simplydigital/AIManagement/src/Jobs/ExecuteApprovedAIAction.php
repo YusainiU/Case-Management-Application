@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use Simplydigital\AIManagement\Models\AIActionProposal;
 use Simplydigital\AIManagement\Services\CaseCategorySnapshot;
+use Simplydigital\AIManagement\Services\EngineerAssignmentSnapshot;
+use Simplydigital\AIManagement\Services\EngineerRecommendationService;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Repositories\CaseRepository;
@@ -37,7 +39,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
                 return;
             }
 
-            if ($proposal->status !== 'approved' || $proposal->action_type !== 'update_case_category') {
+            if ($proposal->status !== 'approved' || ! in_array($proposal->action_type, ['update_case_category', 'assign_case_engineer'], true)) {
                 throw new \DomainException('This action is not approved or supported.');
             }
 
@@ -54,23 +56,44 @@ class ExecuteApprovedAIAction implements ShouldQueue
 
             $case = tickets::query()->lockForUpdate()->findOrFail($proposal->case_id);
 
-            if ($case->closed_datetime !== null || CaseCategorySnapshot::hash($case) !== $proposal->source_hash) {
+            $sourceHash = $proposal->action_type === 'update_case_category'
+                ? CaseCategorySnapshot::hash($case)
+                : EngineerAssignmentSnapshot::hash($case);
+
+            if ($case->closed_datetime !== null || $case->deleted_at !== null || $sourceHash !== $proposal->source_hash) {
                 $proposal->update(['status' => 'stale']);
                 return;
             }
 
             $reviewer = User::find($approval->reviewer_id);
-            if (!$reviewer || !Gate::forUser($reviewer)->allows('ai-category.approve', $case)) {
+            $gate = $proposal->action_type === 'update_case_category'
+                ? 'ai-category.approve'
+                : 'ai-engineer.approve';
+            if (! $reviewer || ! Gate::forUser($reviewer)->allows($gate, $case)) {
                 throw new \DomainException('Reviewer no longer has permission.');
             }
 
-            $category = CaseCategory::tryFrom($proposal->payload['category'] ?? '');
-            if (!$category) {
-                throw new \DomainException('Invalid category.');
-            }
+            if ($proposal->action_type === 'update_case_category') {
+                $category = CaseCategory::tryFrom($proposal->payload['category'] ?? '');
+                if (! $category) {
+                    throw new \DomainException('Invalid category.');
+                }
 
-            // Existing repository path preserves ticket model events and activity logging.
-            $cases->updateTicket($case, ['category' => $category->value]);
+                $cases->updateTicket($case, ['category' => $category->value]);
+            } else {
+                $userId = filter_var(
+                    $proposal->payload['engineer_user_id'] ?? null,
+                    FILTER_VALIDATE_INT,
+                    ['options' => ['min_range' => 1]]
+                );
+                if (! $userId || ! app(EngineerRecommendationService::class)->eligibleUser($userId)) {
+                    $proposal->update(['status' => 'stale']);
+                    return;
+                }
+
+                // Repository update retains ticket events and activity history.
+                $cases->updateTicket($case, ['assigned_to' => $userId]);
+            }
 
             DB::table('ai_action_executions')->updateOrInsert(
                 ['proposal_id' => $proposal->id],
