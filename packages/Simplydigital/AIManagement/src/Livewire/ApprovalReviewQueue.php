@@ -104,7 +104,15 @@ class ApprovalReviewQueue extends Component
             $query->where('status', $this->status);
         }
 
+        $engineerIds = AIActionProposal::query()
+            ->where('action_type', 'assign_case_engineer')
+            ->get(['payload'])->pluck('payload')
+            ->pluck('engineer_user_id')->filter()->unique()->all();
+
+        $engineerNames = \App\Models\User::query()->whereIn('id', $engineerIds)->pluck('name', 'id');
+
         return view('ai-management::livewire.approval-review-queue', [
+            'engineerNames' => $engineerNames,
             'proposals' => $query->paginate(15),
             'statuses' => $statuses,
         ]);
