@@ -80,13 +80,13 @@ class AIAssistantTimelineTest extends TestCase
 
         for ($i = 1; $i <= 21; $i++) {
             $this->logFor($case, 'ai_agent', 'AI:analysis:'.$i.':requested',
-                'Historical AI event #'.$i);
+                sprintf('Historical AI event [%02d]', $i));
         }
 
         $this->actingAs($viewer);
         Livewire::test(CaseAssistant::class, ['case' => $case])
             ->assertSee('Show older activity')
-            ->assertDontSee('Historical AI event #1')
+            ->assertDontSee('Historical AI event [01]')
             ->call('loadMoreTimeline')
             ->assertSet('timelineLimit', 40)
             ->assertSee('Historical AI event #1')
