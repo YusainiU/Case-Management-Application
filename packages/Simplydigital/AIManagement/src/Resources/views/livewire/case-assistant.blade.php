@@ -173,6 +173,53 @@
         </div>
     @endif
 
+    <section class="ai-card p-4 sm:p-5" aria-label="AI Assistant items needing attention" id="ai-needs-attention">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+                <h3 class="text-lg font-bold">Needs attention</h3>
+                <p class="ai-muted text-sm">Current outstanding approvals and problems, not historical alerts.</p>
+            </div>
+            <span class="rounded-full border px-3 py-1 text-xs font-semibold tabular-nums"
+                style="border-color:var(--ai-border);color:var(--ai-ink)">
+                {{ count($attentionItems) }} {{ count($attentionItems) === 1 ? 'item' : 'items' }}
+            </span>
+        </div>
+        @if (empty($attentionItems))
+            <p class="ai-muted mt-3 text-sm">No outstanding AI approvals or recorded failures requiring review.</p>
+        @else
+            <ul class="mt-4 space-y-2" aria-label="Current attention items">
+                @foreach ($attentionItems as $item)
+                    <li wire:key="attention-{{ $item['key'] }}" class="rounded-lg border p-3"
+                        style="border-color:var(--ai-border)">
+                        <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                            <div class="min-w-0">
+                                <p class="break-words text-sm font-semibold {{ $item['severity'] === 'error' ? 'text-red-700 dark:text-red-300' : 'text-amber-800 dark:text-amber-300' }}">
+                                    {{ $item['title'] }}
+                                </p>
+                                <p class="ai-muted mt-1 break-words text-xs">{{ $item['detail'] }}</p>
+                                @if ($item['at'])
+                                    <time class="ai-muted mt-1 block text-xs tabular-nums"
+                                        datetime="{{ $item['at']->timezone($timelineTimezone)->toIso8601String() }}">
+                                        {{ $item['at']->timezone($timelineTimezone)->format('d M Y · H:i:s') }} {{ $timelineTimezone }}
+                                    </time>
+                                @endif
+                            </div>
+                            <a href="#ai-workflow-{{ $item['workflow'] }}"
+                                wire:click="openWorkflow('{{ $item['workflow'] }}')"
+                                class="shrink-0 text-xs font-semibold underline underline-offset-2"
+                                style="color:var(--ai-accent)">
+                                Review workflow
+                            </a>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
+            @if (count($attentionItems) === 12)
+                <p class="ai-muted mt-2 text-xs">Showing up to 12 recent items. Open the relevant workflow for full history.</p>
+            @endif
+        @endif
+    </section>
+
     <section class="ai-card p-4 sm:p-5" aria-label="AI activity timeline" id="ai-activity-timeline">
         <div class="flex flex-wrap items-start justify-between gap-2">
             <div>
