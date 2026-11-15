@@ -14,6 +14,21 @@ This is a presentation-only redesign of the Case Assistant's existing Livewire p
 - **Actions and reviews** are grouped into six accessible, expandable sections: case analysis, category approvals, engineer assignment, Start Work, troubleshooting review, and resolution readiness. Each toggle is a real button with `aria-expanded` and `aria-controls`. Open state is stored in the parent Livewire component instead of native `<details>`, so the 8-second polling refresh no longer collapses a section mid-task. Several panels can remain open simultaneously. Existing Livewire components and their validation/permission gates are unchanged.
 - The old decorative, non-functional **Use Draft** button is no longer shown. Customer response suggestions are clearly labeled **Not sent**.
 
+## Case workflow overview (read-only)
+
+A six-stage **Case workflow overview** is displayed before Needs attention and the historical timeline. It helps a reader see where the current case stands without opening every panel.
+
+1. **Case analysis**: displays the latest Case Assistant analysis state (completed, pending/processing, failed or absent).
+2. **Category review**: displays an unexpired pending category approval or a completed AI category execution; an already populated case category alone does not count as AI approval.
+3. **Engineer assignment**: shows the case's current assigned engineer (which may have been assigned manually), otherwise a pending assignment proposal or unassigned state.
+4. **Work started**: shows the actual case state if it has moved beyond Open, without claiming the transition was performed by AI. Pending Start Work proposals are shown when the case remains Open.
+5. **Troubleshooting review**: shows whether a staff-reviewed internal troubleshooting note exists.
+6. **Resolution**: shows actual resolved/completed state, a saved-but-not-resolved handoff, or no handoff.
+
+The cards display their relevant recorded dates/times in the configured application timezone, use the existing light/dark colour tokens and responsive columns, and include **Open stage** links that expand the existing Livewire section without executing an action. These are *indicators of recorded facts*, not a strict mandatory sequence or a claim that AI independently accomplished the work.
+
+The overview is derived from the current case, case-scoped AI analyses and proposals, and case-scoped internal notes. It changes on automatic refresh and never updates case data.
+
 ## Needs attention (live status)
 
 A compact **Needs attention** panel now appears above the historical timeline. It is read-only and draws from current operational tables rather than old AI activity logs:
@@ -62,5 +77,6 @@ Browser acceptance:
 6. Select each activity filter, checking that only matching records are displayed and that the newest matching event remains first. Select **All activity** to restore the full view.
 7. Click **Open related workflow** on a category, troubleshooting or notification event. The correct panel should expand and stay expanded across polling; no approval or resolution should run automatically.
 8. For **Needs attention**, create pending and expired approvals, a failed execution, and a failed resolution email in test data. Confirm that only current relevant items appear, and that resolving/fixing the underlying record removes the alert after refresh.
+9. For **Case workflow overview**, confirm that an unassigned Open case shows no engineer or started work, that a saved resolution handoff alone does not mark the case resolved, and that an actual case resolution updates the overview after refresh. Check **Open stage** links and small-screen layout.
 
 These changes are on `feature/ai-agent-approvals-v1` / draft PR #29, **not merged into main**. New tests require execution in your local environment.
