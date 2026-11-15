@@ -98,6 +98,51 @@ class AITroubleshootingReviewTest extends TestCase
         $this->assertDatabaseMissing('task_logs', ['ticket_id' => $case->id, 'source' => 'ai_assisted']);
     }
 
+    public function test_reanalysis_completed_after_case_update_enables_prepare_button(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        $case = $this->caseFor($staff);
+        $analysis = $this->analysisFor($case);
+
+        // Analysis was requested before the case was updated, but the queued
+        // job finished afterward. Its completion timestamp is what matters.
+        DB::table('ai_analyses')->where('id', $analysis->id)->update([
+            'created_at' => now()->subMinutes(10),
+            'updated_at' => now()->addMinutes(2),
+        ]);
+        DB::table('tickets')->where('id', $case->id)->update([
+            'updated_at' => now()->subMinute(),
+        ]);
+
+        $this->actingAs($staff);
+        Livewire::test(TroubleshootingReview::class, ['case' => $case])
+            ->assertSee('Troubleshooting draft is ready')
+            ->call('prepare')
+            ->assertSee('Draft prepared')
+            ->assertSet('sourceAnalysisId', $analysis->id);
+    }
+
+    public function test_new_pending_reanalysis_blocks_reuse_of_older_completed_analysis(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        $case = $this->caseFor($staff);
+        $this->analysisFor($case);
+        AIAnalysis::query()->create([
+            'case_id' => $case->id,
+            'type' => 'case_assistant',
+            'status' => 'processing',
+        ]);
+
+        $this->actingAs($staff);
+        Livewire::test(TroubleshootingReview::class, ['case' => $case])
+            ->assertSee('is processing')
+            ->call('prepare')
+            ->assertSee('No current completed Case Assistant analysis is available')
+            ->assertSet('sourceAnalysisId', null);
+    }
+
     public function test_no_completed_analysis_cannot_prepare_draft(): void
     {
         $staff = User::factory()->create();
