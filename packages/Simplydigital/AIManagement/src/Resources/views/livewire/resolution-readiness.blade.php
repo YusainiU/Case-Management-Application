@@ -13,7 +13,7 @@
     @endif
 
     @can('update', $case)
-        @if (! $case->resolved_datetime && ! $case->closed_datetime)
+        @if (! $case->resolved_datetime && ! $case->closed_datetime && in_array($case->state, \Simplydigital\CaseManagement\Enums\CaseState::openStates(), true))
             @if ($troubleshootingNotes->isNotEmpty())
                 <div class="space-y-3 rounded-lg border border-gray-300 p-4 dark:border-gray-700">
                     <label for="resolution-source-note" class="block text-sm font-medium">
