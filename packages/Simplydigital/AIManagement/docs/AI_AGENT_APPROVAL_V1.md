@@ -53,3 +53,15 @@ The Case Assistant now contains an embedded `ai-management.category-approvals` L
 
 Run the added suite with `php artisan test --filter=AIActionApprovalTest` on a disposable development database. The tests were committed but have not been executed in this environment. Do not merge the draft pull request or use in production until the suite and manual review pass.
 
+
+## Cross-case approval review queue
+
+The new Livewire page is available at `/ai/approvals` (route `ai.approvals.index`). It lists category-change proposals with pagination, status filtering, current/proposed values, decision history (including reviewer and rejection reason), and recorded execution state/error.
+
+**Access controls:** `case.view` and the new `ai.proposals.view` permission are required to enter the queue. These do not grant approval rights. Approval and rejection continue to require `ai.proposals.approve` and `case.update` for the target case, checked again in the service. Run `php artisan permissions:sync` and explicitly assign the new view permission to intended reviewers/auditors. The Case Assistant has a link to the queue for authorised users.
+
+The table changes from the earlier AI Approval migration are sufficient; there is **no new migration** for the queue.
+
+Run `php artisan test --filter=AIApprovalReviewQueueTest` and `php artisan test --filter=AIActionApprovalTest` on an isolated development test database. The review queue tests are committed but have not been executed in this environment.
+
+Keep `AI_AGENT_EXECUTION_ENABLED=false` when validating the UI. The queue exposes status `approved` even if no execution happened; a missing execution record is shown as `Not recorded`.
