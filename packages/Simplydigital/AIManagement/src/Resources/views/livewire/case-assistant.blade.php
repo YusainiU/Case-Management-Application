@@ -196,14 +196,14 @@
                     @php
                         $source = (string) $entry->source;
                         $key = (string) ($entry->short_description ?? '');
-                        $event = $source === 'ai_agent' ? IlluminateSupportStr::afterLast($key, ':') : null;
+                        $event = $source === 'ai_agent' ? str($key)->afterLast(':') : null;
                         $actionName = $source === 'ai_agent'
-                            ? (IlluminateSupportStr::before((string) $entry->description, ' — ') ?: 'AI Agent')
+                            ? (str((string) $entry->description)->before(' — ') ?: 'AI Agent')
                             : ($source === 'ai_assisted' ? 'Troubleshooting review' : 'Resolution handoff');
                         $heading = $source === 'ai_agent'
-                            ? (IlluminateSupportStr::startsWith($key, 'AI:resolution-notification:')
+                            ? (str($key)->startsWith('AI:resolution-notification:')
                                 ? 'Customer notification · '.ucfirst($event)
-                                : (IlluminateSupportStr::startsWith($key, 'AI:analysis:')
+                                : (str($key)->startsWith('AI:analysis:')
                                     ? 'Case Assistant · '.ucfirst($event)
                                     : $actionName.' · '.ucfirst($event)))
                             : $actionName.' saved';
@@ -231,7 +231,7 @@
                                 <span>{{ $source === 'ai_agent' ? 'System audit' : 'Staff-reviewed note' }}</span>
                             </div>
                             @if ($entry->description)
-                                <p class="mt-2 whitespace-pre-line break-words text-sm">{{ IlluminateSupportStr::limit($entry->description, 260) }}</p>
+                                <p class="mt-2 whitespace-pre-line break-words text-sm">{{ str($entry->description)->limit(260) }}</p>
                                 @if (mb_strlen($entry->description) > 260)
                                     <details class="mt-2 text-sm">
                                         <summary class="cursor-pointer font-medium underline underline-offset-2" style="color:var(--ai-accent)">Read full activity</summary>
