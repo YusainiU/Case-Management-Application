@@ -89,8 +89,43 @@ class AIAssistantTimelineTest extends TestCase
             ->assertDontSee('Historical AI event [01]')
             ->call('loadMoreTimeline')
             ->assertSet('timelineLimit', 40)
-            ->assertSee('Historical AI event #1')
+            ->assertSee('Historical AI event [01]')
             ->assertDontSee('Show older activity');
+    }
+
+    public function test_open_workflow_survives_polling_and_can_be_closed_deliberately(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSet('expandedWorkflows', [])
+            ->call('toggleWorkflow', 'analysis')
+            ->assertSet('expandedWorkflows', ['analysis'])
+            ->assertSee('aria-expanded="true"', escape: false)
+            ->call('refreshAnalysis')
+            ->assertSet('expandedWorkflows', ['analysis'])
+            ->call('toggleWorkflow', 'analysis')
+            ->assertSet('expandedWorkflows', []);
+    }
+
+    public function test_multiple_workflows_remain_open_after_polling(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->call('toggleWorkflow', 'analysis')
+            ->call('toggleWorkflow', 'category')
+            ->assertSet('expandedWorkflows', ['analysis', 'category'])
+            ->call('refreshAnalysis')
+            ->assertSet('expandedWorkflows', ['analysis', 'category'])
+            ->call('toggleWorkflow', 'not-a-real-workflow')
+            ->assertSet('expandedWorkflows', ['analysis', 'category']);
     }
 
     private function grant(User $user, string ...$permissions): void
