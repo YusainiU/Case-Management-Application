@@ -165,7 +165,7 @@ class ResolutionReadiness extends Component
             'troubleshootingNotes' => TaskLogs::query()
                 ->where('ticket_id', $case->id)
                 ->where('source', 'ai_assisted')
-                ->latest('id')->limit(25)->get(),
+                ->with('user')->latest('id')->limit(25)->get(),
         ]);
     }
 }
