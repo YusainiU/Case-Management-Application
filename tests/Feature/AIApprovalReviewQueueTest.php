@@ -24,6 +24,16 @@ class AIApprovalReviewQueueTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_review_queue_route_uses_web_session_middleware(): void
+    {
+        $route = app('router')->getRoutes()->getByName('ai.approvals.index');
+
+        $this->assertNotNull($route);
+        $this->assertContains('web', $route->gatherMiddleware());
+        $this->assertContains('auth', $route->gatherMiddleware());
+        $this->assertContains('permission:ai.proposals.view', $route->gatherMiddleware());
+    }
+
     public function test_review_queue_requires_explicit_view_permission(): void
     {
         $user = User::factory()->create();
