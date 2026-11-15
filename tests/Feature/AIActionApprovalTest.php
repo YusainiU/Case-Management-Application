@@ -150,6 +150,26 @@ class AIActionApprovalTest extends TestCase
         $this->assertDatabaseCount('ai_action_executions', 1);
     }
 
+    public function test_case_panel_shows_reviewer_history_after_approval(): void
+    {
+        config()->set('ai-management.approvals.execution_enabled', false);
+        Bus::fake();
+        $manager = User::factory()->create();
+        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve', 'ai.proposals.view');
+        $case = $this->caseFor($manager);
+        $proposal = app(CategoryProposalService::class)->fromAnalysis($this->analysisFor($case));
+
+        app(AIApprovalService::class)->approve($proposal->id, $manager);
+
+        $this->actingAs($manager);
+        Livewire::test(CategoryApprovals::class, ['case' => $case])
+            ->assertSee('Approval history')
+            ->assertSee('Approved')
+            ->assertSee($manager->name)
+            ->assertSee('Execution: Not recorded')
+            ->assertSee('View all AI approval requests and history');
+    }
+
     public function test_livewire_prevents_viewer_from_approving(): void
     {
         $viewer = User::factory()->create();
