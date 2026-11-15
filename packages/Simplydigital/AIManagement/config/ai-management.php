@@ -65,6 +65,11 @@ return [
         'execution_enabled' => env('AI_AGENT_EXECUTION_ENABLED', false),
     ],
 
+    // Separate opt-in: enabling category execution never enables engineer assignment.
+    'engineer_assignment' => [
+        'execution_enabled' => env('AI_ENGINEER_EXECUTION_ENABLED', false),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | OpenAI
