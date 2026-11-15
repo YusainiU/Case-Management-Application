@@ -21,6 +21,7 @@ class AIApprovalService
                 match ($proposal->action_type) {
                     'update_case_category' => 'ai-category.approve',
                     'assign_case_engineer' => 'ai-engineer.approve',
+                    'start_case_work' => 'ai-work-start.approve',
                     default => throw new \DomainException('Unsupported action type.'),
                 },
                 $case,
@@ -33,6 +34,7 @@ class AIApprovalService
             $sourceHash = match ($proposal->action_type) {
                 'update_case_category' => CaseCategorySnapshot::hash($case),
                 'assign_case_engineer' => EngineerAssignmentSnapshot::hash($case),
+                'start_case_work' => CaseWorkStartSnapshot::hash($case),
                 default => throw new \DomainException('Unsupported action type.'),
             };
 
@@ -62,6 +64,7 @@ class AIApprovalService
             $executionEnabled = match ($proposal->action_type) {
                 'update_case_category' => config('ai-management.approvals.execution_enabled', false),
                 'assign_case_engineer' => config('ai-management.engineer_assignment.execution_enabled', false),
+                'start_case_work' => config('ai-management.work_start.execution_enabled', false),
                 default => false,
             };
 
