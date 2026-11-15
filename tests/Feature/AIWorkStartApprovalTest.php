@@ -118,6 +118,26 @@ class AIWorkStartApprovalTest extends TestCase
         app(AIApprovalService::class)->approve($proposal->id, $manager);
     }
 
+    public function test_rejecting_work_start_from_shared_queue_preserves_open_state(): void
+    {
+        config()->set('ai-management.work_start.execution_enabled', true);
+        Bus::fake();
+        $manager = User::factory()->create();
+        $assignee = User::factory()->create();
+        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.view', 'ai.proposals.approve');
+        $case = $this->caseFor($manager, $assignee->id);
+        $proposal = app(CaseWorkStartProposalService::class)->propose($case);
+
+        $this->actingAs($manager);
+        Livewire::test(ApprovalReviewQueue::class)
+            ->call('reject', $proposal->id)
+            ->assertSee('Proposal rejected');
+
+        $this->assertSame('rejected', $proposal->refresh()->status);
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
+        Bus::assertNotDispatched(ExecuteApprovedAIAction::class);
+    }
+
     public function test_change_after_approval_prevents_execution(): void
     {
         config()->set('ai-management.work_start.execution_enabled', true);
