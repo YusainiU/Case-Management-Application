@@ -2,7 +2,7 @@
     <header class="space-y-2">
         <h1 class="text-2xl font-semibold">AI Approval Review Queue</h1>
         <p class="text-sm text-gray-600 dark:text-gray-300">
-            Review category recommendations and inspect approval history and execution results.
+            Review category and engineer assignment proposals, decisions, and execution results.
         </p>
         @unless (config('ai-management.approvals.execution_enabled', false))
             <p class="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
@@ -44,14 +44,29 @@
                     </span>
                 </div>
 
+                <p class="text-xs font-medium text-indigo-700 dark:text-indigo-300">
+                    {{ $proposal->action_type === 'assign_case_engineer' ? 'Engineer assignment' : 'Category change' }}
+                </p>
                 <div class="grid gap-3 text-sm sm:grid-cols-2">
                     <div class="rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Current case category</div>
-                        <div class="font-semibold">{{ $proposal->case?->category?->value ?? 'Unknown' }}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                            {{ $proposal->action_type === 'assign_case_engineer' ? 'Current assignee' : 'Current case category' }}
+                        </div>
+                        <div class="font-semibold">
+                            {{ $proposal->action_type === 'assign_case_engineer'
+                                ? ($proposal->case?->assignedToUser?->name ?? 'Unassigned')
+                                : ($proposal->case?->category?->value ?? 'Unknown') }}
+                        </div>
                     </div>
                     <div class="rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
-                        <div class="text-xs text-gray-500 dark:text-gray-400">AI proposed category</div>
-                        <div class="font-semibold">{{ $proposal->payload['category'] ?? 'Unknown' }}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                            {{ $proposal->action_type === 'assign_case_engineer' ? 'Proposed engineer' : 'AI proposed category' }}
+                        </div>
+                        <div class="font-semibold">
+                            {{ $proposal->action_type === 'assign_case_engineer'
+                                ? ($engineerNames[$proposal->payload['engineer_user_id'] ?? 0] ?? 'Former engineer #'.($proposal->payload['engineer_user_id'] ?? '?'))
+                                : ($proposal->payload['category'] ?? 'Unknown') }}
+                        </div>
                     </div>
                 </div>
 
