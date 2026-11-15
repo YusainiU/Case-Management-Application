@@ -179,23 +179,6 @@ class ResolutionReadiness extends Component
                 .'Remaining risks / follow-up:'.PHP_EOL
                 .(trim($this->remainingRisks) ?: 'None reported by reviewing staff.');
 
-            if ($this->resolveCase) {
-                // Use the exact same service as the Close & Resolve form. That
-                // service updates SLA, writes the standard log and emails the
-                // customer. Never emulate it with a bare state update.
-                $success = app(CaseTicketServices::class)->resolveCase($locked, [
-                    'resolved_datetime' => $this->resolvedAt,
-                    'resolved_by' => (int) $this->resolvedBy,
-                    'resolution' => $this->resolutionType,
-                    'resolution_details' => $resolutionNotes,
-                ]);
-                if (! $success) {
-                    throw ValidationException::withMessages([
-                        'resolveCase' => 'The normal resolution process could not finish. No handoff was saved.',
-                    ]);
-                }
-            }
-
             TaskLogs::query()->create([
                 'name' => 'Resolution readiness handoff',
                 'short_description' => 'Reviewed resolution handoff · progress log #'.$source->number,
@@ -213,6 +196,26 @@ class ResolutionReadiness extends Component
                 'visible_to_external' => false,
                 'require_attention' => false,
             ]);
+
+            // Keep the normal resolver last: it sends the standard customer
+            // notification. A handoff-write failure must occur beforehand.
+            if ($this->resolveCase) {
+                // Use the exact same service as the Close & Resolve form. That
+                // service updates SLA, writes the standard log and emails the
+                // customer. Never emulate it with a bare state update.
+                $success = app(CaseTicketServices::class)->resolveCase($locked, [
+                    'resolved_datetime' => $this->resolvedAt,
+                    'resolved_by' => (int) $this->resolvedBy,
+                    'resolution' => $this->resolutionType,
+                    'resolution_details' => $resolutionNotes,
+                ]);
+                if (! $success) {
+                    throw ValidationException::withMessages([
+                        'resolveCase' => 'The normal resolution process could not finish. No handoff was saved.',
+                    ]);
+                }
+            }
+
         });
 
         $this->snapshotHash = null;
