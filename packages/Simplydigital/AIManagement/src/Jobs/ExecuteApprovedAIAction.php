@@ -104,6 +104,10 @@ class ExecuteApprovedAIAction implements ShouldQueue
 
             if ($case->closed_datetime !== null || $case->deleted_at !== null || $sourceHash !== $proposal->source_hash) {
                 $proposal->update(['status' => 'stale']);
+                DB::table('ai_action_executions')->updateOrInsert(
+                    ['proposal_id' => $proposal->id],
+                    ['status' => 'stale', 'error' => 'Case or engineer changed before execution.', 'updated_at' => now()]
+                );
                 return;
             }
 
@@ -130,6 +134,10 @@ class ExecuteApprovedAIAction implements ShouldQueue
                 );
                 if (! $userId || ! app(EngineerRecommendationService::class)->eligibleUser($userId)) {
                     $proposal->update(['status' => 'stale']);
+                    DB::table('ai_action_executions')->updateOrInsert(
+                        ['proposal_id' => $proposal->id],
+                        ['status' => 'stale', 'error' => 'Selected engineer is no longer eligible.', 'updated_at' => now()]
+                    );
                     return;
                 }
 
