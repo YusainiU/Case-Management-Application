@@ -123,6 +123,73 @@ class AITroubleshootingReviewTest extends TestCase
             ->assertSet('sourceAnalysisId', $analysis->id);
     }
 
+    public function test_completed_analysis_can_be_reused_after_case_workflow_updates(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        $case = $this->caseFor($staff);
+        $analysis = $this->analysisFor($case);
+
+        // Category, assignment and Start Work legitimately modify tickets
+        // after the first AI analysis. They must not force another AI request.
+        DB::table('ai_analyses')->where('id', $analysis->id)->update([
+            'updated_at' => now()->subMinutes(10),
+        ]);
+        DB::table('tickets')->where('id', $case->id)->update([
+            'state' => CaseState::In_Progress->value,
+            'updated_at' => now(),
+        ]);
+
+        $this->actingAs($staff);
+        Livewire::test(TroubleshootingReview::class, ['case' => $case])
+            ->assertSee('Troubleshooting draft is ready')
+            ->assertSee('You can still use the analysis without re-running it')
+            ->call('prepare')
+            ->assertSet('sourceAnalysisId', $analysis->id)
+            ->set('draft', 'Verified current case status: work is in progress. Engineer inspected current application logs; no repair is claimed.')
+            ->set('confirmed', true)
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertSee('saved to the internal Case Progress log');
+
+        $this->assertDatabaseHas('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_assisted',
+            'visible_to_external' => 0,
+        ]);
+        $this->assertSame(CaseState::In_Progress, $case->refresh()->state);
+    }
+
+    public function test_case_change_after_preparation_still_blocks_save_with_reused_analysis(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        $case = $this->caseFor($staff);
+        $analysis = $this->analysisFor($case);
+
+        DB::table('ai_analyses')->where('id', $analysis->id)
+            ->update(['updated_at' => now()->subMinutes(5)]);
+        DB::table('tickets')->where('id', $case->id)
+            ->update(['updated_at' => now()]);
+
+        $this->actingAs($staff);
+        $component = Livewire::test(TroubleshootingReview::class, ['case' => $case])
+            ->call('prepare')
+            ->assertSet('sourceAnalysisId', $analysis->id)
+            ->set('confirmed', true);
+
+        // Even when an older completed analysis is allowed, the case must
+        // remain unchanged between preparing and saving the reviewed draft.
+        DB::table('tickets')->where('id', $case->id)
+            ->update(['description' => 'A different issue was reported while drafting.']);
+
+        $component->call('save')->assertHasErrors(['draft']);
+        $this->assertDatabaseMissing('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_assisted',
+        ]);
+    }
+
     public function test_new_pending_reanalysis_blocks_reuse_of_older_completed_analysis(): void
     {
         $staff = User::factory()->create();
@@ -139,7 +206,7 @@ class AITroubleshootingReviewTest extends TestCase
         Livewire::test(TroubleshootingReview::class, ['case' => $case])
             ->assertSee('is processing')
             ->call('prepare')
-            ->assertSee('No current completed Case Assistant analysis is available')
+            ->assertSee('A completed Case Assistant analysis is required')
             ->assertSet('sourceAnalysisId', null);
     }
 
@@ -151,7 +218,7 @@ class AITroubleshootingReviewTest extends TestCase
 
         $this->actingAs($staff);
         Livewire::test(TroubleshootingReview::class, ['case' => $case])
-            ->call('prepare')->assertSee('No current completed Case Assistant analysis');
+            ->call('prepare')->assertSee('A completed Case Assistant analysis is required');
 
         $this->assertDatabaseMissing('task_logs', ['ticket_id' => $case->id, 'source' => 'ai_assisted']);
     }
