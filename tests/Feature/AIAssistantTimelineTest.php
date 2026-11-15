@@ -341,8 +341,9 @@ class AIAssistantTimelineTest extends TestCase
             ->assertSee('Handoff saved; case not resolved')
             ->assertSee('No engineer assigned')
             ->assertSee('Case remains Open')
-            ->assertSee('href="#ai-workflow-resolution"', escape: false)
-            ->assertSame(CaseState::Open, $case->refresh()->state);
+            ->assertSee('href="#ai-workflow-resolution"', escape: false);
+
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
     }
 
     public function test_workflow_overview_reflects_latest_pending_approval_and_state_change(): void
