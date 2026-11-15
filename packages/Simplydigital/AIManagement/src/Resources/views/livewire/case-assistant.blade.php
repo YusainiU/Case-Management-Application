@@ -193,13 +193,14 @@
                             style="border-color:var(--ai-border);{{ match ($stage['status']) {
                                 'complete' => 'color:#15803d;',
                                 'attention' => 'color:#b91c1c;',
-                                'pending' => 'color:var(--ai-accent);',
+                                'pending', 'ready' => 'color:var(--ai-accent);',
                                 default => 'color:var(--ai-muted);'
                             } }}">
                             {{ match ($stage['status']) {
                                 'complete' => 'Recorded',
                                 'attention' => 'Needs review',
                                 'pending' => 'In progress',
+                                'ready' => 'Ready for review',
                                 default => 'Not recorded',
                             } }}
                         </span>
