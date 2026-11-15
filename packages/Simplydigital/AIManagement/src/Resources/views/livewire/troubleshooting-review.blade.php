@@ -1,4 +1,4 @@
-<section class="mt-6 space-y-4 border-t border-gray-300 pt-5 dark:border-gray-700" aria-label="AI troubleshooting review">
+<section wire:poll.5s class="mt-6 space-y-4 border-t border-gray-300 pt-5 dark:border-gray-700" aria-label="AI troubleshooting review">
     <div>
         <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100">Troubleshooting Review</h3>
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">
@@ -11,19 +11,33 @@
         <p role="status" class="rounded-md border border-blue-300 p-3 text-sm">{{ $notice }}</p>
     @endif
 
-    @if ($analysis && $analysisCurrent)
-        <p class="text-xs text-gray-500 dark:text-gray-400">
-            Latest completed Case Assistant analysis: #{{ $analysis->id }}
+    @if ($analysisCurrent)
+        <p class="text-sm text-green-700 dark:text-green-300">
+            Case Assistant analysis #{{ $analysis->id }} completed. Troubleshooting draft is ready.
+        </p>
+    @elseif ($analysis && in_array($analysis->status, ['pending', 'processing'], true))
+        <p class="text-sm text-amber-700 dark:text-amber-300">
+            Case Assistant re-analysis #{{ $analysis->id }} is {{ $analysis->status }}.
+            This section refreshes automatically when it completes.
+        </p>
+    @elseif ($analysis?->status === 'failed')
+        <p class="text-sm text-red-700 dark:text-red-300">
+            The latest Case Assistant analysis failed. Run it again before preparing a troubleshooting note.
+        </p>
+    @elseif ($analysis?->status === 'completed')
+        <p class="text-sm text-amber-700 dark:text-amber-300">
+            Analysis #{{ $analysis->id }} was completed before the case was last updated.
+            Re-analyse the case to prepare a current troubleshooting note.
         </p>
     @else
         <p class="text-sm text-amber-700 dark:text-amber-300">
-            No current analysis is available. Run the Case Assistant again after any case changes.
+            No completed Case Assistant analysis is available. Analyse the case first.
         </p>
     @endif
 
     @can('update', $case)
         @if (! $case->closed_datetime && ! $case->resolved_datetime)
-            <button type="button" wire:click="prepare" wire:loading.attr="disabled"
+            <button type="button" wire:click="prepare" wire:loading.attr="disabled" wire:target="prepare"
                     @disabled(! $analysisCurrent)
                     class="rounded-md border border-indigo-500 px-3 py-2 text-sm font-medium text-indigo-700 dark:text-indigo-300">
                 Prepare editable troubleshooting note
