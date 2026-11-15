@@ -96,7 +96,11 @@ PROMPT;
         // Never trust a provider's identifiers, quotes or confidence labels.
         $allowed = array_fill_keys($context['skills'], true);
         $accepted = [];
-        foreach (array_slice($raw['matches'] ?? [], 0, 10) as $item) {
+        $items = $raw['matches'] ?? [];
+        if (! is_array($items)) {
+            $items = [];
+        }
+        foreach (array_slice($items, 0, 10) as $item) {
             if (! is_array($item)) {
                 continue;
             }
@@ -131,6 +135,7 @@ PROMPT;
             ->where('type', 'engineer_semantic_skills')
             ->where('status', 'completed')
             ->latest('id')
+            ->limit(10)
             ->get()
             ->first(fn ($analysis) => ($analysis->result['context_hash'] ?? null) === $context['hash']);
     }
