@@ -13,6 +13,7 @@ use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\CaseUserServices;
 use Illuminate\Validation\Rule;
+use Simplydigital\AIManagement\Jobs\SendAIResolutionNotification;
 
 class ResolutionReadiness extends Component
 {
@@ -208,12 +209,24 @@ class ResolutionReadiness extends Component
                     'resolved_by' => (int) $this->resolvedBy,
                     'resolution' => $this->resolutionType,
                     'resolution_details' => $resolutionNotes,
-                ]);
+                ], notifyCustomer: false);
                 if (! $success) {
                     throw ValidationException::withMessages([
                         'resolveCase' => 'The normal resolution process could not finish. No handoff was saved.',
                     ]);
                 }
+
+                // Durable, case-unique outbox, written with the case/SLA/log
+                // transaction. The worker only starts after commit.
+                DB::table('ai_resolution_notifications')->insert([
+                    'case_id' => $locked->id,
+                    'status' => 'pending',
+                    'attempts' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                SendAIResolutionNotification::dispatch((int) $locked->id)->afterCommit();
             }
 
         });
@@ -229,7 +242,7 @@ class ResolutionReadiness extends Component
         $this->resolvedBy = null;
         $this->resolvedAt = null;
         $this->notice = $resolved
-            ? 'Case resolved through the standard Close & Resolve process. SLA updated and customer notification triggered.'
+            ? 'Case resolved and SLA updated. Customer notification queued after commit; check its status below.'
             : 'Internal resolution handoff saved to Case Progress. The case remains unresolved.';
         $this->dispatch('reloadCaseStatus');
     }
@@ -240,6 +253,8 @@ class ResolutionReadiness extends Component
 
         return view('ai-management::livewire.resolution-readiness', [
             'case' => $case,
+            'notification' => DB::table('ai_resolution_notifications')
+                ->where('case_id', $case->id)->first(),
             'resolutionOptions' => config('case-management.ticketManagement.resolution', []),
             'resolverOptions' => CaseUserServices::getAllInternalUserIds(),
             'troubleshootingNotes' => TaskLogs::query()
