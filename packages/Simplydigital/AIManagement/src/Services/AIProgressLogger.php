@@ -2,6 +2,7 @@
 
 namespace Simplydigital\AIManagement\Services;
 
+use Carbon\CarbonInterface;
 use Simplydigital\AIManagement\Models\AIActionProposal;
 use Simplydigital\AIManagement\Models\AIAnalysis;
 use Simplydigital\CaseManagement\Models\TaskLogs;
@@ -17,7 +18,7 @@ class AIProgressLogger
 {
     private const SOURCE = 'ai_agent';
 
-    public function proposal(AIActionProposal $proposal, string $event, ?int $actorId = null): void
+    public function proposal(AIActionProposal $proposal, string $event, ?int $actorId = null, ?CarbonInterface $occurredAt = null): void
     {
         $action = match ($proposal->action_type) {
             'update_case_category' => 'Category change',
@@ -49,10 +50,11 @@ class AIProgressLogger
             'proposal:'.$proposal->id.':'.$event,
             trim($action.' — '.$message.' '.$target).PHP_EOL.'Proposal ID: '.$proposal->id,
             $actorId,
+            $occurredAt,
         );
     }
 
-    public function analysis(AIAnalysis $analysis, string $event, ?int $actorId = null): void
+    public function analysis(AIAnalysis $analysis, string $event, ?int $actorId = null, ?CarbonInterface $occurredAt = null): void
     {
         $name = match ($analysis->type) {
             'case_assistant' => 'Case Assistant analysis',
@@ -70,10 +72,11 @@ class AIProgressLogger
             'analysis:'.$analysis->id.':'.$event,
             $name.' '.$message.'.'.PHP_EOL.'Analysis ID: '.$analysis->id,
             $actorId ?? ($analysis->user_id ? (int) $analysis->user_id : null),
+            $occurredAt,
         );
     }
 
-    private function write(int $caseId, string $eventKey, string $description, ?int $actorId): void
+    private function write(int $caseId, string $eventKey, string $description, ?int $actorId, ?CarbonInterface $occurredAt): void
     {
         // Fits the existing short_description varchar. The key is deliberately
         // independent of any AI-generated wording.
@@ -84,7 +87,7 @@ class AIProgressLogger
             return;
         }
 
-        TaskLogs::query()->create([
+        $log = new TaskLogs([
             'ticket_id' => $caseId,
             'name' => 'AI Agent',
             'short_description' => $key,
@@ -95,5 +98,10 @@ class AIProgressLogger
             'require_attention' => false,
             'visible_to_external' => false,
         ]);
+        if ($occurredAt) {
+            $log->created_at = $occurredAt;
+            $log->updated_at = $occurredAt;
+        }
+        $log->save();
     }
 }
