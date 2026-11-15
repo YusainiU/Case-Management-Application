@@ -15,6 +15,10 @@ use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Simplydigital\UserManagement\Model\UsersDetails;
+use Simplydigital\CaseManagement\Models\slaTask;
+use Simplydigital\CaseManagement\Services\EmailService;
 use Tests\TestCase;
 
 class AIResolutionReadinessTest extends TestCase
@@ -188,6 +192,59 @@ class AIResolutionReadinessTest extends TestCase
         ]);
     }
 
+    public function test_checked_option_calls_normal_resolver_and_updates_sla_and_case(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        Role::findOrCreate('Internal User', 'web');
+        $staff->assignRole('Internal User');
+        UsersDetails::query()->create([
+            'user_id' => $staff->id,
+            'address_1' => 'Test only',
+        ]);
+        $case = $this->caseFor($staff);
+        $note = $this->reviewedNote($case, $staff);
+        $sla = slaTask::query()->create([
+            'ticket_id' => $case->id,
+            'name' => 'Test SLA task',
+            'state' => CaseState::Open,
+            'active' => true,
+        ]);
+
+        $email = \Mockery::mock(EmailService::class);
+        $email->shouldReceive('caseResolved')->once();
+        $this->app->instance(EmailService::class, $email);
+
+        $this->actingAs($staff);
+        Livewire::test(ResolutionReadiness::class, ['case' => $case])
+            ->set('sourceLogId', $note->id)
+            ->call('prepare')
+            ->assertSet('resolveCase', false)
+            ->set('fixApplied', 'Updated the failed login service configuration and restarted the portal backend.')
+            ->set('verification', 'Successfully retested portal login using a valid user and confirmed HTTP 200.')
+            ->set('verified', true)
+            ->set('resolveCase', true)
+            ->set('resolutionType', 'Configuration Changes')
+            ->set('resolvedBy', $staff->id)
+            ->set('resolvedAt', now()->subMinute()->format('Y-m-d\\TH:i'))
+            ->call('save')
+            ->assertHasNoErrors()
+            ->assertSee('Case resolved through the standard Close');
+
+        $this->assertSame(CaseState::Resolved, $case->refresh()->state);
+        $this->assertSame('Configuration Changes', $case->resolution);
+        $this->assertSame($staff->id, $case->resolved_by);
+        $this->assertNotNull($case->resolved_datetime);
+        $this->assertStringContainsString('Successfully retested', $case->resolution_details);
+        $this->assertSame(CaseState::Resolved, $sla->refresh()->state);
+        $this->assertNull($case->closed_datetime);
+        $this->assertDatabaseHas('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_resolution_review',
+            'visible_to_external' => 0,
+        ]);
+    }
+
     public function test_resolve_checkbox_requires_standard_resolution_fields(): void
     {
         $staff = User::factory()->create();
@@ -244,6 +301,10 @@ class AIResolutionReadinessTest extends TestCase
         $note = $this->reviewedNote($case, $staff);
 
         // No SLA task exists for this factory-created case.
+        Role::findOrCreate('Internal User', 'web');
+        $staff->assignRole('Internal User');
+        UsersDetails::query()->create(['user_id' => $staff->id, 'address_1' => 'Test only']);
+
         $this->actingAs($staff);
         Livewire::test(ResolutionReadiness::class, ['case' => $case])
             ->set('sourceLogId', $note->id)
