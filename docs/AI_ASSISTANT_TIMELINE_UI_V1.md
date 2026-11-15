@@ -22,7 +22,7 @@ A six-stage **Case workflow overview** is displayed before Needs attention and t
 2. **Category review**: displays an unexpired pending category approval or a completed AI category execution; an already populated case category alone does not count as AI approval.
 3. **Engineer assignment**: shows the case's current assigned engineer (which may have been assigned manually), otherwise a pending assignment proposal or unassigned state.
 4. **Work started**: shows the actual case state if it has moved beyond Open, without claiming the transition was performed by AI. Pending Start Work proposals are shown when the case remains Open.
-5. **Troubleshooting review**: shows whether a staff-reviewed internal troubleshooting note exists.
+5. **Troubleshooting review**: shows a recorded staff-reviewed note, or **Ready for review** if a completed initial Case Assistant analysis exists. Category, assignment and Start Work updates after the original analysis do not require re-analysis; the draft warns about newer case changes, and staff must review it against the current case.
 6. **Resolution**: shows actual resolved/completed state, a saved-but-not-resolved handoff, or no handoff.
 
 The cards display their relevant recorded dates/times in the configured application timezone, use the existing light/dark colour tokens and responsive columns, and include **Open stage** links that expand the existing Livewire section without executing an action. These are *indicators of recorded facts*, not a strict mandatory sequence or a claim that AI independently accomplished the work.
