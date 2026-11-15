@@ -53,7 +53,7 @@ class EngineerAssignmentProposalService
             $reason .= 'Current open-case count: '.$choice['open_cases']
                 .'. This is a workload indicator, not confirmed availability.';
 
-            return AIActionProposal::query()->create([
+            $proposal = AIActionProposal::query()->create([
                 'case_id' => $locked->id,
                 'ai_analysis_id' => null,
                 'action_type' => 'assign_case_engineer',
@@ -64,6 +64,9 @@ class EngineerAssignmentProposalService
                 'status' => 'pending',
                 'expires_at' => now()->addDay(),
             ]);
+            app(AIProgressLogger::class)->proposal($proposal, 'prepared', auth()->id());
+
+            return $proposal;
         });
     }
 }
