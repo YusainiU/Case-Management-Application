@@ -13,6 +13,7 @@ use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\Customer;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -181,6 +182,82 @@ class AIResolutionReadinessTest extends TestCase
             ->call('prepare')
             ->assertSee('Resolved or closed cases cannot receive a resolution handoff');
 
+        $this->assertDatabaseMissing('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_resolution_review',
+        ]);
+    }
+
+    public function test_resolve_checkbox_requires_standard_resolution_fields(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        $case = $this->caseFor($staff);
+        $note = $this->reviewedNote($case, $staff);
+
+        $this->actingAs($staff);
+        Livewire::test(ResolutionReadiness::class, ['case' => $case])
+            ->set('sourceLogId', $note->id)
+            ->call('prepare')
+            ->set('fixApplied', 'Updated the application configuration and restarted the portal backend.')
+            ->set('verification', 'Retested login successfully using a valid customer test account.')
+            ->set('verified', true)
+            ->set('resolveCase', true)
+            ->call('save')
+            ->assertHasErrors(['resolutionType', 'resolvedBy']);
+
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
+        $this->assertDatabaseMissing('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_resolution_review',
+        ]);
+    }
+
+    public function test_resolve_checkbox_rejects_invalid_resolution_type_or_resolver(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        $case = $this->caseFor($staff);
+        $note = $this->reviewedNote($case, $staff);
+
+        $this->actingAs($staff);
+        Livewire::test(ResolutionReadiness::class, ['case' => $case])
+            ->set('sourceLogId', $note->id)
+            ->call('prepare')
+            ->set('fixApplied', 'Updated the application configuration and restarted the portal backend.')
+            ->set('verification', 'Retested login successfully using a valid customer test account.')
+            ->set('verified', true)
+            ->set('resolveCase', true)
+            ->set('resolutionType', 'Unlisted AI Resolution')
+            ->set('resolvedBy', 999999)
+            ->call('save')
+            ->assertHasErrors(['resolutionType', 'resolvedBy']);
+
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
+    }
+
+    public function test_resolve_checkbox_requires_sla_task_before_delegating(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        $case = $this->caseFor($staff);
+        $note = $this->reviewedNote($case, $staff);
+
+        // No SLA task exists for this factory-created case.
+        $this->actingAs($staff);
+        Livewire::test(ResolutionReadiness::class, ['case' => $case])
+            ->set('sourceLogId', $note->id)
+            ->call('prepare')
+            ->set('fixApplied', 'Corrected the faulty authentication configuration on the server.')
+            ->set('verification', 'Retested portal login successfully and reviewed the server error logs.')
+            ->set('verified', true)
+            ->set('resolveCase', true)
+            ->set('resolutionType', 'Configuration Changes')
+            ->set('resolvedBy', $staff->id)
+            ->call('save')
+            ->assertHasErrors(['resolveCase']);
+
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
         $this->assertDatabaseMissing('task_logs', [
             'ticket_id' => $case->id,
             'source' => 'ai_resolution_review',
