@@ -423,9 +423,9 @@ class CaseTicketServices
         return $this->caseTicketUtilityServices->closeTicket($ticket, $data);
     }
 
-    public function resolveCase(tickets $ticket, array $data)
+    public function resolveCase(tickets $ticket, array $data, bool $notifyCustomer = true)
     {
-        return $this->caseTicketUtilityServices->resolveCase($ticket, $data);
+        return $this->caseTicketUtilityServices->resolveCase($ticket, $data, $notifyCustomer);
     }
     
 }
