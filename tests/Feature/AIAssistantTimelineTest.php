@@ -7,6 +7,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Simplydigital\AIManagement\Livewire\CaseAssistant;
+use Simplydigital\AIManagement\Models\AIAnalysis;
+use Simplydigital\AIManagement\Models\AIActionProposal;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
 use Simplydigital\CaseManagement\Enums\CaseState;
@@ -204,6 +206,104 @@ class AIAssistantTimelineTest extends TestCase
         Livewire::test(CaseAssistant::class, ['case' => $case])
             ->call('setTimelineFilter', 'nonexistent-filter')
             ->assertSet('timelineFilter', 'all');
+    }
+
+    public function test_needs_attention_includes_only_current_valid_pending_approvals(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $otherCase = $this->caseFor($viewer);
+
+        $this->proposalFor($case, 'update_case_category', 'pending', now()->addHour());
+        $this->proposalFor($case, 'assign_case_engineer', 'pending', now()->subHour());
+        $this->proposalFor($case, 'start_case_work', 'completed', now()->addHour());
+        $this->proposalFor($otherCase, 'assign_case_engineer', 'pending', now()->addHour());
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Needs attention')
+            ->assertSee('Category change awaiting review')
+            ->assertDontSee('Engineer assignment awaiting review')
+            ->assertDontSee('Start Work awaiting review')
+            ->assertSee('href="#ai-workflow-category"', escape: false);
+    }
+
+    public function test_needs_attention_reports_latest_analysis_and_email_failure_without_old_history(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        AIAnalysis::query()->create([
+            'case_id' => $case->id,
+            'type' => 'case_assistant',
+            'status' => 'failed',
+        ]);
+
+        DB::table('ai_resolution_notifications')->insert([
+            'case_id' => $case->id,
+            'status' => 'failed',
+            'attempts' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->actingAs($viewer);
+        $component = Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Latest Case Assistant analysis failed')
+            ->assertSee('Customer resolution email failed')
+            ->assertSee('Review workflow');
+
+        AIAnalysis::query()->create([
+            'case_id' => $case->id,
+            'type' => 'case_assistant',
+            'status' => 'completed',
+        ]);
+        DB::table('ai_resolution_notifications')->where('case_id', $case->id)
+            ->update(['status' => 'sent']);
+
+        $component->call('refreshAnalysis')
+            ->assertDontSee('Latest Case Assistant analysis failed')
+            ->assertDontSee('Customer resolution email failed')
+            ->assertSee('No outstanding AI approvals or recorded failures requiring review.');
+    }
+
+    public function test_attention_is_empty_for_unrelated_case_records(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $other = $this->caseFor($viewer);
+
+        $this->proposalFor($other, 'update_case_category', 'pending', now()->addHour());
+        DB::table('ai_resolution_notifications')->insert([
+            'case_id' => $other->id,
+            'status' => 'skipped',
+            'attempts' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('No outstanding AI approvals or recorded failures requiring review.')
+            ->assertDontSee('Category change awaiting review')
+            ->assertDontSee('Customer resolution email skipped');
+    }
+
+    private function proposalFor(tickets $case, string $action, string $status, $expiresAt): AIActionProposal
+    {
+        return AIActionProposal::query()->create([
+            'case_id' => $case->id,
+            'action_type' => $action,
+            'payload' => [],
+            'source_hash' => str_repeat('a', 64),
+            'payload_hash' => str_repeat('b', 64),
+            'reason' => 'Test attention state only.',
+            'status' => $status,
+            'expires_at' => $expiresAt,
+        ]);
     }
 
     private function grant(User $user, string ...$permissions): void
