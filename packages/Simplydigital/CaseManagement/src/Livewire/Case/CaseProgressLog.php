@@ -24,6 +24,31 @@ class CaseProgressLog extends ModalComponent
     public bool $notifyCustomer = false;
     public bool $makeVisibleToCustomer = false;
 
+    public string $activityFilter = 'all';
+
+    public int $activityLimit = 20;
+
+    private const ACTIVITY_FILTERS = ['all', 'internal', 'customer', 'ai', 'attention'];
+
+    public function setActivityFilter(string $filter): void
+    {
+        $this->authorize('view', $this->case);
+
+        if (! in_array($filter, self::ACTIVITY_FILTERS, true)) {
+            return;
+        }
+
+        $this->activityFilter = $filter;
+        $this->activityLimit = 20;
+    }
+
+    public function loadOlderActivity(): void
+    {
+        $this->authorize('view', $this->case);
+        $this->activityLimit = min(100, $this->activityLimit + 20);
+    }
+
+
     public function logService(): CaseLogAdministrationService
     {
         return new CaseLogAdministrationService();
@@ -194,7 +219,33 @@ class CaseProgressLog extends ModalComponent
 
     public function render()
     {
-        $this->taskLogs = $this->getLogs()->orderByDesc('created_at')->get();
-        return view('casemanagement::livewire.case.case-progress-log');
+        $query = $this->getLogs();
+
+        // Keep filters strictly within this case's existing taskLogs relation.
+        // AI audit entries are still read-only; filtering never alters them.
+        match ($this->activityFilter) {
+            'internal' => $query->whereNull('external_user')
+                ->whereNotIn('source', ['ai_agent', 'ai_assisted', 'ai_resolution_review']),
+            'customer' => $query->where(function ($q): void {
+                $q->whereNotNull('external_user')->orWhere('visible_to_external', true);
+            }),
+            'ai' => $query->whereIn('source', ['ai_agent', 'ai_assisted', 'ai_resolution_review']),
+            'attention' => $query->where('require_attention', true),
+            default => null,
+        };
+
+        $entries = $query->with(['user:id,name', 'parentInternalComment'])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(min(100, $this->activityLimit) + 1)
+            ->get();
+
+        $hasOlderActivity = $entries->count() > $this->activityLimit;
+        $this->taskLogs = $entries->take($this->activityLimit);
+
+        return view('casemanagement::livewire.case.case-progress-log', [
+            'hasOlderActivity' => $hasOlderActivity,
+            'activityTimezone' => config('app.timezone', 'UTC'),
+        ]);
     }
 }
