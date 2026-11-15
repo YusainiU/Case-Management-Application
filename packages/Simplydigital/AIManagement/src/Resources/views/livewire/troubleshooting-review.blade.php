@@ -15,6 +15,13 @@
         <p class="text-sm text-green-700 dark:text-green-300">
             Case Assistant analysis #{{ $analysis->id }} completed. Troubleshooting draft is ready.
         </p>
+        @if ($analysisOlderThanCase)
+            <p class="rounded-md border border-amber-300 p-3 text-sm text-amber-800 dark:border-amber-700 dark:text-amber-200">
+                The case has changed since this analysis completed (for example, category, engineer or work status).
+                You can still use the analysis without re-running it. Review the suggestions against the
+                current case and remove anything outdated before saving.
+            </p>
+        @endif
     @elseif ($analysis && in_array($analysis->status, ['pending', 'processing'], true))
         <p class="text-sm text-amber-700 dark:text-amber-300">
             Case Assistant re-analysis #{{ $analysis->id }} is {{ $analysis->status }}.
@@ -26,8 +33,7 @@
         </p>
     @elseif ($analysis?->status === 'completed')
         <p class="text-sm text-amber-700 dark:text-amber-300">
-            Analysis #{{ $analysis->id }} was completed before the case was last updated.
-            Re-analyse the case to prepare a current troubleshooting note.
+            A completed analysis is available. Review its suggestions against the latest case details before use.
         </p>
     @else
         <p class="text-sm text-amber-700 dark:text-amber-300">
@@ -53,7 +59,8 @@
 
                     <label class="flex items-start gap-2 text-sm">
                         <input type="checkbox" wire:model="confirmed" class="mt-1">
-                        <span>I have reviewed the draft, removed unsupported claims, and distinguished proposed checks from work actually performed.</span>
+                        <span>I have checked these suggestions against the current case, removed outdated or unsupported claims,
+                            and distinguished proposed checks from work actually performed.</span>
                     </label>
                     @error('confirmed') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
 
