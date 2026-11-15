@@ -131,6 +131,13 @@
                 background-color: var(--ai-panel);
                 color: var(--ai-ink);
             }
+            .light .ai-assistant-shell .ai-workflow-content :is(.text-gray-500, .text-gray-600, .text-gray-700, .text-gray-800) {
+                color: var(--ai-muted);
+            }
+            .light .ai-assistant-shell .ai-workflow-content :is(.bg-gray-100, .bg-white) {
+                background-color: var(--ai-panel);
+                color: var(--ai-ink);
+            }
             @media (prefers-reduced-motion: reduce) {
                 .ai-assistant-shell *, .ai-assistant-shell *::before { scroll-behavior: auto !important; }
             }
