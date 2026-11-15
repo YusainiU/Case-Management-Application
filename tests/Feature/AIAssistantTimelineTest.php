@@ -128,6 +128,84 @@ class AIAssistantTimelineTest extends TestCase
             ->assertSet('expandedWorkflows', ['analysis', 'category']);
     }
 
+    public function test_event_filters_only_show_matching_case_activity_and_reset_pagination(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $this->logFor($case, 'ai_agent', 'AI:analysis:101:completed',
+            'Analysis filtering marker');
+        $this->logFor($case, 'ai_agent', 'AI:proposal:some-id:approved',
+            'Category change — Proposal filtering marker');
+        $this->logFor($case, 'ai_assisted', 'Reviewed troubleshooting',
+            'Reviewed note filtering marker');
+        $this->logFor($case, 'ai_agent', 'AI:resolution-notification:101:sent',
+            'Customer notification filtering marker');
+
+        $this->actingAs($viewer);
+        $component = Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->call('loadMoreTimeline')
+            ->assertSet('timelineLimit', 40)
+            ->call('setTimelineFilter', 'approvals')
+            ->assertSet('timelineFilter', 'approvals')
+            ->assertSet('timelineLimit', 20)
+            ->assertSee('Proposal filtering marker')
+            ->assertDontSee('Analysis filtering marker')
+            ->assertDontSee('Reviewed note filtering marker')
+            ->assertDontSee('Customer notification filtering marker');
+
+        $component->call('setTimelineFilter', 'reviews')
+            ->assertSee('Reviewed note filtering marker')
+            ->assertDontSee('Proposal filtering marker')
+            ->call('setTimelineFilter', 'analysis')
+            ->assertSee('Analysis filtering marker')
+            ->assertDontSee('Proposal filtering marker')
+            ->call('setTimelineFilter', 'notifications')
+            ->assertSee('Customer notification filtering marker')
+            ->assertDontSee('Analysis filtering marker')
+            ->call('setTimelineFilter', 'all')
+            ->assertSee('Analysis filtering marker')
+            ->assertSee('Proposal filtering marker')
+            ->assertSee('Reviewed note filtering marker')
+            ->assertSee('Customer notification filtering marker');
+    }
+
+    public function test_related_workflow_link_opens_panel_without_closing_an_existing_panel(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $this->logFor($case, 'ai_agent', 'AI:proposal:category:prepared',
+            'Category change — Proposed category: Technical Support');
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Open related workflow')
+            ->assertSee('href="#ai-workflow-category"', escape: false)
+            ->call('toggleWorkflow', 'analysis')
+            ->call('openWorkflow', 'category')
+            ->assertSet('expandedWorkflows', ['analysis', 'category'])
+            ->call('openWorkflow', 'category')
+            ->assertSet('expandedWorkflows', ['analysis', 'category'])
+            ->call('refreshAnalysis')
+            ->assertSet('expandedWorkflows', ['analysis', 'category'])
+            ->call('openWorkflow', 'unrecognised')
+            ->assertSet('expandedWorkflows', ['analysis', 'category']);
+    }
+
+    public function test_invalid_timeline_filter_is_ignored(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->call('setTimelineFilter', 'nonexistent-filter')
+            ->assertSet('timelineFilter', 'all');
+    }
+
     private function grant(User $user, string ...$permissions): void
     {
         foreach ($permissions as $permission) {
