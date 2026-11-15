@@ -59,9 +59,13 @@ class AIApprovalService
                 'updated_at' => now(),
             ]);
 
-            if (config('ai-management.approvals.execution_enabled', false)
-                && ($proposal->action_type !== 'assign_case_engineer'
-                    || config('ai-management.engineer_assignment.execution_enabled', false))) {
+            $executionEnabled = match ($proposal->action_type) {
+                'update_case_category' => config('ai-management.approvals.execution_enabled', false),
+                'assign_case_engineer' => config('ai-management.engineer_assignment.execution_enabled', false),
+                default => false,
+            };
+
+            if ($executionEnabled) {
                 ExecuteApprovedAIAction::dispatch($proposal->id)->afterCommit();
             }
         });
