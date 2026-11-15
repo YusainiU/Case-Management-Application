@@ -32,6 +32,14 @@ class GenerateSemanticEngineerSkills implements ShouldQueue
             return;
         }
 
+        if ($issue = $service->configurationIssue()) {
+            $analysis->update([
+                'status' => 'failed',
+                'error' => $issue.' Exact skill matching remains available.',
+            ]);
+            return;
+        }
+
         $case = tickets::query()->find($analysis->case_id);
         if (! $case || $case->closed_datetime !== null) {
             $analysis->update(['status' => 'failed', 'error' => 'Case is no longer available for matching.']);
