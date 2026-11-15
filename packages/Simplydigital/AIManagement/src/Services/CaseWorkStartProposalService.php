@@ -36,7 +36,7 @@ class CaseWorkStartProposalService
             }
 
             $payload = ['state' => CaseState::In_Progress->value];
-            return AIActionProposal::query()->create([
+            $proposal = AIActionProposal::query()->create([
                 'case_id' => $locked->id,
                 'ai_analysis_id' => null,
                 'action_type' => 'start_case_work',
@@ -49,6 +49,9 @@ class CaseWorkStartProposalService
                 'status' => 'pending',
                 'expires_at' => now()->addDay(),
             ]);
+            app(AIProgressLogger::class)->proposal($proposal, 'prepared', auth()->id());
+
+            return $proposal;
         });
     }
 }
