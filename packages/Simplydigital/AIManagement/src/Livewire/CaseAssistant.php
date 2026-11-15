@@ -299,7 +299,14 @@ class CaseAssistant extends Component
             ->latest('created_at')
             ->get()
             ->groupBy('action_type')
-            ->map(fn ($records) => $records->first());
+            // MySQL timestamps have second-level precision. Two proposals
+            // created in the same second have no reliable "latest" order.
+            // Prefer an active approval over historical proposals so an
+            // outstanding request is never hidden by an ordering tie.
+            ->map(fn ($records) => $records->first(
+                fn ($proposal) => $proposal->status === 'pending'
+                    && $proposal->expires_at?->isFuture()
+            ) ?? $records->first());
 
         $pending = static fn ($proposal): bool =>
             $proposal !== null
