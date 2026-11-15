@@ -346,6 +346,30 @@ class AIAssistantTimelineTest extends TestCase
         $this->assertSame(CaseState::Open, $case->refresh()->state);
     }
 
+    public function test_completed_initial_analysis_makes_troubleshooting_stage_ready_without_rerun(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $analysis = AIAnalysis::query()->create([
+            'case_id' => $case->id,
+            'type' => 'case_assistant',
+            'status' => 'completed',
+        ]);
+
+        DB::table('ai_analyses')->where('id', $analysis->id)
+            ->update(['updated_at' => now()->subHour()]);
+        DB::table('tickets')->where('id', $case->id)
+            ->update(['state' => CaseState::In_Progress->value, 'updated_at' => now()]);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Ready for review')
+            ->assertSee('Ready to review the completed analysis; no re-analysis required')
+            ->assertSee('href="#ai-workflow-troubleshoot"', escape: false);
+    }
+
     public function test_workflow_overview_reflects_latest_pending_approval_and_state_change(): void
     {
         $viewer = User::factory()->create();
