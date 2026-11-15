@@ -47,7 +47,10 @@ class AIApprovalReviewQueueTest extends TestCase
 
         $this->actingAs($reader);
 
-        $this->get(route('ai.approvals.index'))->assertOk();
+        $this->get(route('ai.approvals.index'))
+            ->assertOk()
+            ->assertSee('AI Approval Review Queue')
+            ->assertSee('Incorrect classification');
 
         Livewire::test(ApprovalReviewQueue::class)
             ->set('status', 'rejected')
