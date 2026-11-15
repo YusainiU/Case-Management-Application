@@ -75,10 +75,15 @@
                     @endforeach
                 </div>
             @endif
-            @if ($proposal->status === 'approved' || $proposal->status === 'completed' || $proposal->status === 'stale')
+            @if (in_array($proposal->status, ['approved', 'completed', 'stale', 'failed'], true))
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    Execution: {{ $proposal->execution?->status ?? 'Not recorded' }}
+                    Execution: {{ ucfirst($proposal->execution?->status ?? 'Not recorded') }}
                 </p>
+                @if ($proposal->execution?->error)
+                    <p class="mt-1 text-xs text-red-700 dark:text-red-400">
+                        {{ $proposal->execution->error }}
+                    </p>
+                @endif
             @endif
             @if ($proposal->status === 'pending')
                 @can('ai-category.approve', $case)
