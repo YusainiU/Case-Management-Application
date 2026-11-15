@@ -21,6 +21,7 @@ use Simplydigital\AIManagement\Livewire\CategoryApprovals;
 use Simplydigital\AIManagement\Livewire\ApprovalReviewQueue;
 use Simplydigital\AIManagement\Livewire\EngineerAssignmentApprovals;
 use Simplydigital\AIManagement\Livewire\CaseWorkStartApprovals;
+use Simplydigital\AIManagement\Console\Commands\BackfillAIProgressLogs;
 
 class AIManagementServiceProvider extends ServiceProvider
 {
@@ -69,6 +70,10 @@ class AIManagementServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([BackfillAIProgressLogs::class]);
+        }
+
         Gate::define('ai-category.approve', function (User $user, tickets $case): bool {
             return $user->can(AIPermission::ProposalApprove->value)
                 && Gate::forUser($user)->allows('update', $case);
