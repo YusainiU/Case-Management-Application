@@ -442,6 +442,108 @@ class AIAssistantTimelineTest extends TestCase
             ->assertSet('expandedWorkflows', ['troubleshoot']);
     }
 
+    public function test_suggested_next_step_points_to_initial_analysis_when_no_analysis_exists(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Suggested next step')
+            ->assertSee('Review case analysis')
+            ->assertSee('Open suggested workflow')
+            ->assertSee('href="#ai-workflow-analysis"', escape: false);
+    }
+
+    public function test_suggested_next_step_prioritises_pending_approval_over_regular_workflow(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $this->proposalFor($case, 'update_case_category', 'pending', now()->addHour());
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Review an awaiting approval')
+            ->assertSee('href="#ai-workflow-category"', escape: false)
+            ->call('openWorkflow', 'category')
+            ->assertSet('expandedWorkflows', ['category']);
+
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
+    }
+
+    public function test_suggested_next_step_prioritises_notification_failure_and_never_resends(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $this->proposalFor($case, 'update_case_category', 'pending', now()->addHour());
+
+        DB::table('ai_resolution_notifications')->insert([
+            'case_id' => $case->id,
+            'status' => 'failed',
+            'attempts' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Review an outstanding issue')
+            ->assertSee('Customer resolution email failed')
+            ->assertSee('href="#ai-workflow-resolution"', escape: false)
+            ->call('openWorkflow', 'resolution')
+            ->assertSet('expandedWorkflows', ['resolution']);
+
+        $this->assertDatabaseHas('ai_resolution_notifications', [
+            'case_id' => $case->id,
+            'status' => 'failed',
+            'attempts' => 3,
+        ]);
+    }
+
+    public function test_suggested_next_step_uses_existing_analysis_for_troubleshooting(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        AIAnalysis::query()->create([
+            'case_id' => $case->id,
+            'type' => 'case_assistant',
+            'status' => 'completed',
+        ]);
+        DB::table('tickets')->where('id', $case->id)->update([
+            'assigned_to' => $viewer->id,
+            'state' => CaseState::In_Progress->value,
+        ]);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Review troubleshooting suggestions')
+            ->assertSee('No re-analysis is needed')
+            ->assertSee('href="#ai-workflow-troubleshoot"', escape: false);
+    }
+
+    public function test_suggested_next_step_for_resolved_case_is_review_only(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        DB::table('tickets')->where('id', $case->id)->update([
+            'state' => CaseState::Resolved->value,
+            'resolved_datetime' => now()->timestamp,
+        ]);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Resolution recorded')
+            ->assertSee('no further AI action is automatically required')
+            ->assertSee('href="#ai-workflow-resolution"', escape: false);
+    }
+
     private function proposalFor(tickets $case, string $action, string $status, $expiresAt): AIActionProposal
     {
         return AIActionProposal::query()->create([
