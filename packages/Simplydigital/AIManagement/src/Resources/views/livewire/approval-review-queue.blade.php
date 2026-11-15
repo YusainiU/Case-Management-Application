@@ -96,7 +96,10 @@
 
                 <div class="border-t border-gray-200 pt-3 text-sm dark:border-gray-700">
                     <strong>Execution:</strong>
-                    {{ $proposal->execution?->status ?? ($proposal->status === 'approved' ? 'Not recorded' : 'Not applicable') }}
+                    {{ ucfirst($proposal->execution?->status ?? ($proposal->status === 'approved' ? 'Not recorded' : 'Not applicable')) }}
+                    @if ($proposal->execution?->updated_at)
+                        · Updated {{ $proposal->execution->updated_at->format('d M Y, H:i') }}
+                    @endif
                     @if ($proposal->execution?->error)
                         <p class="mt-1 text-red-700 dark:text-red-400">{{ $proposal->execution->error }}</p>
                     @endif
