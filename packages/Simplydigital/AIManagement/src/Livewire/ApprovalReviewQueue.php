@@ -5,6 +5,7 @@ namespace Simplydigital\AIManagement\Livewire;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Simplydigital\AIManagement\Models\AIActionProposal;
@@ -16,6 +17,7 @@ class ApprovalReviewQueue extends Component
 {
     use WithPagination;
 
+    #[Url]
     public string $status = 'pending';
 
     public string $rejectionReason = '';
