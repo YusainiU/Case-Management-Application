@@ -47,7 +47,7 @@ class AIApprovalReviewQueueTest extends TestCase
 
         $this->actingAs($reader);
 
-        $this->get(route('ai.approvals.index'))
+        $this->get(route('ai.approvals.index', ['status' => 'all']))
             ->assertOk()
             ->assertSee('AI Approval Review Queue')
             ->assertSee('Incorrect classification');
