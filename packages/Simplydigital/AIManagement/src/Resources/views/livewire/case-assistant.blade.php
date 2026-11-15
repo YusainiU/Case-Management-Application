@@ -173,6 +173,55 @@
         </div>
     @endif
 
+    <section class="ai-card p-4 sm:p-5" aria-label="Case workflow overview" id="ai-workflow-overview">
+        <div class="flex flex-wrap items-start justify-between gap-2">
+            <div>
+                <h3 class="text-lg font-bold">Case workflow overview</h3>
+                <p class="ai-muted mt-1 text-sm">Based on the current case and recorded reviews. A stage is not proof of an AI action unless stated.</p>
+            </div>
+            <span class="ai-muted rounded-md border px-2 py-1 text-xs" style="border-color:var(--ai-border)">
+                Updated automatically
+            </span>
+        </div>
+        <ol class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            @foreach ($workflowOverview as $stage)
+                <li class="min-w-0 rounded-lg border p-3" style="border-color:var(--ai-border)"
+                    wire:key="overview-{{ $stage['workflow'] }}">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h4 class="text-sm font-semibold">{{ $loop->iteration }}. {{ $stage['title'] }}</h4>
+                        <span class="rounded-full border px-2 py-0.5 text-xs font-medium"
+                            style="border-color:var(--ai-border);{{ match ($stage['status']) {
+                                'complete' => 'color:#15803d;',
+                                'attention' => 'color:#b91c1c;',
+                                'pending' => 'color:var(--ai-accent);',
+                                default => 'color:var(--ai-muted);'
+                            } }}">
+                            {{ match ($stage['status']) {
+                                'complete' => 'Recorded',
+                                'attention' => 'Needs review',
+                                'pending' => 'In progress',
+                                default => 'Not recorded',
+                            } }}
+                        </span>
+                    </div>
+                    <p class="ai-muted mt-2 break-words text-xs">{{ $stage['detail'] }}</p>
+                    @if ($stage['at'])
+                        <time class="ai-muted mt-2 block text-xs tabular-nums"
+                            datetime="{{ $stage['at']->timezone($timelineTimezone)->toIso8601String() }}">
+                            {{ $stage['at']->timezone($timelineTimezone)->format('d M Y · H:i') }} {{ $timelineTimezone }}
+                        </time>
+                    @endif
+                    <a href="#ai-workflow-{{ $stage['workflow'] }}"
+                        wire:click="openWorkflow('{{ $stage['workflow'] }}')"
+                        class="mt-3 inline-block text-xs font-semibold underline underline-offset-2"
+                        style="color:var(--ai-accent)">
+                        Open stage
+                    </a>
+                </li>
+            @endforeach
+        </ol>
+    </section>
+
     <section class="ai-card p-4 sm:p-5" aria-label="AI Assistant items needing attention" id="ai-needs-attention">
         <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
