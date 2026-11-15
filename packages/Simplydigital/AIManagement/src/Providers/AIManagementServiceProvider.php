@@ -18,6 +18,7 @@ use Simplydigital\AIManagement\Authorization\AIPermissionProvider;
 use Simplydigital\UserManagement\Services\PermissionRegistry;
 use Simplydigital\AIManagement\Livewire\CaseAssistant as CaseAssistantLivewire;
 use Simplydigital\AIManagement\Livewire\CategoryApprovals;
+use Simplydigital\AIManagement\Livewire\ApprovalReviewQueue;
 
 class AIManagementServiceProvider extends ServiceProvider
 {
@@ -77,11 +78,13 @@ class AIManagementServiceProvider extends ServiceProvider
         ], 'ai-management-config');
 
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
 
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'ai-management');  
         
         Livewire::component('ai-management.case-assistant', CaseAssistantLivewire::class);
         Livewire::component('ai-management.category-approvals', CategoryApprovals::class);
+        Livewire::component('ai-management.approval-review-queue', ApprovalReviewQueue::class);
           
     }
 }
