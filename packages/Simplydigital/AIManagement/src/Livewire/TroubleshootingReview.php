@@ -43,21 +43,24 @@ class TroubleshootingReview extends Component
 
     private function latestAnalysis(tickets $case): ?AIAnalysis
     {
+        // Do not silently reuse an older completed result while a new
+        // re-analysis is pending, processing, or has failed.
         return AIAnalysis::query()
             ->where('case_id', $case->id)
             ->where('type', 'case_assistant')
-            ->where('status', 'completed')
             ->latest('id')
             ->first();
     }
 
     private function isFresh(tickets $case, AIAnalysis $analysis): bool
     {
-        // Avoid showing analysis of an old version as a current plan after
-        // the case was subsequently edited by a person or an approved action.
-        return $analysis->created_at !== null
+        // An analysis is ready only after the job has completed. Comparing the
+        // request timestamp caused a false "stale" state while re-analysis ran.
+        // The completion timestamp also protects against subsequent case edits.
+        return $analysis->status === 'completed'
+            && $analysis->updated_at !== null
             && $case->updated_at !== null
-            && $analysis->created_at->greaterThanOrEqualTo($case->updated_at);
+            && $analysis->updated_at->greaterThanOrEqualTo($case->updated_at);
     }
 
     private function snapshot(tickets $case): string
