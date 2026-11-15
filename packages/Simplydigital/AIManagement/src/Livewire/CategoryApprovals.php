@@ -124,6 +124,7 @@ class CategoryApprovals extends Component
                 ->latest()
                 ->first(),
             'proposals' => AIActionProposal::query()
+                ->with(['approvals.reviewer', 'execution'])
                 ->where('case_id', $case->id)
                 ->latest()
                 ->limit(10)
