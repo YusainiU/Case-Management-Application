@@ -112,6 +112,9 @@ class AIEngineerSemanticMatchingTest extends TestCase
     public function test_semantic_analysis_is_opt_in_and_requires_case_permission(): void
     {
         config()->set('ai-management.engineer_semantic.enabled', true);
+        config()->set('ai-management.provider', 'openai');
+        config()->set('ai-management.model', 'test-model');
+        config()->set('ai-management.openai.api_key', 'test-key');
         Bus::fake();
         $owner = User::factory()->create();
         $this->grant($owner, 'case.view', 'case.update', 'ai.case_assistant.analyze');
@@ -124,6 +127,55 @@ class AIEngineerSemanticMatchingTest extends TestCase
             ->assertSee('Semantic skill matching queued');
         $this->assertDatabaseHas('ai_analyses', ['case_id' => $case->id, 'type' => 'engineer_semantic_skills', 'status' => 'pending']);
         Bus::assertDispatched(GenerateSemanticEngineerSkills::class);
+    }
+
+    public function test_semantic_enabled_without_provider_never_breaks_recommendations_or_queues(): void
+    {
+        config()->set('ai-management.engineer_semantic.enabled', true);
+        config()->set('ai-management.provider', 'not-configured');
+        config()->set('ai-management.model', null);
+        Bus::fake();
+
+        $owner = User::factory()->create();
+        $this->grant($owner, 'case.view', 'case.update', 'ai.case_assistant.analyze');
+        $this->engineer(User::factory()->create(), 'Application Developer');
+        $case = $this->portalCase($owner);
+
+        $recommendations = app(EngineerRecommendationService::class)->recommend($case);
+        $this->assertCount(1, $recommendations);
+        $this->assertSame([], $recommendations[0]['semantic_matches']);
+
+        $this->actingAs($owner);
+        Livewire::test(EngineerAssignmentApprovals::class, ['case' => $case])
+            ->assertSee('Semantic matching needs a supported AI provider')
+            ->call('requestSemanticMatch')
+            ->assertSee('Exact skill matching remains available');
+
+        Bus::assertNotDispatched(GenerateSemanticEngineerSkills::class);
+        $this->assertDatabaseMissing('ai_analyses', [
+            'case_id' => $case->id,
+            'type' => 'engineer_semantic_skills',
+        ]);
+    }
+
+    public function test_semantic_enabled_without_api_credentials_cannot_enqueue(): void
+    {
+        config()->set('ai-management.engineer_semantic.enabled', true);
+        config()->set('ai-management.provider', 'openai');
+        config()->set('ai-management.model', 'test-model');
+        config()->set('ai-management.openai.api_key', null);
+        Bus::fake();
+
+        $owner = User::factory()->create();
+        $this->grant($owner, 'case.view', 'case.update', 'ai.case_assistant.analyze');
+        $case = $this->portalCase($owner);
+
+        $this->actingAs($owner);
+        Livewire::test(EngineerAssignmentApprovals::class, ['case' => $case])
+            ->call('requestSemanticMatch')
+            ->assertSee('needs API credentials');
+
+        Bus::assertNotDispatched(GenerateSemanticEngineerSkills::class);
     }
 
     public function test_semantic_matching_disabled_does_not_enqueue(): void
