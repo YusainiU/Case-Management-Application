@@ -193,18 +193,18 @@ class ResolutionReadiness extends Component
                     : 'Resolution handoff for human review (not a resolution event).')
                     .PHP_EOL.$resolutionNotes.PHP_EOL.PHP_EOL
                     .($this->resolveCase
-                        ? 'The normal resolution process updated the case and SLA and notified the customer.'
+                        ? 'The normal resolution process updated the case and SLA; customer notification was queued after commit.'
                         : 'Recorded by staff; the case was not resolved.'),
                 'visible_to_external' => false,
                 'require_attention' => false,
             ]);
 
-            // Keep the normal resolver last: it sends the standard customer
-            // notification. A handoff-write failure must occur beforehand.
+            // The normal resolver updates the case, SLA and system log.
+            // For this AI-assisted path, customer mail is deferred until commit.
             if ($this->resolveCase) {
                 // Use the exact same service as the Close & Resolve form. That
-                // service updates SLA, writes the standard log and emails the
-                // customer. Never emulate it with a bare state update.
+                // service updates SLA and writes the standard log. Mail is
+                // deferred through the outbox; never use a bare state update.
                 $success = app(CaseTicketServices::class)->resolveCase($locked, [
                     'resolved_datetime' => $this->resolvedAt,
                     'resolved_by' => (int) $this->resolvedBy,
