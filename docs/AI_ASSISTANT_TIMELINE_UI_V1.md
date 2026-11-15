@@ -5,7 +5,8 @@ This is a presentation-only redesign of the Case Assistant's existing Livewire p
 ## Layout
 
 - **Newest-first Activity timeline:** The top of the page shows the most recent internal AI case progress events, not six separate lengthy histories. Entries are sourced from `task_logs` for the current case with `source` in `ai_agent`, `ai_assisted`, `ai_resolution_review`. Events outside these sources are deliberately excluded.
-- Each entry shows a readable **day, month, year and 24-hour time with seconds**, as well as the configured application timezone (`config('app.timezone')`). A `<time datetime="...">` element supplies a machine-readable ISO date.
+- The timeline adds a **calendar-date divider** above the first event on each day (for example, *Wednesday, 11 November 2026*). Each divider is shown only once for its day, with the newest day first. Day boundaries use the configured application timezone and remain correct when activity is filtered or older history is loaded.
+- Each entry still shows a readable **day, month, year and 24-hour time with seconds**, as well as the configured application timezone (`config('app.timezone')`). A `<time datetime="...">` element supplies a machine-readable ISO date.
 - An entry also identifies the staff member when recorded, or displays **System / AI Agent**, and distinguishes system audit events from staff-reviewed notes.
 - Long descriptions are truncated initially, with an optional **Read full activity** disclosure.
 - The first 20 events are loaded, newest first. **Show older activity** adds 20 events at a time, up to 100 events. The timeline refreshes automatically.
@@ -98,6 +99,7 @@ Browser acceptance:
 2. Expand each of the six workflows. Verify category approvals, engineer assignment, Start Work, troubleshooting review, and the optional resolution checkbox remain functional.
 3. Test a narrow mobile viewport, browser/device automatic dark mode, explicit application dark mode, and light mode.
 4. Verify the timeline updates after a new action and that **Show older activity** reveals history rather than navigating away.
+   Confirm entries from different dates are separated by calendar-day headings, same-day entries share one heading, and dates remain correct when applying filters.
 5. Expand **Category approvals** or **Troubleshooting review** and keep it open for at least 20 seconds (several polling cycles). The panel must remain open and usable; only clicking its toggle should close it.
 6. Select each activity filter, checking that only matching records are displayed and that the newest matching event remains first. Select **All activity** to restore the full view.
 7. Click **Open related workflow** on a category, troubleshooting or notification event. The correct panel should expand and stay expanded across polling; no approval or resolution should run automatically.
