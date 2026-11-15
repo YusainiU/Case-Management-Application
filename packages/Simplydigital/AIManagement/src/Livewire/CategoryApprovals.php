@@ -77,6 +77,7 @@ class CategoryApprovals extends Component
 
         $proposal = AIActionProposal::query()
             ->where('case_id', $case->id)
+            ->where('action_type', 'update_case_category')
             ->findOrFail($proposalId);
 
         try {
@@ -126,6 +127,7 @@ class CategoryApprovals extends Component
             'proposals' => AIActionProposal::query()
                 ->with(['approvals.reviewer', 'execution'])
                 ->where('case_id', $case->id)
+                ->where('action_type', 'update_case_category')
                 ->latest()
                 ->limit(10)
                 ->get(),
