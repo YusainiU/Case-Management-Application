@@ -2,8 +2,9 @@
     <div>
         <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100">Engineer Assignment Recommendations</h3>
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Explainable matching using listed engineer skills and current open-case counts.
-            It does not verify engineer calendars or availability. A manager must approve any proposed assignment.
+            Ranking: matched skills first, then active unexpired certifications matching the case text,
+            then fewer open cases. This does not verify engineer schedules, availability or capacity.
+            A manager must approve every proposed assignment.
         </p>
         <p class="mt-1 text-sm">Current assignee: <strong>{{ $case->assignedToUser?->name ?? 'Unassigned' }}</strong></p>
     </div>
@@ -14,14 +15,16 @@
     @can('ai-engineer.propose', $case)
         @if (! $case->closed_datetime && $recommendations)
             <div class="space-y-2 rounded-lg border border-gray-300 p-3 dark:border-gray-700">
-                <label for="engineer-choice-{{ $case->id }}" class="block text-sm font-medium">Suggested engineers (skill match, then workload)</label>
+                <label for="engineer-choice-{{ $case->id }}" class="block text-sm font-medium">Suggested engineers (skill match, certification match, then workload)</label>
                 <select wire:model="selectedEngineerId" id="engineer-choice-{{ $case->id }}"
                         class="w-full rounded-md border border-gray-300 p-2 text-sm dark:bg-gray-800">
                     <option value="">Select an engineer for human review</option>
                     @foreach ($recommendations as $candidate)
                         <option value="{{ $candidate['user_id'] }}" @disabled($candidate['user_id'] === $case->assigned_to)>
-                            {{ $candidate['name'] }} · {{ count($candidate['matched_skills']) }} matched skills · {{ $candidate['open_cases'] }} open cases
-                            {{ $candidate['evidence'] === 'workload_only' ? '(skills unverified)' : '' }}
+                            {{ $candidate['name'] }} · {{ count($candidate['matched_skills']) }} skill matches
+                            · {{ count($candidate['matched_certifications']) }} certification matches
+                            · {{ $candidate['open_cases'] }} open cases
+                            {{ $candidate['evidence'] === 'workload_only' ? '(no confirmed match)' : '' }}
                         </option>
                     @endforeach
                 </select>
@@ -29,7 +32,8 @@
                 @foreach (array_slice($recommendations, 0, 5) as $candidate)
                     <p class="text-xs text-gray-600 dark:text-gray-300">
                         {{ $candidate['name'] }}:
-                        {{ $candidate['matched_skills'] ? 'Matched '.implode(', ', $candidate['matched_skills']) : 'No confirmed skill match' }}
+                        {{ $candidate['matched_skills'] ? 'Skills: '.implode(', ', $candidate['matched_skills']) : 'No skill match' }}
+                        · {{ $candidate['matched_certifications'] ? 'Valid certifications: '.implode(', ', $candidate['matched_certifications']) : 'No valid certification match' }}
                         · {{ $candidate['open_cases'] }} open cases
                     </p>
                 @endforeach
