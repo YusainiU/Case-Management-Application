@@ -4,6 +4,8 @@ namespace Simplydigital\AIManagement\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\Computed;
+use Illuminate\Support\Facades\Gate;
+use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\AIManagement\Models\AIAnalysis;
 use Simplydigital\AIManagement\Enums\AIStatuses;
   use Simplydigital\CaseManagement\AI\CaseAssistantService;
@@ -15,6 +17,14 @@ class CaseAssistant extends Component
     public ?int $analysisId = null;
 
     public bool $analyzing = false;
+
+    public int $timelineLimit = 20;
+
+    public function loadMoreTimeline(): void
+    {
+        Gate::authorize('view', $this->case);
+        $this->timelineLimit = min(100, $this->timelineLimit + 20);
+    }
 
     public function mount(object $case): void
     {
@@ -86,11 +96,29 @@ class CaseAssistant extends Component
     }
 
     public function render()
-    {   
-        return view(
-            'ai-management::livewire.case-assistant',[
-                'analysis' => $this->analysis,
-                'result' => $this->analysis?->result,
-            ]);
+    {
+        Gate::authorize('view', $this->case);
+
+        // Each AI lifecycle stage already writes an internal case progress log.
+        // Use that record as the single chronological source of truth, rather
+        // than displaying proposal and analysis summary states as duplicates.
+        $entries = TaskLogs::query()
+            ->where('ticket_id', $this->case->getKey())
+            ->whereIn('source', ['ai_agent', 'ai_assisted', 'ai_resolution_review'])
+            ->with('user:id,name')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit($this->timelineLimit + 1)
+            ->get();
+
+        $hasMore = $entries->count() > $this->timelineLimit;
+
+        return view('ai-management::livewire.case-assistant', [
+            'analysis' => $this->analysis,
+            'result' => $this->analysis?->result,
+            'timelineEntries' => $entries->take($this->timelineLimit),
+            'timelineHasMore' => $hasMore,
+            'timelineTimezone' => config('app.timezone', 'UTC'),
+        ]);
     }
 }
