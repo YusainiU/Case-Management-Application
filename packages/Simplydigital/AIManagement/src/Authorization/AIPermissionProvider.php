@@ -27,6 +27,11 @@ class AIPermissionProvider implements PermissionProvider
                 group: 'AI Case Assistant',
             ),
             new PermissionDefinition(
+                name: AIPermission::ProposalView->value,
+                description: 'View AI action review queue and audit history',
+                group: 'AI Agents',
+            ),
+            new PermissionDefinition(
                 name: AIPermission::ProposalApprove->value,
                 description: 'Review and approve AI action proposals',
                 group: 'AI Agents',
