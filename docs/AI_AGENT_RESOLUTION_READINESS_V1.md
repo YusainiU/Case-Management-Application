@@ -29,14 +29,14 @@ On Save, the application rechecks permissions and the case/source-note snapshot,
 - Changes `tickets.state` to **Resolved**, sets resolution type/notes/resolver/time;
 - Changes the associated SLA task state to **Resolved**;
 - Writes the existing standard resolution system log;
-- **Calls the standard customer-resolution email service**;
+- **Queues the standard customer-resolution email service after the case/SLA transaction commits** (Phase 10 outbox);
 - Writes the staff-reviewed resolution handoff to Case Progress.
 
 It **does not close the case**; closure remains a separate action on the existing Close & Resolve tab.
 
 The opt-in is **human-authorised**, not a background AI decision. No AI model can tick the checkbox by itself, and no new AI provider or execution flag is introduced.
 
-**Important:** The existing `resolveCase()` service sends the customer notification as part of its resolution workflow. Use a disposable development case and mocked/sandboxed mail delivery when first testing. If no customer email recipient is available, the normal email service may skip delivery; the application does not manufacture a recipient.
+**Important:** The optional AI-assisted path now defers standard customer mail through a durable, case-unique outbox. A queue worker must run to submit it, and submission is not delivery confirmation. The existing non-AI Close & Resolve behaviour remains unchanged. See `docs/AI_AGENT_RESOLUTION_NOTIFICATION_HARDENING_V1.md`. Use a disposable development case and mocked/sandboxed mail delivery when first testing. If no customer email recipient is available, the worker records Skipped; the application does not manufacture a recipient.
 
 ## Safeguards
 
