@@ -2,8 +2,8 @@
     <div>
         <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100">Engineer Assignment Recommendations</h3>
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            Ranking: matched skills first, then active unexpired certifications matching the case text,
-            then fewer open cases. This does not verify engineer schedules, availability or capacity.
+            Ranking: verified exact and AI-suggested skill matches first (exact matches win ties),
+            then active unexpired certifications matching the case text, then fewer open cases. This does not verify engineer schedules, availability or capacity.
             A manager must approve every proposed assignment.
         </p>
         <p class="mt-1 text-sm">Current assignee: <strong>{{ $case->assignedToUser?->name ?? 'Unassigned' }}</strong></p>
