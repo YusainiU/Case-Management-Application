@@ -54,6 +54,11 @@ class EngineerAssignmentApprovals extends Component
             return;
         }
 
+        if ($issue = $service->configurationIssue()) {
+            $this->notice = $issue.' Exact skill matching remains available.';
+            return;
+        }
+
         if ($service->matchingAnalysis($case)) {
             $this->notice = 'Semantic matching is already available for this case.';
             return;
@@ -148,6 +153,9 @@ class EngineerAssignmentApprovals extends Component
 
         return view('ai-management::livewire.engineer-assignment-approvals', [
             'semanticAnalysis' => $latestSemantic,
+            'semanticConfigurationIssue' => config('ai-management.engineer_semantic.enabled', false)
+                ? app(SemanticEngineerSkillService::class)->configurationIssue()
+                : null,
             'case' => $case,
             'recommendations' => app(EngineerRecommendationService::class)->recommend($case),
             'proposals' => AIActionProposal::query()
