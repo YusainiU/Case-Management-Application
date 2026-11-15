@@ -317,6 +317,79 @@ class AIAssistantTimelineTest extends TestCase
             ->assertDontSee('Customer resolution email skipped');
     }
 
+    public function test_workflow_overview_shows_recorded_stages_without_claiming_resolution(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        AIAnalysis::query()->create([
+            'case_id' => $case->id,
+            'type' => 'case_assistant',
+            'status' => 'completed',
+        ]);
+        $this->logFor($case, 'ai_assisted', 'Reviewed troubleshooting',
+            'Work completed and tested by staff.');
+        $this->logFor($case, 'ai_resolution_review', 'Resolution readiness handoff',
+            'A handoff has been saved, but this case remains open.');
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Case workflow overview')
+            ->assertSee('Latest analysis completed')
+            ->assertSee('Reviewed internal note saved')
+            ->assertSee('Handoff saved; case not resolved')
+            ->assertSee('No engineer assigned')
+            ->assertSee('Case remains Open')
+            ->assertSee('href="#ai-workflow-resolution"', escape: false)
+            ->assertSame(CaseState::Open, $case->refresh()->state);
+    }
+
+    public function test_workflow_overview_reflects_latest_pending_approval_and_state_change(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $this->proposalFor($case, 'update_case_category', 'completed', now()->subDay());
+        $this->proposalFor($case, 'update_case_category', 'pending', now()->addHour());
+
+        $this->actingAs($viewer);
+        $component = Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Awaiting category approval')
+            ->assertSee('Case remains Open');
+
+        DB::table('tickets')->where('id', $case->id)->update([
+            'state' => CaseState::Resolved->value,
+            'resolved_datetime' => now()->timestamp,
+        ]);
+
+        $component->call('refreshAnalysis')
+            ->assertSee('Case is resolved or completed')
+            ->assertDontSee('Handoff saved; case not resolved');
+    }
+
+    public function test_workflow_overview_is_scoped_to_current_case_and_links_open_correct_panels(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $other = $this->caseFor($viewer);
+
+        $this->logFor($other, 'ai_assisted', 'Other case review', 'Not for this case');
+        $this->proposalFor($other, 'assign_case_engineer', 'pending', now()->addHour());
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('No reviewed troubleshooting note saved')
+            ->assertSee('No engineer assigned')
+            ->assertDontSee('Awaiting assignment approval')
+            ->call('openWorkflow', 'troubleshoot')
+            ->assertSet('expandedWorkflows', ['troubleshoot'])
+            ->call('refreshAnalysis')
+            ->assertSet('expandedWorkflows', ['troubleshoot']);
+    }
+
     private function proposalFor(tickets $case, string $action, string $status, $expiresAt): AIActionProposal
     {
         return AIActionProposal::query()->create([
