@@ -27,6 +27,32 @@ class CaseAssistant extends Component
 
     public string $timelineFilter = 'all';
 
+    // These are Livewire-owned presentation preferences. Polling and child
+    // workflow actions must never reset them.
+    public bool $showOverview = true;
+
+    public bool $showTimeline = true;
+
+    public function toggleOverview(): void
+    {
+        Gate::authorize('view', $this->case);
+        $this->showOverview = ! $this->showOverview;
+    }
+
+    public function toggleTimeline(): void
+    {
+        Gate::authorize('view', $this->case);
+        $this->showTimeline = ! $this->showTimeline;
+    }
+
+    public function setFocusView(bool $enabled): void
+    {
+        Gate::authorize('view', $this->case);
+
+        $this->showOverview = ! $enabled;
+        $this->showTimeline = ! $enabled;
+    }
+
     private const TIMELINE_FILTERS = [
         'all', 'analysis', 'approvals', 'reviews', 'notifications',
     ];
