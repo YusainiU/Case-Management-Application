@@ -5,6 +5,9 @@ namespace Simplydigital\AIManagement\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
+use Simplydigital\AIManagement\Models\AIActionProposal;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\AIManagement\Models\AIAnalysis;
 use Simplydigital\AIManagement\Enums\AIStatuses;
@@ -156,6 +159,111 @@ class CaseAssistant extends Component
         return AIAnalysis::find($this->analysisId);
     }
 
+    /**
+     * Read-only attention items from current operational records.
+     *
+     * Historical progress logs are intentionally not used for this panel:
+     * an old failed/queued event is not evidence of a current problem.
+     */
+    private function attentionItems(): array
+    {
+        $caseId = $this->case->getKey();
+        $items = [];
+
+        $proposals = AIActionProposal::query()
+            ->where('case_id', $caseId)
+            ->where(function ($query): void {
+                $query->where(function ($pending): void {
+                    $pending->where('status', 'pending')
+                        ->where('expires_at', '>', now());
+                })->orWhereHas('execution', function ($execution): void {
+                    $execution->where('status', 'failed');
+                });
+            })
+            ->with('execution')
+            ->latest('updated_at')
+            ->limit(30)
+            ->get();
+
+        foreach ($proposals as $proposal) {
+            $workflow = match ($proposal->action_type) {
+                'update_case_category' => 'category',
+                'assign_case_engineer' => 'engineer',
+                'start_case_work' => 'start-work',
+                default => null,
+            };
+            if ($workflow === null) {
+                continue;
+            }
+
+            $action = match ($workflow) {
+                'category' => 'Category change',
+                'engineer' => 'Engineer assignment',
+                default => 'Start Work',
+            };
+
+            if ($proposal->execution?->status === 'failed') {
+                $items[] = [
+                    'key' => 'execution:'.$proposal->id,
+                    'title' => $action.' execution failed',
+                    'detail' => 'Review the failed execution and case state before creating another request.',
+                    'workflow' => $workflow,
+                    'severity' => 'error',
+                    'at' => $proposal->execution->updated_at ?? $proposal->updated_at,
+                ];
+            } elseif ($proposal->status === 'pending' && $proposal->expires_at?->isFuture()) {
+                $items[] = [
+                    'key' => 'pending:'.$proposal->id,
+                    'title' => $action.' awaiting review',
+                    'detail' => 'Approval request expires '.$proposal->expires_at
+                        ->timezone(config('app.timezone', 'UTC'))->format('d M Y, H:i').' '.config('app.timezone', 'UTC'),
+                    'workflow' => $workflow,
+                    'severity' => 'pending',
+                    'at' => $proposal->created_at,
+                ];
+            }
+        }
+
+        $latestAnalysis = AIAnalysis::query()
+            ->where('case_id', $caseId)
+            ->where('type', 'case_assistant')
+            ->latest('id')
+            ->first();
+
+        if ($latestAnalysis?->status === 'failed') {
+            $items[] = [
+                'key' => 'analysis:'.$latestAnalysis->id,
+                'title' => 'Latest Case Assistant analysis failed',
+                'detail' => 'Review the analysis status and re-analyze when appropriate.',
+                'workflow' => 'analysis',
+                'severity' => 'error',
+                'at' => $latestAnalysis->updated_at,
+            ];
+        }
+
+        $notification = DB::table('ai_resolution_notifications')
+            ->where('case_id', $caseId)
+            ->first();
+
+        if ($notification && in_array($notification->status, ['failed', 'skipped'], true)) {
+            $items[] = [
+                'key' => 'notification:'.$notification->id,
+                'title' => $notification->status === 'failed'
+                    ? 'Customer resolution email failed' : 'Customer resolution email skipped',
+                'detail' => 'Inspect notification status and recipient details; do not blindly resend.',
+                'workflow' => 'resolution',
+                'severity' => 'error',
+                'at' => Carbon::parse($notification->updated_at),
+            ];
+        }
+
+        usort($items, fn (array $a, array $b): int =>
+            ($b['at']?->getTimestamp() ?? 0) <=> ($a['at']?->getTimestamp() ?? 0)
+        );
+
+        return array_slice($items, 0, 12);
+    }
+
     public function render()
     {
         Gate::authorize('view', $this->case);
@@ -194,6 +302,7 @@ class CaseAssistant extends Component
             'timelineEntries' => $entries->take($this->timelineLimit),
             'timelineHasMore' => $hasMore,
             'timelineTimezone' => config('app.timezone', 'UTC'),
+            'attentionItems' => $this->attentionItems(),
         ]);
     }
 }
