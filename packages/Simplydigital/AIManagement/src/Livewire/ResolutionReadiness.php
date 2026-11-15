@@ -10,6 +10,9 @@ use Livewire\Component;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Services\CaseTicketServices;
+use Simplydigital\CaseManagement\Services\CaseUserServices;
+use Illuminate\Validation\Rule;
 
 class ResolutionReadiness extends Component
 {
@@ -24,6 +27,10 @@ class ResolutionReadiness extends Component
     public string $verification = '';
     public string $remainingRisks = '';
     public bool $verified = false;
+    public bool $resolveCase = false;
+    public ?string $resolutionType = null;
+    public ?int $resolvedBy = null;
+    public ?string $resolvedAt = null;
     public ?string $notice = null;
 
     public function mount(tickets $case): void
@@ -97,6 +104,10 @@ class ResolutionReadiness extends Component
         $this->verification = '';
         $this->remainingRisks = '';
         $this->verified = false;
+        $this->resolveCase = false;
+        $this->resolutionType = null;
+        $this->resolvedBy = null;
+        $this->resolvedAt = now()->format('Y-m-d\\TH:i');
         $this->notice = 'Resolution handoff prepared. Record actual work and verification before saving.';
     }
 
@@ -105,7 +116,23 @@ class ResolutionReadiness extends Component
         $case = $this->currentCase();
         Gate::authorize('update', $case);
 
+        $allowedResolutions = array_keys(config('case-management.ticketManagement.resolution', []));
+        $allowedResolvers = array_keys(CaseUserServices::getAllInternalUserIds());
+
         $this->validate([
+            'resolveCase' => ['boolean'],
+            'resolutionType' => [
+                Rule::requiredIf($this->resolveCase), 'nullable', 'string',
+                Rule::in($allowedResolutions),
+            ],
+            'resolvedBy' => [
+                Rule::requiredIf($this->resolveCase), 'nullable', 'integer',
+                Rule::in($allowedResolvers),
+            ],
+            'resolvedAt' => [
+                Rule::requiredIf($this->resolveCase), 'nullable', 'date_format:Y-m-d\\TH:i',
+                'before_or_equal:now',
+            ],
             'sourceLogId' => ['required', 'integer', 'min:1'],
             'fixApplied' => ['required', 'string', 'min:15', 'max:3000'],
             'verification' => ['required', 'string', 'min:15', 'max:3000'],
@@ -124,6 +151,8 @@ class ResolutionReadiness extends Component
             ]);
         }
 
+        $resolved = $this->resolveCase;
+
         DB::transaction(function () use ($case): void {
             $locked = tickets::query()->lockForUpdate()->findOrFail($case->id);
             $source = $this->sourceNote($locked, (int) $this->sourceLogId);
@@ -135,6 +164,35 @@ class ResolutionReadiness extends Component
                 ]);
             }
 
+            if ($this->resolveCase && ! $locked->slaTasks()->exists()) {
+                throw ValidationException::withMessages([
+                    'resolveCase' => 'A case SLA task is required before using the standard resolution process.',
+                ]);
+            }
+
+            $resolutionNotes = 'Reviewed troubleshooting progress log #'.$source->number.PHP_EOL
+                .'Fix actually applied:'.PHP_EOL.trim($this->fixApplied).PHP_EOL.PHP_EOL
+                .'Verification actually performed:'.PHP_EOL.trim($this->verification).PHP_EOL.PHP_EOL
+                .'Remaining risks / follow-up:'.PHP_EOL
+                .(trim($this->remainingRisks) ?: 'None reported by reviewing staff.');
+
+            if ($this->resolveCase) {
+                // Use the exact same service as the Close & Resolve form. That
+                // service updates SLA, writes the standard log and emails the
+                // customer. Never emulate it with a bare state update.
+                $success = app(CaseTicketServices::class)->resolveCase($locked, [
+                    'resolved_datetime' => $this->resolvedAt,
+                    'resolved_by' => (int) $this->resolvedBy,
+                    'resolution' => $this->resolutionType,
+                    'resolution_details' => $resolutionNotes,
+                ]);
+                if (! $success) {
+                    throw ValidationException::withMessages([
+                        'resolveCase' => 'The normal resolution process could not finish. No handoff was saved.',
+                    ]);
+                }
+            }
+
             TaskLogs::query()->create([
                 'name' => 'Resolution readiness handoff',
                 'short_description' => 'Reviewed resolution handoff · progress log #'.$source->number,
@@ -142,14 +200,13 @@ class ResolutionReadiness extends Component
                 'source' => 'ai_resolution_review',
                 'user_id' => auth()->id(),
                 'ticket_id' => $locked->id,
-                'description' => 'Resolution handoff for human review (not a resolution event).'.PHP_EOL
-                    .'Reviewed troubleshooting progress log: #'.$source->number.PHP_EOL.PHP_EOL
-                    .'Fix actually applied:'.PHP_EOL.trim($this->fixApplied).PHP_EOL.PHP_EOL
-                    .'Verification actually performed:'.PHP_EOL.trim($this->verification).PHP_EOL.PHP_EOL
-                    .'Remaining risks / follow-up:'.PHP_EOL
-                    .(trim($this->remainingRisks) ?: 'None reported by reviewing staff.').PHP_EOL.PHP_EOL
-                    .'Recorded by a staff reviewer. Use the existing Resolve/Close form '
-                    .'to make an authorised resolution decision.',
+                'description' => ($this->resolveCase
+                    ? 'Staff-authorised resolution was applied through the standard Close & Resolve service.'
+                    : 'Resolution handoff for human review (not a resolution event).')
+                    .PHP_EOL.$resolutionNotes.PHP_EOL.PHP_EOL
+                    .($this->resolveCase
+                        ? 'The normal resolution process updated the case and SLA and notified the customer.'
+                        : 'Recorded by staff; the case was not resolved.'),
                 'visible_to_external' => false,
                 'require_attention' => false,
             ]);
@@ -161,7 +218,14 @@ class ResolutionReadiness extends Component
         $this->verification = '';
         $this->remainingRisks = '';
         $this->verified = false;
-        $this->notice = 'Internal resolution handoff saved to Case Progress. The case remains unresolved.';
+        $this->resolveCase = false;
+        $this->resolutionType = null;
+        $this->resolvedBy = null;
+        $this->resolvedAt = null;
+        $this->notice = $resolved
+            ? 'Case resolved through the standard Close & Resolve process. SLA updated and customer notification triggered.'
+            : 'Internal resolution handoff saved to Case Progress. The case remains unresolved.';
+        $this->dispatch('reloadCaseStatus');
     }
 
     public function render()
@@ -170,6 +234,8 @@ class ResolutionReadiness extends Component
 
         return view('ai-management::livewire.resolution-readiness', [
             'case' => $case,
+            'resolutionOptions' => config('case-management.ticketManagement.resolution', []),
+            'resolverOptions' => CaseUserServices::getAllInternalUserIds(),
             'troubleshootingNotes' => TaskLogs::query()
                 ->where('ticket_id', $case->id)
                 ->where('source', 'ai_assisted')
