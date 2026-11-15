@@ -110,6 +110,11 @@ class ResolutionReadiness extends Component
             'verified' => ['accepted'],
         ]);
 
+        if (! $this->mayPrepare($case)) {
+            $this->notice = 'This case is already resolved or closed. Nothing was saved.';
+            return;
+        }
+
         if (! $this->snapshotHash) {
             throw ValidationException::withMessages([
                 'sourceLogId' => 'Prepare a resolution handoff before saving.',
