@@ -392,6 +392,107 @@ class CaseAssistant extends Component
         ];
     }
 
+    /**
+     * Advisory navigation based on live case facts, not a mandatory pipeline.
+     * Human approval / update permissions remain in each workflow component.
+     */
+    private function suggestedNextStep(array $overview, array $attention): array
+    {
+        foreach ($attention as $item) {
+            if ($item['severity'] === 'error') {
+                return [
+                    'title' => 'Review an outstanding issue',
+                    'detail' => $item['title'].'. '.$item['detail'],
+                    'workflow' => $item['workflow'],
+                    'tone' => 'attention',
+                ];
+            }
+        }
+
+        foreach ($attention as $item) {
+            if ($item['severity'] === 'pending') {
+                return [
+                    'title' => 'Review an awaiting approval',
+                    'detail' => $item['title'].'. A reviewer must decide whether to approve or reject.',
+                    'workflow' => $item['workflow'],
+                    'tone' => 'pending',
+                ];
+            }
+        }
+
+        $stages = collect($overview)->keyBy('workflow');
+        $resolution = $stages->get('resolution');
+        if ($resolution['status'] === 'complete') {
+            return [
+                'title' => 'Resolution recorded',
+                'detail' => 'The case is already resolved or completed. Check the resolution and customer-notification status; no further AI action is automatically required.',
+                'workflow' => 'resolution',
+                'tone' => 'complete',
+            ];
+        }
+
+        $analysis = $stages->get('analysis');
+        if ($analysis['status'] === 'pending') {
+            return [
+                'title' => 'Analysis in progress',
+                'detail' => 'Wait for the current analysis to complete; no additional analysis request is needed.',
+                'workflow' => 'analysis',
+                'tone' => 'pending',
+            ];
+        }
+        if ($analysis['status'] !== 'complete') {
+            return [
+                'title' => 'Review case analysis',
+                'detail' => 'No completed current Case Assistant analysis is recorded. Run analysis only if it is needed for troubleshooting.',
+                'workflow' => 'analysis',
+                'tone' => 'neutral',
+            ];
+        }
+
+        if ($stages->get('engineer')['status'] === 'not_started') {
+            return [
+                'title' => 'Review engineer assignment',
+                'detail' => 'No engineer is currently assigned. Review the suggested assignment or use the normal manual assignment workflow.',
+                'workflow' => 'engineer',
+                'tone' => 'neutral',
+            ];
+        }
+
+        if ($stages->get('start-work')['status'] === 'not_started') {
+            return [
+                'title' => 'Confirm work has started',
+                'detail' => 'The case remains Open. Prepare Start Work approval only after the assigned engineer has actually begun.',
+                'workflow' => 'start-work',
+                'tone' => 'neutral',
+            ];
+        }
+
+        if ($stages->get('troubleshoot')['status'] !== 'complete') {
+            return [
+                'title' => 'Review troubleshooting suggestions',
+                'detail' => 'Reuse the completed analysis to prepare a staff-reviewed internal note. No re-analysis is needed just because the case was updated.',
+                'workflow' => 'troubleshoot',
+                'tone' => 'neutral',
+            ];
+        }
+
+        if ($resolution['status'] === 'pending') {
+            return [
+                'title' => 'Review the saved resolution handoff',
+                'detail' => 'A handoff was saved, but the case is not resolved. Confirm the actual fix and verification before resolving.',
+                'workflow' => 'resolution',
+                'tone' => 'neutral',
+            ];
+        }
+
+        return [
+            'title' => 'Prepare resolution readiness',
+            'detail' => 'A staff-reviewed troubleshooting note is recorded. Document the actual fix and verification; resolving the case remains optional and requires explicit approval.',
+            'workflow' => 'resolution',
+            'tone' => 'neutral',
+        ];
+    }
+
     public function render()
     {
         Gate::authorize('view', $this->case);
@@ -424,6 +525,8 @@ class CaseAssistant extends Component
             ->get();
 
         $hasMore = $entries->count() > $this->timelineLimit;
+        $attentionItems = $this->attentionItems();
+        $overview = $this->workflowOverview($currentCase);
 
         return view('ai-management::livewire.case-assistant', [
             'analysis' => $this->analysis,
@@ -431,8 +534,9 @@ class CaseAssistant extends Component
             'timelineEntries' => $entries->take($this->timelineLimit),
             'timelineHasMore' => $hasMore,
             'timelineTimezone' => config('app.timezone', 'UTC'),
-            'attentionItems' => $this->attentionItems(),
-            'workflowOverview' => $this->workflowOverview($currentCase),
+            'attentionItems' => $attentionItems,
+            'workflowOverview' => $overview,
+            'suggestedNextStep' => $this->suggestedNextStep($overview, $attentionItems),
         ]);
     }
 }
