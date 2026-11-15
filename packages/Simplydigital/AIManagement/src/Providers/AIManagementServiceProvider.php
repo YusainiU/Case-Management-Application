@@ -21,6 +21,7 @@ use Simplydigital\AIManagement\Livewire\CategoryApprovals;
 use Simplydigital\AIManagement\Livewire\ApprovalReviewQueue;
 use Simplydigital\AIManagement\Livewire\EngineerAssignmentApprovals;
 use Simplydigital\AIManagement\Livewire\CaseWorkStartApprovals;
+use Simplydigital\AIManagement\Livewire\TroubleshootingReview;
 use Simplydigital\AIManagement\Console\Commands\BackfillAIProgressLogs;
 
 class AIManagementServiceProvider extends ServiceProvider
@@ -114,6 +115,7 @@ class AIManagementServiceProvider extends ServiceProvider
         Livewire::component('ai-management.approval-review-queue', ApprovalReviewQueue::class);
         Livewire::component('ai-management.engineer-assignment-approvals', EngineerAssignmentApprovals::class);
         Livewire::component('ai-management.case-work-start-approvals', CaseWorkStartApprovals::class);
+        Livewire::component('ai-management.troubleshooting-review', TroubleshootingReview::class);
           
     }
 }
