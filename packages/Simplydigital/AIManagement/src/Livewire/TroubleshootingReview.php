@@ -18,6 +18,9 @@ class TroubleshootingReview extends Component
     #[Locked]
     public ?int $sourceAnalysisId = null;
 
+    #[Locked]
+    public ?string $caseSnapshot = null;
+
     public string $draft = '';
 
     public bool $confirmed = false;
@@ -55,6 +58,20 @@ class TroubleshootingReview extends Component
         return $analysis->created_at !== null
             && $case->updated_at !== null
             && $analysis->created_at->greaterThanOrEqualTo($case->updated_at);
+    }
+
+    private function snapshot(tickets $case): string
+    {
+        return hash('sha256', json_encode([
+            $case->getKey(),
+            $case->getRawOriginal('updated_at'),
+            $case->getRawOriginal('short_description'),
+            $case->getRawOriginal('description'),
+            $case->getRawOriginal('state'),
+            $case->assigned_to,
+            $case->resolved_datetime,
+            $case->closed_datetime,
+        ], JSON_THROW_ON_ERROR));
     }
 
     public function prepare(): void
@@ -108,6 +125,7 @@ class TroubleshootingReview extends Component
 
         $this->draft = mb_substr(implode(PHP_EOL, $lines), 0, 10000);
         $this->sourceAnalysisId = (int) $analysis->id;
+        $this->caseSnapshot = $this->snapshot($case);
         $this->confirmed = false;
         $this->notice = 'Draft prepared. Review and edit it before saving an internal progress note.';
     }
@@ -140,7 +158,9 @@ class TroubleshootingReview extends Component
                 ->where('status', 'completed')
                 ->find($this->sourceAnalysisId);
 
-            if (! $analysis || ! $this->isFresh($locked, $analysis)
+            if (! $analysis || ! $this->caseSnapshot
+                || ! hash_equals($this->caseSnapshot, $this->snapshot($locked))
+                || ! $this->isFresh($locked, $analysis)
                 || $this->latestAnalysis($locked)?->id !== $analysis->id
                 || $locked->closed_datetime !== null
                 || $locked->resolved_datetime !== null) {
@@ -166,6 +186,7 @@ class TroubleshootingReview extends Component
 
         $this->draft = '';
         $this->sourceAnalysisId = null;
+        $this->caseSnapshot = null;
         $this->confirmed = false;
         $this->notice = 'Reviewed troubleshooting note saved to the internal Case Progress log. The case remains unchanged.';
     }
