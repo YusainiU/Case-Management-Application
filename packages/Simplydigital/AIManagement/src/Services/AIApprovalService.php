@@ -51,6 +51,7 @@ class AIApprovalService
             }
 
             $proposal->update(['status' => 'approved']);
+            app(AIProgressLogger::class)->proposal($proposal, 'approved', $reviewer->id);
 
             DB::table('ai_action_approvals')->insert([
                 'proposal_id' => $proposal->id,
@@ -78,6 +79,7 @@ class AIApprovalService
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
+                app(AIProgressLogger::class)->proposal($proposal, 'queued', $reviewer->id);
                 ExecuteApprovedAIAction::dispatch($proposal->id)->afterCommit();
             }
         });
@@ -103,6 +105,7 @@ class AIApprovalService
             }
 
             $proposal->update(['status' => 'rejected']);
+            app(AIProgressLogger::class)->proposal($proposal, 'rejected', $reviewer->id);
 
             DB::table('ai_action_approvals')->insert([
                 'proposal_id' => $proposal->id,
