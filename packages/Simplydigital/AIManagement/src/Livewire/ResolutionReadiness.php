@@ -116,29 +116,32 @@ class ResolutionReadiness extends Component
         $case = $this->currentCase();
         Gate::authorize('update', $case);
 
-        $allowedResolutions = array_keys(config('case-management.ticketManagement.resolution', []));
-        $allowedResolvers = array_keys(CaseUserServices::getAllInternalUserIds());
-
-        $this->validate([
+        $rules = [
             'resolveCase' => ['boolean'],
-            'resolutionType' => [
-                Rule::requiredIf($this->resolveCase), 'nullable', 'string',
-                Rule::in($allowedResolutions),
-            ],
-            'resolvedBy' => [
-                Rule::requiredIf($this->resolveCase), 'nullable', 'integer',
-                Rule::in($allowedResolvers),
-            ],
-            'resolvedAt' => [
-                Rule::requiredIf($this->resolveCase), 'nullable', 'date_format:Y-m-d\\TH:i',
-                'before_or_equal:now',
-            ],
             'sourceLogId' => ['required', 'integer', 'min:1'],
             'fixApplied' => ['required', 'string', 'min:15', 'max:3000'],
             'verification' => ['required', 'string', 'min:15', 'max:3000'],
             'remainingRisks' => ['nullable', 'string', 'max:2000'],
             'verified' => ['accepted'],
-        ]);
+        ];
+
+        // Resolution-only fields must not block the default handoff path if
+        // the user checks, then unchecks, the opt-in.
+        if ($this->resolveCase) {
+            $rules['resolutionType'] = [
+                'required', 'string',
+                Rule::in(array_keys(config('case-management.ticketManagement.resolution', []))),
+            ];
+            $rules['resolvedBy'] = [
+                'required', 'integer',
+                Rule::in(array_keys(CaseUserServices::getAllInternalUserIds())),
+            ];
+            $rules['resolvedAt'] = [
+                'required', 'date_format:Y-m-d\\TH:i', 'before_or_equal:now',
+            ];
+        }
+
+        $this->validate($rules);
 
         if (! $this->mayPrepare($case)) {
             $this->notice = 'This case is already resolved or closed. Nothing was saved.';
