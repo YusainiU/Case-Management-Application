@@ -15,6 +15,7 @@ use Simplydigital\AIManagement\Services\CaseCategorySnapshot;
 use Simplydigital\AIManagement\Services\EngineerAssignmentSnapshot;
 use Simplydigital\AIManagement\Services\CaseWorkStartSnapshot;
 use Simplydigital\AIManagement\Services\EngineerRecommendationService;
+use Simplydigital\AIManagement\Services\AIProgressLogger;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\tickets;
@@ -53,6 +54,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
             }
 
             $proposal->update(['status' => 'failed']);
+            app(AIProgressLogger::class)->proposal($proposal, 'failed');
 
             DB::table('ai_action_executions')->updateOrInsert(
                 ['proposal_id' => $proposal->id],
@@ -110,6 +112,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
 
             if ($case->closed_datetime !== null || $case->deleted_at !== null || $sourceHash !== $proposal->source_hash) {
                 $proposal->update(['status' => 'stale']);
+                app(AIProgressLogger::class)->proposal($proposal, 'stale');
                 DB::table('ai_action_executions')->updateOrInsert(
                     ['proposal_id' => $proposal->id],
                     ['status' => 'stale', 'error' => 'Case or engineer changed before execution.', 'updated_at' => now()]
@@ -137,6 +140,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
                     || $case->state !== CaseState::Open || ! $case->assigned_to
                     || $case->resolved_datetime !== null) {
                     $proposal->update(['status' => 'stale']);
+                    app(AIProgressLogger::class)->proposal($proposal, 'stale');
                     DB::table('ai_action_executions')->updateOrInsert(
                         ['proposal_id' => $proposal->id],
                         ['status' => 'stale', 'error' => 'Case is not eligible for Start Work.', 'updated_at' => now()]
@@ -170,6 +174,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
             );
 
             $proposal->update(['status' => 'completed']);
+            app(AIProgressLogger::class)->proposal($proposal, 'completed');
         });
     }
 }
