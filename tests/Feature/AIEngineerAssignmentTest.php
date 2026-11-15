@@ -131,6 +131,7 @@ class AIEngineerAssignmentTest extends TestCase
     public function test_approved_engineer_assignment_executes_idempotently_when_explicitly_enabled(): void
     {
         config()->set('ai-management.approvals.execution_enabled', true);
+        config()->set('ai-management.engineer_assignment.execution_enabled', true);
         Bus::fake();
         $manager = User::factory()->create();
         $engineer = User::factory()->create();
