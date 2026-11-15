@@ -19,6 +19,7 @@ use Spatie\Permission\Models\Role;
 use Simplydigital\UserManagement\Model\UsersDetails;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Services\EmailService;
+use Simplydigital\AIManagement\Jobs\SendAIResolutionNotification;
 use Tests\TestCase;
 
 class AIResolutionReadinessTest extends TestCase
@@ -242,6 +243,31 @@ class AIResolutionReadinessTest extends TestCase
             'ticket_id' => $case->id,
             'source' => 'ai_resolution_review',
             'visible_to_external' => 0,
+        ]);
+        $this->assertDatabaseHas('ai_resolution_notifications', [
+            'case_id' => $case->id,
+            'status' => 'pending',
+        ]);
+        $this->assertDatabaseHas('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_agent',
+            'short_description' => 'AI:resolution-notification:'.$case->id.':queued',
+        ]);
+
+        // Explicitly invoke the worker: RefreshDatabase keeps an enclosing
+        // transaction open, so afterCommit jobs do not run in the test.
+        $worker = new SendAIResolutionNotification($case->id);
+        $worker->handle($email);
+        $worker->handle($email);
+
+        $this->assertDatabaseHas('ai_resolution_notifications', [
+            'case_id' => $case->id,
+            'status' => 'sent',
+            'attempts' => 1,
+        ]);
+        $this->assertDatabaseHas('task_logs', [
+            'ticket_id' => $case->id,
+            'short_description' => 'AI:resolution-notification:'.$case->id.':sent',
         ]);
     }
 
