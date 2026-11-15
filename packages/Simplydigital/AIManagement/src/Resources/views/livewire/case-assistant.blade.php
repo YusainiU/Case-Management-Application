@@ -77,7 +77,41 @@
                 --ai-soft: #312e81;
                 color-scheme: dark;
             }
-            .light .ai-assistant-shell { color-scheme: light; }
+            .light .ai-assistant-shell {
+                --ai-bg: #f8fafc;
+                --ai-panel: #ffffff;
+                --ai-border: #cbd5e1;
+                --ai-ink: #0f172a;
+                --ai-muted: #475569;
+                --ai-accent: #4338ca;
+                --ai-soft: #eef2ff;
+                color-scheme: light;
+            }
+            /* Inputs and nested workflow content also follow system dark mode
+               when the application does not explicitly set a theme class. */
+            @media (prefers-color-scheme: dark) {
+                .ai-assistant-shell:not(.light) input:not([type="checkbox"]),
+                .ai-assistant-shell:not(.light) select,
+                .ai-assistant-shell:not(.light) textarea {
+                    background: var(--ai-panel);
+                    color: var(--ai-ink);
+                    border-color: var(--ai-border);
+                }
+            }
+            .dark .ai-assistant-shell input:not([type="checkbox"]),
+            .dark .ai-assistant-shell select,
+            .dark .ai-assistant-shell textarea {
+                background: var(--ai-panel);
+                color: var(--ai-ink);
+                border-color: var(--ai-border);
+            }
+            .light .ai-assistant-shell input:not([type="checkbox"]),
+            .light .ai-assistant-shell select,
+            .light .ai-assistant-shell textarea {
+                background: var(--ai-panel);
+                color: var(--ai-ink);
+                border-color: var(--ai-border);
+            }
             @media (prefers-reduced-motion: reduce) {
                 .ai-assistant-shell *, .ai-assistant-shell *::before { scroll-behavior: auto !important; }
             }
