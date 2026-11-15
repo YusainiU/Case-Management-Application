@@ -57,8 +57,11 @@
                     @if ($decision->reason) · {{ $decision->reason }} @endif
                 </p>
             @endforeach
-            @if ($proposal->status === 'approved' || $proposal->status === 'completed')
-                <p class="text-xs text-gray-500">Execution: {{ $proposal->execution?->status ?? 'Not recorded' }}</p>
+            @if (in_array($proposal->status, ['approved', 'completed', 'stale', 'failed'], true))
+                <p class="text-xs text-gray-500">Execution: {{ ucfirst($proposal->execution?->status ?? 'Not recorded') }}</p>
+                @if ($proposal->execution?->error)
+                    <p class="text-xs text-red-700 dark:text-red-400">{{ $proposal->execution->error }}</p>
+                @endif
             @endif
             @if ($proposal->status === 'pending')
                 @can('ai-engineer.approve', $case)
