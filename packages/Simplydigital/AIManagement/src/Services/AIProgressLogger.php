@@ -76,6 +76,25 @@ class AIProgressLogger
         );
     }
 
+    public function resolutionNotification(int $caseId, string $event, ?int $actorId = null): void
+    {
+        $message = match ($event) {
+            'queued' => 'Standard resolution customer email queued after the case resolution transaction.',
+            'sent' => 'Standard resolution customer email submitted to the mail service; delivery not confirmed.',
+            'skipped' => 'Standard resolution customer email was not submitted; no eligible customer recipient or case was available.',
+            'failed' => 'Standard resolution customer email failed after retries; staff action required.',
+            default => 'Standard resolution customer notification status changed.',
+        };
+
+        $this->write(
+            $caseId,
+            'resolution-notification:'.$caseId.':'.$event,
+            $message,
+            $actorId,
+            null,
+        );
+    }
+
     private function write(int $caseId, string $eventKey, string $description, ?int $actorId, ?CarbonInterface $occurredAt): void
     {
         // Fits the existing short_description varchar. The key is deliberately
