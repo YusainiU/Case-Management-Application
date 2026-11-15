@@ -14,6 +14,17 @@ This is a presentation-only redesign of the Case Assistant's existing Livewire p
 - **Actions and reviews** are grouped into six accessible, expandable sections: case analysis, category approvals, engineer assignment, Start Work, troubleshooting review, and resolution readiness. Each toggle is a real button with `aria-expanded` and `aria-controls`. Open state is stored in the parent Livewire component instead of native `<details>`, so the 8-second polling refresh no longer collapses a section mid-task. Several panels can remain open simultaneously. Existing Livewire components and their validation/permission gates are unchanged.
 - The old decorative, non-functional **Use Draft** button is no longer shown. Customer response suggestions are clearly labeled **Not sent**.
 
+## Needs attention (live status)
+
+A compact **Needs attention** panel now appears above the historical timeline. It is read-only and draws from current operational tables rather than old AI activity logs:
+
+- Pending unexpired category, engineer assignment, and Start Work proposals awaiting human approval.
+- Failed execution records for those actions.
+- The latest Case Assistant analysis, but only if its current status is failed (an older failed analysis does not stay flagged after a successful re-analysis).
+- An AI-assisted resolution email whose outbox status is `failed` or `skipped`. Pending/sending/sent email statuses remain in the Resolution Readiness panel rather than appearing as failures.
+
+Each item shows its recorded date/time and a **Review workflow** link. The panel is scoped to the current case; it does not submit approvals, resolve cases, or resend email. It shows up to 12 recent matching items. The related workflow retains its normal permission gates, while the attention panel requires case-view permission.
+
 ## Appearance
 
 - The layout reflows from phone to desktop using responsive width and grid classes.
@@ -50,5 +61,6 @@ Browser acceptance:
 5. Expand **Category approvals** or **Troubleshooting review** and keep it open for at least 20 seconds (several polling cycles). The panel must remain open and usable; only clicking its toggle should close it.
 6. Select each activity filter, checking that only matching records are displayed and that the newest matching event remains first. Select **All activity** to restore the full view.
 7. Click **Open related workflow** on a category, troubleshooting or notification event. The correct panel should expand and stay expanded across polling; no approval or resolution should run automatically.
+8. For **Needs attention**, create pending and expired approvals, a failed execution, and a failed resolution email in test data. Confirm that only current relevant items appear, and that resolving/fixing the underlying record removes the alert after refresh.
 
 These changes are on `feature/ai-agent-approvals-v1` / draft PR #29, **not merged into main**. New tests require execution in your local environment.
