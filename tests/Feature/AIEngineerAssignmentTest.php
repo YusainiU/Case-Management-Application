@@ -210,7 +210,7 @@ class AIEngineerAssignmentTest extends TestCase
         app(AIApprovalService::class)->approve($proposal->id, $manager);
 
         $job = new ExecuteApprovedAIAction($proposal->id);
-        $job->failed(new \\RuntimeException('Secret runtime details must not be shown'));
+        $job->failed(new \RuntimeException('Secret runtime details must not be shown'));
 
         $this->assertSame('failed', $proposal->refresh()->status);
         $execution = DB::table('ai_action_executions')->where('proposal_id', $proposal->id)->first();
