@@ -1,4 +1,4 @@
-<section class="mt-6 space-y-4 border-t border-gray-300 pt-5 dark:border-gray-700" aria-label="Resolution readiness review">
+<section wire:poll.10s class="mt-6 space-y-4 border-t border-gray-300 pt-5 dark:border-gray-700" aria-label="Resolution readiness review">
     <div>
         <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100">Resolution Readiness — Staff Handoff</h3>
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">
@@ -11,6 +11,26 @@
 
     @if ($notice)
         <p role="status" class="rounded-md border border-blue-300 p-3 text-sm">{{ $notice }}</p>
+    @endif
+
+    @if ($notification)
+        <div class="rounded-md border border-gray-300 p-3 text-sm dark:border-gray-700">
+            <strong>AI-assisted resolution customer notification:</strong>
+            {{ match ($notification->status) {
+                'pending' => 'Queued — waiting for the mail worker',
+                'sending' => 'Submitting to the mail service',
+                'sent' => 'Submitted to the mail service (delivery not guaranteed)',
+                'skipped' => 'Skipped',
+                'failed' => 'Failed — staff follow-up required',
+                default => 'Status unknown',
+            } }}
+            @if ($notification->error)
+                <p class="mt-1 text-xs text-amber-700 dark:text-amber-300">{{ $notification->error }}</p>
+            @endif
+            <p class="mt-1 text-xs text-gray-500">
+                This status is for the AI-assisted resolution notification only; it is not a customer delivery receipt.
+            </p>
+        </div>
     @endif
 
     @can('update', $case)
@@ -73,7 +93,7 @@
                                 <p class="text-xs text-amber-800 dark:text-amber-200">
                                     Optional and unchecked by default. If selected, saving will update the case
                                     to Resolved, update its SLA task, record the normal resolution log,
-                                    and <strong>send the standard resolution email to the customer</strong>.
+                                    and <strong>queue the standard resolution email after successful database commit</strong>.
                                     The case will not be closed. Confirm the fix actually succeeded first.
                                 </p>
                                 @error('resolveCase') <p class="text-sm text-red-600">{{ $message }}</p> @enderror
@@ -107,7 +127,7 @@
 
                             <button type="button" wire:click="save" wire:loading.attr="disabled" wire:target="save"
                                 class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white">
-                                {{ $resolveCase ? 'Save handoff and resolve case (notify customer)' : 'Save internal resolution handoff' }}
+                                {{ $resolveCase ? 'Save handoff, resolve case and queue customer email' : 'Save internal resolution handoff' }}
                             </button>
                         </div>
                     @endif
@@ -128,6 +148,6 @@
     <p class="text-xs text-gray-500 dark:text-gray-400">
         When you are ready to resolve the case, use the existing Close &amp; Resolve tab.
         Select the optional checkbox above only when the actual resolution is verified and
-        you intend to trigger the same resolution updates and customer email.
+        you intend to apply the same resolution updates and queue the standard customer email.
     </p>
 </section>
