@@ -28,15 +28,15 @@ class ExecuteApprovedAIAction implements ShouldQueue
 
     public function handle(CaseRepository $cases): void
     {
-        if (! config('ai-management.approvals.execution_enabled', false)) {
-            return;
-        }
-
         DB::transaction(function () use ($cases) {
             $proposal = AIActionProposal::query()->lockForUpdate()->findOrFail($this->proposalId);
 
-            if ($proposal->action_type === 'assign_case_engineer'
-                && ! config('ai-management.engineer_assignment.execution_enabled', false)) {
+            $executionEnabled = match ($proposal->action_type) {
+                'update_case_category' => config('ai-management.approvals.execution_enabled', false),
+                'assign_case_engineer' => config('ai-management.engineer_assignment.execution_enabled', false),
+                default => false,
+            };
+            if (! $executionEnabled) {
                 return;
             }
 
