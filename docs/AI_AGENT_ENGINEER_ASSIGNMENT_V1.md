@@ -19,9 +19,11 @@ AI_AGENT_EXECUTION_ENABLED=false
 AI_ENGINEER_EXECUTION_ENABLED=false
 ```
 
-Engineer execution needs **both** flags enabled. Enabling the category execution flag alone cannot dispatch or execute engineer assignment jobs. The browser UI can still demonstrate recommendations, proposals, approval history and rejection while both switches are false.
+Engineer execution uses **only** `AI_ENGINEER_EXECUTION_ENABLED`. Category execution uses **only** `AI_AGENT_EXECUTION_ENABLED`. Enabling one never enables the other. The browser UI can still demonstrate recommendations, proposals, approval history and rejection while both switches are false.
 
-Do not enable execution on production until assignment-specific tests and business workflow review are complete. Previously approved actions with execution disabled are not automatically queued later.
+To trial engineer assignment on a disposable development case after local tests pass, keep `AI_AGENT_EXECUTION_ENABLED=false` and set `AI_ENGINEER_EXECUTION_ENABLED=true`; clear config and run a queue worker if `QUEUE_CONNECTION` is asynchronous. Approve a **newly prepared** assignment proposal. The queue job then updates `tickets.assigned_to` to the engineer's **user ID**, sets the proposal to `completed`, and creates an execution audit record. Existing `approved` proposals created while execution was disabled are not automatically enqueued later.
+
+Do not enable execution on production until assignment-specific tests and business workflow review are complete.
 
 ## Tests
 
@@ -33,7 +35,7 @@ php artisan test --filter=AIActionApprovalTest
 php artisan test --filter=AIApprovalReviewQueueTest
 ```
 
-The test suite covers eligible/ineligible engineers, matching/workload ordering, proposal and decision tracking, permissions, stale assignments, idempotency, and both execution flags. These tests have been committed but **not run remotely**.
+The test suite covers eligible/ineligible engineers, matching/workload ordering, proposal and decision tracking, permissions, stale assignments, idempotency, and independence of both execution flags. These tests have been committed but **not run remotely**.
 
 ## Known limitations
 
