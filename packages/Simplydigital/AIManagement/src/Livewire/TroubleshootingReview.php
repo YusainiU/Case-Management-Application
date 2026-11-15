@@ -52,15 +52,20 @@ class TroubleshootingReview extends Component
             ->first();
     }
 
-    private function isFresh(tickets $case, AIAnalysis $analysis): bool
+    private function isCompleted(?AIAnalysis $analysis): bool
     {
-        // An analysis is ready only after the job has completed. Comparing the
-        // request timestamp caused a false "stale" state while re-analysis ran.
-        // The completion timestamp also protects against subsequent case edits.
-        return $analysis->status === 'completed'
+        return $analysis?->status === 'completed';
+    }
+
+    private function caseUpdatedSinceAnalysis(tickets $case, ?AIAnalysis $analysis): bool
+    {
+        // Workflow approvals, assignment and Start Work normally update the
+        // case after analysis. Such updates are a review warning, not a reason
+        // to require another AI request before a staff member can write notes.
+        return $this->isCompleted($analysis)
             && $analysis->updated_at !== null
             && $case->updated_at !== null
-            && $analysis->updated_at->greaterThanOrEqualTo($case->updated_at);
+            && $case->updated_at->greaterThan($analysis->updated_at);
     }
 
     private function snapshot(tickets $case): string
@@ -88,8 +93,8 @@ class TroubleshootingReview extends Component
         }
 
         $analysis = $this->latestAnalysis($case);
-        if (! $analysis || ! $this->isFresh($case, $analysis)) {
-            $this->notice = 'No current completed Case Assistant analysis is available. Re-analyse the case first.';
+        if (! $this->isCompleted($analysis)) {
+            $this->notice = 'A completed Case Assistant analysis is required before preparing a troubleshooting note.';
             return;
         }
 
@@ -132,7 +137,7 @@ class TroubleshootingReview extends Component
         $this->sourceAnalysisId = (int) $analysis->id;
         $this->caseSnapshot = $this->snapshot($case);
         $this->confirmed = false;
-        $this->notice = 'Draft prepared. Review and edit it before saving an internal progress note.';
+        $this->notice = 'Draft prepared from the completed Case Assistant analysis. Verify suggestions against the current case before saving.';
     }
 
     public function save(): void
@@ -165,7 +170,6 @@ class TroubleshootingReview extends Component
 
             if (! $analysis || ! $this->caseSnapshot
                 || ! hash_equals($this->caseSnapshot, $this->snapshot($locked))
-                || ! $this->isFresh($locked, $analysis)
                 || $this->latestAnalysis($locked)?->id !== $analysis->id
                 || $locked->closed_datetime !== null
                 || $locked->resolved_datetime !== null) {
@@ -204,7 +208,8 @@ class TroubleshootingReview extends Component
         return view('ai-management::livewire.troubleshooting-review', [
             'case' => $case,
             'analysis' => $analysis,
-            'analysisCurrent' => $analysis ? $this->isFresh($case, $analysis) : false,
+            'analysisCurrent' => $this->isCompleted($analysis),
+            'analysisOlderThanCase' => $this->caseUpdatedSinceAnalysis($case, $analysis),
         ]);
     }
 }
