@@ -9,6 +9,13 @@
         </p>
     </div>
 
+    @can('ai.proposals.view')
+        <a href="{{ route('ai.approvals.index') }}"
+           class="inline-block text-sm font-medium text-indigo-700 underline dark:text-indigo-300">
+            View all AI approval requests and history
+        </a>
+    @endcan
+
     @if ($notice)
         <div role="status" class="rounded-md border border-blue-300 p-3 text-sm text-blue-800 dark:text-blue-200">
             {{ $notice }}
