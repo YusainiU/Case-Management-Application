@@ -19,6 +19,7 @@ use Simplydigital\UserManagement\Services\PermissionRegistry;
 use Simplydigital\AIManagement\Livewire\CaseAssistant as CaseAssistantLivewire;
 use Simplydigital\AIManagement\Livewire\CategoryApprovals;
 use Simplydigital\AIManagement\Livewire\ApprovalReviewQueue;
+use Simplydigital\AIManagement\Livewire\EngineerAssignmentApprovals;
 
 class AIManagementServiceProvider extends ServiceProvider
 {
@@ -73,6 +74,16 @@ class AIManagementServiceProvider extends ServiceProvider
         });
 
 
+        Gate::define('ai-engineer.propose', function (User $user, tickets $case): bool {
+            return $user->can(AIPermission::CaseAssistantAnalyze->value)
+                && Gate::forUser($user)->allows('update', $case);
+        });
+
+        Gate::define('ai-engineer.approve', function (User $user, tickets $case): bool {
+            return $user->can(AIPermission::ProposalApprove->value)
+                && Gate::forUser($user)->allows('update', $case);
+        });
+
         $this->publishes([
             __DIR__.'/../../config/ai-management.php' => config_path('ai-management.php'),
         ], 'ai-management-config');
@@ -85,6 +96,7 @@ class AIManagementServiceProvider extends ServiceProvider
         Livewire::component('ai-management.case-assistant', CaseAssistantLivewire::class);
         Livewire::component('ai-management.category-approvals', CategoryApprovals::class);
         Livewire::component('ai-management.approval-review-queue', ApprovalReviewQueue::class);
+        Livewire::component('ai-management.engineer-assignment-approvals', EngineerAssignmentApprovals::class);
           
     }
 }
