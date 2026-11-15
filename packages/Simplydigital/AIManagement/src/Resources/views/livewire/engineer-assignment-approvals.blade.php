@@ -58,7 +58,10 @@
                 </p>
             @endforeach
             @if (in_array($proposal->status, ['approved', 'completed', 'stale', 'failed'], true))
-                <p class="text-xs text-gray-500">Execution: {{ ucfirst($proposal->execution?->status ?? 'Not recorded') }}</p>
+                <p class="text-xs text-gray-500">Execution: {{ ucfirst($proposal->execution?->status ?? 'Not recorded') }}
+                    @if ($proposal->execution?->updated_at)
+                        · {{ $proposal->execution->updated_at->format('d M Y, H:i') }}
+                    @endif</p>
                 @if ($proposal->execution?->error)
                     <p class="text-xs text-red-700 dark:text-red-400">{{ $proposal->execution->error }}</p>
                 @endif
