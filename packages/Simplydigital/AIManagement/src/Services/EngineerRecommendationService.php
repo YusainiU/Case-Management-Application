@@ -41,6 +41,16 @@ class EngineerRecommendationService
             ->groupBy('assigned_to')
             ->pluck('total', 'assigned_to');
 
+        $semantic = [];
+        if (config('ai-management.engineer_semantic.enabled', false)) {
+            $analysis = app(SemanticEngineerSkillService::class)->matchingAnalysis($case);
+            foreach (($analysis?->result['matches'] ?? []) as $match) {
+                if (is_array($match) && isset($match['skill'])) {
+                    $semantic[$match['skill']] = $match;
+                }
+            }
+        }
+
         $results = [];
         foreach ($engineers as $engineer) {
             $matched = [];
@@ -83,6 +93,12 @@ class EngineerRecommendationService
             }
 
             $matched = array_values(array_unique($matched));
+            $semanticMatches = [];
+            foreach (array_unique($listed) as $skillName) {
+                if (isset($semantic[$skillName]) && ! in_array($skillName, $matched, true)) {
+                    $semanticMatches[] = $semantic[$skillName];
+                }
+            }
             $certifications = array_values(array_unique($certifications));
             $workload = (int) ($loads[$engineer->user_id] ?? 0);
             $results[] = [
@@ -90,17 +106,22 @@ class EngineerRecommendationService
                 'user_id' => (int) $engineer->user_id,
                 'name' => $engineer->user?->name ?? 'Unknown user',
                 'matched_skills' => $matched,
+                'semantic_matches' => $semanticMatches,
                 'matched_certifications' => $certifications,
                 'listed_skills' => array_values(array_unique($listed)),
                 'open_cases' => $workload,
                 'evidence' => count($matched) > 0
                     ? 'skill_match'
-                    : (count($certifications) > 0 ? 'certification_match' : 'workload_only'),
+                    : (count($semanticMatches) > 0
+                        ? 'semantic_match'
+                        : (count($certifications) > 0 ? 'certification_match' : 'workload_only')),
             ];
         }
 
         usort($results, static fn (array $a, array $b): int =>
-            (count($b['matched_skills']) <=> count($a['matched_skills']))
+            ((count($b['matched_skills']) + count($b['semantic_matches']))
+                <=> (count($a['matched_skills']) + count($a['semantic_matches'])))
+            ?: (count($b['matched_skills']) <=> count($a['matched_skills']))
             ?: (count($b['matched_certifications']) <=> count($a['matched_certifications']))
             ?: ($a['open_cases'] <=> $b['open_cases'])
             ?: ($a['user_id'] <=> $b['user_id'])
