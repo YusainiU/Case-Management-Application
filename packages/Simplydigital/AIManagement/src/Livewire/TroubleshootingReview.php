@@ -90,9 +90,11 @@ class TroubleshootingReview extends Component
             return;
         }
 
-        $result = $analysis->result ?? [];
-        $actions = array_values(array_filter($result['suggested_next_actions'] ?? [], 'is_string'));
-        $warnings = array_values(array_filter($result['warnings'] ?? [], 'is_string'));
+        $result = is_array($analysis->result) ? $analysis->result : [];
+        $rawActions = $result['suggested_next_actions'] ?? [];
+        $rawWarnings = $result['warnings'] ?? [];
+        $actions = is_array($rawActions) ? array_values(array_filter($rawActions, 'is_string')) : [];
+        $warnings = is_array($rawWarnings) ? array_values(array_filter($rawWarnings, 'is_string')) : [];
 
         $lines = [
             'AI-assisted troubleshooting review (DRAFT — not evidence of work completed)',
