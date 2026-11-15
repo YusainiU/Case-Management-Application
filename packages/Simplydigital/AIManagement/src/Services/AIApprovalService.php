@@ -92,6 +92,7 @@ class AIApprovalService
                 match ($proposal->action_type) {
                     'update_case_category' => 'ai-category.approve',
                     'assign_case_engineer' => 'ai-engineer.approve',
+                    'start_case_work' => 'ai-work-start.approve',
                     default => throw new \DomainException('Unsupported action type.'),
                 },
                 $case,
