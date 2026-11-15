@@ -27,6 +27,7 @@ class TaskLogs extends Model
         "task_site_visit_id",
         "response_to_external_comment",
         "response_to_internal_comment",
+        "visible_to_external",
     ];
 
     protected static function booted()
