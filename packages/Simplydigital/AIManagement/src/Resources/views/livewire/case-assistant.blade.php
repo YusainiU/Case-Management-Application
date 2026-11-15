@@ -452,7 +452,7 @@
     <section class="space-y-3" aria-label="AI Assistant workflows">
         <div class="px-1">
             <h3 class="text-lg font-bold">Actions and reviews</h3>
-            <p class="ai-muted text-sm">Expand only the workflow you need. The timeline above always shows the most recent activity first.</p>
+            <p class="ai-muted text-sm">Expand only the workflow you need. The activity timeline is newest-first and can be shown or hidden above.</p>
         </div>
 
         <section class="ai-card ai-workflow" id="ai-workflow-analysis" wire:key="workflow-analysis">
