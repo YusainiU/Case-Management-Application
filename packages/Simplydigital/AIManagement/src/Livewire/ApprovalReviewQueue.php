@@ -76,7 +76,10 @@ class ApprovalReviewQueue extends Component
                 $this->notice = 'Proposal rejected; no category change was made.';
             } else {
                 $service->approve($proposal->id, auth()->user());
-                $this->notice = config('ai-management.approvals.execution_enabled', false)
+                $canExecute = config('ai-management.approvals.execution_enabled', false)
+                    && ($proposal->action_type !== 'assign_case_engineer'
+                        || config('ai-management.engineer_assignment.execution_enabled', false));
+                $this->notice = $canExecute
                     ? 'Proposal approved and execution queued.'
                     : 'Proposal approved and recorded. Execution is disabled.';
             }
