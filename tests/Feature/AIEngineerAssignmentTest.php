@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Simplydigital\AIManagement\Jobs\ExecuteApprovedAIAction;
 use Simplydigital\AIManagement\Livewire\EngineerAssignmentApprovals;
+use Simplydigital\AIManagement\Livewire\ApprovalReviewQueue;
 use Simplydigital\AIManagement\Services\AIApprovalService;
 use Simplydigital\AIManagement\Services\EngineerAssignmentProposalService;
 use Simplydigital\AIManagement\Services\EngineerRecommendationService;
@@ -43,6 +44,23 @@ class AIEngineerAssignmentTest extends TestCase
         $this->assertSame(['Email'], $ranked[0]['matched_skills']);
         $this->assertSame(1, $ranked[0]['open_cases']);
         $this->assertSame('workload_only', $ranked[1]['evidence']);
+    }
+
+    public function test_engineer_assignment_appears_in_shared_review_queue(): void
+    {
+        $manager = User::factory()->create();
+        $engineer = User::factory()->create();
+        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.view', 'ai.proposals.approve');
+        $this->engineer($engineer, ['Email']);
+        $case = $this->caseFor($manager);
+        app(EngineerAssignmentProposalService::class)->propose($case, $engineer->id);
+
+        $this->actingAs($manager);
+        Livewire::test(ApprovalReviewQueue::class)
+            ->assertSee('Engineer assignment')
+            ->assertSee($engineer->name)
+            ->assertSee('Current assignee')
+            ->assertSee('Proposed engineer');
     }
 
     public function test_inactive_engineers_are_excluded_from_recommendations(): void
