@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Bus;
 use Livewire\Livewire;
 use Simplydigital\AIManagement\Livewire\ResolutionReadiness;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
@@ -164,7 +165,7 @@ class AIResolutionReadinessTest extends TestCase
             ->set('verified', true);
 
         DB::table('tickets')->where('id', $case->id)
-            ->update(['resolved_datetime' => now()]);
+            ->update(['resolved_datetime' => now()->timestamp]);
 
         $component->call('save')->assertSee('already resolved or closed');
         $this->assertDatabaseMissing('task_logs', [
@@ -196,6 +197,10 @@ class AIResolutionReadinessTest extends TestCase
 
     public function test_checked_option_calls_normal_resolver_and_updates_sla_and_case(): void
     {
+        // Prevent a synchronous test queue from sending the email before
+        // we assert the committed outbox's initial Pending state.
+        Bus::fake([SendAIResolutionNotification::class]);
+
         $staff = User::factory()->create();
         $this->grant($staff, 'case.view', 'case.update');
         Role::findOrCreate('Internal User', 'web');
@@ -245,6 +250,7 @@ class AIResolutionReadinessTest extends TestCase
             'source' => 'ai_resolution_review',
             'visible_to_external' => 0,
         ]);
+        Bus::assertDispatched(SendAIResolutionNotification::class);
         $this->assertDatabaseHas('ai_resolution_notifications', [
             'case_id' => $case->id,
             'status' => 'pending',
@@ -255,8 +261,8 @@ class AIResolutionReadinessTest extends TestCase
             'short_description' => 'AI:resolution-notification:'.$case->id.':queued',
         ]);
 
-        // Explicitly invoke the worker: RefreshDatabase keeps an enclosing
-        // transaction open, so afterCommit jobs do not run in the test.
+        // Exercise the worker explicitly after asserting Pending, without
+        // depending on whether the environment uses a sync or async queue.
         $worker = new SendAIResolutionNotification($case->id);
         $worker->handle($email);
         $worker->handle($email);
