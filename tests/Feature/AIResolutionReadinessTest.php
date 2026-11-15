@@ -166,6 +166,27 @@ class AIResolutionReadinessTest extends TestCase
         ]);
     }
 
+    public function test_terminal_case_state_without_timestamp_cannot_prepare_handoff(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        $case = $this->caseFor($staff);
+        $note = $this->reviewedNote($case, $staff);
+        DB::table('tickets')->where('id', $case->id)
+            ->update(['state' => CaseState::Resolved->value]);
+
+        $this->actingAs($staff);
+        Livewire::test(ResolutionReadiness::class, ['case' => $case])
+            ->set('sourceLogId', $note->id)
+            ->call('prepare')
+            ->assertSee('Resolved or closed cases cannot receive a resolution handoff');
+
+        $this->assertDatabaseMissing('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_resolution_review',
+        ]);
+    }
+
     private function grant(User $user, string ...$permissions): void
     {
         foreach ($permissions as $permission) {
