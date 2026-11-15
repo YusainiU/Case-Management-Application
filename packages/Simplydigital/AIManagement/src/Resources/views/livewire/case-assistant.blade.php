@@ -184,10 +184,25 @@
             </span>
         </div>
 
+        <nav class="mt-4 flex flex-wrap gap-2" aria-label="Filter AI activity">
+            @foreach (['all' => 'All activity', 'analysis' => 'Analyses', 'approvals' => 'Approvals', 'reviews' => 'Reviewed notes', 'notifications' => 'Customer emails'] as $filterKey => $filterLabel)
+                <button type="button" wire:click="setTimelineFilter('{{ $filterKey }}')"
+                    aria-pressed="{{ $timelineFilter === $filterKey ? 'true' : 'false' }}"
+                    class="rounded-full border px-3 py-1.5 text-xs font-semibold"
+                    style="border-color:var(--ai-border);{{ $timelineFilter === $filterKey ? 'background:var(--ai-soft);color:var(--ai-accent);' : 'color:var(--ai-ink);' }}">
+                    {{ $filterLabel }}
+                </button>
+            @endforeach
+        </nav>
+
         @if ($timelineEntries->isEmpty())
             <div class="ai-muted mt-5 rounded-lg border border-dashed p-5 text-sm" style="border-color:var(--ai-border)">
-                No AI activity has been recorded in Case Progress yet. New events will appear here automatically.
-                Older events may require the optional AI progress backfill.
+                @if ($timelineFilter === 'all')
+                    No AI activity has been recorded in Case Progress yet. New events will appear here automatically.
+                    Older events may require the optional AI progress backfill.
+                @else
+                    No activity matches this filter. Select All activity to see the full AI timeline.
+                @endif
             </div>
         @else
             <ol class="ai-timeline mt-5 space-y-4" aria-label="Newest AI actions first">
@@ -212,6 +227,16 @@
                             'pending', 'queued', 'requested' => 'text-amber-700 dark:text-amber-300',
                             default => 'ai-muted',
                         };
+                        $workflow = match (true) {
+                            $source === 'ai_assisted' => 'troubleshoot',
+                            $source === 'ai_resolution_review' => 'resolution',
+                            str($key)->startsWith('AI:resolution-notification:') => 'resolution',
+                            str($key)->startsWith('AI:analysis:') => 'analysis',
+                            str($key)->startsWith('AI:proposal:') && str((string) $entry->description)->startsWith('Category change') => 'category',
+                            str($key)->startsWith('AI:proposal:') && str((string) $entry->description)->startsWith('Engineer assignment') => 'engineer',
+                            str($key)->startsWith('AI:proposal:') && str((string) $entry->description)->startsWith('Start Work') => 'start-work',
+                            default => null,
+                        };
                         $date = $entry->created_at?->timezone($timelineTimezone);
                     @endphp
                     <li class="ai-timeline-item" wire:key="ai-timeline-entry-{{ $entry->id }}">
@@ -229,6 +254,13 @@
                                 <span>{{ $entry->user?->name ?? 'System / AI Agent' }}</span>
                                 <span>{{ $source === 'ai_agent' ? 'System audit' : 'Staff-reviewed note' }}</span>
                             </div>
+                            @if ($workflow)
+                                <a href="#ai-workflow-{{ $workflow }}" wire:click="openWorkflow('{{ $workflow }}')"
+                                    class="mt-2 inline-block text-xs font-semibold underline underline-offset-2"
+                                    style="color:var(--ai-accent)">
+                                    Open related workflow
+                                </a>
+                            @endif
                             @if ($entry->description)
                                 <p class="mt-2 whitespace-pre-line break-words text-sm">{{ str($entry->description)->limit(260) }}</p>
                                 @if (mb_strlen($entry->description) > 260)
