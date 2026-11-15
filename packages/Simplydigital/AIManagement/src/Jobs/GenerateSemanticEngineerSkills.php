@@ -59,9 +59,11 @@ class GenerateSemanticEngineerSkills implements ShouldQueue
             ]);
         } catch (\Throwable $exception) {
             report($exception);
+            // Keep this job retryable; the failed() hook marks terminal failure
+            // only after Laravel has exhausted attempts.
             $analysis->update([
-                'status' => 'failed',
-                'error' => 'Semantic matching failed. Exact skill matching remains available.',
+                'status' => 'processing',
+                'error' => 'Semantic matching encountered an error. The queue will retry.',
             ]);
             throw $exception;
         }
