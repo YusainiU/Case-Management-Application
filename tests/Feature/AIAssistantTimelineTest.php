@@ -526,6 +526,25 @@ class AIAssistantTimelineTest extends TestCase
             ->assertSee('href="#ai-workflow-troubleshoot"', escape: false);
     }
 
+    public function test_resolved_case_does_not_suggest_approving_an_old_pending_proposal(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $this->proposalFor($case, 'update_case_category', 'pending', now()->addHour());
+
+        DB::table('tickets')->where('id', $case->id)->update([
+            'state' => CaseState::Resolved->value,
+            'resolved_datetime' => now()->timestamp,
+        ]);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Resolution recorded')
+            ->assertDontSee('Review an awaiting approval')
+            ->assertSee('href="#ai-workflow-resolution"', escape: false);
+    }
+
     public function test_suggested_next_step_for_resolved_case_is_review_only(): void
     {
         $viewer = User::factory()->create();
