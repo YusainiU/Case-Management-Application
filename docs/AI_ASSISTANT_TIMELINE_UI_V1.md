@@ -9,7 +9,7 @@ This is a presentation-only redesign of the Case Assistant's existing Livewire p
 - An entry also identifies the staff member when recorded, or displays **System / AI Agent**, and distinguishes system audit events from staff-reviewed notes.
 - Long descriptions are truncated initially, with an optional **Read full activity** disclosure.
 - The first 20 events are loaded, newest first. **Show older activity** adds 20 events at a time, up to 100 events. The timeline refreshes automatically.
-- **Actions and reviews** are grouped into six accessible, expandable sections: case analysis, category approvals, engineer assignment, Start Work, troubleshooting review, and resolution readiness. Existing Livewire components and their validation/permission gates are unchanged.
+- **Actions and reviews** are grouped into six accessible, expandable sections: case analysis, category approvals, engineer assignment, Start Work, troubleshooting review, and resolution readiness. Each toggle is a real button with `aria-expanded` and `aria-controls`. Open state is stored in the parent Livewire component instead of native `<details>`, so the 8-second polling refresh no longer collapses a section mid-task. Several panels can remain open simultaneously. Existing Livewire components and their validation/permission gates are unchanged.
 - The old decorative, non-functional **Use Draft** button is no longer shown. Customer response suggestions are clearly labeled **Not sent**.
 
 ## Appearance
@@ -45,5 +45,6 @@ Browser acceptance:
 2. Expand each of the six workflows. Verify category approvals, engineer assignment, Start Work, troubleshooting review, and the optional resolution checkbox remain functional.
 3. Test a narrow mobile viewport, browser/device automatic dark mode, explicit application dark mode, and light mode.
 4. Verify the timeline updates after a new action and that **Show older activity** reveals history rather than navigating away.
+5. Expand **Category approvals** or **Troubleshooting review** and keep it open for at least 20 seconds (several polling cycles). The panel must remain open and usable; only clicking its toggle should close it.
 
 These changes are on `feature/ai-agent-approvals-v1` / draft PR #29, **not merged into main**. New tests require execution in your local environment.
