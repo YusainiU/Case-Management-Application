@@ -167,9 +167,9 @@ class AIEngineerAssignmentTest extends TestCase
         app(AIApprovalService::class)->approve($proposal->id, $manager);
     }
 
-    public function test_approved_engineer_assignment_executes_idempotently_when_explicitly_enabled(): void
+    public function test_approved_engineer_assignment_executes_idempotently_with_category_execution_disabled(): void
     {
-        config()->set('ai-management.approvals.execution_enabled', true);
+        config()->set('ai-management.approvals.execution_enabled', false);
         config()->set('ai-management.engineer_assignment.execution_enabled', true);
         Bus::fake();
         $manager = User::factory()->create();
@@ -180,6 +180,8 @@ class AIEngineerAssignmentTest extends TestCase
         $proposal = app(EngineerAssignmentProposalService::class)->propose($case, $engineer->id);
 
         app(AIApprovalService::class)->approve($proposal->id, $manager);
+        Bus::assertDispatched(ExecuteApprovedAIAction::class);
+        $this->assertNull($case->refresh()->assigned_to);
         $job = new ExecuteApprovedAIAction($proposal->id);
         $job->handle(app(CaseRepository::class));
         $job->handle(app(CaseRepository::class));
