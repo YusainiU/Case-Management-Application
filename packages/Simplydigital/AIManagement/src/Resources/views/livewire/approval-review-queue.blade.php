@@ -2,11 +2,12 @@
     <header class="space-y-2">
         <h1 class="text-2xl font-semibold">AI Approval Review Queue</h1>
         <p class="text-sm text-gray-600 dark:text-gray-300">
-            Review category and engineer assignment proposals, decisions, and execution results.
+            Review category, engineer assignment, and Start Work proposals, decisions, and execution results.
         </p>
         <p class="text-sm text-gray-600 dark:text-gray-300">
             Category execution: <strong>{{ config('ai-management.approvals.execution_enabled', false) ? 'Enabled' : 'Disabled' }}</strong>
             · Engineer execution: <strong>{{ config('ai-management.engineer_assignment.execution_enabled', false) ? 'Enabled' : 'Disabled' }}</strong>
+            · Start Work execution: <strong>{{ config('ai-management.work_start.execution_enabled', false) ? 'Enabled' : 'Disabled' }}</strong>
         </p>
     </header>
 
@@ -44,27 +45,43 @@
                 </div>
 
                 <p class="text-xs font-medium text-indigo-700 dark:text-indigo-300">
-                    {{ $proposal->action_type === 'assign_case_engineer' ? 'Engineer assignment' : 'Category change' }}
+                    {{ match ($proposal->action_type) {
+                        'assign_case_engineer' => 'Engineer assignment',
+                        'start_case_work' => 'Start Work',
+                        default => 'Category change',
+                    } }}
                 </p>
                 <div class="grid gap-3 text-sm sm:grid-cols-2">
                     <div class="rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
                         <div class="text-xs text-gray-500 dark:text-gray-400">
-                            {{ $proposal->action_type === 'assign_case_engineer' ? 'Current assignee' : 'Current case category' }}
+                            {{ match ($proposal->action_type) {
+                                'assign_case_engineer' => 'Current assignee',
+                                'start_case_work' => 'Current case state',
+                                default => 'Current case category',
+                            } }}
                         </div>
                         <div class="font-semibold">
                             {{ $proposal->action_type === 'assign_case_engineer'
                                 ? ($proposal->case?->assignedToUser?->name ?? 'Unassigned')
-                                : ($proposal->case?->category?->value ?? 'Unknown') }}
+                                : ($proposal->action_type === 'start_case_work'
+                                    ? ($proposal->case?->state?->value ?? 'Unknown')
+                                    : ($proposal->case?->category?->value ?? 'Unknown')) }}
                         </div>
                     </div>
                     <div class="rounded-lg bg-gray-50 p-3 dark:bg-gray-800">
                         <div class="text-xs text-gray-500 dark:text-gray-400">
-                            {{ $proposal->action_type === 'assign_case_engineer' ? 'Proposed engineer' : 'AI proposed category' }}
+                            {{ match ($proposal->action_type) {
+                                'assign_case_engineer' => 'Proposed engineer',
+                                'start_case_work' => 'Proposed case state',
+                                default => 'AI proposed category',
+                            } }}
                         </div>
                         <div class="font-semibold">
                             {{ $proposal->action_type === 'assign_case_engineer'
                                 ? ($engineerNames[$proposal->payload['engineer_user_id'] ?? 0] ?? 'Former engineer #'.($proposal->payload['engineer_user_id'] ?? '?'))
-                                : ($proposal->payload['category'] ?? 'Unknown') }}
+                                : ($proposal->action_type === 'start_case_work'
+                                    ? ($proposal->payload['state'] ?? 'Unknown')
+                                    : ($proposal->payload['category'] ?? 'Unknown')) }}
                         </div>
                     </div>
                 </div>
@@ -106,9 +123,11 @@
                 </div>
 
                 @if ($proposal->status === 'pending' && ! $proposal->expires_at?->isPast() && $proposal->case)
-                    @if ($proposal->action_type === 'assign_case_engineer'
-                        ? auth()->user()?->can('ai-engineer.approve', $proposal->case)
-                        : auth()->user()?->can('ai-category.approve', $proposal->case))
+                    @if (auth()->user()?->can(match ($proposal->action_type) {
+                        'assign_case_engineer' => 'ai-engineer.approve',
+                        'start_case_work' => 'ai-work-start.approve',
+                        default => 'ai-category.approve',
+                    }, $proposal->case))
                         <div class="space-y-2 border-t border-gray-200 pt-3 dark:border-gray-700">
                             <label for="queue-rejection-reason-{{ $proposal->id }}"
                                    class="block text-xs font-medium">Optional rejection reason</label>
