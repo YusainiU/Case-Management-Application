@@ -272,6 +272,34 @@ class AIResolutionReadinessTest extends TestCase
         ]);
     }
 
+    public function test_normal_close_and_resolve_service_keeps_its_existing_email_behaviour(): void
+    {
+        $staff = User::factory()->create();
+        $case = $this->caseFor($staff);
+        slaTask::query()->create([
+            'ticket_id' => $case->id,
+            'name' => 'Normal workflow SLA',
+            'state' => CaseState::Open,
+            'active' => true,
+        ]);
+
+        $email = \Mockery::mock(EmailService::class);
+        $email->shouldReceive('caseResolved')->once();
+        $this->app->instance(EmailService::class, $email);
+
+        $this->actingAs($staff);
+        $resolved = app(CaseTicketServices::class)->resolveCase($case, [
+            'resolution' => 'Technical Support',
+            'resolved_by' => $staff->id,
+            'resolved_datetime' => now()->subMinute()->format('Y-m-d H:i:s'),
+            'resolution_details' => 'Normal staff-initiated resolution, not via the AI panel.',
+        ]);
+
+        $this->assertTrue((bool) $resolved);
+        $this->assertSame(CaseState::Resolved, $case->refresh()->state);
+        $this->assertDatabaseMissing('ai_resolution_notifications', ['case_id' => $case->id]);
+    }
+
     public function test_resolve_checkbox_requires_standard_resolution_fields(): void
     {
         $staff = User::factory()->create();
