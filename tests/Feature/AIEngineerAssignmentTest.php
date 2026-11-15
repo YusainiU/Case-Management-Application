@@ -79,7 +79,9 @@ class AIEngineerAssignmentTest extends TestCase
 
     public function test_proposal_and_approval_recorded_without_changing_assignee_when_execution_disabled(): void
     {
+        // Disable the action-specific flag regardless of the developer's .env.
         config()->set('ai-management.approvals.execution_enabled', false);
+        config()->set('ai-management.engineer_assignment.execution_enabled', false);
         Bus::fake();
         $manager = User::factory()->create();
         $engineer = User::factory()->create();
