@@ -21,8 +21,8 @@ The screen now presents one concise **Suggested next step** above the six-stage 
 The suggestion is derived from the existing case-scoped Needs Attention list and case overview, with this order of priority:
 
 1. Recorded current failures, such as a failed execution or customer notification, prompt human investigation.
-2. Outstanding unexpired human approval requests prompt human review.
-3. For resolved/completed cases, inspect resolution status; no new AI action is requested.
+2. For resolved/completed cases, inspect resolution status rather than acting on an obsolete pending approval.
+3. For unresolved cases, outstanding unexpired human approval requests prompt human review.
 4. For an analysis in progress, wait rather than submitting another request. Without a completed analysis, offer the analysis section.
 5. Otherwise, guide staff through an unassigned engineer, an Open case where work has not begun, staff troubleshooting review using the completed analysis, and finally verified resolution readiness.
 
