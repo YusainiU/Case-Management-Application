@@ -41,6 +41,11 @@ class EngineerAssignmentProposalService
             $reason = count($choice['matched_skills'])
                 ? 'Matched case text to listed skills: '.implode(', ', $choice['matched_skills']).'. '
                 : 'No listed skill could be matched to the case text. Manual suitability verification is required. ';
+            foreach ($choice['semantic_matches'] as $match) {
+                $reason .= 'AI-suggested skill: '.$match['skill']
+                    .' ('.$match['confidence'].'). Case evidence: "'
+                    .$match['case_evidence'].'". Rationale: '.$match['reason'].'. ';
+            }
             if ($choice['matched_certifications']) {
                 $reason .= 'Matched active, unexpired certifications: '
                     .implode(', ', $choice['matched_certifications']).'. ';
