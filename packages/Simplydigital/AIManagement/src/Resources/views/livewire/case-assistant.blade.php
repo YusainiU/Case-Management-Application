@@ -368,6 +368,7 @@
             </div>
         @else
             <ol class="ai-timeline mt-5 space-y-4" aria-label="Newest AI actions first">
+                @php $lastTimelineDay = null; @endphp
                 @foreach ($timelineEntries as $entry)
                     @php
                         $source = (string) $entry->source;
@@ -400,7 +401,21 @@
                             default => null,
                         };
                         $date = $entry->created_at?->timezone($timelineTimezone);
+                        $timelineDay = $date?->format('Y-m-d');
+                        $newTimelineDay = $timelineDay !== $lastTimelineDay;
+                        $lastTimelineDay = $timelineDay;
                     @endphp
+                    @if ($newTimelineDay && $date)
+                        <li class="ai-timeline-item" wire:key="ai-timeline-date-{{ $timelineDay }}">
+                            <div class="flex flex-wrap items-center gap-2 py-1">
+                                <time datetime="{{ $timelineDay }}"
+                                    class="rounded-md border px-3 py-1.5 text-xs font-bold tracking-wide"
+                                    style="border-color:var(--ai-border);background:var(--ai-soft);color:var(--ai-accent)">
+                                    {{ $date->format('l, d F Y') }}
+                                </time>
+                            </div>
+                        </li>
+                    @endif
                     <li class="ai-timeline-item" wire:key="ai-timeline-entry-{{ $entry->id }}">
                         <article class="ai-card min-w-0 p-3 sm:p-4">
                             <div class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
