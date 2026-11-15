@@ -20,6 +20,29 @@ class CaseAssistant extends Component
 
     public int $timelineLimit = 20;
 
+    /** @var array<int, string> */
+    public array $expandedWorkflows = [];
+
+    private const WORKFLOWS = [
+        'analysis', 'category', 'engineer', 'start-work', 'troubleshoot', 'resolution',
+    ];
+
+    public function toggleWorkflow(string $workflow): void
+    {
+        Gate::authorize('view', $this->case);
+
+        if (! in_array($workflow, self::WORKFLOWS, true)) {
+            return;
+        }
+
+        if (in_array($workflow, $this->expandedWorkflows, true)) {
+            $this->expandedWorkflows = array_values(array_diff($this->expandedWorkflows, [$workflow]));
+            return;
+        }
+
+        $this->expandedWorkflows[] = $workflow;
+    }
+
     public function loadMoreTimeline(): void
     {
         Gate::authorize('view', $this->case);
@@ -31,6 +54,12 @@ class CaseAssistant extends Component
         $this->case = $case;
 
         $this->loadLatestAnalysis();
+
+        // These are Livewire state rather than native <details> state:
+        // polling must not collapse a panel while someone is using it.
+        if ($this->analyzing) {
+            $this->expandedWorkflows = ['analysis'];
+        }
     }
 
     public function analyze(): void
@@ -45,6 +74,10 @@ class CaseAssistant extends Component
 
         $this->analysisId = $analysis->id;
         $this->analyzing = true;
+
+        if (! in_array('analysis', $this->expandedWorkflows, true)) {
+            $this->expandedWorkflows[] = 'analysis';
+        }
 
          $this->dispatch(
             'case-assistant-analysis-started'
