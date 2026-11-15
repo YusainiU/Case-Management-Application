@@ -173,6 +173,26 @@
         </div>
     @endif
 
+    <section class="ai-card p-4 sm:p-5" aria-label="Suggested next step" id="ai-suggested-next-step">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div class="min-w-0">
+                <p class="ai-muted text-xs font-semibold uppercase tracking-wide">Suggested next step · Advisory only</p>
+                <h3 class="mt-1 text-base font-bold">{{ $suggestedNextStep['title'] }}</h3>
+                <p class="ai-muted mt-2 max-w-3xl break-words text-sm">{{ $suggestedNextStep['detail'] }}</p>
+            </div>
+            <a href="#ai-workflow-{{ $suggestedNextStep['workflow'] }}"
+                wire:click="openWorkflow('{{ $suggestedNextStep['workflow'] }}')"
+                class="shrink-0 self-start rounded-lg border px-4 py-2 text-sm font-semibold underline-offset-2 hover:underline"
+                style="border-color:var(--ai-border);color:var(--ai-accent)">
+                Open suggested workflow
+            </a>
+        </div>
+        <p class="ai-muted mt-3 text-xs">
+            Guidance only. No case changes, approvals, emails or AI requests occur when opening a workflow.
+            Staff can choose any permitted workflow.
+        </p>
+    </section>
+
     <section class="ai-card p-4 sm:p-5" aria-label="Case workflow overview" id="ai-workflow-overview">
         <div class="flex flex-wrap items-start justify-between gap-2">
             <div>
