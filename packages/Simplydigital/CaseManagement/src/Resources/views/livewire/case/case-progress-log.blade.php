@@ -23,8 +23,53 @@
 <div
     x-data
     x-on:modal-scroll-top.window="$refs.modalBody.scrollTo({ top: 0, behavior: 'smooth' })"
-    class="text-slate-800 dark:text-slate-200"
+    class="case-progress-timeline text-slate-800 dark:text-slate-200"
 >
+    @once
+        <style>
+            .case-progress-timeline { color-scheme: light; }
+            .case-progress-timeline .progress-day-heading {
+                border: 1px solid #cbd5e1;
+                background: #eef2ff;
+                color: #3730a3;
+            }
+            .case-progress-timeline .progress-filter[aria-pressed="true"] {
+                background: #eef2ff;
+                border-color: #818cf8;
+                color: #3730a3;
+            }
+            @media (prefers-color-scheme: dark) {
+                .case-progress-timeline {
+                    color-scheme: dark;
+                }
+                .case-progress-timeline .progress-day-heading,
+                .case-progress-timeline .progress-filter[aria-pressed="true"] {
+                    background: #312e81;
+                    color: #e0e7ff;
+                    border-color: #6366f1;
+                }
+            }
+            .dark .case-progress-timeline { color-scheme: dark; }
+            .dark .case-progress-timeline .progress-day-heading,
+            .dark .case-progress-timeline .progress-filter[aria-pressed="true"] {
+                background: #312e81;
+                color: #e0e7ff;
+                border-color: #6366f1;
+            }
+            .light .case-progress-timeline { color-scheme: light; }
+            .light .case-progress-timeline .progress-day-heading {
+                background: #eef2ff;
+                color: #3730a3;
+                border-color: #cbd5e1;
+            }
+            .light .case-progress-timeline .progress-filter[aria-pressed="true"] {
+                background: #eef2ff;
+                color: #3730a3;
+                border-color: #818cf8;
+            }
+        </style>
+    @endonce
+
     <div
         x-ref="modalBody"
         class="max-h-[80vh] overflow-y-auto px-1 pb-2 sm:px-2"
@@ -165,16 +210,34 @@
                     Case Activity
                 </h3>
                 <p class="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                    A chronological record of case updates and actions.
+                    All case activity, newest first, grouped by date. Times shown in {{ $activityTimezone }}.
                 </p>
             </div>
 
             <span class="shrink-0 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-gray-900 dark:text-slate-300">
-                {{ $taskLogs->count() }} {{ $taskLogs->count() === 1 ? 'entry' : 'entries' }}
+                Showing {{ $taskLogs->count() }}{{ $hasOlderActivity ? '+' : '' }} {{ $taskLogs->count() === 1 ? 'entry' : 'entries' }}
             </span>
         </div>
 
-        {{-- Activity timeline --}}
+        {{-- Case-scoped timeline filters; the current filter survives other Livewire actions. --}}
+        <nav class="mb-5 flex flex-wrap gap-2" aria-label="Filter case progress activity">
+            @foreach ([
+                'all' => 'All activity',
+                'internal' => 'Internal updates',
+                'customer' => 'Customer activity',
+                'ai' => 'AI activity',
+                'attention' => 'Urgent attention',
+            ] as $filterKey => $filterLabel)
+                <button type="button" wire:click="setActivityFilter('{{ $filterKey }}')"
+                    aria-pressed="{{ $activityFilter === $filterKey ? 'true' : 'false' }}"
+                    class="progress-filter rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-indigo-400 dark:border-slate-700 dark:bg-gray-900 dark:text-slate-200">
+                    {{ $filterLabel }}
+                </button>
+            @endforeach
+        </nav>
+
+        {{-- A single date divider per calendar day, in the application timezone. --}}
+        @php $lastProgressDay = null; @endphp
         @forelse ($taskLogs as $log)
 
             @php
@@ -182,6 +245,23 @@
                     ? UI::ALERT_WARNING
                     : null;
             @endphp
+
+            @php
+                $progressDate = $log->created_at?->timezone($activityTimezone);
+                $progressDay = $progressDate?->format('Y-m-d');
+                $newProgressDay = $progressDay !== $lastProgressDay;
+                $lastProgressDay = $progressDay;
+            @endphp
+
+            @if ($newProgressDay && $progressDate)
+                <div class="mb-4 mt-2 flex items-center gap-3" wire:key="progress-date-{{ $progressDay }}">
+                    <time datetime="{{ $progressDay }}"
+                        class="progress-day-heading rounded-lg px-3 py-2 text-xs font-bold tracking-wide">
+                        {{ $progressDate->format('l, d F Y') }}
+                    </time>
+                    <span class="h-px min-w-0 flex-1 bg-slate-200 dark:bg-slate-700" aria-hidden="true"></span>
+                </div>
+            @endif
 
             @if ($logToDelete == $log->id)
                 <div class="mb-3">
@@ -304,7 +384,13 @@
                                         </svg>
                                     @endif
                                     <span class="mx-1 text-slate-300 dark:text-slate-600">·</span>
-                                    {{ $log->created_at?->format('d M Y, H:i') }}
+                                    @if ($progressDate)
+                                        <time datetime="{{ $progressDate->toIso8601String() }}"
+                                            title="{{ $progressDate->format('d M Y, H:i:s T') }}"
+                                            class="tabular-nums">
+                                            {{ $progressDate->format('d M Y · H:i:s') }}
+                                        </time>
+                                    @endif
                                 </p>
                             </div>
 
@@ -417,14 +503,24 @@
                 </div>
 
                 <h4 class="mt-3 text-sm font-semibold text-slate-900 dark:text-white">
-                    No progress logs yet
+                    {{ $activityFilter === 'all' ? 'No progress logs yet' : 'No matching activity' }}
                 </h4>
 
                 <p class="mx-auto mt-1 max-w-sm text-sm text-slate-500 dark:text-slate-400">
-                    Case updates, responses and recorded actions will appear here.
+                    {{ $activityFilter === 'all' ? 'Case updates, responses and recorded actions will appear here.' : 'No entries match this filter. Select All activity to view the full case history.' }}
                 </p>
             </div>
         @endforelse
+
+        @if ($hasOlderActivity)
+            <div class="mt-2 mb-5 text-center">
+                <button type="button" wire:click="loadOlderActivity"
+                    wire:loading.attr="disabled" wire:target="loadOlderActivity"
+                    class="rounded-lg border border-indigo-300 px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50 disabled:opacity-60 dark:border-indigo-500 dark:text-indigo-300 dark:hover:bg-indigo-400/10">
+                    Show older activity
+                </button>
+            </div>
+        @endif
 
         {{-- Information message --}}
         @if ($this->message)
