@@ -63,6 +63,7 @@ class AIResolutionReadinessTest extends TestCase
         $this->assertNull($case->resolution_details);
         $this->assertNull($case->closed_datetime);
         $this->assertNull($case->resolved_by);
+        $this->assertDatabaseMissing('ai_resolution_notifications', ['case_id' => $case->id]);
     }
 
     public function test_attestation_and_verified_fix_and_retest_are_required(): void
@@ -230,7 +231,7 @@ class AIResolutionReadinessTest extends TestCase
             ->set('resolvedAt', now()->subMinute()->format('Y-m-d\\TH:i'))
             ->call('save')
             ->assertHasNoErrors()
-            ->assertSee('Case resolved through the standard Close');
+            ->assertSee('Case resolved and SLA updated');
 
         $this->assertSame(CaseState::Resolved, $case->refresh()->state);
         $this->assertSame('Configuration Changes', $case->resolution);
