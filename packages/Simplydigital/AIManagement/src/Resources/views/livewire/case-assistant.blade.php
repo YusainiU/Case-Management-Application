@@ -173,6 +173,27 @@
         </div>
     @endif
 
+    <nav class="ai-card flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4" aria-label="Assistant display controls">
+        <div>
+            <p class="text-sm font-semibold">Display mode</p>
+            <p class="ai-muted text-xs">Focus on the next action, or show the full case history.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <button type="button" wire:click="setFocusView(true)"
+                aria-pressed="{{ ! $showOverview && ! $showTimeline ? 'true' : 'false' }}"
+                class="rounded-md border px-3 py-2 text-xs font-semibold"
+                style="border-color:var(--ai-border);{{ ! $showOverview && ! $showTimeline ? 'background:var(--ai-soft);color:var(--ai-accent);' : 'color:var(--ai-ink);' }}">
+                Focus view
+            </button>
+            <button type="button" wire:click="setFocusView(false)"
+                aria-pressed="{{ $showOverview && $showTimeline ? 'true' : 'false' }}"
+                class="rounded-md border px-3 py-2 text-xs font-semibold"
+                style="border-color:var(--ai-border);{{ $showOverview && $showTimeline ? 'background:var(--ai-soft);color:var(--ai-accent);' : 'color:var(--ai-ink);' }}">
+                Full view
+            </button>
+        </div>
+    </nav>
+
     <section class="ai-card p-4 sm:p-5" aria-label="Suggested next step" id="ai-suggested-next-step">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div class="min-w-0">
@@ -199,10 +220,21 @@
                 <h3 class="text-lg font-bold">Case workflow overview</h3>
                 <p class="ai-muted mt-1 text-sm">Based on the current case and recorded reviews. A stage is not proof of an AI action unless stated.</p>
             </div>
-            <span class="ai-muted rounded-md border px-2 py-1 text-xs" style="border-color:var(--ai-border)">
-                Updated automatically
-            </span>
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="ai-muted rounded-md border px-2 py-1 text-xs" style="border-color:var(--ai-border)">
+                    Updated automatically
+                </span>
+                <button type="button" wire:click="toggleOverview"
+                    aria-expanded="{{ $showOverview ? 'true' : 'false' }}"
+                    aria-controls="ai-workflow-overview-content"
+                    class="rounded-md border px-3 py-1.5 text-xs font-semibold"
+                    style="border-color:var(--ai-border);color:var(--ai-accent)">
+                    {{ $showOverview ? 'Hide overview' : 'Show overview' }}
+                </button>
+            </div>
         </div>
+        @if ($showOverview)
+        <div id="ai-workflow-overview-content">
         <ol class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             @foreach ($workflowOverview as $stage)
                 <li class="min-w-0 rounded-lg border p-3" style="border-color:var(--ai-border)"
@@ -241,6 +273,8 @@
                 </li>
             @endforeach
         </ol>
+        </div>
+        @endif
     </section>
 
     <section class="ai-card p-4 sm:p-5" aria-label="AI Assistant items needing attention" id="ai-needs-attention">
@@ -296,11 +330,22 @@
                 <h3 class="text-lg font-bold">Activity timeline</h3>
                 <p class="ai-muted text-sm">Recent AI actions, decisions, troubleshooting and resolution events.</p>
             </div>
-            <span class="ai-muted rounded-md border px-2 py-1 text-xs" style="border-color:var(--ai-border)">
-                Times shown in {{ $timelineTimezone }}
-            </span>
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="ai-muted rounded-md border px-2 py-1 text-xs" style="border-color:var(--ai-border)">
+                    Times shown in {{ $timelineTimezone }}
+                </span>
+                <button type="button" wire:click="toggleTimeline"
+                    aria-expanded="{{ $showTimeline ? 'true' : 'false' }}"
+                    aria-controls="ai-timeline-content"
+                    class="rounded-md border px-3 py-1.5 text-xs font-semibold"
+                    style="border-color:var(--ai-border);color:var(--ai-accent)">
+                    {{ $showTimeline ? 'Hide timeline' : 'Show timeline' }}
+                </button>
+            </div>
         </div>
 
+        @if ($showTimeline)
+        <div id="ai-timeline-content">
         <nav class="mt-4 flex flex-wrap gap-2" aria-label="Filter AI activity">
             @foreach (['all' => 'All activity', 'analysis' => 'Analyses', 'approvals' => 'Approvals', 'reviews' => 'Reviewed notes', 'notifications' => 'Customer emails'] as $filterKey => $filterLabel)
                 <button type="button" wire:click="setTimelineFilter('{{ $filterKey }}')"
@@ -399,6 +444,8 @@
                     </button>
                 </div>
             @endif
+        @endif
+        </div>
         @endif
     </section>
 
