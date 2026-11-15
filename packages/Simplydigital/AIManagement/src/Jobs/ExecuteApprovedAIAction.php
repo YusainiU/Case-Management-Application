@@ -26,6 +26,43 @@ class ExecuteApprovedAIAction implements ShouldQueue
 
     public function __construct(public string $proposalId) {}
 
+    // Transient failures are retried automatically; exhausted jobs require
+    // an operator to investigate, not a second approval or silent replay.
+    public function backoff(): array
+    {
+        return [10, 60, 300];
+    }
+
+    public function failed(?\\Throwable $exception): void
+    {
+        // Laravel calls failed() after retries are exhausted.
+        // Keep the full exception in secure logs, not in the reviewer UI.
+        if ($exception) {
+            report($exception);
+        }
+
+        DB::transaction(function (): void {
+            $proposal = AIActionProposal::query()
+                ->lockForUpdate()
+                ->find($this->proposalId);
+
+            if (! $proposal || $proposal->status !== 'approved') {
+                return;
+            }
+
+            $proposal->update(['status' => 'failed']);
+
+            DB::table('ai_action_executions')->updateOrInsert(
+                ['proposal_id' => $proposal->id],
+                [
+                    'status' => 'failed',
+                    'error' => 'Execution failed after queue retries. Review application logs and failed jobs before taking action.',
+                    'updated_at' => now(),
+                ]
+            );
+        });
+    }
+
     public function handle(CaseRepository $cases): void
     {
         DB::transaction(function () use ($cases) {
