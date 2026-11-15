@@ -78,6 +78,9 @@
             @if (in_array($proposal->status, ['approved', 'completed', 'stale', 'failed'], true))
                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
                     Execution: {{ ucfirst($proposal->execution?->status ?? 'Not recorded') }}
+                    @if ($proposal->execution?->updated_at)
+                        · {{ $proposal->execution->updated_at->format('d M Y, H:i') }}
+                    @endif
                 </p>
                 @if ($proposal->execution?->error)
                     <p class="mt-1 text-xs text-red-700 dark:text-red-400">
