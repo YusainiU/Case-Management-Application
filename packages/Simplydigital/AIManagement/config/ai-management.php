@@ -65,7 +65,7 @@ return [
         'execution_enabled' => env('AI_AGENT_EXECUTION_ENABLED', false),
     ],
 
-    // Separate opt-in: enabling category execution never enables engineer assignment.
+    // Independent opt-in: enabling engineer execution never enables category changes.
     'engineer_assignment' => [
         'execution_enabled' => env('AI_ENGINEER_EXECUTION_ENABLED', false),
     ],
