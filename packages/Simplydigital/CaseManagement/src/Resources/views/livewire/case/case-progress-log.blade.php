@@ -267,6 +267,9 @@
                                         </span>
                                     @endif
 
+                                    @if ($log->source === 'ai_agent')
+                                        <span class="inline-flex rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-semibold text-indigo-800 dark:bg-indigo-400/10 dark:text-indigo-200">AI audit · Internal</span>
+                                    @endif
                                     @if ($log->external_user)
                                         <span class="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200">
                                             Customer response needed
@@ -369,7 +372,7 @@
                             </div>
 
                             @can('update', $case)
-                                @if ($caseOpen)
+                                @if ($caseOpen && $log->source !== 'ai_agent')
                                     <div class="flex flex-wrap items-center gap-2">
 
                                         <x-casemanagement::form-elements.button-secondary
