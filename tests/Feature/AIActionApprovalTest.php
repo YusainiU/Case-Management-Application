@@ -167,7 +167,8 @@ class AIActionApprovalTest extends TestCase
             ->assertSee('Approved')
             ->assertSee($manager->name)
             ->assertSee('Execution: Not recorded')
-            ->assertSee('View all AI approval requests and history');
+            ->assertSee('View all AI approval requests and history')
+            ->assertSee('href="/ai/approvals?status=all"', false);
     }
 
     public function test_livewire_prevents_viewer_from_approving(): void
