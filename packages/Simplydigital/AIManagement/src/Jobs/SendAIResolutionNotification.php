@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Simplydigital\CaseManagement\Enums\CaseState;
+use Simplydigital\AIManagement\Services\AIProgressLogger;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\EmailService;
 
@@ -46,6 +47,7 @@ class SendAIResolutionNotification implements ShouldQueue
                     'error' => 'Case is no longer resolved or is unavailable.',
                     'updated_at' => now(),
                 ]);
+                app(AIProgressLogger::class)->resolutionNotification($this->caseId, 'skipped');
 
                 return false;
             }
@@ -76,6 +78,10 @@ class SendAIResolutionNotification implements ShouldQueue
                 'error' => $result === false ? 'No customer recipient was available.' : null,
                 'updated_at' => now(),
             ]);
+
+            app(AIProgressLogger::class)->resolutionNotification(
+                $this->caseId, $result === false ? 'skipped' : 'sent'
+            );
         } catch (\Throwable $exception) {
             DB::table('ai_resolution_notifications')->where('case_id', $this->caseId)
                 ->where('status', 'sending')->update([
@@ -100,5 +106,6 @@ class SendAIResolutionNotification implements ShouldQueue
                 'error' => 'Customer notification failed after queue retries. Review the failed job.',
                 'updated_at' => now(),
             ]);
+        app(AIProgressLogger::class)->resolutionNotification($this->caseId, 'failed');
     }
 }
