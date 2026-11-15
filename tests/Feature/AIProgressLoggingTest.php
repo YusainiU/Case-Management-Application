@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Simplydigital\AIManagement\Jobs\ExecuteApprovedAIAction;
@@ -114,6 +115,37 @@ class AIProgressLoggingTest extends TestCase
             'short_description' => 'AI:analysis:'.$analysis->id.':requested',
             'source' => 'ai_agent',
         ]);
+        $this->assertSame(2, TaskLogs::query()->where('ticket_id', $case->id)
+            ->where('source', 'ai_agent')->count());
+    }
+
+    public function test_historical_audit_backfill_is_opt_in_and_idempotent(): void
+    {
+        config()->set('ai-management.work_start.execution_enabled', false);
+        Bus::fake();
+        $manager = User::factory()->create();
+        $engineer = User::factory()->create();
+        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve');
+        $case = $this->caseFor($manager, $engineer);
+        $proposal = app(CaseWorkStartProposalService::class)->propose($case);
+        app(AIApprovalService::class)->approve($proposal->id, $manager);
+
+        TaskLogs::query()->where('ticket_id', $case->id)
+            ->where('source', 'ai_agent')->forceDelete();
+        $this->assertSame(0, TaskLogs::query()->where('ticket_id', $case->id)
+            ->where('source', 'ai_agent')->count());
+
+        Artisan::call('ai:backfill-case-progress');
+        $this->assertSame(0, TaskLogs::query()->where('ticket_id', $case->id)
+            ->where('source', 'ai_agent')->count());
+
+        Artisan::call('ai:backfill-case-progress', ['--write' => true]);
+        $this->assertLog($case, $proposal->id, 'prepared');
+        $this->assertLog($case, $proposal->id, 'approved');
+        $this->assertSame(2, TaskLogs::query()->where('ticket_id', $case->id)
+            ->where('source', 'ai_agent')->count());
+
+        Artisan::call('ai:backfill-case-progress', ['--write' => true]);
         $this->assertSame(2, TaskLogs::query()->where('ticket_id', $case->id)
             ->where('source', 'ai_agent')->count());
     }
