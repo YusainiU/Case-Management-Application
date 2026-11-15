@@ -93,7 +93,7 @@ class ApprovalReviewQueue extends Component
     {
         $this->authorizeQueueAccess();
 
-        $statuses = ['all', 'pending', 'approved', 'rejected', 'completed', 'stale'];
+        $statuses = ['all', 'pending', 'approved', 'rejected', 'completed', 'stale', 'failed'];
         // A manipulated Livewire filter must not be accepted as an arbitrary query.
         if (! in_array($this->status, $statuses, true)) {
             $this->status = 'pending';
