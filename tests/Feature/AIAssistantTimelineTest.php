@@ -563,6 +563,88 @@ class AIAssistantTimelineTest extends TestCase
             ->assertSee('href="#ai-workflow-resolution"', escape: false);
     }
 
+    public function test_focus_view_hides_long_sections_but_keeps_actions_and_attention_visible(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $this->logFor($case, 'ai_agent', 'AI:analysis:123:requested',
+            'Historical event only shown in full timeline');
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSet('showOverview', true)
+            ->assertSet('showTimeline', true)
+            ->assertSee('Historical event only shown in full timeline')
+            ->call('setFocusView', true)
+            ->assertSet('showOverview', false)
+            ->assertSet('showTimeline', false)
+            ->assertSee('Suggested next step')
+            ->assertSee('Needs attention')
+            ->assertSee('Actions and reviews')
+            ->assertSee('Show overview')
+            ->assertSee('Show timeline')
+            ->assertDontSee('Historical event only shown in full timeline')
+            ->call('refreshAnalysis')
+            ->assertSet('showOverview', false)
+            ->assertSet('showTimeline', false)
+            ->call('setFocusView', false)
+            ->assertSet('showOverview', true)
+            ->assertSet('showTimeline', true)
+            ->assertSee('Historical event only shown in full timeline');
+    }
+
+    public function test_independent_section_toggles_preserve_filter_and_open_workflows(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $this->logFor($case, 'ai_agent', 'AI:analysis:123:completed',
+            'Analysis history visible when timeline is shown');
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->call('setTimelineFilter', 'analysis')
+            ->call('toggleWorkflow', 'analysis')
+            ->call('toggleOverview')
+            ->assertSet('showOverview', false)
+            ->assertSet('showTimeline', true)
+            ->assertSee('Analysis history visible when timeline is shown')
+            ->call('toggleTimeline')
+            ->assertSet('showTimeline', false)
+            ->assertSet('timelineFilter', 'analysis')
+            ->assertSet('expandedWorkflows', ['analysis'])
+            ->call('refreshAnalysis')
+            ->assertSet('showOverview', false)
+            ->assertSet('showTimeline', false)
+            ->call('toggleTimeline')
+            ->assertSet('showTimeline', true)
+            ->assertSet('timelineFilter', 'analysis')
+            ->assertSee('Analysis history visible when timeline is shown')
+            ->call('toggleOverview')
+            ->assertSet('showOverview', true)
+            ->assertSet('expandedWorkflows', ['analysis']);
+    }
+
+    public function test_focus_view_does_not_change_case_or_trigger_workflow_actions(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->call('setFocusView', true)
+            ->call('toggleOverview')
+            ->call('toggleTimeline')
+            ->call('setFocusView', false)
+            ->assertHasNoErrors();
+
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
+        $this->assertNull($case->resolved_datetime);
+        $this->assertDatabaseMissing('ai_action_proposals', ['case_id' => $case->id]);
+    }
+
     private function proposalFor(tickets $case, string $action, string $status, $expiresAt): AIActionProposal
     {
         return AIActionProposal::query()->create([
