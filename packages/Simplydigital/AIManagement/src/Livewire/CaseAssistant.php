@@ -20,6 +20,34 @@ class CaseAssistant extends Component
 
     public int $timelineLimit = 20;
 
+    public string $timelineFilter = 'all';
+
+    private const TIMELINE_FILTERS = [
+        'all', 'analysis', 'approvals', 'reviews', 'notifications',
+    ];
+
+    public function setTimelineFilter(string $filter): void
+    {
+        Gate::authorize('view', $this->case);
+
+        if (! in_array($filter, self::TIMELINE_FILTERS, true)) {
+            return;
+        }
+
+        $this->timelineFilter = $filter;
+        $this->timelineLimit = 20;
+    }
+
+    public function openWorkflow(string $workflow): void
+    {
+        Gate::authorize('view', $this->case);
+
+        if (in_array($workflow, self::WORKFLOWS, true)
+            && ! in_array($workflow, $this->expandedWorkflows, true)) {
+            $this->expandedWorkflows[] = $workflow;
+        }
+    }
+
     /** @var array<int, string> */
     public array $expandedWorkflows = [];
 
@@ -135,13 +163,27 @@ class CaseAssistant extends Component
         // Each AI lifecycle stage already writes an internal case progress log.
         // Use that record as the single chronological source of truth, rather
         // than displaying proposal and analysis summary states as duplicates.
-        $entries = TaskLogs::query()
+        $query = TaskLogs::query()
             ->where('ticket_id', $this->case->getKey())
-            ->whereIn('source', ['ai_agent', 'ai_assisted', 'ai_resolution_review'])
-            ->with('user:id,name')
+            ->whereIn('source', ['ai_agent', 'ai_assisted', 'ai_resolution_review']);
+
+        // Filter on recorded event keys and sources, not AI-written descriptions.
+        // That keeps the chronology accurate and avoids mixing other case logs.
+        match ($this->timelineFilter) {
+            'analysis' => $query->where('source', 'ai_agent')
+                ->where('short_description', 'like', 'AI:analysis:%'),
+            'approvals' => $query->where('source', 'ai_agent')
+                ->where('short_description', 'like', 'AI:proposal:%'),
+            'reviews' => $query->whereIn('source', ['ai_assisted', 'ai_resolution_review']),
+            'notifications' => $query->where('source', 'ai_agent')
+                ->where('short_description', 'like', 'AI:resolution-notification:%'),
+            default => null,
+        };
+
+        $entries = $query->with('user:id,name')
             ->orderByDesc('created_at')
             ->orderByDesc('id')
-            ->limit($this->timelineLimit + 1)
+            ->limit(min(100, $this->timelineLimit) + 1)
             ->get();
 
         $hasMore = $entries->count() > $this->timelineLimit;
