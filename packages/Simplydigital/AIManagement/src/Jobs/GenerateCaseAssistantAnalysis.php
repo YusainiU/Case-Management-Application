@@ -60,16 +60,31 @@ class GenerateCaseAssistantAnalysis implements ShouldQueue
             });
         } catch (\Throwable $exception) {
             report($exception);
+            // Keep the analysis retryable. Log terminal failure only when
+            // Laravel exhausts its attempts.
+            $analysis->update([
+                'status' => AIStatuses::Processing->value,
+                'error' => 'Analysis interrupted; retry pending.',
+            ]);
 
+            throw $exception;
+        }
+    }
+
+    public function failed(?\Throwable $exception): void
+    {
+        $analysis = AIAnalysis::query()->find($this->analysisId);
+        if ($analysis && $analysis->status !== AIStatuses::Completed->value) {
             \Illuminate\Support\Facades\DB::transaction(function () use ($analysis): void {
                 $analysis->update([
                     'status' => AIStatuses::Failed->value,
-                    'error' => 'AI analysis failed. Review application logs.',
+                    'error' => 'AI analysis failed after retries. Review application logs.',
                 ]);
                 app(AIProgressLogger::class)->analysis($analysis, 'failed');
             });
-
-            throw $exception;
+        }
+        if ($exception) {
+            report($exception);
         }
     }
 }
