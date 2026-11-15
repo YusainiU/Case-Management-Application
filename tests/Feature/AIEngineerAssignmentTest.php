@@ -203,7 +203,7 @@ class AIEngineerAssignmentTest extends TestCase
 
         $manager = User::factory()->create();
         $engineer = User::factory()->create();
-        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve');
+        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve', 'ai.proposals.view');
         $this->engineer($engineer);
         $case = $this->caseFor($manager);
         $proposal = app(EngineerAssignmentProposalService::class)->propose($case, $engineer->id);
@@ -219,6 +219,12 @@ class AIEngineerAssignmentTest extends TestCase
         $job->handle(app(CaseRepository::class));
         $this->assertNull($case->refresh()->assigned_to);
         $this->assertSame(3, $job->tries);
+
+        $this->actingAs($manager);
+        Livewire::test(ApprovalReviewQueue::class)
+            ->set('status', 'failed')
+            ->assertSee('Execution failed after queue retries')
+            ->assertDontSee('Secret runtime details');
     }
 
     public function test_changed_assignment_marks_queued_execution_as_stale(): void
