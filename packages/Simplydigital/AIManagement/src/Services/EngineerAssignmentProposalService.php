@@ -41,6 +41,10 @@ class EngineerAssignmentProposalService
             $reason = count($choice['matched_skills'])
                 ? 'Matched case text to listed skills: '.implode(', ', $choice['matched_skills']).'. '
                 : 'No listed skill could be matched to the case text. Manual suitability verification is required. ';
+            if ($choice['matched_certifications']) {
+                $reason .= 'Matched active, unexpired certifications: '
+                    .implode(', ', $choice['matched_certifications']).'. ';
+            }
             $reason .= 'Current open-case count: '.$choice['open_cases']
                 .'. This is a workload indicator, not confirmed availability.';
 
