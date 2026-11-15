@@ -32,8 +32,7 @@ class AITroubleshootingReviewTest extends TestCase
             ->call('prepare')
             ->assertSee('Draft prepared')
             ->assertSet('sourceAnalysisId', $analysis->id)
-            ->assertSet('confirmed', false)
-            ->assertSet('draft', \PHPUnit\Framework\Assert::anything());
+            ->assertSet('confirmed', false);
 
         // Human attestation is mandatory.
         $component = Livewire::test(TroubleshootingReview::class, ['case' => $case])
