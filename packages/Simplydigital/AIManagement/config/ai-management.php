@@ -70,6 +70,11 @@ return [
         'execution_enabled' => env('AI_ENGINEER_EXECUTION_ENABLED', false),
     ],
 
+    // Phase 7: separately guarded Start Work execution (Open -> In Progress).
+    'work_start' => [
+        'execution_enabled' => env('AI_WORK_START_EXECUTION_ENABLED', false),
+    ],
+
     // Off by default. User explicitly requests a queued semantic skill match.
     'engineer_semantic' => [
         'enabled' => env('AI_ENGINEER_SEMANTIC_ENABLED', false),
