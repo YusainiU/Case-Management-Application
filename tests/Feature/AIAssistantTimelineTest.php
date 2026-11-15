@@ -394,6 +394,33 @@ class AIAssistantTimelineTest extends TestCase
             ->assertDontSee('Handoff saved; case not resolved');
     }
 
+    public function test_workflow_overview_prioritizes_active_approval_when_proposal_timestamps_tie(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $completed = $this->proposalFor($case, 'update_case_category', 'completed', now()->addHour());
+        $pending = $this->proposalFor($case, 'update_case_category', 'pending', now()->addHour());
+
+        // The production MySQL schema can store both created_at values at
+        // identical second precision. The UUID primary key is not a
+        // chronological tiebreaker.
+        DB::table('ai_action_proposals')->whereIn('id', [$completed->id, $pending->id])
+            ->update(['created_at' => '2026-11-15 12:00:00']);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Awaiting category approval')
+            ->assertSee('Needs attention');
+
+        DB::table('ai_action_proposals')->where('id', $pending->id)
+            ->update(['expires_at' => now()->subMinute()]);
+
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertDontSee('Awaiting category approval');
+    }
+
     public function test_workflow_overview_is_scoped_to_current_case_and_links_open_correct_panels(): void
     {
         $viewer = User::factory()->create();
