@@ -88,6 +88,14 @@ class ManageCase extends ModalComponent
         ]);
     }
 
+    public function refreshCaseSnapshot(): void
+    {
+        if ($this->case) {
+            $this->authorize('view', $this->case);
+            $this->case->refresh();
+        }
+    }
+
     public function caseUpdated()
     {
         $this->case->refresh();
