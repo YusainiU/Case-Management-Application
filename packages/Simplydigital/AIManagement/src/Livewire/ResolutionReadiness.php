@@ -14,6 +14,7 @@ use Simplydigital\CaseManagement\Services\CaseTicketServices;
 use Simplydigital\CaseManagement\Services\CaseUserServices;
 use Illuminate\Validation\Rule;
 use Simplydigital\AIManagement\Jobs\SendAIResolutionNotification;
+use Simplydigital\AIManagement\Services\AIProgressLogger;
 
 class ResolutionReadiness extends Component
 {
@@ -226,6 +227,7 @@ class ResolutionReadiness extends Component
                     'updated_at' => now(),
                 ]);
 
+                app(AIProgressLogger::class)->resolutionNotification((int) $locked->id, 'queued', auth()->id());
                 SendAIResolutionNotification::dispatch((int) $locked->id)->afterCommit();
             }
 
