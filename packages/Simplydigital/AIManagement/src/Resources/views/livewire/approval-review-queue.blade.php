@@ -4,11 +4,10 @@
         <p class="text-sm text-gray-600 dark:text-gray-300">
             Review category and engineer assignment proposals, decisions, and execution results.
         </p>
-        @unless (config('ai-management.approvals.execution_enabled', false))
-            <p class="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-                Execution is disabled in this environment. Approvals are recorded but do not change case categories.
-            </p>
-        @endunless
+        <p class="text-sm text-gray-600 dark:text-gray-300">
+            Category execution: <strong>{{ config('ai-management.approvals.execution_enabled', false) ? 'Enabled' : 'Disabled' }}</strong>
+            · Engineer execution: <strong>{{ config('ai-management.engineer_assignment.execution_enabled', false) ? 'Enabled' : 'Disabled' }}</strong>
+        </p>
     </header>
 
     @if ($notice)
@@ -26,7 +25,7 @@
         <span class="text-sm text-gray-500">{{ $proposals->total() }} matching proposals</span>
     </div>
 
-    <div class="space-y-4">
+    <div wire:poll.10s class="space-y-4">
         @forelse ($proposals as $proposal)
             <article wire:key="queue-proposal-{{ $proposal->id }}"
                      class="space-y-3 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
@@ -104,7 +103,9 @@
                 </div>
 
                 @if ($proposal->status === 'pending' && ! $proposal->expires_at?->isPast() && $proposal->case)
-                    @can('ai-category.approve', $proposal->case)
+                    @if ($proposal->action_type === 'assign_case_engineer'
+                        ? auth()->user()?->can('ai-engineer.approve', $proposal->case)
+                        : auth()->user()?->can('ai-category.approve', $proposal->case))
                         <div class="space-y-2 border-t border-gray-200 pt-3 dark:border-gray-700">
                             <label for="queue-rejection-reason-{{ $proposal->id }}"
                                    class="block text-xs font-medium">Optional rejection reason</label>
@@ -125,7 +126,7 @@
                                 </button>
                             </div>
                         </div>
-                    @endcan
+                    @endif
                 @endif
             </article>
         @empty
