@@ -46,6 +46,62 @@ class AIEngineerAssignmentTest extends TestCase
         $this->assertSame('workload_only', $ranked[1]['evidence']);
     }
 
+    public function test_valid_case_matched_certification_ranks_ahead_of_workload_only(): void
+    {
+        $owner = User::factory()->create();
+        $certified = User::factory()->create();
+        $uncertified = User::factory()->create();
+        $certifiedId = $this->engineer($certified);
+        $this->engineer($uncertified);
+        $this->certification($certifiedId, 'Email', now()->addMonth());
+
+        // Certificate match outranks workload, despite an extra open case.
+        $this->caseFor($owner, $certified->id);
+        $ranked = app(EngineerRecommendationService::class)->recommend($this->caseFor($owner));
+
+        $this->assertSame($certified->id, $ranked[0]['user_id']);
+        $this->assertSame(['Email'], $ranked[0]['matched_certifications']);
+        $this->assertSame('certification_match', $ranked[0]['evidence']);
+        $this->assertSame('workload_only', $ranked[1]['evidence']);
+
+        $proposal = app(EngineerAssignmentProposalService::class)
+            ->propose($this->caseFor($owner), $certified->id);
+        $this->assertStringContainsString(
+            'Matched active, unexpired certifications: Email',
+            $proposal->reason,
+        );
+    }
+
+    public function test_expired_inactive_and_undated_certifications_provide_no_matching_evidence(): void
+    {
+        $owner = User::factory()->create();
+        $expired = User::factory()->create();
+        $inactive = User::factory()->create();
+        $undated = User::factory()->create();
+        $this->certification($this->engineer($expired), 'Email', now()->subDay());
+        $this->certification($this->engineer($inactive), 'Email', now()->addMonth(), false);
+        $this->certification($this->engineer($undated), 'Email', null);
+
+        $ranked = app(EngineerRecommendationService::class)->recommend($this->caseFor($owner));
+        foreach ($ranked as $candidate) {
+            $this->assertSame([], $candidate['matched_certifications']);
+            $this->assertSame('workload_only', $candidate['evidence']);
+        }
+    }
+
+    public function test_skill_match_outweighs_certification_match(): void
+    {
+        $owner = User::factory()->create();
+        $skilled = User::factory()->create();
+        $certified = User::factory()->create();
+        $this->engineer($skilled, ['Email']);
+        $this->certification($this->engineer($certified), 'Email', now()->addMonth());
+
+        $ranked = app(EngineerRecommendationService::class)->recommend($this->caseFor($owner));
+        $this->assertSame($skilled->id, $ranked[0]['user_id']);
+        $this->assertSame($certified->id, $ranked[1]['user_id']);
+    }
+
     public function test_engineer_assignment_appears_in_shared_review_queue(): void
     {
         $manager = User::factory()->create();
@@ -283,7 +339,7 @@ class AIEngineerAssignmentTest extends TestCase
         $user->givePermissionTo($permissions);
     }
 
-    private function engineer(User $user, array $skills = [], bool $active = true): void
+    private function engineer(User $user, array $skills = [], bool $active = true): int
     {
         $id = DB::table('engineer_management')->insertGetId([
             'number' => 'ENG-'.uniqid(),
@@ -311,6 +367,30 @@ class AIEngineerAssignmentTest extends TestCase
                 'updated_at' => now(),
             ]);
         }
+        return $id;
+    }
+
+    private function certification(int $engineerId, string $name, ?\DateTimeInterface $expiry, bool $active = true): void
+    {
+        $certificateId = DB::table('certificates')->insertGetId([
+            'number' => 'CERT-'.uniqid(),
+            'name' => $name,
+            'type' => 'Professional',
+            'active' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        DB::table('engineer_certifications')->insert([
+            'certification_number' => 'ENGCERT-'.uniqid(),
+            'engineer_id' => $engineerId,
+            'certificate_id' => $certificateId,
+            'active' => $active,
+            'expired' => false,
+            'expiry_date' => $expiry,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 
     private function caseFor(User $creator, ?int $assignedTo = null): tickets
