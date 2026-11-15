@@ -9,7 +9,27 @@ use Simplydigital\EngineerManagement\Models\EngineerManagement;
 
 class SemanticEngineerSkillService
 {
-    public function __construct(private readonly AIService $ai) {}
+    /**
+     * Return a user-safe issue without resolving the AI provider or making a request.
+     * Normal recommendations must work even when no AI service is configured.
+     */
+    public function configurationIssue(): ?string
+    {
+        $provider = config('ai-management.provider');
+        if (! in_array($provider, ['openai', 'deepseek'], true)) {
+            return 'Semantic matching needs a supported AI provider (OpenAI or DeepSeek).';
+        }
+
+        if (! filled(config('ai-management.model'))) {
+            return 'Semantic matching needs an AI model to be configured.';
+        }
+
+        if (! filled(config("ai-management.{$provider}.api_key"))) {
+            return 'Semantic matching needs API credentials for the selected provider.';
+        }
+
+        return null;
+    }
 
     /**
      * Only active skill names, not engineer identities, are sent to the provider.
@@ -71,7 +91,7 @@ PROMPT;
         $prompt .= "\nAllowed skills (JSON): ".json_encode($context['skills'], JSON_THROW_ON_ERROR);
         $prompt .= "\nCase text (JSON): ".json_encode($context['text'], JSON_THROW_ON_ERROR);
 
-        $raw = $this->ai->generateStructured($prompt, [
+        $raw = app(AIService::class)->generateStructured($prompt, [
             'type' => 'object',
             'properties' => [
                 'matches' => [
