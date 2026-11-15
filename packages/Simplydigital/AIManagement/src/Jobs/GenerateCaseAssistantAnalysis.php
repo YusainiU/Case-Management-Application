@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Simplydigital\AIManagement\AI\DTO\CaseContext;
 use Simplydigital\AIManagement\AI\Services\CaseAssistant;
 use Simplydigital\AIManagement\Models\AIAnalysis;
+use Simplydigital\AIManagement\Services\AIProgressLogger;
 use Simplydigital\AIManagement\Enums\AIStatuses;
 
 class GenerateCaseAssistantAnalysis implements ShouldQueue
@@ -49,18 +50,24 @@ class GenerateCaseAssistantAnalysis implements ShouldQueue
                 $this->context
             );
 
-            $analysis->update([
-                'status' => AIStatuses::Completed->value,
-                'result' => $result->toArray(),
-                'model' => config('ai-management.model'),
-            ]);
+            \Illuminate\Support\Facades\DB::transaction(function () use ($analysis, $result): void {
+                $analysis->update([
+                    'status' => AIStatuses::Completed->value,
+                    'result' => $result->toArray(),
+                    'model' => config('ai-management.model'),
+                ]);
+                app(AIProgressLogger::class)->analysis($analysis, 'completed');
+            });
         } catch (\Throwable $exception) {
             report($exception);
 
-            $analysis->update([
-                'status' => AIStatuses::Failed->value,
-                'error' => $exception->getMessage(),
-            ]);
+            \Illuminate\Support\Facades\DB::transaction(function () use ($analysis): void {
+                $analysis->update([
+                    'status' => AIStatuses::Failed->value,
+                    'error' => 'AI analysis failed. Review application logs.',
+                ]);
+                app(AIProgressLogger::class)->analysis($analysis, 'failed');
+            });
 
             throw $exception;
         }
