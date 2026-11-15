@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\AI;
 
 use Illuminate\Support\Facades\Gate;
 use Simplydigital\AIManagement\Models\AIAnalysis;
+use Simplydigital\AIManagement\Services\AIProgressLogger;
 use Simplydigital\AIManagement\Enums\AIStatuses;
 use Simplydigital\CaseManagement\Models\tickets as CaseModel;
 use Simplydigital\AIManagement\Jobs\GenerateCaseAssistantAnalysis;
@@ -30,6 +31,8 @@ class CaseAssistantService
             'prompt_version' => config('ai-management.case_assistant.prompt_version'),
             'status' => AIStatuses::Pending->value,
         ]);
+
+        app(AIProgressLogger::class)->analysis($analysis, 'requested', auth()->id());
 
         GenerateCaseAssistantAnalysis::dispatch(
             analysisId: $analysis->id,
