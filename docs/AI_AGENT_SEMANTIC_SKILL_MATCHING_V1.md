@@ -32,6 +32,19 @@ The queue name comes from `AI_CASE_ASSISTANT_QUEUE`; use that queue if you have 
 6. Candidates are sorted by total exact + semantic skill match count, then exact skill count (tie-break), matched valid certifications, and open-case count. Explanations identify which evidence is exact versus AI-suggested.
 7. Selecting a candidate creates a pending human-reviewed proposal with a snapshot of the explanation. Approval, current permissions, staleness checks and the separate engineer execution switch still govern any mutation of `tickets.assigned_to`.
 
+## What if no AI provider is configured?
+
+The safest setting is `AI_ENGINEER_SEMANTIC_ENABLED=false` until your AI provider, model and credentials are ready.
+
+However, leaving it `true` **does not break normal engineer recommendations**. The recommendations panel uses exact skill, valid certification and workload matching regardless of AI configuration. The optional AI button becomes disabled with a safe explanation when:
+- `AI_MANAGEMENT_PROVIDER` is not `openai` or `deepseek`;
+- `AI_MANAGEMENT_MODEL` is missing; or
+- the selected provider's API key is missing.
+
+The configuration is also validated inside the queued job. An already-queued request encountered after credentials have been removed ends in an audited `failed` analysis, without making an AI call or modifying any case. The model is resolved **only when an actual semantic request is analysed**, not while a manager opens the case.
+
+The configuration check proves required settings are present; it does **not** guarantee credentials are valid or the provider is reachable. Network/provider failures follow the normal retry and safe-fallback path.
+
 ## Fallback and freshness
 
 - Semantic matching is **disabled by default**. Without it, the exact skill/certification/workload ranking remains available and unchanged.
