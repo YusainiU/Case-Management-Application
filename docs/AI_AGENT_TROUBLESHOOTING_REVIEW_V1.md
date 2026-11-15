@@ -15,7 +15,7 @@ This phase makes the existing Case Assistant's next-step suggestions useful in t
 
 - Both preparing and saving a draft require the existing **case update** permission, in addition to case view access.
 - The case must be unresolved and open to updates. If it is resolved or closed, the save is blocked.
-- The draft is tied to a completed Case Assistant analysis. A newer analysis or changed case snapshot invalidates the draft before save.
+- The draft is tied to the latest completed Case Assistant analysis. Normal case updates after that analysis (category change, engineer assignment, Start Work, etc.) no longer require an unnecessary re-analysis. The UI warns that the case changed, and staff must verify recommendations against the current case. A newer analysis or any case change **after preparing the draft** invalidates the draft before save.
 - Input must be nonempty and at most 10,000 characters. Review checkbox acceptance is mandatory.
 - The new note can be reviewed and edited through the existing internal Progress workflow. This is **not** an immutable system audit event; automatic AI lifecycle events are separately logged as read-only `source=ai_agent`.
 - The component **never updates** the case state, resolution, resolved timestamps, assignee, SLA tasks or customer-facing comments. It does not imply that diagnostic work has been done.
@@ -36,6 +36,6 @@ php artisan test --filter=AIActionApprovalTest
 php artisan test --filter=AIApprovalReviewQueueTest
 ```
 
-For browser acceptance, choose an **unresolved** test case with a **current completed** Case Assistant analysis. Prepare a draft, verify it is editable, check the attestation and save. Open the **Progress** tab and verify the entry is internal and attributed to the reviewing staff user. Verify the case state and resolution have not changed.
+For browser acceptance, choose an **unresolved** test case with a **completed** Case Assistant analysis, including one predating normal case workflow updates. Prepare a draft, verify it is editable, check the attestation and save. Open the **Progress** tab and verify the entry is internal and attributed to the reviewing staff user. Verify the case state and resolution have not changed.
 
 GitHub changes remain on `feature/ai-agent-approvals-v1` in draft PR #29, not merged to `main`. These tests require execution in the user's Laravel environment.
