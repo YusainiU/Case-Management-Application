@@ -62,8 +62,9 @@ class EngineerAssignmentApprovals extends Component
         try {
             $service->approve($proposal->id, auth()->user());
             $this->notice = config('ai-management.approvals.execution_enabled', false)
+                && config('ai-management.engineer_assignment.execution_enabled', false)
                 ? 'Approved. Execution is queued.'
-                : 'Approved and recorded. Execution is disabled.';
+                : 'Approved and recorded. Engineer execution is disabled.';
         } catch (\DomainException $exception) {
             $this->notice = $exception->getMessage();
         }
