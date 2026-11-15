@@ -53,6 +53,68 @@ class AIAssistantTimelineTest extends TestCase
             ->assertSee('Resolution readiness and customer notification');
     }
 
+    public function test_timeline_groups_entries_by_local_calendar_day_with_newest_day_first(): void
+    {
+        config()->set('app.timezone', 'Europe/London');
+
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $older = $this->logFor($case, 'ai_agent', 'AI:analysis:901:completed', 'Earlier day event');
+        $first = $this->logFor($case, 'ai_agent', 'AI:analysis:902:completed', 'First event on newer day');
+        $second = $this->logFor($case, 'ai_agent', 'AI:analysis:903:completed', 'Latest event on newer day');
+
+        DB::table('task_logs')->where('id', $older->id)
+            ->update(['created_at' => '2026-11-10 23:40:00']);
+        DB::table('task_logs')->where('id', $first->id)
+            ->update(['created_at' => '2026-11-11 00:02:00']);
+        DB::table('task_logs')->where('id', $second->id)
+            ->update(['created_at' => '2026-11-11 18:25:32']);
+
+        $this->actingAs($viewer);
+        $component = Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSeeInOrder([
+                'Wednesday, 11 November 2026',
+                'Latest event on newer day',
+                'First event on newer day',
+                'Tuesday, 10 November 2026',
+                'Earlier day event',
+            ])
+            ->assertSee('18:25:32')
+            ->assertSee('00:02:00')
+            ->assertSee('23:40:00');
+
+        $this->assertSame(1, substr_count($component->html(), 'Wednesday, 11 November 2026'));
+        $this->assertSame(1, substr_count($component->html(), 'Tuesday, 10 November 2026'));
+    }
+
+    public function test_date_headings_follow_timeline_filter_without_leaking_other_event_days(): void
+    {
+        config()->set('app.timezone', 'Europe/London');
+
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $analysis = $this->logFor($case, 'ai_agent', 'AI:analysis:1001:completed', 'Analysis day only');
+        $notification = $this->logFor($case, 'ai_agent', 'AI:resolution-notification:1001:sent',
+            'Notification day only');
+
+        DB::table('task_logs')->where('id', $analysis->id)
+            ->update(['created_at' => '2026-11-10 12:00:00']);
+        DB::table('task_logs')->where('id', $notification->id)
+            ->update(['created_at' => '2026-11-11 12:00:00']);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->call('setTimelineFilter', 'analysis')
+            ->assertSee('Tuesday, 10 November 2026')
+            ->assertDontSee('Wednesday, 11 November 2026')
+            ->call('setTimelineFilter', 'notifications')
+            ->assertSee('Wednesday, 11 November 2026')
+            ->assertDontSee('Tuesday, 10 November 2026');
+    }
+
     public function test_timeline_only_shows_current_cases_ai_logs(): void
     {
         $viewer = User::factory()->create();
