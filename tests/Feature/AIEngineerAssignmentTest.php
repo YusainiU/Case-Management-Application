@@ -86,6 +86,27 @@ class AIEngineerAssignmentTest extends TestCase
         Bus::assertNotDispatched(ExecuteApprovedAIAction::class);
     }
 
+    public function test_category_execution_flag_does_not_enable_engineer_execution(): void
+    {
+        config()->set('ai-management.approvals.execution_enabled', true);
+        config()->set('ai-management.engineer_assignment.execution_enabled', false);
+        Bus::fake();
+
+        $manager = User::factory()->create();
+        $engineer = User::factory()->create();
+        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve');
+        $this->engineer($engineer);
+        $case = $this->caseFor($manager);
+        $proposal = app(EngineerAssignmentProposalService::class)->propose($case, $engineer->id);
+
+        app(AIApprovalService::class)->approve($proposal->id, $manager);
+        (new ExecuteApprovedAIAction($proposal->id))->handle(app(CaseRepository::class));
+
+        $this->assertSame('approved', $proposal->refresh()->status);
+        $this->assertNull($case->refresh()->assigned_to);
+        Bus::assertNotDispatched(ExecuteApprovedAIAction::class);
+    }
+
     public function test_manager_without_approval_permission_cannot_approve_engineer_change(): void
     {
         $user = User::factory()->create();
