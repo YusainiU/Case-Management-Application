@@ -9,6 +9,7 @@ use Simplydigital\AIManagement\Models\AIActionProposal;
 use Simplydigital\AIManagement\Models\AIAnalysis;
 use Simplydigital\AIManagement\Jobs\GenerateSemanticEngineerSkills;
 use Simplydigital\AIManagement\Services\SemanticEngineerSkillService;
+use Simplydigital\AIManagement\Services\AIProgressLogger;
 use Simplydigital\AIManagement\Services\AIApprovalService;
 use Simplydigital\AIManagement\Services\EngineerAssignmentProposalService;
 use Simplydigital\AIManagement\Services\EngineerRecommendationService;
@@ -82,6 +83,8 @@ class EngineerAssignmentApprovals extends Component
             'status' => 'pending',
             'prompt_version' => 'engineer-skills-semantic-v1',
         ]);
+
+        app(AIProgressLogger::class)->analysis($analysis, 'requested', auth()->id());
 
         GenerateSemanticEngineerSkills::dispatch($analysis->id)
             ->onQueue(config('ai-management.engineer_semantic.queue', 'default'));
