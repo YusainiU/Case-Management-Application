@@ -298,7 +298,8 @@ class CaseAssistant extends Component
             ->with('execution')
             ->latest('created_at')
             ->get()
-            ->keyBy('action_type');
+            ->groupBy('action_type')
+            ->map(fn ($records) => $records->first());
 
         $pending = static fn ($proposal): bool =>
             $proposal !== null
@@ -306,8 +307,7 @@ class CaseAssistant extends Component
             && $proposal->expires_at?->isFuture();
 
         $started = $case->state instanceof CaseState
-            && $case->state !== CaseState::Open
-            && $case->state !== CaseState::Cancelled;
+            && ! in_array($case->state, [CaseState::Open, CaseState::Cancelled], true);
 
         $resolved = $case->state === CaseState::Resolved
             || $case->state === CaseState::Closed
@@ -347,7 +347,7 @@ class CaseAssistant extends Component
                 'status' => $case->assigned_to ? 'complete'
                     : ($pending($proposals->get('assign_case_engineer')) ? 'pending' : 'not_started'),
                 'detail' => $case->assigned_to
-                    ? 'Assigned engineer: '.($case->assignedToUser?->name ?? 'User #'.$case->assigned_to)
+                    ? 'Currently assigned: '.($case->assignedToUser?->name ?? 'User #'.$case->assigned_to)
                     : ($pending($proposals->get('assign_case_engineer'))
                         ? 'Awaiting assignment approval' : 'No engineer assigned'),
                 'at' => $proposals->get('assign_case_engineer')?->updated_at,
@@ -357,7 +357,7 @@ class CaseAssistant extends Component
                 'title' => 'Work started',
                 'status' => $started ? 'complete'
                     : ($pending($proposals->get('start_case_work')) ? 'pending' : 'not_started'),
-                'detail' => $started ? 'Current case state: '.$case->state->value
+                'detail' => $started ? 'Current case state: '.$case->state->value.' (not necessarily AI-started)'
                     : ($pending($proposals->get('start_case_work'))
                         ? 'Start Work approval pending' : 'Case remains Open'),
                 'at' => $proposals->get('start_case_work')?->updated_at,
