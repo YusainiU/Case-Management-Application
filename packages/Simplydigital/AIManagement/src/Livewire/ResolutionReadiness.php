@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\tickets;
 
@@ -67,7 +68,9 @@ class ResolutionReadiness extends Component
     private function mayPrepare(tickets $case): bool
     {
         return $case->closed_datetime === null && $case->resolved_datetime === null
-            && $case->deleted_at === null;
+            && $case->deleted_at === null
+            && $case->state instanceof CaseState
+            && in_array($case->state, CaseState::openStates(), true);
     }
 
     public function prepare(): void
