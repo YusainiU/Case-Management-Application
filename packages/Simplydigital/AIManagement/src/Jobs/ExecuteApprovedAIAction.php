@@ -33,7 +33,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
         return [10, 60, 300];
     }
 
-    public function failed(?\\Throwable $exception): void
+    public function failed(?\Throwable $exception): void
     {
         // Laravel calls failed() after retries are exhausted.
         // Keep the full exception in secure logs, not in the reviewer UI.
