@@ -100,12 +100,14 @@ class SendAIResolutionNotification implements ShouldQueue
             report($exception);
         }
 
-        DB::table('ai_resolution_notifications')->where('case_id', $this->caseId)
+        $changed = DB::table('ai_resolution_notifications')->where('case_id', $this->caseId)
             ->whereIn('status', ['pending', 'sending'])->update([
                 'status' => 'failed',
                 'error' => 'Customer notification failed after queue retries. Review the failed job.',
                 'updated_at' => now(),
             ]);
-        app(AIProgressLogger::class)->resolutionNotification($this->caseId, 'failed');
+        if ($changed) {
+            app(AIProgressLogger::class)->resolutionNotification($this->caseId, 'failed');
+        }
     }
 }
