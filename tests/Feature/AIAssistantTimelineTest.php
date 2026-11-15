@@ -269,6 +269,31 @@ class AIAssistantTimelineTest extends TestCase
             ->assertSee('No outstanding AI approvals or recorded failures requiring review.');
     }
 
+    public function test_needs_attention_includes_failed_execution_but_not_successful_execution(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+
+        $failed = $this->proposalFor($case, 'start_case_work', 'failed', now()->subHour());
+        $completed = $this->proposalFor($case, 'assign_case_engineer', 'completed', now()->subHour());
+
+        foreach ([$failed->id => 'failed', $completed->id => 'completed'] as $id => $status) {
+            DB::table('ai_action_executions')->insert([
+                'proposal_id' => $id,
+                'status' => $status,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Start Work execution failed')
+            ->assertDontSee('Engineer assignment execution failed')
+            ->assertSee('href="#ai-workflow-start-work"', escape: false);
+    }
+
     public function test_attention_is_empty_for_unrelated_case_records(): void
     {
         $viewer = User::factory()->create();
