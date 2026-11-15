@@ -225,7 +225,10 @@ class CaseProgressLog extends ModalComponent
         // AI audit entries are still read-only; filtering never alters them.
         match ($this->activityFilter) {
             'internal' => $query->whereNull('external_user')
-                ->whereNotIn('source', ['ai_agent', 'ai_assisted', 'ai_resolution_review']),
+                ->where(function ($q): void {
+                    $q->whereNull('source')
+                        ->orWhereNotIn('source', ['ai_agent', 'ai_assisted', 'ai_resolution_review']);
+                }),
             'customer' => $query->where(function ($q): void {
                 $q->whereNotNull('external_user')->orWhere('visible_to_external', true);
             }),
