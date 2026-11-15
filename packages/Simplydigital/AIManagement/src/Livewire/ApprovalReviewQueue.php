@@ -3,7 +3,6 @@
 namespace Simplydigital\AIManagement\Livewire;
 
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -73,7 +72,7 @@ class ApprovalReviewQueue extends Component
             if ($reject) {
                 $service->reject($proposal->id, auth()->user(), $this->rejectionReason ?: null);
                 $this->rejectionReason = '';
-                $this->notice = 'Proposal rejected; no category change was made.';
+                $this->notice = 'Proposal rejected; no action was executed.';
             } else {
                 $service->approve($proposal->id, auth()->user());
                 $canExecute = config('ai-management.approvals.execution_enabled', false)
@@ -107,16 +106,17 @@ class ApprovalReviewQueue extends Component
             $query->where('status', $this->status);
         }
 
-        $engineerIds = AIActionProposal::query()
+        $proposals = $query->paginate(15);
+        $engineerIds = $proposals->getCollection()
             ->where('action_type', 'assign_case_engineer')
-            ->get(['payload'])->pluck('payload')
-            ->pluck('engineer_user_id')->filter()->unique()->all();
-
+            ->pluck('payload')
+            ->pluck('engineer_user_id')
+            ->filter()->unique()->all();
         $engineerNames = \App\Models\User::query()->whereIn('id', $engineerIds)->pluck('name', 'id');
 
         return view('ai-management::livewire.approval-review-queue', [
             'engineerNames' => $engineerNames,
-            'proposals' => $query->paginate(15),
+            'proposals' => $proposals,
             'statuses' => $statuses,
         ]);
     }
