@@ -3,6 +3,7 @@
 namespace Simplydigital\AIManagement\Livewire;
 
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Simplydigital\AIManagement\Models\AIActionProposal;
@@ -76,18 +77,21 @@ class EngineerAssignmentApprovals extends Component
             return;
         }
 
-        $analysis = AIAnalysis::query()->create([
-            'case_id' => $case->id,
-            'user_id' => auth()->id(),
-            'type' => 'engineer_semantic_skills',
-            'status' => 'pending',
-            'prompt_version' => 'engineer-skills-semantic-v1',
-        ]);
+        DB::transaction(function () use ($case): void {
+            $analysis = AIAnalysis::query()->create([
+                'case_id' => $case->id,
+                'user_id' => auth()->id(),
+                'type' => 'engineer_semantic_skills',
+                'status' => 'pending',
+                'prompt_version' => 'engineer-skills-semantic-v1',
+            ]);
 
-        app(AIProgressLogger::class)->analysis($analysis, 'requested', auth()->id());
+            app(AIProgressLogger::class)->analysis($analysis, 'requested', auth()->id());
 
-        GenerateSemanticEngineerSkills::dispatch($analysis->id)
-            ->onQueue(config('ai-management.engineer_semantic.queue', 'default'));
+            GenerateSemanticEngineerSkills::dispatch($analysis->id)
+                ->onQueue(config('ai-management.engineer_semantic.queue', 'default'))
+                ->afterCommit();
+        });
 
         $this->notice = 'Semantic skill matching queued. The existing exact matches remain available.';
     }
