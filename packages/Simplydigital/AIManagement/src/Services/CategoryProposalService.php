@@ -44,7 +44,7 @@ class CategoryProposalService
 
             $payload = ['category' => $category->value];
 
-            return AIActionProposal::create([
+            $proposal = AIActionProposal::create([
                 'id' => (string) Str::uuid(),
                 'case_id' => $case->id,
                 'ai_analysis_id' => $analysis->id,
@@ -56,6 +56,9 @@ class CategoryProposalService
                 'status' => 'pending',
                 'expires_at' => now()->addDay(),
             ]);
+            app(AIProgressLogger::class)->proposal($proposal, 'prepared', auth()->id());
+
+            return $proposal;
         });
     }
 }
