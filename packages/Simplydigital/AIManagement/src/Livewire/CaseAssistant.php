@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 use Simplydigital\AIManagement\Models\AIActionProposal;
+use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\AIManagement\Models\AIAnalysis;
 use Simplydigital\AIManagement\Enums\AIStatuses;
@@ -264,9 +266,125 @@ class CaseAssistant extends Component
         return array_slice($items, 0, 12);
     }
 
+    /**
+     * Case workflow overview, based on persisted facts only.
+     * An existing category is not evidence of AI approval, and a handoff
+     * does not imply the case has actually been resolved.
+     */
+    private function workflowOverview(tickets $case): array
+    {
+        $caseId = $case->getKey();
+        $analysis = AIAnalysis::query()
+            ->where('case_id', $caseId)
+            ->where('type', 'case_assistant')
+            ->latest('id')
+            ->first();
+
+        $review = TaskLogs::query()
+            ->where('ticket_id', $caseId)
+            ->where('source', 'ai_assisted')
+            ->latest('id')->first();
+
+        $handoff = TaskLogs::query()
+            ->where('ticket_id', $caseId)
+            ->where('source', 'ai_resolution_review')
+            ->latest('id')->first();
+
+        $proposals = AIActionProposal::query()
+            ->where('case_id', $caseId)
+            ->whereIn('action_type', [
+                'update_case_category', 'assign_case_engineer', 'start_case_work',
+            ])
+            ->with('execution')
+            ->latest('created_at')
+            ->get()
+            ->keyBy('action_type');
+
+        $pending = static fn ($proposal): bool =>
+            $proposal !== null
+            && $proposal->status === 'pending'
+            && $proposal->expires_at?->isFuture();
+
+        $started = $case->state instanceof CaseState
+            && $case->state !== CaseState::Open
+            && $case->state !== CaseState::Cancelled;
+
+        $resolved = $case->state === CaseState::Resolved
+            || $case->state === CaseState::Closed
+            || $case->state === CaseState::Completed
+            || $case->resolved_datetime !== null;
+
+        return [
+            [
+                'workflow' => 'analysis',
+                'title' => 'Case analysis',
+                'status' => $analysis?->status === 'completed' ? 'complete'
+                    : (in_array($analysis?->status, ['pending', 'processing'], true) ? 'pending'
+                    : ($analysis?->status === 'failed' ? 'attention' : 'not_started')),
+                'detail' => match ($analysis?->status) {
+                    'completed' => 'Latest analysis completed',
+                    'pending', 'processing' => 'Analysis is '.$analysis->status,
+                    'failed' => 'Latest analysis failed',
+                    default => 'No analysis recorded',
+                },
+                'at' => $analysis?->updated_at,
+            ],
+            [
+                'workflow' => 'category',
+                'title' => 'Category review',
+                'status' => $pending($proposals->get('update_case_category')) ? 'pending'
+                    : ($proposals->get('update_case_category')?->execution?->status === 'completed' ? 'complete' : 'not_started'),
+                'detail' => $pending($proposals->get('update_case_category'))
+                    ? 'Awaiting category approval'
+                    : ($proposals->get('update_case_category')?->execution?->status === 'completed'
+                        ? 'Approved category change executed'
+                        : 'No completed AI category change recorded'),
+                'at' => $proposals->get('update_case_category')?->updated_at,
+            ],
+            [
+                'workflow' => 'engineer',
+                'title' => 'Engineer assignment',
+                'status' => $case->assigned_to ? 'complete'
+                    : ($pending($proposals->get('assign_case_engineer')) ? 'pending' : 'not_started'),
+                'detail' => $case->assigned_to
+                    ? 'Assigned engineer: '.($case->assignedToUser?->name ?? 'User #'.$case->assigned_to)
+                    : ($pending($proposals->get('assign_case_engineer'))
+                        ? 'Awaiting assignment approval' : 'No engineer assigned'),
+                'at' => $proposals->get('assign_case_engineer')?->updated_at,
+            ],
+            [
+                'workflow' => 'start-work',
+                'title' => 'Work started',
+                'status' => $started ? 'complete'
+                    : ($pending($proposals->get('start_case_work')) ? 'pending' : 'not_started'),
+                'detail' => $started ? 'Current case state: '.$case->state->value
+                    : ($pending($proposals->get('start_case_work'))
+                        ? 'Start Work approval pending' : 'Case remains Open'),
+                'at' => $proposals->get('start_case_work')?->updated_at,
+            ],
+            [
+                'workflow' => 'troubleshoot',
+                'title' => 'Troubleshooting review',
+                'status' => $review ? 'complete' : 'not_started',
+                'detail' => $review ? 'Reviewed internal note saved' : 'No reviewed troubleshooting note saved',
+                'at' => $review?->created_at,
+            ],
+            [
+                'workflow' => 'resolution',
+                'title' => 'Resolution',
+                'status' => $resolved ? 'complete' : ($handoff ? 'pending' : 'not_started'),
+                'detail' => $resolved ? 'Case is resolved or completed'
+                    : ($handoff ? 'Handoff saved; case not resolved' : 'No resolution handoff recorded'),
+                'at' => $case->resolved_datetime ? \Illuminate\Support\Carbon::createFromTimestamp((int) $case->resolved_datetime)
+                    : $handoff?->created_at,
+            ],
+        ];
+    }
+
     public function render()
     {
         Gate::authorize('view', $this->case);
+        $currentCase = tickets::query()->with('assignedToUser')->findOrFail($this->case->getKey());
 
         // Each AI lifecycle stage already writes an internal case progress log.
         // Use that record as the single chronological source of truth, rather
@@ -303,6 +421,7 @@ class CaseAssistant extends Component
             'timelineHasMore' => $hasMore,
             'timelineTimezone' => config('app.timezone', 'UTC'),
             'attentionItems' => $this->attentionItems(),
+            'workflowOverview' => $this->workflowOverview($currentCase),
         ]);
     }
 }
