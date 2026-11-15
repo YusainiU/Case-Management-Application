@@ -18,8 +18,14 @@
                 <p class="text-sm">Optional AI semantic matching compares this case's issue text with registered skill names.
                     Case text and skill names are sent to the configured AI provider, but engineer names are not.
                     AI suggestions must cite an exact phrase from the case and are not a diagnosis.</p>
-                <button type="button" wire:click="requestSemanticMatch" wire:loading.attr="disabled"
-                        wire:target="requestSemanticMatch"
+                @if ($semanticConfigurationIssue)
+                    <p class="text-sm text-amber-700 dark:text-amber-300">
+                        {{ $semanticConfigurationIssue }} Exact matching remains available.
+                    </p>
+                @endif
+                <button type="button" wire:click="requestSemanticMatch"
+                        @disabled($semanticConfigurationIssue)
+                        wire:loading.attr="disabled" wire:target="requestSemanticMatch"
                         class="rounded-md border border-indigo-500 px-3 py-2 text-sm font-medium text-indigo-700 dark:text-indigo-300">
                     Analyse skill relevance with AI
                 </button>
