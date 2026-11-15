@@ -14,6 +14,20 @@ This is a presentation-only redesign of the Case Assistant's existing Livewire p
 - **Actions and reviews** are grouped into six accessible, expandable sections: case analysis, category approvals, engineer assignment, Start Work, troubleshooting review, and resolution readiness. Each toggle is a real button with `aria-expanded` and `aria-controls`. Open state is stored in the parent Livewire component instead of native `<details>`, so the 8-second polling refresh no longer collapses a section mid-task. Several panels can remain open simultaneously. Existing Livewire components and their validation/permission gates are unchanged.
 - The old decorative, non-functional **Use Draft** button is no longer shown. Customer response suggestions are clearly labeled **Not sent**.
 
+## Suggested next step (advisory only)
+
+The screen now presents one concise **Suggested next step** above the six-stage overview. This is a navigation aid, **not** a mandatory workflow, policy decision, approval, or automatic agent action.
+
+The suggestion is derived from the existing case-scoped Needs Attention list and case overview, with this order of priority:
+
+1. Recorded current failures, such as a failed execution or customer notification, prompt human investigation.
+2. Outstanding unexpired human approval requests prompt human review.
+3. For resolved/completed cases, inspect resolution status; no new AI action is requested.
+4. For an analysis in progress, wait rather than submitting another request. Without a completed analysis, offer the analysis section.
+5. Otherwise, guide staff through an unassigned engineer, an Open case where work has not begun, staff troubleshooting review using the completed analysis, and finally verified resolution readiness.
+
+The **Open suggested workflow** link invokes only the same read-only `openWorkflow()` panel-navigation method used by timeline links. It never performs a proposal, approval, case update, resolution, notification retry, or AI analysis. Existing per-action permission gates remain mandatory. Several workflow panels may be open concurrently, and polling does not close them.
+
 ## Case workflow overview (read-only)
 
 A six-stage **Case workflow overview** is displayed before Needs attention and the historical timeline. It helps a reader see where the current case stands without opening every panel.
@@ -78,5 +92,6 @@ Browser acceptance:
 7. Click **Open related workflow** on a category, troubleshooting or notification event. The correct panel should expand and stay expanded across polling; no approval or resolution should run automatically.
 8. For **Needs attention**, create pending and expired approvals, a failed execution, and a failed resolution email in test data. Confirm that only current relevant items appear, and that resolving/fixing the underlying record removes the alert after refresh.
 9. For **Case workflow overview**, confirm that an unassigned Open case shows no engineer or started work, that a saved resolution handoff alone does not mark the case resolved, and that an actual case resolution updates the overview after refresh. Check **Open stage** links and small-screen layout.
+10. Check the **Suggested next step** against an unanalysed case, pending category approval, failed notification, an In Progress case ready for troubleshooting, and a resolved case. The link should open the relevant section without triggering the corresponding business action.
 
 These changes are on `feature/ai-agent-approvals-v1` / draft PR #29, **not merged into main**. New tests require execution in your local environment.
