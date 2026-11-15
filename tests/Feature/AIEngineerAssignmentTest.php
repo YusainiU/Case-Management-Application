@@ -251,6 +251,11 @@ class AIEngineerAssignmentTest extends TestCase
         $this->assertSame($engineer->id, $case->refresh()->assigned_to);
         $this->assertSame('completed', $proposal->refresh()->status);
         $this->assertDatabaseCount('ai_action_executions', 1);
+        $this->assertDatabaseHas('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_agent',
+            'short_description' => 'AI:proposal:'.$proposal->id.':completed',
+        ]);
     }
 
     public function test_exhausted_queue_failure_is_audited_and_cannot_execute_again(): void
