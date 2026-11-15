@@ -39,20 +39,19 @@
                 background: var(--ai-accent);
                 box-shadow: 0 0 0 1px var(--ai-border);
             }
-            .ai-assistant-shell .ai-workflow > summary {
+             .ai-assistant-shell .ai-workflow-toggle {
                 cursor: pointer;
-                list-style-position: inside;
                 padding: 1rem;
                 font-weight: 650;
                 color: var(--ai-ink);
             }
-            .ai-assistant-shell .ai-workflow > summary:focus-visible,
+            .ai-assistant-shell .ai-workflow-toggle:focus-visible,
             .ai-assistant-shell button:focus-visible,
             .ai-assistant-shell a:focus-visible {
                 outline: 3px solid var(--ai-accent);
                 outline-offset: 3px;
             }
-            .ai-assistant-shell .ai-workflow[open] > summary { border-bottom: 1px solid var(--ai-border); }
+            .ai-assistant-shell .ai-workflow-toggle[aria-expanded="true"] { border-bottom: 1px solid var(--ai-border); }
             .ai-assistant-shell .ai-workflow-content { padding: 0.25rem 1rem 1.25rem; }
             .ai-assistant-shell .ai-workflow-content > section { margin-top: 0; border-top: 0; padding-top: 0.5rem; }
             @media (prefers-color-scheme: dark) {
@@ -260,9 +259,16 @@
             <p class="ai-muted text-sm">Expand only the workflow you need. The timeline above always shows the most recent activity first.</p>
         </div>
 
-        <details class="ai-card ai-workflow" id="ai-workflow-analysis" @if ($analysis && in_array($analysis->status, ['pending','processing'], true)) open @endif>
-            <summary>01 · Latest case analysis and suggestions</summary>
-            <div class="ai-workflow-content space-y-4">
+        <section class="ai-card ai-workflow" id="ai-workflow-analysis" wire:key="workflow-analysis">
+            <button type="button" wire:click="toggleWorkflow('analysis')"
+                aria-expanded="{{ in_array('analysis', $expandedWorkflows, true) ? 'true' : 'false' }}"
+                aria-controls="ai-workflow-analysis-content"
+                class="ai-workflow-toggle flex w-full items-center justify-between gap-3 text-left">
+                <span>01 · Latest case analysis and suggestions</span>
+                <span aria-hidden="true" class="text-lg">{{ in_array('analysis', $expandedWorkflows, true) ? '−' : '+' }}</span>
+            </button>
+            @if (in_array('analysis', $expandedWorkflows, true))
+            <div id="ai-workflow-analysis-content" class="ai-workflow-content space-y-4">
                 @if (is_array($result) && $analysis?->status === 'completed')
                     <p class="ai-muted text-xs">Completed {{ $analysis->updated_at?->timezone($timelineTimezone)->format('d M Y, H:i:s') }} {{ $timelineTimezone }}</p>
                     <div class="space-y-2">
@@ -309,41 +315,82 @@
                     <p class="ai-muted text-sm">Run or complete a Case Assistant analysis to view recommendations here.</p>
                 @endif
             </div>
-        </details>
+        @endif
+        </section>
 
-        <details class="ai-card ai-workflow" id="ai-workflow-category">
-            <summary>02 · Category recommendations and approvals</summary>
-            <div class="ai-workflow-content">
+        <section class="ai-card ai-workflow" id="ai-workflow-category" wire:key="workflow-category">
+            <button type="button" wire:click="toggleWorkflow('category')"
+                aria-expanded="{{ in_array('category', $expandedWorkflows, true) ? 'true' : 'false' }}"
+                aria-controls="ai-workflow-category-content"
+                class="ai-workflow-toggle flex w-full items-center justify-between gap-3 text-left">
+                <span>02 · Category recommendations and approvals</span>
+                <span aria-hidden="true" class="text-lg">{{ in_array('category', $expandedWorkflows, true) ? '−' : '+' }}</span>
+            </button>
+            @if (in_array('category', $expandedWorkflows, true))
+            <div id="ai-workflow-category-content" class="ai-workflow-content">
                 <livewire:ai-management.category-approvals :case="$case" :key="'category-approvals-'.$case->getKey()" />
             </div>
-        </details>
+        @endif
+        </section>
 
-        <details class="ai-card ai-workflow" id="ai-workflow-engineer">
-            <summary>03 · Engineer assignment</summary>
-            <div class="ai-workflow-content">
+        <section class="ai-card ai-workflow" id="ai-workflow-engineer" wire:key="workflow-engineer">
+            <button type="button" wire:click="toggleWorkflow('engineer')"
+                aria-expanded="{{ in_array('engineer', $expandedWorkflows, true) ? 'true' : 'false' }}"
+                aria-controls="ai-workflow-engineer-content"
+                class="ai-workflow-toggle flex w-full items-center justify-between gap-3 text-left">
+                <span>03 · Engineer assignment</span>
+                <span aria-hidden="true" class="text-lg">{{ in_array('engineer', $expandedWorkflows, true) ? '−' : '+' }}</span>
+            </button>
+            @if (in_array('engineer', $expandedWorkflows, true))
+            <div id="ai-workflow-engineer-content" class="ai-workflow-content">
                 <livewire:ai-management.engineer-assignment-approvals :case="$case" :key="'engineer-approvals-'.$case->getKey()" />
             </div>
-        </details>
+        @endif
+        </section>
 
-        <details class="ai-card ai-workflow" id="ai-workflow-start-work">
-            <summary>04 · Start Work approvals</summary>
-            <div class="ai-workflow-content">
+        <section class="ai-card ai-workflow" id="ai-workflow-start-work" wire:key="workflow-start-work">
+            <button type="button" wire:click="toggleWorkflow('start-work')"
+                aria-expanded="{{ in_array('start-work', $expandedWorkflows, true) ? 'true' : 'false' }}"
+                aria-controls="ai-workflow-start-work-content"
+                class="ai-workflow-toggle flex w-full items-center justify-between gap-3 text-left">
+                <span>04 · Start Work approvals</span>
+                <span aria-hidden="true" class="text-lg">{{ in_array('start-work', $expandedWorkflows, true) ? '−' : '+' }}</span>
+            </button>
+            @if (in_array('start-work', $expandedWorkflows, true))
+            <div id="ai-workflow-start-work-content" class="ai-workflow-content">
                 <livewire:ai-management.case-work-start-approvals :case="$case" :key="'work-start-approvals-'.$case->getKey()" />
             </div>
-        </details>
+        @endif
+        </section>
 
-        <details class="ai-card ai-workflow" id="ai-workflow-troubleshoot">
-            <summary>05 · Troubleshooting review</summary>
-            <div class="ai-workflow-content">
+        <section class="ai-card ai-workflow" id="ai-workflow-troubleshoot" wire:key="workflow-troubleshoot">
+            <button type="button" wire:click="toggleWorkflow('troubleshoot')"
+                aria-expanded="{{ in_array('troubleshoot', $expandedWorkflows, true) ? 'true' : 'false' }}"
+                aria-controls="ai-workflow-troubleshoot-content"
+                class="ai-workflow-toggle flex w-full items-center justify-between gap-3 text-left">
+                <span>05 · Troubleshooting review</span>
+                <span aria-hidden="true" class="text-lg">{{ in_array('troubleshoot', $expandedWorkflows, true) ? '−' : '+' }}</span>
+            </button>
+            @if (in_array('troubleshoot', $expandedWorkflows, true))
+            <div id="ai-workflow-troubleshoot-content" class="ai-workflow-content">
                 <livewire:ai-management.troubleshooting-review :case="$case" :key="'troubleshooting-review-'.$case->getKey()" />
             </div>
-        </details>
+        @endif
+        </section>
 
-        <details class="ai-card ai-workflow" id="ai-workflow-resolution">
-            <summary>06 · Resolution readiness and customer notification</summary>
-            <div class="ai-workflow-content">
+        <section class="ai-card ai-workflow" id="ai-workflow-resolution" wire:key="workflow-resolution">
+            <button type="button" wire:click="toggleWorkflow('resolution')"
+                aria-expanded="{{ in_array('resolution', $expandedWorkflows, true) ? 'true' : 'false' }}"
+                aria-controls="ai-workflow-resolution-content"
+                class="ai-workflow-toggle flex w-full items-center justify-between gap-3 text-left">
+                <span>06 · Resolution readiness and customer notification</span>
+                <span aria-hidden="true" class="text-lg">{{ in_array('resolution', $expandedWorkflows, true) ? '−' : '+' }}</span>
+            </button>
+            @if (in_array('resolution', $expandedWorkflows, true))
+            <div id="ai-workflow-resolution-content" class="ai-workflow-content">
                 <livewire:ai-management.resolution-readiness :case="$case" :key="'resolution-readiness-'.$case->getKey()" />
             </div>
-        </details>
+        @endif
+        </section>
     </section>
 </div>
