@@ -112,6 +112,25 @@
                 color: var(--ai-ink);
                 border-color: var(--ai-border);
             }
+            /* Existing Livewire children use Tailwind grey utility classes.
+               Provide readable contrast even when only the OS dark preference
+               is active and the app has not added a .dark class. */
+            @media (prefers-color-scheme: dark) {
+                .ai-assistant-shell .ai-workflow-content :is(.text-gray-500, .text-gray-600, .text-gray-700, .text-gray-800) {
+                    color: var(--ai-muted);
+                }
+                .ai-assistant-shell .ai-workflow-content :is(.bg-gray-100, .bg-white) {
+                    background-color: var(--ai-panel);
+                    color: var(--ai-ink);
+                }
+            }
+            .dark .ai-assistant-shell .ai-workflow-content :is(.text-gray-500, .text-gray-600, .text-gray-700, .text-gray-800) {
+                color: var(--ai-muted);
+            }
+            .dark .ai-assistant-shell .ai-workflow-content :is(.bg-gray-100, .bg-white) {
+                background-color: var(--ai-panel);
+                color: var(--ai-ink);
+            }
             @media (prefers-reduced-motion: reduce) {
                 .ai-assistant-shell *, .ai-assistant-shell *::before { scroll-behavior: auto !important; }
             }
