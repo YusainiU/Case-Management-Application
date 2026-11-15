@@ -13,8 +13,10 @@ use App\Models\User;
 use Simplydigital\AIManagement\Models\AIActionProposal;
 use Simplydigital\AIManagement\Services\CaseCategorySnapshot;
 use Simplydigital\AIManagement\Services\EngineerAssignmentSnapshot;
+use Simplydigital\AIManagement\Services\CaseWorkStartSnapshot;
 use Simplydigital\AIManagement\Services\EngineerRecommendationService;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
+use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Repositories\CaseRepository;
 
@@ -71,6 +73,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
             $executionEnabled = match ($proposal->action_type) {
                 'update_case_category' => config('ai-management.approvals.execution_enabled', false),
                 'assign_case_engineer' => config('ai-management.engineer_assignment.execution_enabled', false),
+                'start_case_work' => config('ai-management.work_start.execution_enabled', false),
                 default => false,
             };
             if (! $executionEnabled) {
@@ -82,7 +85,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
                 return;
             }
 
-            if ($proposal->status !== 'approved' || ! in_array($proposal->action_type, ['update_case_category', 'assign_case_engineer'], true)) {
+            if ($proposal->status !== 'approved' || ! in_array($proposal->action_type, ['update_case_category', 'assign_case_engineer', 'start_case_work'], true)) {
                 throw new \DomainException('This action is not approved or supported.');
             }
 
@@ -99,9 +102,11 @@ class ExecuteApprovedAIAction implements ShouldQueue
 
             $case = tickets::query()->lockForUpdate()->findOrFail($proposal->case_id);
 
-            $sourceHash = $proposal->action_type === 'update_case_category'
-                ? CaseCategorySnapshot::hash($case)
-                : EngineerAssignmentSnapshot::hash($case);
+            $sourceHash = match ($proposal->action_type) {
+                'update_case_category' => CaseCategorySnapshot::hash($case),
+                'assign_case_engineer' => EngineerAssignmentSnapshot::hash($case),
+                'start_case_work' => CaseWorkStartSnapshot::hash($case),
+            };
 
             if ($case->closed_datetime !== null || $case->deleted_at !== null || $sourceHash !== $proposal->source_hash) {
                 $proposal->update(['status' => 'stale']);
@@ -115,7 +120,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
             $reviewer = User::find($approval->reviewer_id);
             $gate = $proposal->action_type === 'update_case_category'
                 ? 'ai-category.approve'
-                : 'ai-engineer.approve';
+                : ($proposal->action_type === 'start_case_work' ? 'ai-work-start.approve' : 'ai-engineer.approve');
             if (! $reviewer || ! Gate::forUser($reviewer)->allows($gate, $case)) {
                 throw new \DomainException('Reviewer no longer has permission.');
             }
@@ -127,6 +132,19 @@ class ExecuteApprovedAIAction implements ShouldQueue
                 }
 
                 $cases->updateTicket($case, ['category' => $category->value]);
+            } elseif ($proposal->action_type === 'start_case_work') {
+                if (($proposal->payload['state'] ?? null) !== CaseState::In_Progress->value
+                    || $case->state !== CaseState::Open || ! $case->assigned_to
+                    || $case->resolved_datetime !== null) {
+                    $proposal->update(['status' => 'stale']);
+                    DB::table('ai_action_executions')->updateOrInsert(
+                        ['proposal_id' => $proposal->id],
+                        ['status' => 'stale', 'error' => 'Case is not eligible for Start Work.', 'updated_at' => now()]
+                    );
+                    return;
+                }
+
+                $cases->updateCaseState($case, CaseState::In_Progress);
             } else {
                 $userId = filter_var(
                     $proposal->payload['engineer_user_id'] ?? null,
