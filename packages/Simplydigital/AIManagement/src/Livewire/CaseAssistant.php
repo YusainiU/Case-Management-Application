@@ -365,9 +365,13 @@ class CaseAssistant extends Component
             [
                 'workflow' => 'troubleshoot',
                 'title' => 'Troubleshooting review',
-                'status' => $review ? 'complete' : 'not_started',
-                'detail' => $review ? 'Reviewed internal note saved' : 'No reviewed troubleshooting note saved',
-                'at' => $review?->created_at,
+                'status' => $review ? 'complete'
+                    : ($analysis?->status === 'completed' ? 'ready' : 'not_started'),
+                'detail' => $review ? 'Reviewed internal note saved'
+                    : ($analysis?->status === 'completed'
+                        ? 'Ready to review the completed analysis; no re-analysis required'
+                        : 'No reviewed troubleshooting note saved'),
+                'at' => $review?->created_at ?? ($analysis?->status === 'completed' ? $analysis->updated_at : null),
             ],
             [
                 'workflow' => 'resolution',
