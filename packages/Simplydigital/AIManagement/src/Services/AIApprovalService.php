@@ -66,6 +66,15 @@ class AIApprovalService
             };
 
             if ($executionEnabled) {
+                // Audit queue intent in the same transaction as the approval.
+                // Execution itself is dispatched only after the commit.
+                DB::table('ai_action_executions')->insert([
+                    'proposal_id' => $proposal->id,
+                    'status' => 'queued',
+                    'error' => null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
                 ExecuteApprovedAIAction::dispatch($proposal->id)->afterCommit();
             }
         });
