@@ -63,6 +63,7 @@ class ApprovalReviewQueue extends Component
             match ($proposal->action_type) {
                 'update_case_category' => 'ai-category.approve',
                 'assign_case_engineer' => 'ai-engineer.approve',
+                'start_case_work' => 'ai-work-start.approve',
                 default => abort(404),
             },
             $case,
@@ -78,6 +79,7 @@ class ApprovalReviewQueue extends Component
                 $canExecute = match ($proposal->action_type) {
                     'update_case_category' => config('ai-management.approvals.execution_enabled', false),
                     'assign_case_engineer' => config('ai-management.engineer_assignment.execution_enabled', false),
+                    'start_case_work' => config('ai-management.work_start.execution_enabled', false),
                     default => false,
                 };
                 $this->notice = $canExecute
