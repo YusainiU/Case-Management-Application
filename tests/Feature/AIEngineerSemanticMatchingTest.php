@@ -141,6 +141,27 @@ class AIEngineerSemanticMatchingTest extends TestCase
         Bus::assertNotDispatched(GenerateSemanticEngineerSkills::class);
     }
 
+    public function test_viewer_cannot_request_semantic_matching(): void
+    {
+        config()->set('ai-management.engineer_semantic.enabled', true);
+        Bus::fake();
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $this->engineer(User::factory()->create(), 'Application Developer');
+        $case = $this->portalCase($viewer);
+
+        $this->actingAs($viewer);
+        Livewire::test(EngineerAssignmentApprovals::class, ['case' => $case])
+            ->call('requestSemanticMatch')
+            ->assertForbidden();
+
+        Bus::assertNotDispatched(GenerateSemanticEngineerSkills::class);
+        $this->assertDatabaseMissing('ai_analyses', [
+            'case_id' => $case->id,
+            'type' => 'engineer_semantic_skills',
+        ]);
+    }
+
     private function storeAnalysis(tickets $case, array $result): AIAnalysis
     {
         return AIAnalysis::query()->create([
