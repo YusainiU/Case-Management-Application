@@ -6,9 +6,7 @@ use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Simplydigital\AIManagement\Models\AIAnalysis;
 use Simplydigital\AIManagement\Enums\AIStatuses;
-use Simplydigital\CaseManagement\AI\CaseContextBuilder;
-use Simplydigital\AIManagement\Jobs\GenerateCaseAssistantAnalysis;
-use Simplydigital\CaseManagement\AI\CaseAssistantService;
+  use Simplydigital\CaseManagement\AI\CaseAssistantService;
 
 class CaseAssistant extends Component
 {
@@ -32,21 +30,13 @@ class CaseAssistant extends Component
             $this->case
         );
 
-        $context = app(CaseContextBuilder::class)
-            ->build($this->case);
-
-        $analysis = app(CaseAssistantService::class)
+         $analysis = app(CaseAssistantService::class)
             ->requestAnalysis($this->case);
 
         $this->analysisId = $analysis->id;
         $this->analyzing = true;
 
-        GenerateCaseAssistantAnalysis::dispatch(
-            analysisId: $analysis->id,
-            context: $context,
-        );
-
-        $this->dispatch(
+         $this->dispatch(
             'case-assistant-analysis-started'
         );
     }
