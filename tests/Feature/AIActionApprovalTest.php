@@ -71,6 +71,10 @@ class AIActionApprovalTest extends TestCase
             'decision' => 'approved',
         ]);
         Bus::assertDispatched(ExecuteApprovedAIAction::class);
+        $this->assertDatabaseHas('ai_action_executions', [
+            'proposal_id' => $proposal->id,
+            'status' => 'queued',
+        ]);
     }
 
     public function test_approval_does_not_dispatch_when_execution_is_disabled(): void
