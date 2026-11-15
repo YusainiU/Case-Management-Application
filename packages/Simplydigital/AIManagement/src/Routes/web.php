@@ -5,6 +5,7 @@ use Simplydigital\AIManagement\Livewire\ApprovalReviewQueue;
 
 Route::get('/ai/approvals', ApprovalReviewQueue::class)
     ->middleware([
+        'web',
         'auth',
         'verified',
         'permission:case.view',
