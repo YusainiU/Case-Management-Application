@@ -10,7 +10,7 @@
     </div>
 
     @can('ai.proposals.view')
-        <a href="{{ route('ai.approvals.index', ['status' => 'all']) }}" target="_blank" rel="noopener noreferrer"
+        <a href="{{ route('ai.approvals.index', ['status' => 'all'], false) }}" target="_blank" rel="noopener noreferrer"
            class="inline-block text-sm font-medium text-indigo-700 underline dark:text-indigo-300">
             View all AI approval requests and history
         </a>
