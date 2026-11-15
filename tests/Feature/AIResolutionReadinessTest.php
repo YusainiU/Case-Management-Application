@@ -351,6 +351,134 @@ class AIResolutionReadinessTest extends TestCase
         ]);
     }
 
+    public function test_failed_resolution_rolls_back_handoff_and_does_not_queue_customer_email(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        Role::findOrCreate('Internal User', 'web');
+        $staff->assignRole('Internal User');
+        UsersDetails::query()->create(['user_id' => $staff->id, 'address_1' => 'Test only']);
+        $case = $this->caseFor($staff);
+        $note = $this->reviewedNote($case, $staff);
+        slaTask::query()->create([
+            'ticket_id' => $case->id,
+            'name' => 'Test SLA task',
+            'state' => CaseState::Open,
+            'active' => true,
+        ]);
+
+        $service = \Mockery::mock(CaseTicketServices::class);
+        $service->shouldReceive('resolveCase')
+            ->once()
+            ->withArgs(fn ($candidate, $payload, $notify) =>
+                $candidate->id === $case->id
+                && ($payload['resolution'] ?? null) === 'Configuration Changes'
+                && $notify === false
+            )
+            ->andReturn(false);
+        $this->app->instance(CaseTicketServices::class, $service);
+
+        $this->actingAs($staff);
+        Livewire::test(ResolutionReadiness::class, ['case' => $case])
+            ->set('sourceLogId', $note->id)
+            ->call('prepare')
+            ->set('fixApplied', 'Corrected the portal configuration and restarted the login service.')
+            ->set('verification', 'Validated successful login with a test account and HTTP 200 response.')
+            ->set('verified', true)
+            ->set('resolveCase', true)
+            ->set('resolutionType', 'Configuration Changes')
+            ->set('resolvedBy', $staff->id)
+            ->call('save')
+            ->assertHasErrors(['resolveCase']);
+
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
+        $this->assertDatabaseMissing('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_resolution_review',
+        ]);
+        $this->assertDatabaseMissing('ai_resolution_notifications', ['case_id' => $case->id]);
+    }
+
+    public function test_notification_without_recipient_is_skipped_and_not_retried(): void
+    {
+        $staff = User::factory()->create();
+        $case = $this->caseFor($staff);
+        DB::table('tickets')->where('id', $case->id)->update([
+            'state' => CaseState::Resolved->value,
+            'resolved_datetime' => now()->timestamp,
+        ]);
+        DB::table('ai_resolution_notifications')->insert([
+            'case_id' => $case->id,
+            'status' => 'pending',
+            'attempts' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $email = \Mockery::mock(EmailService::class);
+        $email->shouldReceive('caseResolved')->once()->andReturn(false);
+
+        $job = new SendAIResolutionNotification($case->id);
+        $job->handle($email);
+        $job->handle($email);
+
+        $this->assertDatabaseHas('ai_resolution_notifications', [
+            'case_id' => $case->id,
+            'status' => 'skipped',
+            'attempts' => 1,
+        ]);
+        $this->assertDatabaseHas('task_logs', [
+            'ticket_id' => $case->id,
+            'short_description' => 'AI:resolution-notification:'.$case->id.':skipped',
+        ]);
+    }
+
+    public function test_failed_notification_records_generic_error_and_preserves_resolved_case(): void
+    {
+        $staff = User::factory()->create();
+        $case = $this->caseFor($staff);
+        DB::table('tickets')->where('id', $case->id)->update([
+            'state' => CaseState::Resolved->value,
+            'resolved_datetime' => now()->timestamp,
+        ]);
+        DB::table('ai_resolution_notifications')->insert([
+            'case_id' => $case->id,
+            'status' => 'pending',
+            'attempts' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $email = \Mockery::mock(EmailService::class);
+        $email->shouldReceive('caseResolved')
+            ->once()
+            ->andThrow(new \RuntimeException('Private mail transport credential'));
+        $job = new SendAIResolutionNotification($case->id);
+
+        try {
+            $job->handle($email);
+            $this->fail('Expected mail transport failure to be retried.');
+        } catch (\RuntimeException $exception) {
+            $this->assertSame('Private mail transport credential', $exception->getMessage());
+        }
+
+        $this->assertDatabaseHas('ai_resolution_notifications', [
+            'case_id' => $case->id,
+            'status' => 'pending',
+            'attempts' => 1,
+        ]);
+
+        $job->failed(null);
+        $row = DB::table('ai_resolution_notifications')->where('case_id', $case->id)->first();
+        $this->assertSame('failed', $row->status);
+        $this->assertStringNotContainsString('Private mail transport credential', $row->error);
+        $this->assertSame(CaseState::Resolved, $case->refresh()->state);
+        $this->assertDatabaseHas('task_logs', [
+            'ticket_id' => $case->id,
+            'short_description' => 'AI:resolution-notification:'.$case->id.':failed',
+        ]);
+    }
+
     private function grant(User $user, string ...$permissions): void
     {
         foreach ($permissions as $permission) {
