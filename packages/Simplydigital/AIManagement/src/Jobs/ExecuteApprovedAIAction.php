@@ -77,7 +77,8 @@ class ExecuteApprovedAIAction implements ShouldQueue
                 return;
             }
 
-            if ($proposal->status === 'completed' || $proposal->status === 'stale') {
+            // Terminal outcomes are not replayable, including exhausted failures.
+            if (in_array($proposal->status, ['completed', 'stale', 'failed'], true)) {
                 return;
             }
 
