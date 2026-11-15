@@ -9,6 +9,8 @@ This is a presentation-only redesign of the Case Assistant's existing Livewire p
 - An entry also identifies the staff member when recorded, or displays **System / AI Agent**, and distinguishes system audit events from staff-reviewed notes.
 - Long descriptions are truncated initially, with an optional **Read full activity** disclosure.
 - The first 20 events are loaded, newest first. **Show older activity** adds 20 events at a time, up to 100 events. The timeline refreshes automatically.
+- **Timeline filters**: All activity, Analyses, Approvals, Reviewed notes, and Customer emails. Filtering is scoped to the selected case, uses stable internal event keys / source types (not free-text matching), and resets the 20-event page to avoid confusing gaps. All views retain newest-first ordering.
+- **Open related workflow** is shown where an event can be mapped reliably to a corresponding action panel: analysis, category, engineer assignment, Start Work, troubleshooting or resolution. Clicking the link opens the panel without closing other sections; its URL fragment points to the appropriate heading. Unknown events remain readable in the timeline without an invented destination.
 - **Actions and reviews** are grouped into six accessible, expandable sections: case analysis, category approvals, engineer assignment, Start Work, troubleshooting review, and resolution readiness. Each toggle is a real button with `aria-expanded` and `aria-controls`. Open state is stored in the parent Livewire component instead of native `<details>`, so the 8-second polling refresh no longer collapses a section mid-task. Several panels can remain open simultaneously. Existing Livewire components and their validation/permission gates are unchanged.
 - The old decorative, non-functional **Use Draft** button is no longer shown. Customer response suggestions are clearly labeled **Not sent**.
 
@@ -46,5 +48,7 @@ Browser acceptance:
 3. Test a narrow mobile viewport, browser/device automatic dark mode, explicit application dark mode, and light mode.
 4. Verify the timeline updates after a new action and that **Show older activity** reveals history rather than navigating away.
 5. Expand **Category approvals** or **Troubleshooting review** and keep it open for at least 20 seconds (several polling cycles). The panel must remain open and usable; only clicking its toggle should close it.
+6. Select each activity filter, checking that only matching records are displayed and that the newest matching event remains first. Select **All activity** to restore the full view.
+7. Click **Open related workflow** on a category, troubleshooting or notification event. The correct panel should expand and stay expanded across polling; no approval or resolution should run automatically.
 
 These changes are on `feature/ai-agent-approvals-v1` / draft PR #29, **not merged into main**. New tests require execution in your local environment.
