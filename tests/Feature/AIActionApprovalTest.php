@@ -152,6 +152,11 @@ class AIActionApprovalTest extends TestCase
         $this->assertSame(CaseCategory::TechnicalSupport, $case->refresh()->category);
         $this->assertSame('completed', $proposal->refresh()->status);
         $this->assertDatabaseCount('ai_action_executions', 1);
+        $this->assertDatabaseHas('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_agent',
+            'short_description' => 'AI:proposal:'.$proposal->id.':completed',
+        ]);
     }
 
     public function test_case_panel_shows_reviewer_history_after_approval(): void
