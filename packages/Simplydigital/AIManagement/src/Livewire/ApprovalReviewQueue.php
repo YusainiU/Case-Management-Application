@@ -60,7 +60,14 @@ class ApprovalReviewQueue extends Component
 
         $proposal = AIActionProposal::query()->findOrFail($proposalId);
         $case = tickets::query()->findOrFail($proposal->case_id);
-        Gate::authorize('ai-category.approve', $case);
+        Gate::authorize(
+            match ($proposal->action_type) {
+                'update_case_category' => 'ai-category.approve',
+                'assign_case_engineer' => 'ai-engineer.approve',
+                default => abort(404),
+            },
+            $case,
+        );
 
         try {
             if ($reject) {
@@ -89,7 +96,6 @@ class ApprovalReviewQueue extends Component
         }
 
         $query = AIActionProposal::query()
-            ->where('action_type', 'update_case_category')
             ->whereHas('case')
             ->with(['case', 'approvals.reviewer', 'execution'])
             ->latest();
