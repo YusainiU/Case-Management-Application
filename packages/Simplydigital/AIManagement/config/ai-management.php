@@ -70,6 +70,14 @@ return [
         'execution_enabled' => env('AI_ENGINEER_EXECUTION_ENABLED', false),
     ],
 
+    // Off by default. User explicitly requests a queued semantic skill match.
+    'engineer_semantic' => [
+        'enabled' => env('AI_ENGINEER_SEMANTIC_ENABLED', false),
+        'max_case_characters' => 4000,
+        'max_skills' => 150,
+        'queue' => env('AI_CASE_ASSISTANT_QUEUE', 'default'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | OpenAI
