@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Simplydigital\AIManagement\Models\AIAnalysis;
 use Simplydigital\AIManagement\Services\SemanticEngineerSkillService;
+use Simplydigital\AIManagement\Services\AIProgressLogger;
 use Simplydigital\CaseManagement\Models\tickets;
 
 class GenerateSemanticEngineerSkills implements ShouldQueue
@@ -29,6 +30,7 @@ class GenerateSemanticEngineerSkills implements ShouldQueue
 
         if (! config('ai-management.engineer_semantic.enabled', false)) {
             $analysis->update(['status' => 'failed', 'error' => 'Semantic matching is disabled.']);
+            app(AIProgressLogger::class)->analysis($analysis, 'failed');
             return;
         }
 
@@ -37,12 +39,14 @@ class GenerateSemanticEngineerSkills implements ShouldQueue
                 'status' => 'failed',
                 'error' => $issue.' Exact skill matching remains available.',
             ]);
+            app(AIProgressLogger::class)->analysis($analysis, 'failed');
             return;
         }
 
         $case = tickets::query()->find($analysis->case_id);
         if (! $case || $case->closed_datetime !== null) {
             $analysis->update(['status' => 'failed', 'error' => 'Case is no longer available for matching.']);
+            app(AIProgressLogger::class)->analysis($analysis, 'failed');
             return;
         }
 
@@ -56,15 +60,19 @@ class GenerateSemanticEngineerSkills implements ShouldQueue
             $case->refresh();
             if ($service->context($case)['hash'] !== $context['hash']) {
                 $analysis->update(['status' => 'failed', 'error' => 'Case or skills changed. Request a fresh match.']);
+                app(AIProgressLogger::class)->analysis($analysis, 'failed');
                 return;
             }
 
-            $analysis->update([
-                'status' => 'completed',
-                'result' => $result,
-                'model' => config('ai-management.model'),
-                'error' => null,
-            ]);
+            \Illuminate\Support\Facades\DB::transaction(function () use ($analysis, $result): void {
+                $analysis->update([
+                    'status' => 'completed',
+                    'result' => $result,
+                    'model' => config('ai-management.model'),
+                    'error' => null,
+                ]);
+                app(AIProgressLogger::class)->analysis($analysis, 'completed');
+            });
         } catch (\Throwable $exception) {
             report($exception);
             // Keep this job retryable; the failed() hook marks terminal failure
@@ -85,6 +93,7 @@ class GenerateSemanticEngineerSkills implements ShouldQueue
                 'status' => 'failed',
                 'error' => 'Semantic matching failed after retries. Exact skill matching remains available.',
             ]);
+            app(AIProgressLogger::class)->analysis($analysis, 'failed');
         }
         if ($exception) {
             report($exception);
