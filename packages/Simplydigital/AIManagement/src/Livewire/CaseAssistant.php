@@ -409,17 +409,6 @@ class CaseAssistant extends Component
             }
         }
 
-        foreach ($attention as $item) {
-            if ($item['severity'] === 'pending') {
-                return [
-                    'title' => 'Review an awaiting approval',
-                    'detail' => $item['title'].'. A reviewer must decide whether to approve or reject.',
-                    'workflow' => $item['workflow'],
-                    'tone' => 'pending',
-                ];
-            }
-        }
-
         $stages = collect($overview)->keyBy('workflow');
         $resolution = $stages->get('resolution');
         if ($resolution['status'] === 'complete') {
@@ -429,6 +418,17 @@ class CaseAssistant extends Component
                 'workflow' => 'resolution',
                 'tone' => 'complete',
             ];
+        }
+
+        foreach ($attention as $item) {
+            if ($item['severity'] === 'pending') {
+                return [
+                    'title' => 'Review an awaiting approval',
+                    'detail' => $item['title'].'. A reviewer must decide whether to approve or reject.',
+                    'workflow' => $item['workflow'],
+                    'tone' => 'pending',
+                ];
+            }
         }
 
         $analysis = $stages->get('analysis');
