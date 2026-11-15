@@ -157,6 +157,7 @@ class ExecuteApprovedAIAction implements ShouldQueue
                 );
                 if (! $userId || ! app(EngineerRecommendationService::class)->eligibleUser($userId)) {
                     $proposal->update(['status' => 'stale']);
+                    app(AIProgressLogger::class)->proposal($proposal, 'stale');
                     DB::table('ai_action_executions')->updateOrInsert(
                         ['proposal_id' => $proposal->id],
                         ['status' => 'stale', 'error' => 'Selected engineer is no longer eligible.', 'updated_at' => now()]
