@@ -182,6 +182,10 @@ class AIEngineerAssignmentTest extends TestCase
         app(AIApprovalService::class)->approve($proposal->id, $manager);
         Bus::assertDispatched(ExecuteApprovedAIAction::class);
         $this->assertNull($case->refresh()->assigned_to);
+        $this->assertDatabaseHas('ai_action_executions', [
+            'proposal_id' => $proposal->id,
+            'status' => 'queued',
+        ]);
         $job = new ExecuteApprovedAIAction($proposal->id);
         $job->handle(app(CaseRepository::class));
         $job->handle(app(CaseRepository::class));
@@ -189,6 +193,58 @@ class AIEngineerAssignmentTest extends TestCase
         $this->assertSame($engineer->id, $case->refresh()->assigned_to);
         $this->assertSame('completed', $proposal->refresh()->status);
         $this->assertDatabaseCount('ai_action_executions', 1);
+    }
+
+    public function test_exhausted_queue_failure_is_audited_and_cannot_execute_again(): void
+    {
+        config()->set('ai-management.approvals.execution_enabled', false);
+        config()->set('ai-management.engineer_assignment.execution_enabled', true);
+        Bus::fake();
+
+        $manager = User::factory()->create();
+        $engineer = User::factory()->create();
+        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve');
+        $this->engineer($engineer);
+        $case = $this->caseFor($manager);
+        $proposal = app(EngineerAssignmentProposalService::class)->propose($case, $engineer->id);
+        app(AIApprovalService::class)->approve($proposal->id, $manager);
+
+        $job = new ExecuteApprovedAIAction($proposal->id);
+        $job->failed(new \\RuntimeException('Secret runtime details must not be shown'));
+
+        $this->assertSame('failed', $proposal->refresh()->status);
+        $execution = DB::table('ai_action_executions')->where('proposal_id', $proposal->id)->first();
+        $this->assertSame('failed', $execution->status);
+        $this->assertStringNotContainsString('Secret runtime details', $execution->error);
+        $job->handle(app(CaseRepository::class));
+        $this->assertNull($case->refresh()->assigned_to);
+        $this->assertSame(3, $job->tries);
+    }
+
+    public function test_changed_assignment_marks_queued_execution_as_stale(): void
+    {
+        config()->set('ai-management.approvals.execution_enabled', false);
+        config()->set('ai-management.engineer_assignment.execution_enabled', true);
+        Bus::fake();
+
+        $manager = User::factory()->create();
+        $engineer = User::factory()->create();
+        $newAssignee = User::factory()->create();
+        $this->grant($manager, 'case.view', 'case.update', 'ai.proposals.approve');
+        $this->engineer($engineer);
+        $case = $this->caseFor($manager);
+        $proposal = app(EngineerAssignmentProposalService::class)->propose($case, $engineer->id);
+        app(AIApprovalService::class)->approve($proposal->id, $manager);
+
+        DB::table('tickets')->where('id', $case->id)->update(['assigned_to' => $newAssignee->id]);
+        (new ExecuteApprovedAIAction($proposal->id))->handle(app(CaseRepository::class));
+
+        $this->assertSame('stale', $proposal->refresh()->status);
+        $this->assertSame($newAssignee->id, $case->refresh()->assigned_to);
+        $this->assertDatabaseHas('ai_action_executions', [
+            'proposal_id' => $proposal->id,
+            'status' => 'stale',
+        ]);
     }
 
     public function test_viewer_cannot_prepare_or_approve_assignment(): void
