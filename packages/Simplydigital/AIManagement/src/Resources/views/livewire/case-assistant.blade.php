@@ -184,7 +184,7 @@
 
     <header
         class="ai-card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between lg:flex-row lg:items-start lg:justify-between">
-        <div class="min-w-0 flex-1">
+        <div class="min-w-0 flex-2">
             <h2 class="text-xl font-bold">AI Case Assistant</h2>
             <p class="ai-muted mt-1 text-sm">
                 Case {{ $case->number ?? '#' . $case->getKey() }} · Activity newest first · Human approval for case
@@ -193,7 +193,7 @@
         </div>
         @can('case-assistant.analyze', $case)
             @unless ($analyzing)
-                <div class="w-full shrink-0 lg:w-auto">
+                <div class="flex-1 shrink-0 lg:w-auto text-right">
                     <button type="button" wire:click="analyze" wire:loading.attr="disabled" wire:target="analyze"
                         class="w-full srounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60 sm:w-auto">
                         <span wire:loading.remove
