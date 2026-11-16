@@ -13,6 +13,10 @@ class TroubleshootingSolutionService
 {
     public function configurationIssue(): ?string
     {
+        if (! config('ai-management.case_assistant.enabled', true)) {
+            return 'The AI Case Assistant is disabled in this environment.';
+        }
+
         $provider = config('ai-management.provider');
         if (! in_array($provider, ['openai', 'deepseek'], true)) {
             return 'A supported AI provider must be selected.';
