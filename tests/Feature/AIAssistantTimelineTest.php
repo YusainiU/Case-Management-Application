@@ -115,6 +115,35 @@ class AIAssistantTimelineTest extends TestCase
             ->assertDontSee('Tuesday, 10 November 2026');
     }
 
+    public function test_analyze_button_exposes_a_spinner_and_indeterminate_progress_status(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view', 'ai.case_assistant.analyze');
+        $case = $this->caseFor($viewer);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Queuing analysis…')
+            ->assertSee('Starting Case Assistant analysis…')
+            ->assertSee('wire:loading.inline-flex', escape: false);
+
+        AIAnalysis::query()->create([
+            'case_id' => $case->id,
+            'type' => 'case_assistant',
+            'status' => 'pending',
+        ]);
+
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Analysis queued; waiting for a worker.')
+            ->assertSee('Case Assistant analysis in progress');
+
+        AIAnalysis::query()->where('case_id', $case->id)
+            ->update(['status' => 'processing']);
+
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('AI provider is processing the case.');
+    }
+
     public function test_timeline_only_shows_current_cases_ai_logs(): void
     {
         $viewer = User::factory()->create();
