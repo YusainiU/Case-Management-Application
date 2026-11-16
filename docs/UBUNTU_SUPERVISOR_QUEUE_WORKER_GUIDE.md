@@ -91,7 +91,7 @@ Use the following example, **replacing `directory`, the PHP path, and `user`** w
 ```ini
 [program:case-management-worker]
 process_name=%(program_name)s_%(process_num)02d
-directory=/var/www/Case-Management-Application
+directory=/var/www/case-management
 command=/usr/bin/php artisan queue:work database --queue=default --sleep=3 --tries=3 --timeout=120 --memory=256 --max-time=3600 -v
 
 user=deploy
