@@ -37,6 +37,12 @@ The application includes operational modules for:
 
 The business logic and UI are primarily delivered through package modules, with the main `/app` layer handling the Laravel application shell, authentication and bootstrap concerns.
 
+## AI Assistance: user and management guide
+
+For an explanation of how AI Assistance works alongside normal manual case handling, including the case lifecycle, approval safeguards, limitations and an organisational adoption checklist, read the [AI Assistance User and Management Guide](docs/AI_ASSISTANCE_USER_AND_MANAGEMENT_GUIDE.md).
+
+The AI features are optional and controlled by provider configuration, role permissions, human approval and separate execution switches. The application is still in beta; organisations should validate privacy, security, operations and cost before rollout.
+
 ## Project structure
 
 ```text

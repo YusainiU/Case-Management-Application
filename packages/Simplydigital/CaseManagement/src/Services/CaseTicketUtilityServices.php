@@ -871,7 +871,7 @@ class CaseTicketUtilityServices
         return $deleted;
     }
 
-    public function resolveCase(tickets $ticket, array $data)
+    public function resolveCase(tickets $ticket, array $data, bool $notifyCustomer = true)
     {
         /*
         *   data [
@@ -905,8 +905,13 @@ class CaseTicketUtilityServices
                     ->format('d-m-Y H:i'));
             $this->caseLogAdministrationService->createSystemLog($ticket, $logText, $type);
 
-            //Send Email to Customer
-            $this->emailService->caseResolved($ticket);
+            // The normal Close & Resolve flow keeps its existing email behaviour.
+            // AI-assisted resolution uses the identical case/SLA/log update path,
+            // then schedules the same notification through a durable outbox
+            // after its surrounding transaction commits.
+            if ($notifyCustomer) {
+                $this->emailService->caseResolved($ticket);
+            }
 
         }
 

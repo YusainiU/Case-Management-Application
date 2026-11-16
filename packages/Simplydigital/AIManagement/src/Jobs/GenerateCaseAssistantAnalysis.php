@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Simplydigital\AIManagement\AI\DTO\CaseContext;
 use Simplydigital\AIManagement\AI\Services\CaseAssistant;
 use Simplydigital\AIManagement\Models\AIAnalysis;
+use Simplydigital\AIManagement\Services\AIProgressLogger;
 use Simplydigital\AIManagement\Enums\AIStatuses;
 
 class GenerateCaseAssistantAnalysis implements ShouldQueue
@@ -49,20 +50,41 @@ class GenerateCaseAssistantAnalysis implements ShouldQueue
                 $this->context
             );
 
-            $analysis->update([
-                'status' => AIStatuses::Completed->value,
-                'result' => $result->toArray(),
-                'model' => config('ai-management.model'),
-            ]);
+            \Illuminate\Support\Facades\DB::transaction(function () use ($analysis, $result): void {
+                $analysis->update([
+                    'status' => AIStatuses::Completed->value,
+                    'result' => $result->toArray(),
+                    'model' => config('ai-management.model'),
+                ]);
+                app(AIProgressLogger::class)->analysis($analysis, 'completed');
+            });
         } catch (\Throwable $exception) {
             report($exception);
-
+            // Keep the analysis retryable. Log terminal failure only when
+            // Laravel exhausts its attempts.
             $analysis->update([
-                'status' => AIStatuses::Failed->value,
-                'error' => $exception->getMessage(),
+                'status' => AIStatuses::Processing->value,
+                'error' => 'Analysis interrupted; retry pending.',
             ]);
 
             throw $exception;
+        }
+    }
+
+    public function failed(?\Throwable $exception): void
+    {
+        $analysis = AIAnalysis::query()->find($this->analysisId);
+        if ($analysis && $analysis->status !== AIStatuses::Completed->value) {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($analysis): void {
+                $analysis->update([
+                    'status' => AIStatuses::Failed->value,
+                    'error' => 'AI analysis failed after retries. Review application logs.',
+                ]);
+                app(AIProgressLogger::class)->analysis($analysis, 'failed');
+            });
+        }
+        if ($exception) {
+            report($exception);
         }
     }
 }

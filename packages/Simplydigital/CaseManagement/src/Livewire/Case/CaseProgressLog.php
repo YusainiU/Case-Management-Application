@@ -24,6 +24,31 @@ class CaseProgressLog extends ModalComponent
     public bool $notifyCustomer = false;
     public bool $makeVisibleToCustomer = false;
 
+    public string $activityFilter = 'all';
+
+    public int $activityLimit = 20;
+
+    private const ACTIVITY_FILTERS = ['all', 'internal', 'customer', 'ai', 'attention'];
+
+    public function setActivityFilter(string $filter): void
+    {
+        $this->authorize('view', $this->case);
+
+        if (! in_array($filter, self::ACTIVITY_FILTERS, true)) {
+            return;
+        }
+
+        $this->activityFilter = $filter;
+        $this->activityLimit = 20;
+    }
+
+    public function loadOlderActivity(): void
+    {
+        $this->authorize('view', $this->case);
+        $this->activityLimit = min(100, $this->activityLimit + 20);
+    }
+
+
     public function logService(): CaseLogAdministrationService
     {
         return new CaseLogAdministrationService();
@@ -66,9 +91,19 @@ class CaseProgressLog extends ModalComponent
 
     }
 
+    private function editableLog(int|string $logId): TaskLogs
+    {
+        $log = TaskLogs::query()->where('ticket_id', $this->case->getKey())
+            ->findOrFail((int) $logId);
+        abort_if($log->source === 'ai_agent', 403, 'AI audit history cannot be edited or deleted.');
+
+        return $log;
+    }
+
     public function deleteLog(int|string $logId)
     {
         $this->authorize('update', $this->case);
+        $this->editableLog($logId);
         $logId = (int) $logId;
         $this->logToDelete = $logId;
     }
@@ -77,6 +112,7 @@ class CaseProgressLog extends ModalComponent
     {
         $this->authorize('update', $this->case);
         if($this->logToDelete) {
+            $this->editableLog($this->logToDelete);
             $this->repoUtility()->deleteLog($this->logToDelete);
         }
         $this->case->refresh();
@@ -87,7 +123,7 @@ class CaseProgressLog extends ModalComponent
     {
         $this->authorize('update', $this->case);
         $logId = (int) $logId;
-        $this->logToEdit = $this->taskLogs->find($logId);
+        $this->logToEdit = $this->editableLog($logId);
         $this->logText = $this->logToEdit->description;
         $this->dispatch('modal-scroll-top');
     }
@@ -95,7 +131,8 @@ class CaseProgressLog extends ModalComponent
     public function editThisLog()
     {
         $this->authorize('update', $this->case);
-        if($this->logToEdit && trim($this->logText)) {
+        if($this->logToEdit && trim((string) $this->logText)) {
+            $this->editableLog($this->logToEdit->getKey());
             $logText = trim($this->logText);
             $edited = $this->repoUtility()->updateLog($this->logToEdit, $logText);
             if($this->urgentAttention) {
@@ -127,7 +164,7 @@ class CaseProgressLog extends ModalComponent
     public function respondLog(int|string $logId)
     {
         $logId = (int) $logId;
-        $this->respondToLog = $this->taskLogs->find($logId);
+        $this->respondToLog = TaskLogs::query()->where('ticket_id', $this->case->getKey())->findOrFail($logId);
         $this->respondToComment = true;
         $this->dispatch('modal-scroll-top');
     }
@@ -138,6 +175,7 @@ class CaseProgressLog extends ModalComponent
         if(!trim($this->logText)) return false;
         $logId = (int) $logId;
         $util = $this->utilityService();
+        $this->editableLog($logId);
         $respond = $util->respondToComment($logId, $this->logText);
         if($respond && $this->urgentAttention) {
             $util->requireAttention($respond, $this->urgentAttention);
@@ -169,6 +207,7 @@ class CaseProgressLog extends ModalComponent
     {
         $this->authorize('update', $this->case);
         $logId = (int) $logId;
+        $this->editableLog($logId);
         $this->utilityService()->removeRequireAttention($logId);
         $this->case->refresh();
     }
@@ -180,7 +219,36 @@ class CaseProgressLog extends ModalComponent
 
     public function render()
     {
-        $this->taskLogs = $this->getLogs()->orderByDesc('created_at')->get();
-        return view('casemanagement::livewire.case.case-progress-log');
+        $query = $this->getLogs();
+
+        // Keep filters strictly within this case's existing taskLogs relation.
+        // AI audit entries are still read-only; filtering never alters them.
+        match ($this->activityFilter) {
+            'internal' => $query->whereNull('external_user')
+                ->where(function ($q): void {
+                    $q->whereNull('source')
+                        ->orWhereNotIn('source', ['ai_agent', 'ai_assisted', 'ai_resolution_review']);
+                }),
+            'customer' => $query->where(function ($q): void {
+                $q->whereNotNull('external_user')->orWhere('visible_to_external', true);
+            }),
+            'ai' => $query->whereIn('source', ['ai_agent', 'ai_assisted', 'ai_resolution_review']),
+            'attention' => $query->where('require_attention', true),
+            default => null,
+        };
+
+        $entries = $query->with(['user:id,name', 'parentInternalComment'])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(min(100, $this->activityLimit) + 1)
+            ->get();
+
+        $hasOlderActivity = $entries->count() > $this->activityLimit;
+        $this->taskLogs = $entries->take($this->activityLimit);
+
+        return view('casemanagement::livewire.case.case-progress-log', [
+            'hasOlderActivity' => $hasOlderActivity,
+            'activityTimezone' => config('app.timezone', 'UTC'),
+        ]);
     }
 }

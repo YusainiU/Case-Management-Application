@@ -3,7 +3,9 @@
 namespace Simplydigital\CaseManagement\AI;
 
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 use Simplydigital\AIManagement\Models\AIAnalysis;
+use Simplydigital\AIManagement\Services\AIProgressLogger;
 use Simplydigital\AIManagement\Enums\AIStatuses;
 use Simplydigital\CaseManagement\Models\tickets as CaseModel;
 use Simplydigital\AIManagement\Jobs\GenerateCaseAssistantAnalysis;
@@ -22,20 +24,24 @@ class CaseAssistantService
             CaseContextBuilder::class
         )->build($case);
 
-        $analysis = AIAnalysis::create([
-            'case_id' => $case->getKey(),
-            'user_id' => auth()->id(),
-            'type' => 'case_assistant',
-            'model' => config('ai-management.model'),
-            'prompt_version' => config('ai-management.case_assistant.prompt_version'),
-            'status' => AIStatuses::Pending->value,
-        ]);
+        return DB::transaction(function () use ($case, $context): AIAnalysis {
+            $analysis = AIAnalysis::create([
+                'case_id' => $case->getKey(),
+                'user_id' => auth()->id(),
+                'type' => 'case_assistant',
+                'model' => config('ai-management.model'),
+                'prompt_version' => config('ai-management.case_assistant.prompt_version'),
+                'status' => AIStatuses::Pending->value,
+            ]);
 
-        GenerateCaseAssistantAnalysis::dispatch(
-            analysisId: $analysis->id,
-            context: $context,
-        );        
+            app(AIProgressLogger::class)->analysis($analysis, 'requested', auth()->id());
 
-        return $analysis;
+            GenerateCaseAssistantAnalysis::dispatch(
+                analysisId: $analysis->id,
+                context: $context,
+            )->afterCommit();
+
+            return $analysis;
+        });
     }
 }

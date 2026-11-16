@@ -19,6 +19,11 @@ class AIAnalysis extends Model
         'error',
     ];
 
+    public function case(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\Simplydigital\CaseManagement\Models\tickets::class, 'case_id');
+    }
+
     protected $casts = [
         'result' => 'array',
     ];
