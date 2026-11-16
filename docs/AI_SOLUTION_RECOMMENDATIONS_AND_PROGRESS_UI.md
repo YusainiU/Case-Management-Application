@@ -6,7 +6,7 @@ These improvements are on `feature/ai-agent-approvals-v1` / draft PR #29 and are
 
 New AI proposal lifecycle logs (prepared/approved/queued/completed/rejected/failed) for `assign_case_engineer` show **Proposed engineer: [user's name]**, resolved from the selected engineer user ID. If the user account is gone, the log identifies it as a former user with an ID fallback.
 
-The underlying proposal and assignment still use stable user IDs internally; only the audit description changes. **Existing historical text logs are not rewritten**.
+The underlying proposal and assignment still use stable user IDs internally; only the audit description changes. **Existing historical text logs are not rewritten**. When the Progress Log or AI Assistant timeline displays an older AI audit with the text `Proposed engineer user ID: N`, it resolves the saved ID to a name for display only. A missing account is shown as `Former user (ID N)`.
 
 ## 2. Dedicated Recommend Solution in Troubleshooting Review
 
