@@ -107,6 +107,18 @@ If the case changes **after the draft is prepared**, or a newer analysis replace
 
 Saving this reviewed note **does not** resolve the case, change its assignee, update SLA tasks or send a customer email. It records a staff-attributed internal progress note.
 
+#### Optional — Recommend Solution (separate, chargeable AI request)
+
+Troubleshooting Review also offers **Recommend Solution** after the initial Case Assistant analysis has completed.
+
+This button is **not** the same as **Re-analyze Case**. The ordinary analysis summarises and categorises the problem and offers general next actions; **Recommend Solution** asks the configured provider specifically for a potential repair approach, why it might help, diagnostic checks, verification steps and remaining uncertainties.
+
+The application warns the user that this is an additional provider call that can consume AI tokens/credits and incur charges. The user must acknowledge that warning before submitting the request. A queue worker processes the request and the panel displays its status and results.
+
+The recommendation is **advisory only**. It does not attempt a repair, write staff-verified findings, resolve the case or notify the customer. An engineer must still inspect the evidence, verify each proposed action and document what was genuinely done.
+
+This request uses existing AI provider credentials and case-analysis permissions, plus case update authority; it does **not** depend on enabling AI execution switches for category changes, engineer assignment or Start Work. Before use, confirm company approval to send the case description and initial analysis data to the external provider.
+
 ### Step 6 — Resolution Readiness
 
 **Manual handling:** Staff verifies the fix, documents the outcome and uses the normal resolution process when satisfied.
