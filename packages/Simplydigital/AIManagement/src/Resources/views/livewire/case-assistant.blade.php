@@ -155,11 +155,26 @@
                 <button type="button" wire:click="analyze" wire:loading.attr="disabled" wire:target="analyze"
                     class="w-full shrink-0 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60 sm:w-auto">
                     <span wire:loading.remove wire:target="analyze">{{ $result ? 'Re-analyze Case' : 'Analyze Case' }}</span>
-                    <span wire:loading wire:target="analyze">Starting analysis…</span>
+                    <span wire:loading.inline-flex wire:target="analyze" class="items-center gap-2" role="status">
+                        <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity=".3"></circle>
+                            <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+                        </svg>
+                        Queuing analysis…
+                    </span>
                 </button>
             @endunless
         @endcan
     </header>
+
+    <div wire:loading.flex wire:target="analyze" role="status"
+        class="ai-card items-center gap-3 p-4 text-sm">
+        <svg class="h-5 w-5 shrink-0 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" opacity=".3"></circle>
+            <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+        </svg>
+        <span>Starting Case Assistant analysis…</span>
+    </div>
 
     @if ($analysis && in_array($analysis->status, ['pending', 'processing', 'failed'], true))
         <div class="ai-card p-4 text-sm" role="status">
@@ -168,7 +183,14 @@
             @if ($analysis->status === 'failed')
                 <p class="mt-2 text-red-700 dark:text-red-300">The latest analysis failed. You may try analysing the case again.</p>
             @else
-                <p class="ai-muted mt-1">The timeline and analysis status refresh automatically.</p>
+                <div class="mt-3 h-2 overflow-hidden rounded-full" role="progressbar"
+                    aria-label="Case Assistant analysis in progress">
+                    <div class="h-full w-1/2 animate-pulse rounded-full bg-indigo-600"></div>
+                </div>
+                <p class="ai-muted mt-2 text-xs">
+                    {{ $analysis->status === 'pending' ? 'Analysis queued; waiting for a worker.' : 'AI provider is processing the case.' }}
+                    Progress is indeterminate; this is not a percentage estimate.
+                </p>
             @endif
         </div>
     @endif
