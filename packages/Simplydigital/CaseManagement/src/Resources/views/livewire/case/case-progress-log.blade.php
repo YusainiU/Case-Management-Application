@@ -415,7 +415,7 @@
 
                             @if ($log->description)
                                 <div class="whitespace-pre-line break-words text-sm leading-6 text-slate-700 dark:text-slate-300">
-                                    {{ $log->description }}
+                                    {{ $log->human_readable_description }}
                                 </div>
                             @else
                                 <p class="text-sm italic text-slate-400 dark:text-slate-500">
