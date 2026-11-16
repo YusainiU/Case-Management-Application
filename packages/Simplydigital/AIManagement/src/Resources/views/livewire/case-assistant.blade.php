@@ -403,7 +403,9 @@
                             ? (str($key)->startsWith('AI:resolution-notification:')
                                 ? 'Customer notification · '.ucfirst($event)
                                 : (str($key)->startsWith('AI:analysis:')
-                                    ? 'Case Assistant · '.ucfirst($event)
+                                    ? (str((string) $entry->description)->startsWith('Troubleshooting solution recommendation')
+                                        ? 'Solution recommendation · '.ucfirst($event)
+                                        : 'Case Assistant · '.ucfirst($event))
                                     : $actionName.' · '.ucfirst($event)))
                             : $actionName.' saved';
                         $statusColor = match ($event) {
@@ -416,6 +418,8 @@
                             $source === 'ai_assisted' => 'troubleshoot',
                             $source === 'ai_resolution_review' => 'resolution',
                             str($key)->startsWith('AI:resolution-notification:') => 'resolution',
+                            str($key)->startsWith('AI:analysis:')
+                                && str((string) $entry->description)->startsWith('Troubleshooting solution recommendation') => 'troubleshoot',
                             str($key)->startsWith('AI:analysis:') => 'analysis',
                             str($key)->startsWith('AI:proposal:') && str((string) $entry->description)->startsWith('Category change') => 'category',
                             str($key)->startsWith('AI:proposal:') && str((string) $entry->description)->startsWith('Engineer assignment') => 'engineer',
