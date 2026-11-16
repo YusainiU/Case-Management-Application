@@ -55,6 +55,10 @@
                         Credit warning: clicking Recommend Solution makes a new AI provider request.
                         It may consume provider tokens/credits and incur a charge.
                     </p>
+                    <p class="text-xs text-gray-700 dark:text-gray-300">
+                        The case issue text and initial AI analysis are shared with your configured AI provider.
+                        Check that this is allowed by your organisation's data-handling policy.
+                    </p>
                     @if ($solutionConfigIssue)
                         <p class="text-sm text-red-700 dark:text-red-300">{{ $solutionConfigIssue }}</p>
                     @endif
