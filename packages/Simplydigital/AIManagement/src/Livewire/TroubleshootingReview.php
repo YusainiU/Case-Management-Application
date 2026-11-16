@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Simplydigital\AIManagement\Models\AIAnalysis;
+use Simplydigital\AIManagement\Services\TroubleshootingSolutionService;
 use Simplydigital\CaseManagement\Models\TaskLogs;
 use Simplydigital\CaseManagement\Models\tickets;
 
@@ -24,6 +25,8 @@ class TroubleshootingReview extends Component
     public string $draft = '';
 
     public bool $confirmed = false;
+
+    public bool $confirmSolutionCredit = false;
 
     public ?string $notice = null;
 
@@ -80,6 +83,27 @@ class TroubleshootingReview extends Component
             $case->resolved_datetime,
             $case->closed_datetime,
         ], JSON_THROW_ON_ERROR));
+    }
+
+    public function recommendSolution(TroubleshootingSolutionService $service): void
+    {
+        $case = $this->currentCase();
+        Gate::authorize('update', $case);
+        Gate::authorize('case-assistant.analyze', $case);
+
+        $this->validate([
+            'confirmSolutionCredit' => ['accepted'],
+        ], [
+            'confirmSolutionCredit.accepted' => 'Confirm that this separate AI request may use provider credits.',
+        ]);
+
+        try {
+            $service->request($case);
+            $this->notice = 'Solution recommendation queued. Provider credits may be used; status updates automatically.';
+            $this->confirmSolutionCredit = false;
+        } catch (\DomainException $exception) {
+            $this->notice = $exception->getMessage();
+        }
     }
 
     public function prepare(): void
@@ -204,12 +228,16 @@ class TroubleshootingReview extends Component
     {
         $case = $this->currentCase();
         $analysis = $this->latestAnalysis($case);
+        $solutionAnalysis = AIAnalysis::query()->where('case_id', $case->id)
+            ->where('type', 'troubleshooting_solution')->latest('id')->first();
 
         return view('ai-management::livewire.troubleshooting-review', [
             'case' => $case,
             'analysis' => $analysis,
             'analysisCurrent' => $this->isCompleted($analysis),
             'analysisOlderThanCase' => $this->caseUpdatedSinceAnalysis($case, $analysis),
+            'solutionAnalysis' => $solutionAnalysis,
+            'solutionConfigIssue' => app(TroubleshootingSolutionService::class)->configurationIssue(),
         ]);
     }
 }
