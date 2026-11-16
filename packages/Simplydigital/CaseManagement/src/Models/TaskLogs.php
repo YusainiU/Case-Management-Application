@@ -39,6 +39,32 @@ class TaskLogs extends Model
 
     }
 
+    /**
+     * Render historic AI engineer proposal logs with a human-readable name.
+     * The stored audit description stays unchanged; account deletion still
+     * leaves an explicit, identifiable legacy reference.
+     */
+    public function getHumanReadableDescriptionAttribute(): ?string
+    {
+        $description = $this->description;
+        if (! is_string($description) || $this->source !== 'ai_agent'
+            || ! str_contains($description, 'Proposed engineer user ID:')) {
+            return $description;
+        }
+
+        return preg_replace_callback(
+            '/Proposed engineer user ID:\\s*(\\d+)/',
+            static function (array $match): string {
+                $name = User::query()->whereKey((int) $match[1])->value('name');
+
+                return $name
+                    ? 'Proposed engineer: '.$name
+                    : 'Proposed engineer: Former user (ID '.$match[1].')';
+            },
+            $description
+        );
+    }
+
     public function getUserNameAttribute()
     {
         $u = $this->user()->first();
