@@ -200,6 +200,32 @@ class AIProgressLoggingTest extends TestCase
         }
     }
 
+    public function test_historical_engineer_id_only_logs_render_names_without_rewriting_audit(): void
+    {
+        $creator = User::factory()->create();
+        $engineer = User::factory()->create(['name' => 'Taylor Collins']);
+        $case = $this->caseFor($creator);
+
+        $log = TaskLogs::query()->create([
+            'ticket_id' => $case->id,
+            'name' => 'AI Agent',
+            'short_description' => 'AI:proposal:legacy:approved',
+            'description' => 'Engineer assignment — Proposal approved. Proposed engineer user ID: '.$engineer->id,
+            'type' => 'AI Agent',
+            'source' => 'ai_agent',
+            'visible_to_external' => false,
+        ]);
+
+        $this->assertStringContainsString('Proposed engineer: Taylor Collins', $log->human_readable_description);
+        $this->assertStringContainsString('Proposed engineer user ID: '.$engineer->id, $log->refresh()->description);
+
+        $this->grant($creator, 'case.view');
+        $this->actingAs($creator);
+        Livewire::test(CaseProgressLog::class, ['case' => $case])
+            ->assertSee('Proposed engineer: Taylor Collins')
+            ->assertDontSee('Proposed engineer user ID: '.$engineer->id);
+    }
+
     private function assertLog(tickets $case, string $proposalId, string $event): void
     {
         $this->assertDatabaseHas('task_logs', [
