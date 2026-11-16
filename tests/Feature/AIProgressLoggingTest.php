@@ -170,6 +170,36 @@ class AIProgressLoggingTest extends TestCase
         $this->assertDatabaseHas('task_logs', ['id' => $log->id, 'deleted_at' => null]);
     }
 
+    public function test_engineer_proposal_audit_describes_engineer_by_name(): void
+    {
+        $manager = User::factory()->create();
+        $engineer = User::factory()->create(['name' => 'Alex Morgan']);
+        $case = $this->caseFor($manager);
+
+        $proposal = \Simplydigital\AIManagement\Models\AIActionProposal::query()->create([
+            'case_id' => $case->id,
+            'action_type' => 'assign_case_engineer',
+            'payload' => ['engineer_user_id' => $engineer->id],
+            'source_hash' => str_repeat('a', 64),
+            'payload_hash' => str_repeat('b', 64),
+            'reason' => 'Human-reviewed candidate.',
+            'status' => 'pending',
+            'expires_at' => now()->addDay(),
+        ]);
+
+        app(AIProgressLogger::class)->proposal($proposal, 'prepared', $manager->id);
+        app(AIProgressLogger::class)->proposal($proposal, 'approved', $manager->id);
+        app(AIProgressLogger::class)->proposal($proposal, 'completed', $manager->id);
+
+        $logs = TaskLogs::query()->where('ticket_id', $case->id)
+            ->where('source', 'ai_agent')->get();
+        $this->assertCount(3, $logs);
+        foreach ($logs as $log) {
+            $this->assertStringContainsString('Proposed engineer: Alex Morgan', $log->description);
+            $this->assertStringNotContainsString('Proposed engineer user ID:', $log->description);
+        }
+    }
+
     private function assertLog(tickets $case, string $proposalId, string $event): void
     {
         $this->assertDatabaseHas('task_logs', [
