@@ -135,6 +135,33 @@
         .activity-text strong { color: #27354c; font-weight: 600; }
         .activity-time { margin-top: 3px; color: #a0aabd; font-size: .59rem; }
 
+        /* AI Case Assistant introduction: advisory AI, human-approved case changes. */
+        .ai-showcase { padding: 42px 0 18px; }
+        .ai-showcase-panel {
+            position: relative; overflow: hidden; padding: 45px 48px 40px;
+            border-radius: 26px; background: #0a1b2e; color: #f2f7fc;
+            box-shadow: 0 20px 50px rgba(12, 30, 54, .14);
+        }
+        .ai-showcase-panel::before {
+            content: ""; position: absolute; width: 370px; height: 370px; border-radius: 50%;
+            right: -160px; top: -205px; border: 1px solid rgba(52, 211, 193, .18);
+            box-shadow: 0 0 0 24px rgba(52, 211, 193, .035), 0 0 0 52px rgba(52, 211, 193, .025);
+            pointer-events: none;
+        }
+        .ai-showcase-eyebrow { margin: 0 0 14px; color: #39dac7; text-transform: uppercase; letter-spacing: .105em; font-size: .77rem; font-weight: 700; }
+        .ai-showcase-title { max-width: 780px; margin: 0; font-size: clamp(1.9rem, 4vw, 3rem); letter-spacing: -.05em; line-height: 1.13; }
+        .ai-showcase-copy { max-width: 760px; margin: 16px 0 0; color: #b7cbdc; line-height: 1.75; font-size: 1rem; }
+        .ai-capabilities { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-top: 27px; }
+        .ai-capability { padding: 22px; border: 1px solid #2a4a63; border-radius: 16px; background: #112b42; }
+        .ai-capability h3 { margin: 0 0 9px; color: #f5f8fc; font-size: 1rem; letter-spacing: -.02em; }
+        .ai-capability p { margin: 0; color: #b9ccdc; line-height: 1.65; font-size: .89rem; }
+        .ai-capability-number { display: inline-flex; margin-bottom: 14px; color: #45e1cf; font-weight: 700; font-size: .78rem; letter-spacing: .05em; }
+        .ai-showcase-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px; margin-top: 27px; }
+        .ai-human-note { display: flex; align-items: flex-start; gap: 10px; max-width: 575px; color: #75f1df; font-size: .95rem; line-height: 1.6; font-weight: 600; }
+        .ai-human-note svg { width: 21px; height: 21px; flex: 0 0 21px; margin-top: 2px; }
+        .ai-guide-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 17px; border: 1px solid #73dcd0; border-radius: 12px; color: #e9fffa; font-size: .88rem; font-weight: 700; transition: background .18s ease; }
+        .ai-guide-link:hover { background: #194b54; }
+        .ai-beta-note { margin: 18px 0 0; font-size: .77rem; color: #9fb6c9; }
         .features { padding: 58px 0 84px; }
         .section-heading { max-width: 620px; margin: 0 auto 34px; text-align: center; }
         .section-heading .kicker { color: var(--primary); font-size: .77rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
@@ -174,6 +201,9 @@
             .stat { padding: 11px; }
             .stat-value { font-size: 1.25rem; }
             .preview-lower { grid-template-columns: 1fr; }
+            .ai-showcase { padding: 28px 0 8px; }
+            .ai-showcase-panel { padding: 31px 25px; }
+            .ai-capabilities { grid-template-columns: 1fr 1fr; }
             .features { padding: 44px 0 60px; }
             .feature-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
             .feature-card { min-height: 0; padding: 19px; }
@@ -199,6 +229,11 @@
             .stat { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
             .stat-value { margin: 0; font-size: 1.15rem; }
             .stat-change { display: none; }
+            .ai-showcase-panel { padding: 28px 20px; }
+            .ai-capabilities { grid-template-columns: 1fr; gap: 10px; }
+            .ai-capability { padding: 18px; }
+            .ai-showcase-bottom { align-items: stretch; }
+            .ai-guide-link { width: 100%; }
             .feature-grid { grid-template-columns: 1fr; }
             .feature-card { padding: 22px; }
             .footer-inner { flex-direction: column; align-items: flex-start; }
@@ -327,6 +362,53 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="ai-showcase" id="ai-case-assistant" aria-labelledby="ai-assistant-heading">
+            <div class="container">
+                <div class="ai-showcase-panel">
+                    <p class="ai-showcase-eyebrow">New in beta · Optional AI Assistance</p>
+                    <h2 class="ai-showcase-title" id="ai-assistant-heading">Smarter case management, with people in control.</h2>
+                    <p class="ai-showcase-copy">
+                        The AI Case Assistant works alongside your existing manual case workflow.
+                        It can help your team understand issues, review recommendations and prepare clearer notes,
+                        while authorised staff remain responsible for decisions and verified results.
+                    </p>
+
+                    <div class="ai-capabilities">
+                        <article class="ai-capability">
+                            <span class="ai-capability-number">01 / UNDERSTAND</span>
+                            <h3>Analyse case information</h3>
+                            <p>Request an AI-generated case summary, possible category, next steps and warnings. Staff verify the advice against the original case.</p>
+                        </article>
+                        <article class="ai-capability">
+                            <span class="ai-capability-number">02 / REVIEW</span>
+                            <h3>Human-approved changes</h3>
+                            <p>Review category, engineer assignment and Start Work proposals. Approval and execution remain separate, permission-controlled steps.</p>
+                        </article>
+                        <article class="ai-capability">
+                            <span class="ai-capability-number">03 / DOCUMENT</span>
+                            <h3>Troubleshooting and resolution</h3>
+                            <p>Prepare staff-reviewed progress notes, optionally request a separate AI solution suggestion, and document verified resolution evidence.</p>
+                        </article>
+                    </div>
+
+                    <div class="ai-showcase-bottom">
+                        <div class="ai-human-note">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>AI recommends. People decide. Existing case rules apply.</span>
+                        </div>
+                        <a class="ai-guide-link"
+                           href="https://github.com/YusainiU/Case-Management-Application/blob/feature/ai-agent-approvals-v1/docs/AI_ASSISTANCE_USER_AND_MANAGEMENT_GUIDE.md"
+                           target="_blank" rel="noopener noreferrer">
+                            Explore the AI Assistance guide <span aria-hidden="true">&nbsp;↗</span>
+                        </a>
+                    </div>
+                    <p class="ai-beta-note">AI features are optional, subject to configuration and permissions, and may use a chargeable external AI provider. No AI recommendation is a verified diagnosis.</p>
                 </div>
             </div>
         </section>
