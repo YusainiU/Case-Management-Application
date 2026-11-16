@@ -264,6 +264,31 @@ class AITroubleshootingReviewTest extends TestCase
         $this->assertNull($case->resolved_datetime);
     }
 
+    public function test_unprivileged_viewer_cannot_consume_credits_or_request_solutions(): void
+    {
+        Bus::fake();
+        config()->set('ai-management.provider', 'openai');
+        config()->set('ai-management.model', 'test-model');
+        config()->set('ai-management.openai.api_key', 'test-key');
+
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $case = $this->caseFor($viewer);
+        $this->analysisFor($case);
+
+        $this->actingAs($viewer);
+        Livewire::test(TroubleshootingReview::class, ['case' => $case])
+            ->set('confirmSolutionCredit', true)
+            ->call('recommendSolution')
+            ->assertForbidden();
+
+        Bus::assertNotDispatched(GenerateTroubleshootingSolution::class);
+        $this->assertDatabaseMissing('ai_analyses', [
+            'case_id' => $case->id,
+            'type' => 'troubleshooting_solution',
+        ]);
+    }
+
     public function test_duplicate_solution_requests_are_blocked_without_dispatching_twice(): void
     {
         Bus::fake();
