@@ -2,6 +2,28 @@
 
 ![SimplyDigital logo](public/simplydigital-logo.svg)
 
+## AI Case Assistant — Human-in-Control
+
+![AI Case Assistant introduction: smarter case management with human approval](docs/assets/ai-case-assistant-slide-01.svg)
+
+<details>
+<summary><strong>Explore the AI Case Assistant showcase — all six stages</strong></summary>
+
+![Stage 1: Analyse the case and review suggested next actions](docs/assets/ai-case-assistant-slide-02.svg)
+
+![Stages 2–4: Category change, engineer assignment, Start Work, and human approvals](docs/assets/ai-case-assistant-slide-03.svg)
+
+![Stage 5: AI-informed troubleshooting, reviewed and verified by engineers](docs/assets/ai-case-assistant-slide-04.svg)
+
+![Stage 6: Verified resolution evidence and explicit staff choice](docs/assets/ai-case-assistant-slide-05.svg)
+
+![Visibility: AI and operational actions remain visible to staff](docs/assets/ai-case-assistant-slide-06.svg)
+
+</details>
+
+**AI recommends. People decide. Case rules apply.** AI Assistance is optional and remains in beta. Read the [AI Assistance User and Management Guide](docs/AI_ASSISTANCE_USER_AND_MANAGEMENT_GUIDE.md) for workflows, safeguards and deployment considerations.
+
+
 A Laravel-based management platform for Simplydigital operations, built around modular packages in `packages/Simplydigital` and powered by Laravel, Livewire, and Tailwind.
 
 This repository is a monorepo-style application with a Laravel application shell and several feature packages that can be developed and tested independently while still sharing the same app runtime.
