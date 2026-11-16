@@ -5,9 +5,13 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Bus;
 use Livewire\Livewire;
 use Simplydigital\AIManagement\Livewire\TroubleshootingReview;
 use Simplydigital\AIManagement\Models\AIAnalysis;
+use Simplydigital\AIManagement\Jobs\GenerateTroubleshootingSolution;
+use Simplydigital\AIManagement\Services\TroubleshootingSolutionService;
+use Simplydigital\AIManagement\AI\Contracts\AIService;
 use Simplydigital\CaseManagement\Enums\CaseCategory;
 use Simplydigital\CaseManagement\Enums\CaseSource;
 use Simplydigital\CaseManagement\Enums\CaseState;
@@ -221,6 +225,108 @@ class AITroubleshootingReviewTest extends TestCase
             ->call('prepare')->assertSee('A completed Case Assistant analysis is required');
 
         $this->assertDatabaseMissing('task_logs', ['ticket_id' => $case->id, 'source' => 'ai_assisted']);
+    }
+
+    public function test_recommend_solution_requires_credit_confirmation_and_permissions(): void
+    {
+        Bus::fake();
+        config()->set('ai-management.provider', 'openai');
+        config()->set('ai-management.model', 'test-model');
+        config()->set('ai-management.openai.api_key', 'test-key');
+
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update', 'ai.case_assistant.analyze');
+        $case = $this->caseFor($staff);
+        $this->analysisFor($case);
+
+        $this->actingAs($staff);
+        Livewire::test(TroubleshootingReview::class, ['case' => $case])
+            ->assertSee('Recommend Solution')
+            ->assertSee('provider tokens/credits')
+            ->call('recommendSolution')
+            ->assertHasErrors(['confirmSolutionCredit']);
+        Bus::assertNotDispatched(GenerateTroubleshootingSolution::class);
+
+        Livewire::test(TroubleshootingReview::class, ['case' => $case])
+            ->set('confirmSolutionCredit', true)
+            ->call('recommendSolution')
+            ->assertHasNoErrors()
+            ->assertSee('Solution recommendation queued');
+
+        $this->assertDatabaseHas('ai_analyses', [
+            'case_id' => $case->id,
+            'type' => 'troubleshooting_solution',
+            'status' => 'pending',
+        ]);
+        Bus::assertDispatched(GenerateTroubleshootingSolution::class);
+
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
+        $this->assertNull($case->resolved_datetime);
+    }
+
+    public function test_duplicate_solution_requests_are_blocked_without_dispatching_twice(): void
+    {
+        Bus::fake();
+        config()->set('ai-management.provider', 'openai');
+        config()->set('ai-management.model', 'test-model');
+        config()->set('ai-management.openai.api_key', 'test-key');
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update', 'ai.case_assistant.analyze');
+        $case = $this->caseFor($staff);
+        $this->analysisFor($case);
+
+        $this->actingAs($staff);
+        $service = app(TroubleshootingSolutionService::class);
+        $service->request($case);
+
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('already queued or running');
+        $service->request($case);
+    }
+
+    public function test_solution_worker_returns_advisory_result_and_does_not_resolve_case(): void
+    {
+        config()->set('ai-management.provider', 'openai');
+        config()->set('ai-management.model', 'test-model');
+        config()->set('ai-management.openai.api_key', 'test-key');
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update', 'ai.case_assistant.analyze');
+        $case = $this->caseFor($staff);
+        $this->analysisFor($case);
+
+        $this->actingAs($staff);
+        Bus::fake();
+        $request = app(TroubleshootingSolutionService::class)->request($case);
+
+        $provider = \Mockery::mock(AIService::class);
+        $provider->shouldReceive('generateStructured')->once()->andReturn([
+            'recommended_solution' => 'Investigate the application server exception.',
+            'reasoning' => 'HTTP 500 means a server-side issue may be present.',
+            'diagnostic_checks' => ['Inspect current server-side error logs.'],
+            'suggested_steps' => ['Correct a confirmed configuration error, if found.'],
+            'verification_steps' => ['Repeat the affected login operation.'],
+            'risks_and_uncertainties' => ['The underlying root cause is not confirmed.'],
+        ]);
+        app()->instance(AIService::class, $provider);
+
+        (new GenerateTroubleshootingSolution($request->id))
+            ->handle(app(TroubleshootingSolutionService::class));
+
+        $this->assertDatabaseHas('ai_analyses', [
+            'id' => $request->id,
+            'status' => 'completed',
+            'type' => 'troubleshooting_solution',
+        ]);
+        $this->assertSame(
+            'Investigate the application server exception.',
+            $request->refresh()->result['recommended_solution']
+        );
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
+        $this->assertNull($case->resolved_datetime);
+        $this->assertDatabaseMissing('task_logs', [
+            'ticket_id' => $case->id,
+            'source' => 'ai_assisted',
+        ]);
     }
 
     private function grant(User $user, string ...$permissions): void
