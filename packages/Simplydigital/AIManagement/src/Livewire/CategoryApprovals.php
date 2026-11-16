@@ -1,0 +1,136 @@
+<?php
+
+namespace Simplydigital\AIManagement\Livewire;
+
+use Illuminate\Support\Facades\Gate;
+use Livewire\Attributes\Locked;
+use Livewire\Component;
+use Simplydigital\AIManagement\Models\AIActionProposal;
+use Simplydigital\AIManagement\Models\AIAnalysis;
+use Simplydigital\AIManagement\Services\AIApprovalService;
+use Simplydigital\AIManagement\Services\CategoryProposalService;
+use Simplydigital\CaseManagement\Models\tickets;
+use Simplydigital\CaseManagement\Enums\CaseCategory;
+
+class CategoryApprovals extends Component
+{
+    #[Locked]
+    public int $caseId;
+
+    public string $rejectionReason = '';
+
+    public ?string $notice = null;
+
+    public function mount(tickets $case): void
+    {
+        $this->caseId = $case->getKey();
+        Gate::authorize('view', $case);
+    }
+
+    private function currentCase(): tickets
+    {
+        $case = tickets::findOrFail($this->caseId);
+        Gate::authorize('view', $case);
+
+        return $case;
+    }
+
+    public function prepare(CategoryProposalService $service): void
+    {
+        $case = $this->currentCase();
+        Gate::authorize('case-assistant.analyze', $case);
+
+        $analysis = AIAnalysis::query()
+            ->where('case_id', $case->id)
+            ->where('type', 'case_assistant')
+            ->where('status', 'completed')
+            ->latest()
+            ->first();
+
+        if (! $analysis) {
+            $this->notice = 'No completed case analysis is available.';
+            return;
+        }
+
+        try {
+            $proposal = $service->fromAnalysis($analysis);
+            if ($proposal) {
+                $this->notice = 'AI category proposal prepared for approval.';
+            } else {
+                $suggestedCategory = CaseCategory::tryFrom(
+                    (string) ($analysis->result['suggested_category'] ?? '')
+                );
+
+                $this->notice = $suggestedCategory === null
+                    ? 'The AI did not provide a valid category recommendation. No proposal was created.'
+                    : 'The AI recommendation matches the current case category. No approval is required.';
+            }
+        } catch (\DomainException $exception) {
+            $this->notice = $exception->getMessage();
+        }
+    }
+
+    public function approve(string $proposalId, AIApprovalService $service): void
+    {
+        $case = $this->currentCase();
+        Gate::authorize('ai-category.approve', $case);
+
+        $proposal = AIActionProposal::query()
+            ->where('case_id', $case->id)
+            ->where('action_type', 'update_case_category')
+            ->findOrFail($proposalId);
+
+        try {
+            $service->approve($proposal->id, auth()->user());
+            $this->notice = config('ai-management.approvals.execution_enabled', false)
+                ? 'Approved. Execution is queued.'
+                : 'Approved and recorded. Execution is disabled in this environment.';
+        } catch (\DomainException $exception) {
+            $this->notice = $exception->getMessage();
+        }
+    }
+
+    public function reject(string $proposalId, AIApprovalService $service): void
+    {
+        $case = $this->currentCase();
+        Gate::authorize('ai-category.approve', $case);
+
+        $proposal = AIActionProposal::query()
+            ->where('case_id', $case->id)
+            ->findOrFail($proposalId);
+
+        $this->validate([
+            'rejectionReason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        try {
+            $service->reject($proposal->id, auth()->user(), $this->rejectionReason ?: null);
+            $this->rejectionReason = '';
+            $this->notice = 'Proposal rejected; no change was made.';
+        } catch (\DomainException $exception) {
+            $this->notice = $exception->getMessage();
+        }
+    }
+
+    public function render()
+    {
+        $case = $this->currentCase();
+
+        return view('ai-management::livewire.category-approvals', [
+            'case' => $case,
+            'analysis' => AIAnalysis::query()
+                ->where('case_id', $case->id)
+                ->where('type', 'case_assistant')
+                ->where('status', 'completed')
+                ->latest()
+                ->first(),
+            'proposals' => AIActionProposal::query()
+                ->with(['approvals.reviewer', 'execution'])
+                ->where('case_id', $case->id)
+                ->where('action_type', 'update_case_category')
+                ->latest()
+                ->limit(10)
+                ->get(),
+        ]);
+    }
+}

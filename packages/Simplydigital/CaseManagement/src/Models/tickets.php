@@ -83,14 +83,15 @@ class tickets extends Model implements FileOwner
         });
 
         static::updating(function ($model) {
-            $oldState = $model->getOriginal('state')->value ;
-            $newState = $model->state;
-            if($model->slaTasks->paused) {
-                if($oldState == CaseState::Site_Visit->value && $oldState != $newState){
-                    $model->state = CaseState::Paused->value;
-                }
+            // Only state transitions need the SLA pause safeguard.
+            // Category-only and other updates must work even without an SLA task.
+            if (
+                $model->isDirty('state')
+                && $model->getOriginal('state') === CaseState::Site_Visit
+                && $model->slaTasks?->paused
+            ) {
+                $model->state = CaseState::Paused;
             }
-            
         });        
     }
 

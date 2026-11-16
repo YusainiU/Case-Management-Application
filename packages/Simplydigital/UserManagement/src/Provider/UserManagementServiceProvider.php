@@ -3,6 +3,7 @@
 namespace Simplydigital\UserManagement\Provider;
 
 use App\Models\User;
+use Simplydigital\UserManagement\Console\SyncPermissionsCommand;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -37,6 +38,10 @@ class UserManagementServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([SyncPermissionsCommand::class]);
+        }
+
         
         $this->loadViews();
         $this->loadRoutes();

@@ -1,5 +1,5 @@
 
-<div class="space-y-5">
+<div class="space-y-5" @if ($selectedTab === 'caseAssistant') wire:poll.10s="refreshCaseSnapshot" @endif>
 
     {{-- Notification --}}
     @if ($this->message)

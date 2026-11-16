@@ -56,6 +56,35 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Human-approved AI actions
+    |--------------------------------------------------------------------------
+    */
+
+    'approvals' => [
+        // Safe default: proposals may be reviewed, but no business action is executed.
+        'execution_enabled' => env('AI_AGENT_EXECUTION_ENABLED', false),
+    ],
+
+    // Independent opt-in: enabling engineer execution never enables category changes.
+    'engineer_assignment' => [
+        'execution_enabled' => env('AI_ENGINEER_EXECUTION_ENABLED', false),
+    ],
+
+    // Phase 7: separately guarded Start Work execution (Open -> In Progress).
+    'work_start' => [
+        'execution_enabled' => env('AI_WORK_START_EXECUTION_ENABLED', false),
+    ],
+
+    // Off by default. User explicitly requests a queued semantic skill match.
+    'engineer_semantic' => [
+        'enabled' => env('AI_ENGINEER_SEMANTIC_ENABLED', false),
+        'max_case_characters' => 4000,
+        'max_skills' => 150,
+        'queue' => env('AI_CASE_ASSISTANT_QUEUE', 'default'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | OpenAI
     |--------------------------------------------------------------------------
     */
