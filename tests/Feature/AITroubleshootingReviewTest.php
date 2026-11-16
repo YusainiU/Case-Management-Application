@@ -289,6 +289,24 @@ class AITroubleshootingReviewTest extends TestCase
         ]);
     }
 
+    public function test_solution_request_obeys_case_assistant_master_switch(): void
+    {
+        config()->set('ai-management.case_assistant.enabled', false);
+        config()->set('ai-management.provider', 'openai');
+        config()->set('ai-management.model', 'test-model');
+        config()->set('ai-management.openai.api_key', 'test-key');
+
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update', 'ai.case_assistant.analyze');
+        $case = $this->caseFor($staff);
+        $this->analysisFor($case);
+
+        $this->actingAs($staff);
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('disabled');
+        app(TroubleshootingSolutionService::class)->request($case);
+    }
+
     public function test_duplicate_solution_requests_are_blocked_without_dispatching_twice(): void
     {
         Bus::fake();
