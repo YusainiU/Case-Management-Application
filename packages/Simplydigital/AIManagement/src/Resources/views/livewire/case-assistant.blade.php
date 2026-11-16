@@ -195,7 +195,7 @@
             @unless ($analyzing)
                 <div class="flex-1 shrink-0 lg:w-auto text-right">
                     <button type="button" wire:click="analyze" wire:loading.attr="disabled" wire:target="analyze"
-                        class="w-full srounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60 sm:w-auto">
+                        class="rounded-md border px-3 py-2 text-xs font-semibold bg-indigo-600">
                         <span wire:loading.remove
                             wire:target="analyze">{{ $result ? 'Re-analyze Case' : 'Analyze Case' }}</span>
                         <span wire:loading.inline-flex wire:target="analyze" class="items-center gap-2" role="status">

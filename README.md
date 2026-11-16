@@ -41,6 +41,8 @@ The business logic and UI are primarily delivered through package modules, with 
 
 For an explanation of how AI Assistance works alongside normal manual case handling, including the case lifecycle, approval safeguards, limitations and an organisational adoption checklist, read the [AI Assistance User and Management Guide](docs/AI_ASSISTANCE_USER_AND_MANAGEMENT_GUIDE.md).
 
+Administrators deploying the AI Assistant on Ubuntu can use the [Ubuntu Supervisor Queue Worker Guide](docs/UBUNTU_SUPERVISOR_QUEUE_WORKER_GUIDE.md) for permanent background processing and troubleshooting `ERROR (spawn error)`.
+
 The AI features are optional and controlled by provider configuration, role permissions, human approval and separate execution switches. The application is still in beta; organisations should validate privacy, security, operations and cost before rollout.
 
 ## Project structure

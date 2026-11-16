@@ -246,6 +246,14 @@ The application's AI support should be evaluated as **assistance to employees**,
 - Test on representative cases (including ambiguous, sensitive, urgent, multi-step and failed cases).
 - Validate performance, accessibility, mobile use, permissions, SLA effects and email behaviour in the organisation's own environment.
 
+## Ubuntu deployment: background AI jobs
+
+The AI Assistant's **Analyze Case**, **Re-analyze Case** and **Recommend Solution** requests are processed by Laravel background queue jobs. On an Ubuntu server using the database queue, an administrator should configure a continuously running queue worker under **Supervisor**. Without a worker, requests can remain pending.
+
+For installation, correct `DB_QUEUE_RETRY_AFTER` configuration, a sample Supervisor program, deployment/restart commands and diagnosis of **`ERROR (spawn error)`**, see the **[Ubuntu Supervisor Queue Worker Guide](UBUNTU_SUPERVISOR_QUEUE_WORKER_GUIDE.md)**.
+
+This is an infrastructure requirement, not an AI permission or approval bypass. Users still need the normal case permissions and any required AI provider credit consent.
+
 ## 10. Suggested pilot programme
 
 A measured pilot is preferable to turning on every capability at once.
