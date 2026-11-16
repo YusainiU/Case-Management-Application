@@ -394,6 +394,7 @@
                 @foreach ($timelineEntries as $entry)
                     @php
                         $source = (string) $entry->source;
+                        $displayDescription = $entry->human_readable_description;
                         $key = (string) ($entry->short_description ?? '');
                         $event = $source === 'ai_agent' ? str($key)->afterLast(':') : null;
                         $actionName = $source === 'ai_agent'
@@ -465,11 +466,11 @@
                                 </a>
                             @endif
                             @if ($entry->description)
-                                <p class="mt-2 whitespace-pre-line break-words text-sm">{{ str($entry->description)->limit(260) }}</p>
-                                @if (mb_strlen($entry->description) > 260)
+                                <p class="mt-2 whitespace-pre-line break-words text-sm">{{ str($displayDescription)->limit(260) }}</p>
+                                @if (mb_strlen($displayDescription) > 260)
                                     <details class="mt-2 text-sm">
                                         <summary class="cursor-pointer font-medium underline underline-offset-2" style="color:var(--ai-accent)">Read full activity</summary>
-                                        <p class="mt-2 whitespace-pre-line break-words">{{ $entry->description }}</p>
+                                        <p class="mt-2 whitespace-pre-line break-words">{{ $displayDescription }}</p>
                                     </details>
                                 @endif
                             @endif
