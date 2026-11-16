@@ -18,7 +18,7 @@ Requirements:
 
 - User must have the case's **update** permission and the existing **case-assistant.analyze** ability.
 - The case must remain unresolved/unclosed and must have an existing **latest completed** initial Case Assistant analysis.
-- The supported provider, model and API credentials must be configured.
+- The master `AI_CASE_ASSISTANT_ENABLED` flag must be on, and the supported provider, model and API credentials must be configured.
 - A pending/processing solution request for the same case prevents duplicate simultaneous requests.
 - Each new request requires a fresh credit-consent confirmation.
 - The job checks that case identity, core issue description, case state and latest initial analysis have not changed while generating. A changed case causes the recommendation to be rejected rather than silently presented as current.
@@ -26,7 +26,7 @@ Requirements:
 
 The provider is asked for a **possible solution**, rationale, checks to perform, potential repair steps, verification and uncertainties. The results are **unverified suggestions**, not evidence of performed work or guaranteed diagnoses. An engineer must verify before updating a troubleshooting note.
 
-The new feature does **not** require enabling `AI_AGENT_EXECUTION_ENABLED`, `AI_ENGINEER_EXECUTION_ENABLED` or `AI_WORK_START_EXECUTION_ENABLED`. Those independently control approved case changes and do not change what the standard analysis prompt requests. No new environment variable is needed; the provider configuration and the user's explicit per-request consent control the feature.
+The new feature does **not** require enabling `AI_AGENT_EXECUTION_ENABLED`, `AI_ENGINEER_EXECUTION_ENABLED` or `AI_WORK_START_EXECUTION_ENABLED`. Those independently control approved case changes and do not change what the standard analysis prompt requests. No new environment variable is needed; the master Case Assistant enable switch, provider configuration and the user's explicit per-request consent control the feature.
 
 **Privacy and costs:** The request sends a bounded subset of the issue title/description and initial analysis summary/next steps/warnings to the configured AI provider. These fields may contain customer-sensitive information. Confirm organisational approval to share them and check provider pricing before use. No credit charge is guaranteed until the provider processes a request; no precise cost is promised.
 
