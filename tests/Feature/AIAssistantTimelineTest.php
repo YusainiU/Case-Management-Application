@@ -144,6 +144,22 @@ class AIAssistantTimelineTest extends TestCase
             ->assertSee('AI provider is processing the case.');
     }
 
+    public function test_ai_timeline_displays_names_for_older_engineer_id_audits(): void
+    {
+        $viewer = User::factory()->create();
+        $this->grant($viewer, 'case.view');
+        $engineer = User::factory()->create(['name' => 'Morgan Rivers']);
+        $case = $this->caseFor($viewer);
+
+        $this->logFor($case, 'ai_agent', 'AI:proposal:engineer:approved',
+            'Engineer assignment — Proposed engineer user ID: '.$engineer->id);
+
+        $this->actingAs($viewer);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('Proposed engineer: Morgan Rivers')
+            ->assertDontSee('Proposed engineer user ID: '.$engineer->id);
+    }
+
     public function test_timeline_only_shows_current_cases_ai_logs(): void
     {
         $viewer = User::factory()->create();
