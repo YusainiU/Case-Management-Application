@@ -3,6 +3,7 @@
 namespace Simplydigital\AIManagement\Services;
 
 use Carbon\CarbonInterface;
+use App\Models\User;
 use Simplydigital\AIManagement\Models\AIActionProposal;
 use Simplydigital\AIManagement\Models\AIAnalysis;
 use Simplydigital\CaseManagement\Models\TaskLogs;
@@ -29,7 +30,7 @@ class AIProgressLogger
 
         $target = match ($proposal->action_type) {
             'update_case_category' => 'Proposed category: '.(string) ($proposal->payload['category'] ?? 'unknown'),
-            'assign_case_engineer' => 'Proposed engineer user ID: '.(string) ($proposal->payload['engineer_user_id'] ?? 'unknown'),
+            'assign_case_engineer' => $this->engineerName($proposal),
             'start_case_work' => 'Proposed state: '.(string) ($proposal->payload['state'] ?? 'unknown'),
             default => '',
         };
@@ -54,11 +55,24 @@ class AIProgressLogger
         );
     }
 
+    private function engineerName(AIActionProposal $proposal): string
+    {
+        $id = $proposal->payload['engineer_user_id'] ?? null;
+        $user = is_numeric($id) ? User::query()->find((int) $id) : null;
+
+        // Retain an identifier only as fallback for a deleted account. This
+        // makes historical approval and execution logs understandable.
+        return $user
+            ? 'Proposed engineer: '.$user->name
+            : 'Proposed engineer: Former user (ID '.($id ?? 'unknown').')';
+    }
+
     public function analysis(AIAnalysis $analysis, string $event, ?int $actorId = null, ?CarbonInterface $occurredAt = null): void
     {
         $name = match ($analysis->type) {
             'case_assistant' => 'Case Assistant analysis',
             'engineer_semantic_skills' => 'Semantic engineer-skill analysis',
+            'troubleshooting_solution' => 'Troubleshooting solution recommendation',
             default => 'AI analysis',
         };
         $message = match ($event) {
