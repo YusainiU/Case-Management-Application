@@ -187,8 +187,8 @@ class AISlaPauseWorkflowTest extends TestCase
         ]);
 
         $calculator = \Mockery::mock(SLACalculationService::class)->makePartial();
-        $calculator->shouldReceive('workingMinutesBetween')->twice()
-            ->andReturn(90, 210);
+        $calculator->shouldReceive('workingSecondsBetween')->twice()
+            ->andReturn(5400, 12600);
 
         $remaining = $calculator->calculatePauseRemainingValue($case, now());
 
