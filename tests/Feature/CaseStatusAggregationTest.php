@@ -189,6 +189,13 @@ class CaseStatusAggregationTest extends TestCase
         $this->assertNotNull($case->latestInternalUpdate()->first());
     }
 
+    public function test_status_component_requires_case_view_permission(): void
+    {
+        $unauthorized = User::factory()->create();
+        $this->actingAs($unauthorized);
+        Livewire::test(CaseStatus::class)->assertForbidden();
+    }
+
     public function test_missing_sla_task_returns_nullable_dates_and_zero_sla_flags(): void
     {
         $case = $this->caseFor(User::factory()->create());
