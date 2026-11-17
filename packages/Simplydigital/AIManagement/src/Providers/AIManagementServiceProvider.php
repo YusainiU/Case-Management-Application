@@ -23,6 +23,7 @@ use Simplydigital\AIManagement\Livewire\EngineerAssignmentApprovals;
 use Simplydigital\AIManagement\Livewire\CaseWorkStartApprovals;
 use Simplydigital\AIManagement\Livewire\TroubleshootingReview;
 use Simplydigital\AIManagement\Livewire\ResolutionReadiness;
+use Simplydigital\AIManagement\Livewire\SlaPauseControls;
 use Simplydigital\AIManagement\Console\Commands\BackfillAIProgressLogs;
 
 class AIManagementServiceProvider extends ServiceProvider
@@ -118,6 +119,7 @@ class AIManagementServiceProvider extends ServiceProvider
         Livewire::component('ai-management.case-work-start-approvals', CaseWorkStartApprovals::class);
         Livewire::component('ai-management.troubleshooting-review', TroubleshootingReview::class);
         Livewire::component('ai-management.resolution-readiness', ResolutionReadiness::class);
+        Livewire::component('ai-management.sla-pause-controls', SlaPauseControls::class);
           
     }
 }

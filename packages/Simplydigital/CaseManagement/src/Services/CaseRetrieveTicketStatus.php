@@ -1,255 +1,128 @@
 <?php
 /**
- * This file is part of the Simplydigital Case Management System.
- * HOW TO USE THIS SERVICE:
- * 1. Inject the CaseRetrieveTicketStatus service into your controller or service where you want to retrieve the ticket status.
- * 2. Use the retrieveStatuses method to get the status of multiple tickets at once by passing an iterable of ticket models.
- * 3. Use the retrieveStatus method to get the status of a single ticket by passing a ticket model.
- * 4. The methods will return an array containing the status information for the tickets, including logs, visits, SLA details, and overall ticket status.
- * Example usage:
- * $ticketStatuses = $caseRetrieveTicketStatus->retrieveStatuses($tickets);
- * To retrieve the total number of breached tasks across multiple tickets, you can sum the 'taskBreached' values from the returned statuses:
- *      totalBreaches = collect($statuses)->sum('taskBreached');
-*/
+ * Case-level SLA and activity status used by Dashboard and Case Information.
+ * All aggregated flags are computed for the requested case only.
+ */
 
 namespace Simplydigital\CaseManagement\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Simplydigital\CaseManagement\Enums\CaseState;
 use Simplydigital\CaseManagement\Models\tickets;
 
 class CaseRetrieveTicketStatus
 {
+    private const RELATIONS = [
+        'slaTasks.activePause',
+        'taskLogs',
+        'siteVisits',
+    ];
+
     public function retrieveStatuses(iterable $tickets): array
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Eager load once
-        |--------------------------------------------------------------------------
-        */
+        $ids = collect($tickets)->pluck('id')->filter()->unique()->values();
+        if ($ids->isEmpty()) {
+            return ['total' => 0];
+        }
 
-        $tickets = tickets::query()
-            ->whereIn(
-                'id',
-                collect($tickets)->pluck('id')
-            )
-            ->with([
-                'slaTasks:id,ticket_id,respond_by,fix_by,responded_at,fixed_at,breached_at,fix_by_breach_at,respond_by_breach_at',
+        $cases = tickets::query()->whereKey($ids)->with(self::RELATIONS)->get();
 
-                'taskLogs:id,ticket_id,created_at,source,require_attention',
+        $result = $cases->mapWithKeys(fn (tickets $ticket): array => [
+            $ticket->id => $this->buildTicketStatus($ticket),
+        ])->all();
+        $result['total'] = $cases->count();
 
-                'siteVisits:id,ticket_id,onsite_at,enroute_at,offsite_at',
-            ])
-            ->get();
-
-        /*
-        |--------------------------------------------------------------------------
-        | Transform
-        |--------------------------------------------------------------------------
-        */
-
-        $result = $tickets
-            ->mapWithKeys(fn (tickets $ticket) => [
-                $ticket->id => $this->buildTicketStatus($ticket),
-            ])
-            ->toArray();
-        $result['total'] = $tickets->count();
         return $result;
     }
 
     public function retrieveStatus(tickets $ticket): array
     {
-        /*
-        |--------------------------------------------------------------------------
-        | Load only what is needed
-        |--------------------------------------------------------------------------
-        */
+        // Reload to avoid stale SLA and pause data on long-lived Livewire models.
+        $ticket->unsetRelation('slaTasks');
+        $ticket->unsetRelation('taskLogs');
+        $ticket->unsetRelation('siteVisits');
+        $ticket->load(self::RELATIONS);
 
-        $ticket->loadMissing([
-            'slaTasks:id,ticket_id,respond_by,fix_by,responded_at,fixed_at,breached_at,fix_by_breach_at,respond_by_breach_at',
-            'taskLogs:id,ticket_id,created_at,source,require_attention',
-            'siteVisits:id,ticket_id,onsite_at,enroute_at,offsite_at',            
-        ]);        
         return $this->buildTicketStatus($ticket);
     }
 
     private function buildTicketStatus(tickets $ticket): array
     {
+        $logs = $ticket->taskLogs;
+        $visits = $ticket->siteVisits;
+        $sla = $ticket->slaTasks;
+        $sla?->setRelation('caseTicket', $ticket);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Task Logs Aggregates
-        |--------------------------------------------------------------------------
-        */
+        $urgent = $logs->where('require_attention', true);
+        $lastUrgent = $urgent->sortByDesc('created_at')->first();
+        $lastCustomer = $logs->where('source', 'external')->sortByDesc('created_at')->first();
 
-        $urgentLogsQuery = $ticket->taskLogs()
-            ->where('require_attention', true);
+        // Case "No Update" means no staff-created internal progress note,
+        // not "no log at all" (every newly created case has a system log).
+        $internalType = config('case-management.logs.type.internal_update', 'internal_update_log');
+        $hasInternalUpdate = $logs->contains(fn ($log): bool =>
+            in_array($log->type, [$internalType, 'internal_update'], true)
+            || $log->source === 'ai_assisted'
+        );
 
-        $lastUrgentLog = (clone $urgentLogsQuery)
-            ->latest('created_at')
-            ->first(['created_at']);
+        // The dashboard "Paused" card is a CASE count and must agree with
+        // the Paused cases filter (which uses tickets.state). Older records
+        // may still have an unfinished SLA pause after the case was moved
+        // back to In Progress through a different/manual workflow.
+        // Keep the active SLA pause separately to protect SLA calculations.
+        $slaPaused = $sla?->activePause !== null;
+        $casePaused = $ticket->state === CaseState::Paused;
+        $resolved = $ticket->resolved_datetime !== null
+            || in_array($ticket->state, [CaseState::Resolved, CaseState::Completed], true);
+        $closed = $ticket->closed_datetime !== null || in_array(
+            $ticket->state, [CaseState::Closed, CaseState::Cancelled], true
+        );
+        $active = ! $resolved && ! $closed;
 
-        $lastCustomerLog = $ticket->taskLogs()
-            ->where('source', 'external')
-            ->latest('created_at')
-            ->first(['created_at']);
+        // A paused SLA is frozen and must not be counted as breached.
+        $respondBreach = $active && ! $slaPaused && $sla !== null
+            && ($sla->respond_by_breach_at !== null
+                || ($sla->respond_by !== null && $sla->respond_by->isPast()
+                    && ($sla->responded_at === null || $sla->responded_at->gt($sla->respond_by))));
+        $fixBreach = $active && ! $slaPaused && $sla !== null
+            && ($sla->fix_by_breach_at !== null
+                || ($sla->fix_by !== null && $sla->fix_by->isPast()
+                    && ($sla->fixed_at === null || $sla->fixed_at->gt($sla->fix_by))));
+        $breached = $respondBreach || $fixBreach;
+        $nearBreach = $active && ! $slaPaused && ! $breached && $sla !== null
+            && $sla->show_warning_flag;
 
-        $noUpdate = $ticket::doesntHave('taskLogs')->count() ? 1:0;
-
-        /*
-        |--------------------------------------------------------------------------
-        | SLA Tasks
-        |--------------------------------------------------------------------------
-        */
-
-        $task = $ticket->slaTasks;
-
-        $taskBreachedCount = $ticket->slaTasks()
-            ->breached()
-            ->count();
-
-        $hasFixByBreach = $ticket->slaTasks()
-            ->fixBreached()
-            ->count();
-
-        $hasRespondByBreach = $ticket->slaTasks()
-            ->whereNotNull('respond_by_breach_at')
-            ->exists();
-
-        $paused = $ticket->slaTasks()
-            ->paused()
-            ->count();
-
-        $unassigned = !$ticket->assigned_to ? 1:0;
-
-        /*
-        |--------------------------------------------------------------------------
-        | SLA Warning
-        |--------------------------------------------------------------------------
-        */
-        
-        $breachWarning = $ticket->slaTasks()
-            ->showWarningFlag()
-            ->count();
-
-        /*
-        |--------------------------------------------------------------------------
-        | Site Visits Aggregates
-        |--------------------------------------------------------------------------
-        */
-
-        $visitsQuery = $ticket->siteVisits();
-
-        $totalVisits = (clone $visitsQuery)
-            ->whereNull('offsite_at')
-            ->count();
-
-        $totalVisited = (clone $visitsQuery)
-            ->whereNotNull('onsite_at')
-            ->whereNull('offsite_at')
-            ->count();
-
-        $currentlyEnroute = (clone $visitsQuery)
-            ->whereNull('onsite_at')
-            ->whereNull('offsite_at')
-            ->whereNotNull('enroute_at')
-            ->count();
-
-        $currentlyOnsite = (clone $visitsQuery)
-            ->whereNotNull('onsite_at')
-            ->whereNull('offsite_at')
-            ->count();
-
-        /*
-        |--------------------------------------------------------------------------
-        | Response
-        |--------------------------------------------------------------------------
-        */
+        $outstandingVisits = $visits->whereNull('offsite_at');
 
         return [
-            /*
-            |--------------------------------------------------------------------------
-            | Logs
-            |--------------------------------------------------------------------------
-            */
-
-            'numberOfUrgentLogs' => $urgentLogsQuery->count(),
-
-            'lastUrgentLogCreatedAt' => $this->formatDate(
-                optional($lastUrgentLog)->created_at
-            ),
-
-            'lastCustomerLogCreatedAt' => $this->formatDate(
-                optional($lastCustomerLog)->created_at
-            ),
-
-            /*
-            |--------------------------------------------------------------------------
-            | Visits
-            |--------------------------------------------------------------------------
-            */
-
-            'totalVisits' => $totalVisits,
-
-            'totalVisited' => $totalVisited,
-
-            'currentlyEnroute' => $currentlyEnroute,
-
-            'currentlyOnsite' => $currentlyOnsite,
-
-            'visitScheduled' => $totalVisits > 0,
-
-            /*
-            |--------------------------------------------------------------------------
-            | SLA
-            |--------------------------------------------------------------------------
-            */
-
-            'noUpdate' => $noUpdate,
-
-            'respondBy' => $this->formatDate(optional($task)->respond_by),
-
-            'fixBy' => $this->formatDate(optional($task)->fix_by),
-
-            'respondedAt' => $this->formatDate(optional($task)->responded_at),
-
-            'fixedAt' => $this->formatDate(optional($task)->fixed_at),
-
-            'taskBreached' => $taskBreachedCount,
-
-            'breachType' => match (true) {
-                $hasFixByBreach => 'Fix By Breach',
-                $hasRespondByBreach => 'Respond By Breach',
-                default => '',
-            },
-
-            /*
-            |--------------------------------------------------------------------------
-            | Ticket Status
-            |--------------------------------------------------------------------------
-            */
-
-            'unassigned' => $unassigned,
-
-            'paused' => $paused,
-
-            'closeToBreachWarning' => $breachWarning,
-
-            'resolved' => $ticket->resolvedDateTime() && !$ticket->closedDateTime() ? 1 : 0,
-
-            'currentlyWorking' => (bool) $ticket->currently_working,
-
-            'closed' => $ticket->state === CaseState::Cancelled->value,
+            'numberOfUrgentLogs' => $urgent->count(),
+            'lastUrgentLogCreatedAt' => $this->formatDate($lastUrgent?->created_at),
+            'lastCustomerLogCreatedAt' => $this->formatDate($lastCustomer?->created_at),
+            'totalVisits' => $outstandingVisits->count(),
+            'totalVisited' => $outstandingVisits->whereNotNull('onsite_at')->count(),
+            'currentlyEnroute' => $outstandingVisits->whereNull('onsite_at')
+                ->whereNotNull('enroute_at')->count(),
+            'currentlyOnsite' => $outstandingVisits->whereNotNull('onsite_at')->count(),
+            'visitScheduled' => $outstandingVisits->isNotEmpty(),
+            'noUpdate' => $active && ! $hasInternalUpdate ? 1 : 0,
+            'respondBy' => $this->formatDate($sla?->respond_by),
+            'fixBy' => $this->formatDate($sla?->fix_by),
+            'respondedAt' => $this->formatDate($sla?->responded_at),
+            'fixedAt' => $this->formatDate($sla?->fixed_at),
+            'taskBreached' => (int) $breached,
+            'breachType' => $fixBreach ? 'Fix By Breach' : ($respondBreach ? 'Respond By Breach' : ''),
+            'unassigned' => (int) ($active && $ticket->assigned_to === null),
+            'paused' => (int) ($active && $casePaused),
+            'closeToBreachWarning' => (int) $nearBreach,
+            'resolved' => (int) ($resolved && ! $closed),
+            'currentlyWorking' => (bool) ($active && $ticket->currently_working),
+            'closed' => $closed,
         ];
     }
 
-    private function formatDate(?string $date = null): ?string
+    private function formatDate(?\DateTimeInterface $date): ?string
     {
-        if (! $date) {
-            return null;
-        }
-
-        return Carbon::parse($date)->format('d-m-Y H:i');
+        return $date ? Carbon::instance($date)->format('d-m-Y H:i') : null;
     }
-
 }

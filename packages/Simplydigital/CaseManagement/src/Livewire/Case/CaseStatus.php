@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 
 use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
+use Simplydigital\CaseManagement\Models\tickets;
 
 class CaseStatus extends Component
 {
@@ -11,6 +12,11 @@ class CaseStatus extends Component
     protected $listeners = [
         'reloadCaseStatus' => '$refresh',
     ];
+    public function mount(): void
+    {
+        $this->authorize('viewAny', tickets::class);
+    }
+
     public function buildStatus()
     {
         $status = [];
@@ -44,7 +50,7 @@ class CaseStatus extends Component
         $status['nearBreach'] = collect($cases)->sum('closeToBreachWarning');
         $status['urgentLogs'] = collect($cases)->sum('numberOfUrgentLogs');
         $status['resolved'] = collect($cases)->sum('resolved');
-        $status['currentlyWorking'] = collect($cases)->where('resolved', true)->count();
+        $status['currentlyWorking'] = collect($cases)->sum(fn ($item) => is_array($item) ? (int) ($item['currentlyWorking'] ?? 0) : 0);
         $status['responded'] = collect($cases)->pluck('respondedAt')->whereNotNull()->count();
         $status['paused'] = collect($cases)->sum('paused');
         $status['totalVisits'] = collect($cases)->sum('totalVisits');

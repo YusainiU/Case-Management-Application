@@ -90,7 +90,7 @@
         @endif
 
         <!-- Paused -->
-        @if ($case->slaTasks->activePause)
+        @if ($case->slaTasks?->activePause)
             <x-casemanagement::page-elements.small-panel-item
                 title="SLA Paused"
                 containerBg="bg-gray-50"
@@ -104,6 +104,7 @@
         @endif
 
         <!-- Respond By -->
+        @if ($case->slaTasks?->respond_by)
         <x-casemanagement::page-elements.small-panel-item
             title="Respond By: {{ $case->slaTasks->respond_by->format('d-m-Y H:i') }}"
             containerBg="bg-blue-50"
@@ -115,7 +116,9 @@
             paraTextDark="dark:text-blue-300"
         />
 
-        @if ($case->slaTasks->responded_at)
+        @endif
+
+        @if ($case->slaTasks?->responded_at)
             <x-casemanagement::page-elements.small-panel-item
                 title="Responded At: {{ $case->slaTasks->responded_at->format('d-m-Y H:i') }}"
                 containerBg="bg-blue-50"

@@ -112,7 +112,8 @@ class CaseTicketServices
     public function getAllPausedCases(?string $filter)
     {
         $this->query->where('state', '=', CaseState::Paused->value)
-            ->where('closed_datetime', '=', null);
+            ->whereNull('closed_datetime')
+            ->whereNull('resolved_datetime');
         if($filter){
             $this->buildFilter($filter);    
         }
@@ -388,12 +389,12 @@ class CaseTicketServices
 
     public function pauseSla(tickets $ticket)
     {
-        $this->caseTicketUtilityServices->pauseCaseSla($ticket);
+        return $this->caseTicketUtilityServices->pauseCaseSla($ticket);
     }
 
     public function resumeSla(tickets $ticket)
     {
-        $this->caseTicketUtilityServices->resumeCaseSla($ticket);
+        return $this->caseTicketUtilityServices->resumeCaseSla($ticket);
     }
 
     public function isTodayBusinessWorkingDay(tickets $ticket)
@@ -415,7 +416,7 @@ class CaseTicketServices
 
     public function cancelPauseSla(tickets $ticket)
     {
-        $this->caseTicketUtilityServices->cancelPauseSla($ticket);
+        return $this->caseTicketUtilityServices->cancelPauseSla($ticket);
     }
 
     public function closeCase(tickets $ticket, array $data)

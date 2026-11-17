@@ -50,6 +50,8 @@ class ManageCaseSLA extends ModalComponent
 
     public function callData()
     {
+        $this->case?->refresh();
+        $this->case?->load('slaTasks.activePause');
         $this->loadSLAData();
         $this->loadSelections();
         $this->checkPause();        
@@ -123,28 +125,28 @@ class ManageCaseSLA extends ModalComponent
     public function pause()
     {
         $this->authorize('update', $this->case);
-        $this->ticketService()->pauseSla($this->case);
+        $result = $this->ticketService()->pauseSla($this->case);
+        $this->callData();
         $this->dispatch('reloadCaseStatus');
-        $this->dispatch('$refresh');
-        $this->message = 'SLA has been paused';        
+        $this->message = $result ? 'SLA has been paused' : 'SLA could not be paused; check the current SLA status';        
     }
 
     public function resume()
     {
         $this->authorize('update', $this->case);
-        $this->ticketService()->resumeSla($this->case);
+        $result = $this->ticketService()->resumeSla($this->case);
+        $this->callData();
         $this->dispatch('reloadCaseStatus');
-        $this->dispatch('$refresh');
-        $this->message = 'SLA has been resumed';        
+        $this->message = $result ? 'SLA has been resumed' : 'SLA could not be resumed; check the current SLA status';        
     }
 
     public function cancelPause()
     {
         $this->authorize('update', $this->case);
-        $this->ticketService()->cancelPauseSla($this->case);
+        $result = $this->ticketService()->cancelPauseSla($this->case);
+        $this->callData();
         $this->dispatch('reloadCaseStatus');
-        $this->dispatch('$refresh');
-        $this->message = 'SLA pause has been cancelled';        
+        $this->message = $result ? 'SLA pause has been cancelled' : 'SLA pause could not be cancelled; check the current SLA status';        
     }
 
     public function render()
