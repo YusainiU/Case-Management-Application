@@ -132,6 +132,27 @@ class SLACalculationRegressionTest extends TestCase
         $this->assertSame('2026-03-29 10:00:00', $calc->calcRespondByTime($data));
     }
 
+    public function test_resuming_on_an_off_day_does_not_change_contractual_working_week(): void
+    {
+        config()->set('app.timezone', 'Europe/London');
+        $calculator = \Mockery::mock(SLACalculationService::class)->makePartial();
+        $calculator->shouldReceive('createSlaData')->once()->andReturn(
+            $this->sla([
+                'startDay' => 'monday',
+                'endDay' => 'monday',
+                'response_time' => 3600,
+            ])
+        );
+
+        $start = Carbon::parse('2026-11-17 10:00:00', 'Europe/London'); // Tuesday
+        $ticket = new \Simplydigital\CaseManagement\Models\tickets;
+
+        $this->assertSame(
+            '2026-11-23 10:00:00', // Next Monday; Tuesday is not an SLA day
+            $calculator->calcCustomRespondByTime($ticket, 3600, $start)
+        );
+    }
+
     public function test_invalid_or_overnight_working_hours_are_rejected_not_guessed(): void
     {
         $calc = new SLACalculationService;
