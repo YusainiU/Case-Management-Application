@@ -86,13 +86,13 @@ class SLACalculationRegressionTest extends TestCase
         config()->set('app.timezone', 'Europe/London');
         $calc = new SLACalculationService;
         $data = $this->sla([
-            'startDate' => Carbon::parse('2026-05-01 16:00:00', 'Europe/London')->timestamp,
+            'startDate' => Carbon::parse('2026-05-01 16:30:00', 'Europe/London')->timestamp,
             'includePublicHoliday' => true,
         ]);
 
-        $this->assertSame('2026-05-05 09:00:00', $calc->calcRespondByTime($data));
+        $this->assertSame('2026-05-05 09:30:00', $calc->calcRespondByTime($data));
         $data['includePublicHoliday'] = false;
-        $this->assertSame('2026-05-04 09:00:00', $calc->calcRespondByTime($data));
+        $this->assertSame('2026-05-04 09:30:00', $calc->calcRespondByTime($data));
     }
 
     public function test_public_holidays_are_checked_for_year_of_case_not_current_year(): void
