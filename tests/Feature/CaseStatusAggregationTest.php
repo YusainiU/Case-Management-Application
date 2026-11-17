@@ -104,10 +104,8 @@ class CaseStatusAggregationTest extends TestCase
         $this->assertSame(0, $statuses[$inProgressCase->id]['paused']);
         $this->assertSame(1, collect($statuses)->sum('paused'));
 
-        $this->assertSame(1, tickets::query()
-            ->where('state', CaseState::Paused->value)
-            ->whereNull('closed_datetime')
-            ->count());
+        $this->assertSame([$pausedCase->id], app(\Simplydigital\CaseManagement\Services\CaseTicketServices::class)
+            ->getAllPausedCases(null)->pluck('id')->all());
     }
 
     public function test_fix_and_response_breaches_are_detected_without_persisted_breach_flags(): void
