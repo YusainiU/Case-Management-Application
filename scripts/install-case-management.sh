@@ -160,7 +160,7 @@ dirname="${dirname:-$DEFAULT_DIR}"
 if [[ -z "$dirname" || "$dirname" == '.' || "$dirname" == '..' || "$dirname" == *'/'* || "$dirname" == *'\\'* || "$dirname" == *$'\n'* ]]; then
   fail 'Directory must be a single folder name with no slash or parent traversal.'
 fi
-read -r -p "Git branch [${DEFAULT_BRANCH}] (AI development: feature/ai-agent-approvals-v1): " branch
+read -r -p "Git branch [${DEFAULT_BRANCH}] (Main: main): " branch
 branch="${branch:-$DEFAULT_BRANCH}"
 if [[ "$branch" == -* || "$branch" == *[[:space:]]* ]]; then
   fail 'Invalid branch name.'
