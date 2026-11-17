@@ -13,6 +13,13 @@ return [
 
     'event_types' => [
 
+        'public_holiday' => [
+            'label' => 'Public Holidays',
+            'colour' => '#FEF3C7',
+            'icon' => 'calendar',
+            'text' => '#92400E',
+        ],
+
         'case' => [
             'label' => 'Cases',
             'colour' => '#3B82F6',
