@@ -66,7 +66,13 @@ class CaseRetrieveTicketStatus
             || $log->source === 'ai_assisted'
         );
 
-        $paused = $sla?->activePause !== null;
+        // The dashboard "Paused" card is a CASE count and must agree with
+        // the Paused cases filter (which uses tickets.state). Older records
+        // may still have an unfinished SLA pause after the case was moved
+        // back to In Progress through a different/manual workflow.
+        // Keep the active SLA pause separately to protect SLA calculations.
+        $slaPaused = $sla?->activePause !== null;
+        $casePaused = $ticket->state === CaseState::Paused;
         $resolved = $ticket->resolved_datetime !== null
             || in_array($ticket->state, [CaseState::Resolved, CaseState::Completed], true);
         $closed = $ticket->closed_datetime !== null || in_array(
@@ -75,16 +81,16 @@ class CaseRetrieveTicketStatus
         $active = ! $resolved && ! $closed;
 
         // A paused SLA is frozen and must not be counted as breached.
-        $respondBreach = $active && ! $paused && $sla !== null
+        $respondBreach = $active && ! $slaPaused && $sla !== null
             && ($sla->respond_by_breach_at !== null
                 || ($sla->respond_by !== null && $sla->respond_by->isPast()
                     && ($sla->responded_at === null || $sla->responded_at->gt($sla->respond_by))));
-        $fixBreach = $active && ! $paused && $sla !== null
+        $fixBreach = $active && ! $slaPaused && $sla !== null
             && ($sla->fix_by_breach_at !== null
                 || ($sla->fix_by !== null && $sla->fix_by->isPast()
                     && ($sla->fixed_at === null || $sla->fixed_at->gt($sla->fix_by))));
         $breached = $respondBreach || $fixBreach;
-        $nearBreach = $active && ! $paused && ! $breached && $sla !== null
+        $nearBreach = $active && ! $slaPaused && ! $breached && $sla !== null
             && $sla->show_warning_flag;
 
         $outstandingVisits = $visits->whereNull('offsite_at');
@@ -107,7 +113,7 @@ class CaseRetrieveTicketStatus
             'taskBreached' => (int) $breached,
             'breachType' => $fixBreach ? 'Fix By Breach' : ($respondBreach ? 'Respond By Breach' : ''),
             'unassigned' => (int) ($active && $ticket->assigned_to === null),
-            'paused' => (int) ($active && $paused),
+            'paused' => (int) ($active && $casePaused),
             'closeToBreachWarning' => (int) $nearBreach,
             'resolved' => (int) ($resolved && ! $closed),
             'currentlyWorking' => (bool) ($active && $ticket->currently_working),
