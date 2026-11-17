@@ -49,8 +49,8 @@ class SLACalculationService
 
         while ($cursor->lt($end)) {
             if ($this->isBusinessWorkingHours($data, $cursor)) {
-                $workStart = $cursor->copy()->addSeconds($startSeconds);
-                $workEnd = $cursor->copy()->addSeconds($endSeconds);
+                $workStart = $this->localServiceBoundary($cursor, $startSeconds);
+                $workEnd = $this->localServiceBoundary($cursor, $endSeconds);
                 $segmentStart = $from->greaterThan($workStart) ? $from : $workStart;
                 $segmentEnd = $end->lessThan($workEnd) ? $end : $workEnd;
 
@@ -152,8 +152,8 @@ class SLACalculationService
         // an impossible calendar / duration was configured.
         for ($i = 0; $i < 3660; $i++) {
             if ($this->isBusinessWorkingHours($data, $day)) {
-                $serviceStart = $day->copy()->addSeconds($startSeconds);
-                $serviceEnd = $day->copy()->addSeconds($endSeconds);
+                $serviceStart = $this->localServiceBoundary($day, $startSeconds);
+                $serviceEnd = $this->localServiceBoundary($day, $endSeconds);
                 $from = $start->greaterThan($serviceStart) ? $start : $serviceStart;
 
                 if ($from->lt($serviceEnd)) {
@@ -172,6 +172,24 @@ class SLACalculationService
 
         throw new \DomainException(
             'SLA deadline exceeds the supported ten-year calculation horizon.'
+        );
+    }
+
+    /**
+     * Construct a local wall-clock SLA boundary, including DST change days.
+     * Adding elapsed seconds to local midnight would incorrectly move the
+     * 09:00 service opening to 10:00 after a spring-forward transition.
+     */
+    private function localServiceBoundary(Carbon $day, int $seconds): Carbon
+    {
+        if ($seconds === 86400) {
+            return $day->copy()->addDay()->startOfDay();
+        }
+
+        return $day->copy()->setTime(
+            intdiv($seconds, 3600),
+            intdiv($seconds % 3600, 60),
+            $seconds % 60
         );
     }
 
