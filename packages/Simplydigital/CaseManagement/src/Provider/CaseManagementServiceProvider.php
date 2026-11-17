@@ -14,6 +14,7 @@ use Simplydigital\CaseManagement\Authorization\CaseManagementPermissionProvider;
 use Simplydigital\CaseManagement\Enums\Permissions\CasePermission;
 use Simplydigital\CaseManagement\Enums\Permissions\CustomerPortalPermission;
 use Simplydigital\CaseManagement\Events\CasePlannerEventProvider;
+use Simplydigital\CaseManagement\Events\PublicHolidayEventProvider;
 use Simplydigital\CaseManagement\Events\SiteVisitEventProvider;
 use Simplydigital\CaseManagement\Events\SlaExpiryEventProvider;
 use Simplydigital\CaseManagement\Livewire\Asset\AssetProfile;
@@ -265,6 +266,10 @@ class CaseManagementServiceProvider extends ServiceProvider
         if (class_exists(PlannerFacade::class)) {
             PlannerFacade::registerProvider(
                 app(CasePlannerEventProvider::class)
+            );
+
+            PlannerFacade::registerProvider(
+                app(PublicHolidayEventProvider::class)
             );
 
             PlannerFacade::registerProvider(

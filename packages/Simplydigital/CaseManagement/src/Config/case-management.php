@@ -15,6 +15,20 @@ return [
     |--------------------------------------------------------------------------
     */
 
+    /*
+     * Application-wide SLA calendar. auto preserves the legacy England/Wales
+     * calendar for GB without a subdivision; other countries use Nager.Date.
+     * custom supports any country with explicitly maintained annual calendars.
+     */
+    'public_holidays' => [
+        'country' => env('CASE_PUBLIC_HOLIDAY_COUNTRY', 'GB'),
+        'subdivision' => env('CASE_PUBLIC_HOLIDAY_SUBDIVISION'),
+        'source' => env('CASE_PUBLIC_HOLIDAY_SOURCE', 'auto'),
+        // Full calendar per country/year: 'MY' => [2026 => ['2026-01-01' => 'New Year']],
+        // Supply all holidays for every required year; [] explicitly means none.
+        'custom' => [],
+    ],
+
     'CLOSE_TO_BREACH_WARNING' => 4, //Hours
 
     /*

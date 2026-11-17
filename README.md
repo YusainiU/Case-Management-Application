@@ -122,6 +122,69 @@ The project is structured around reusable package directories under `packages/Si
 
 These packages are registered through Composer path repositories in the root `composer.json`.
 
+## SLA public holiday country
+
+The calendar is application-wide, independent of staff location and
+`app.timezone`. Set a two-letter ISO 3166-1 country code in `.env`, for example:
+
+```env
+CASE_PUBLIC_HOLIDAY_COUNTRY=FR
+CASE_PUBLIC_HOLIDAY_SOURCE=auto
+# Optional ISO 3166-2 state/province, e.g. DE-BY with country DE:
+CASE_PUBLIC_HOLIDAY_SUBDIVISION=
+```
+
+Country codes are case-insensitive. There is no hard-coded list of permitted
+countries. In `auto` mode, the default `GB` without a subdivision keeps the
+existing recurring England/Wales calendar. Other countries, or a configured
+subdivision, use the [Nager.Date v4 API](https://github.com/nager/Nager.Date/blob/main/doc/examples/rest-api.md).
+Set the source to `nager` to use that provider for GB too.
+
+Only national public holidays and public holidays for the selected subdivision
+are used; school holidays, optional observances and bank-only closures are
+excluded. Provider dates (including substitute dates) are used as supplied.
+Successful calendars are cached for 24 hours. Requests send only country and
+year, with 3-second connection and 10-second response timeouts.
+
+Provider coverage is not a guarantee of every country's complete calendar.
+Local announcements, religious dates and regional rules may require manual
+maintenance. Use `CASE_PUBLIC_HOLIDAY_SOURCE=custom` for **any country**, for
+offline operation, or when the provider does not cover the required calendar.
+In both the application configuration and the package configuration template,
+the `public_holidays.custom` setting accepts a complete date-to-name map for
+each country and year. For example, the structure below is illustrative, **not
+a complete Malaysian holiday calendar**:
+
+```php
+'custom' => [
+    'MY' => [
+        2026 => [
+            '2026-08-31' => 'National Day',
+            // Add every other applicable holiday for this year.
+        ],
+    ],
+],
+```
+
+Custom dates must be real dates in `YYYY-MM-DD` format belonging to the
+configured year. An explicitly empty annual array means no holidays. Missing
+years, unavailable provider calendars, malformed data and request failures
+stop the calculation rather than silently falling back to UK dates or no
+holidays. Supply every year needed by your SLA calculations; the legacy
+`getPublicHolidays()` all-dates API requests the selected year and its adjacent
+years. Date-specific lookups request only that year.
+
+After changing settings, run `php artisan config:clear` (or
+`php artisan config:cache` in production) and `php artisan queue:restart`.
+To force an API refresh before the 24-hour expiry, `php artisan cache:clear`
+clears the application's cache, including holiday calendars.
+
+The existing SLA public-holiday exclusion option determines whether holidays
+are skipped. Agreements that do not exclude holidays make no holiday API
+requests. Saved Respond By and Fix By values are not automatically rewritten;
+future calculations and pause/resume calculations use the selected calendar.
+Review active agreements before changing a deployment's calendar.
+
 ## Guided installer (Ubuntu/Linux)
 
 Prefer a preflight-checked, interactive installer? Download and inspect **[install-case-management.py](scripts/install-case-management.py)** or **[install-case-management.sh](scripts/install-case-management.sh)** . It checks software versions and PHP extensions, stops and explains any missing requirements, then prompts for the clone directory and branch before installing Composer/npm dependencies and building assets.

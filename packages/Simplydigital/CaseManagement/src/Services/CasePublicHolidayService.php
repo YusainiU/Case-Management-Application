@@ -3,6 +3,12 @@
 namespace Simplydigital\CaseManagement\Services;
 
 use Carbon\Carbon;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use InvalidArgumentException;
+use RuntimeException;
 
 class CasePublicHolidayService
 {
@@ -18,60 +24,237 @@ class CasePublicHolidayService
     ];
 
     public array $publicHolidays = [];
+
     public array $holidayDetails = [];
+
     public array $listByDescription = [];
 
+    private ?string $loadedCalendar = null;
 
-    public function getPublicHolidays(?string $date = null, bool $getAll = true)
+    /**
+     * @return list<string>
+     */
+    public function getPublicHolidays(?string $date = null, bool $getAll = true): array
     {
-        // $date in dd-mm-YYYY in format
-
-        $isdate = $date ? trim($date) : null;
-        $getHolidayForSpecificDate = false;
-        $tsDate = time();
-
-        if ($isdate && preg_match('/^[0-9]{2}-[0-9]{2}-[0-9]{4}/', $isdate)) {
-            $tsDate = strtotime($date);
-            if(!$getAll){
-                $getHolidayForSpecificDate = true;
-            }
+        $day = $date === null
+            ? Carbon::now(config('app.timezone', 'UTC'))
+            : Carbon::createFromFormat('!d-m-Y', trim($date));
+        if ($date !== null && $day->format('d-m-Y') !== trim($date)) {
+            throw new InvalidArgumentException('Public holiday date must be a valid dd-mm-YYYY date.');
         }
-        $thisyear = date('Y', $tsDate);
-        $lastyear = $thisyear - 1;
-        $nextyear = $thisyear + 1;
 
-        $y1 = $this->getBankHolidaysForYear($thisyear);
-        $y2 = $this->getBankHolidaysForYear($lastyear);
-        $y3 = $this->getBankHolidaysForYear($nextyear);
-        
-        $ymd1 = $y1["dmy"];
-        $des1 = $y1["description"];
-        $ymd2 = $y2["dmy"];
-        $des2 = $y2["description"];
-        $ymd3 = $y3["dmy"];
-        $des3 = $y3["description"];
+        $this->listByDescription = [];
+        $holidays = [];
+        $descriptions = [];
+        $year = $day->year;
+        foreach ($getAll ? [$year, $year - 1, $year + 1] : [$year] as $calendarYear) {
+            $result = $this->getBankHolidaysForYear($calendarYear);
+            $holidays = [...$holidays, ...$result['dmy']];
+            $descriptions = array_replace($descriptions, $result['description']);
+        }
 
-        $holidays = [...$ymd1, ...$ymd2, ...$ymd3];
-        $descriptions = [...$des1, ...$des2, ...$des3];
-
-        if ($getHolidayForSpecificDate && \in_array($isdate, $holidays)) {
-            $s1 = $holidays[$isdate];
-            $s2 = $descriptions[$isdate];
-            //Reset Holidays and description
-            //re-initialise with new arrays of holidays for specific date                         
-            $holidays = $descriptions = [];
-            $holidays[$isdate] = $s1;
-            $descriptions[$isdate] = $s2;     
+        if (! $getAll) {
+            $dateString = $day->format('d-m-Y');
+            $holidays = in_array($dateString, $holidays, true) ? [$dateString] : [];
+            $descriptions = array_intersect_key($descriptions, array_flip($holidays));
         }
 
         $this->publicHolidays = $holidays;
         $this->holidayDetails = $descriptions;
 
         return $holidays;
-
     }
 
-    public function getBankHolidaysForYear(int $year)
+    public function getCountryCode(): string
+    {
+        $country = strtoupper(trim((string) config('case-management.public_holidays.country', 'GB')));
+
+        if (! preg_match('/^[A-Z]{2}$/D', $country)) {
+            throw new InvalidArgumentException(
+                'Public holiday country must be an ISO 3166-1 alpha-2 code, such as GB, FR or MY.'
+            );
+        }
+
+        return $country;
+    }
+
+    /**
+     * Includes all calendar settings so long-lived SLA services cannot reuse
+     * another country, subdivision or custom calendar's dates.
+     */
+    public function getCalendarKey(): string
+    {
+        return hash('sha256', json_encode([
+            $this->getCountryCode(),
+            $this->getSource(),
+            $this->getSubdivision(),
+            config('case-management.public_holidays.custom', []),
+        ], JSON_THROW_ON_ERROR));
+    }
+
+    private function getSubdivision(): ?string
+    {
+        $subdivision = strtoupper(trim((string) config('case-management.public_holidays.subdivision', '')));
+        if ($subdivision === '') {
+            return null;
+        }
+
+        if (! preg_match('/^'.$this->getCountryCode().'-[A-Z0-9]{1,3}$/D', $subdivision)) {
+            throw new InvalidArgumentException('Public holiday subdivision must be an ISO 3166-2 code belonging to the selected country.');
+        }
+
+        return $subdivision;
+    }
+
+    private function getSource(): string
+    {
+        $source = strtolower(trim((string) config('case-management.public_holidays.source', 'auto')));
+        if (! in_array($source, ['auto', 'nager', 'custom'], true)) {
+            throw new InvalidArgumentException('Public holiday source must be auto, nager or custom.');
+        }
+
+        return $source === 'auto'
+            ? ($this->getCountryCode() === 'GB' && $this->getSubdivision() === null ? 'legacy' : 'nager')
+            : $source;
+    }
+
+    /**
+     * @return array{ymd: list<string>, dmy: list<string>, description: array<string, string>}
+     */
+    public function getBankHolidaysForYear(int $year): array
+    {
+        $calendar = $this->getCalendarKey();
+        if ($this->loadedCalendar !== $calendar) {
+            $this->publicHolidays = [];
+            $this->holidayDetails = [];
+            $this->publicholidaynames = [];
+            $this->listByDescription = [];
+            $this->loadedCalendar = $calendar;
+        }
+
+        $source = $this->getSource();
+        $result = match ($source) {
+            'legacy' => $this->getEnglandWalesHolidaysForYear($year),
+            'custom' => $this->formatHolidays($this->getCustomHolidays($year)),
+            default => Cache::remember(
+                'case-public-holidays:v1:'.$calendar.':'.$year,
+                86400,
+                fn (): array => $this->formatHolidays($this->getRemoteHolidays($year))
+            ),
+        };
+
+        $names = array_values(array_unique($result['description']));
+        $this->publicholidaynames = $names === [] ? [] : array_combine(range(1, count($names)), $names);
+        foreach ($result['description'] as $date => $name) {
+            $this->listByDescription[$name][$year] ??= [];
+            if (! in_array($date, $this->listByDescription[$name][$year], true)) {
+                $this->listByDescription[$name][$year][] = $date;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * A full, explicitly configured annual calendar supports any country,
+     * including countries not covered by the remote provider.
+     *
+     * @return array<string, string>
+     */
+    private function getCustomHolidays(int $year): array
+    {
+        $country = $this->getCountryCode();
+        $years = config('case-management.public_holidays.custom.'.$country, []);
+        if (! is_array($years) || ! array_key_exists($year, $years) || ! is_array($years[$year])) {
+            throw new RuntimeException("No custom public holiday calendar configured for $country/$year.");
+        }
+
+        foreach ($years[$year] as $date => $name) {
+            if (! $this->isValidHolidayDate($date, $year) || ! is_string($name) || trim($name) === '') {
+                throw new InvalidArgumentException("Invalid custom public holiday for $country/$year. Use YYYY-MM-DD => name.");
+            }
+        }
+
+        return $years[$year];
+    }
+
+    private function isValidHolidayDate(mixed $date, int $year): bool
+    {
+        if (! is_string($date) || ! preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/D', $date)) {
+            return false;
+        }
+
+        [$dateYear, $month, $day] = array_map('intval', explode('-', $date));
+
+        return $dateYear === $year && checkdate($month, $day, $dateYear);
+    }
+
+    /** @return array<string, string> */
+    private function getRemoteHolidays(int $year): array
+    {
+        $country = $this->getCountryCode();
+        try {
+            $response = Http::acceptJson()->connectTimeout(3)->timeout(10)
+                ->get("https://nagerholidays.com/api/v4/Holidays/$country/$year")
+                ->throw();
+        } catch (ConnectionException|RequestException $exception) {
+            throw new RuntimeException(
+                "Unable to load public holidays for $country/$year. Retry or configure a custom calendar.",
+                0,
+                $exception
+            );
+        }
+
+        $rows = $response->json();
+        if (! is_array($rows) || ! array_is_list($rows) || $rows === []) {
+            throw new RuntimeException("No valid public holiday data for $country/$year. Configure a custom calendar.");
+        }
+
+        $dates = [];
+        $subdivision = $this->getSubdivision();
+        foreach ($rows as $row) {
+            if (! is_array($row)
+                || ! $this->isValidHolidayDate($row['date'] ?? null, $year)
+                || ($row['countryCode'] ?? null) !== $country
+                || ! is_string($row['name'] ?? null) || trim($row['name']) === ''
+                || ! is_bool($row['nationalHoliday'] ?? null)
+                || ! is_array($row['holidayTypes'] ?? null)
+                || (isset($row['subdivisionCodes']) && ! is_array($row['subdivisionCodes']))) {
+                throw new RuntimeException("Invalid public holiday data for $country/$year.");
+            }
+
+            $applies = $row['nationalHoliday']
+                || ($subdivision !== null && in_array($subdivision, $row['subdivisionCodes'] ?? [], true));
+            if ($applies && in_array('Public', $row['holidayTypes'], true)) {
+                $date = $row['date'];
+                $dates[$date] = isset($dates[$date]) ? $dates[$date].' / '.$row['name'] : $row['name'];
+            }
+        }
+
+        return $dates;
+    }
+
+    /**
+     * @param  array<string, string>  $dates
+     * @return array{ymd: list<string>, dmy: list<string>, description: array<string, string>}
+     */
+    private function formatHolidays(array $dates): array
+    {
+        ksort($dates);
+        $description = [];
+        foreach ($dates as $date => $name) {
+            [$year, $month, $day] = explode('-', $date);
+            $description["$day-$month-$year"] = $name;
+        }
+
+        return [
+            'ymd' => array_keys($dates),
+            'dmy' => array_keys($description),
+            'description' => $description,
+        ];
+    }
+
+    private function getEnglandWalesHolidaysForYear(int $year): array
     {
 
         $bankHols = [];
@@ -153,7 +336,6 @@ class CasePublicHolidayService
             list($y, $m, $d) = explode("-", $k);
             $edate = "$d-$m-$y";
             $description[$edate] = key($v);
-            $this->listByDescription[key($v)][$year][] = $edate;
         }
 
         $result["ymd"] = $bankHols;
