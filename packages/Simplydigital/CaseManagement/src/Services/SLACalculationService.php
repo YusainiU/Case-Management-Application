@@ -91,7 +91,11 @@ class SLACalculationService
 
     public function createSlaData(tickets $ticket)
     {
-        $sla = $ticket->slaApplication->serviceLevelAgreement;
+        $sla = $ticket->slaApplication?->serviceLevelAgreement;
+        if (! $sla) {
+            throw new \DomainException('The case does not have a valid SLA application and agreement.');
+        }
+
         $data = [
             'response_time' => $sla->response_time,
             'fixed_time' => $sla->fixed_time,
@@ -107,7 +111,6 @@ class SLACalculationService
 
     public function recalculateRespondByTime(tickets $ticket, int $startDate)
     {
-        $sla = $ticket->slaApplication->serviceLevelAgreement;
         $createdDay = strtolower(date('l', $startDate));
         $data = $this->createSlaData($ticket);
         $data['startDate'] = $startDate;
