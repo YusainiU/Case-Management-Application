@@ -4,6 +4,7 @@ namespace Simplydigital\CaseManagement\Livewire\Case;
 
 use Livewire\Component;
 use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
+use Simplydigital\CaseManagement\Models\tickets;
 
 class CaseStatus extends Component
 {
@@ -11,6 +12,11 @@ class CaseStatus extends Component
     protected $listeners = [
         'reloadCaseStatus' => '$refresh',
     ];
+    public function mount(): void
+    {
+        $this->authorize('viewAny', tickets::class);
+    }
+
     public function buildStatus()
     {
         $status = [];
