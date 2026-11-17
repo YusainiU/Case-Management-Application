@@ -13,6 +13,9 @@ class SLACalculationService
 
     public array $holidays = [];
 
+    /** @var array<int, array<int, string>> */
+    private array $holidaysByYear = [];
+
     public function __construct(?SLALoggerService $logger = null)
     {
         $this->casePublicHolidayService = new CasePublicHolidayService;
@@ -119,7 +122,8 @@ class SLACalculationService
         $data = $this->createSlaData($ticket);
         $data['response_time'] = $responsetime;
         $data['startDate'] = $startDate->timestamp;
-        $data['startDay'] = strtolower($startDate->dayName);
+        // Do not overwrite SLA startDay: it defines the contractual working
+        // week, not the weekday on which this case happened to resume.
         return $this->calcRespondByTime($data);
     }
 
@@ -241,11 +245,11 @@ class SLACalculationService
         // A service may be used for historic cases or deadlines well beyond
         // the current year. Reload the applicable year rather than relying
         // on the constructor's current-year +/- one calendar.
-        return in_array(
-            $dateString,
-            $this->casePublicHolidayService->getBankHolidaysForYear($dateTime->year)['dmy'],
-            true
-        );
+        $year = $dateTime->year;
+        $this->holidaysByYear[$year] ??=
+            $this->casePublicHolidayService->getBankHolidaysForYear($year)['dmy'];
+
+        return in_array($dateString, $this->holidaysByYear[$year], true);
     }
 
     /**
