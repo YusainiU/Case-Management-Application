@@ -118,6 +118,23 @@ class SLACalculationService
 
     public function calculatePauseRemainingValue(tickets $ticket, carbon $pausedDate)
     {
+        // Use the CURRENT SLA deadlines as the source of remaining working
+        // time. Counting from ticket creation incorrectly deducts the first
+        // paused interval again when a case is paused for a second time.
+        // Preserve the older calculation as fallback for legacy SLA tasks
+        // without stored deadlines.
+        $task = $ticket->slaTasks;
+        if ($task && $task->respond_by && $task->fix_by) {
+            return [
+                'response_time_remaining' => max(0, $this->workingMinutesBetween(
+                    $ticket, $pausedDate, $task->respond_by
+                ) * 60),
+                'fix_time_remaining' => max(0, $this->workingMinutesBetween(
+                    $ticket, $pausedDate, $task->fix_by
+                ) * 60),
+            ];
+        }
+
         $sla = $this->createSlaData($ticket);
         $response_time = $sla['response_time']; //in seconds
         $fix_time = $sla['fixed_time']; //in seconds
