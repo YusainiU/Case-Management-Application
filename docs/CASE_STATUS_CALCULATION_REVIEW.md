@@ -18,6 +18,7 @@ This review checks the actual implementation of the Case Management package and 
 | Small Case Information Panel assumed every case had an SLA task and respond-by deadline | Missing SLA data could throw a null-property error | Guard optional SLA-task and deadline rendering |
 | `getHasInternalUpdateAttribute` and `latestInternalUpdate` used inconsistent log type strings | The Case Information Panel could show No Update while dashboard reported otherwise | Align both to configured `internal_update_log`, legacy `internal_update`, and reviewed `ai_assisted` notes |
 | Per-case status built many extra queries for logs and visits | Dashboard and status panels repeated database queries | Eager-load case-scoped relationships once for batch retrieval and calculate aggregates from the loaded records |
+| `slaTask::scopeFixBreached()` used a top-level `orWhere` after `notPaused()` | Overdue paused tasks could incorrectly match the scope | Group breach conditions with `where`, preserve the not-paused restriction and ignore resolved/closed cases |
 
 ## Metric definitions after the changes
 
