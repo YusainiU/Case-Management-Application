@@ -457,6 +457,17 @@ class CaseAssistant extends Component
             ];
         }
 
+        // A paused SLA is an operational state, not evidence of inactivity.
+        // Direct staff to review it before suggesting more case workflow changes.
+        if ($stages->get('sla-pause')['status'] === 'pending') {
+            return [
+                'title' => 'SLA is paused',
+                'detail' => 'Review the recorded pause and resume or cancel it when permitted by the SLA working-hours rules. No action is automatic.',
+                'workflow' => 'sla-pause',
+                'tone' => 'pending',
+            ];
+        }
+
         foreach ($attention as $item) {
             if ($item['severity'] === 'pending') {
                 return [
@@ -501,17 +512,6 @@ class CaseAssistant extends Component
                 'detail' => 'The case remains Open. Prepare Start Work approval only after the assigned engineer has actually begun.',
                 'workflow' => 'start-work',
                 'tone' => 'neutral',
-            ];
-        }
-
-        // A paused SLA is an operational state, not evidence of inactivity.
-        // Direct staff to review it before suggesting more case workflow changes.
-        if ($stages->get('sla-pause')['status'] === 'pending') {
-            return [
-                'title' => 'SLA is paused',
-                'detail' => 'Review the recorded pause and resume or cancel it when permitted by the SLA working-hours rules. No action is automatic.',
-                'workflow' => 'sla-pause',
-                'tone' => 'pending',
             ];
         }
 
