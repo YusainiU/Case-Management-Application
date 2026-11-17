@@ -102,15 +102,24 @@ class CasePublicHolidayService
         // early May = first Monday, spring = last Monday of May,
         // summer = last Monday of August. The previous weekday
         // switch could return Wednesdays/Fridays instead of Mondays.
-        $mayDay = Carbon::create($year, 5, 1)->nextOrSame(Carbon::MONDAY);
+        $mayDay = Carbon::create($year, 5, 1, 12, 0, 0);
+        if (! $mayDay->isMonday()) {
+            $mayDay->next(Carbon::MONDAY);
+        }
         $bankHols[] = $ddate = $mayDay->format('Y-m-d');
         $des[$ddate]['May Day'] = 4;
 
-        $spring = Carbon::create($year, 5, 31)->previousOrSame(Carbon::MONDAY);
+        $spring = Carbon::create($year, 5, 31, 12, 0, 0);
+        if (! $spring->isMonday()) {
+            $spring->previous(Carbon::MONDAY);
+        }
         $bankHols[] = $ddate = $spring->format('Y-m-d');
         $des[$ddate]['Spring Bank Holiday'] = 5;
 
-        $summer = Carbon::create($year, 8, 31)->previousOrSame(Carbon::MONDAY);
+        $summer = Carbon::create($year, 8, 31, 12, 0, 0);
+        if (! $summer->isMonday()) {
+            $summer->previous(Carbon::MONDAY);
+        }
         $bankHols[] = $ddate = $summer->format('Y-m-d');
         $des[$ddate]['Summer Bank Holiday'] = 6;
 
