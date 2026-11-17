@@ -112,7 +112,8 @@ class CaseTicketServices
     public function getAllPausedCases(?string $filter)
     {
         $this->query->where('state', '=', CaseState::Paused->value)
-            ->where('closed_datetime', '=', null);
+            ->whereNull('closed_datetime')
+            ->whereNull('resolved_datetime');
         if($filter){
             $this->buildFilter($filter);    
         }
