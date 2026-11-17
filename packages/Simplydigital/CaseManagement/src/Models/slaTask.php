@@ -262,16 +262,17 @@ class slaTask extends Model
 
     public function scopeFixBreached(Builder $query): Builder
     {
-        return $query
-            ->notPaused()
-            // OR Fix SLA breached
-            ->orWhere(function (Builder $query) {
-                $query->whereNotNull('fix_by')
-                    ->where('fix_by', '<', now())
-                    ->where(function (Builder $query) {
-                        $query->whereNull('fixed_at')
-                            ->orWhereColumn('fixed_at', '>', 'fix_by');
-                    });
+        // The previous top-level orWhere bypassed notPaused(), so paused SLA
+        // tasks could be returned as breached and affect other callers.
+        return $query->notPaused()
+            ->whereHas('caseTicket', fn (Builder $case) => $case
+                ->whereNull('closed_datetime')
+                ->whereNull('resolved_datetime'))
+            ->whereNotNull('fix_by')
+            ->where('fix_by', '<', now())
+            ->where(function (Builder $q) {
+                $q->whereNull('fixed_at')
+                    ->orWhereColumn('fixed_at', '>', 'fix_by');
             });
     }
 
