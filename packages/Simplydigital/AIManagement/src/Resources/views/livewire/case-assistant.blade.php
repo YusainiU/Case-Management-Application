@@ -693,12 +693,27 @@
             @endif
         </section>
 
+        <section class="ai-card ai-workflow" id="ai-workflow-sla-pause" wire:key="workflow-sla-pause">
+            <button type="button" wire:click="toggleWorkflow('sla-pause')"
+                aria-expanded="{{ in_array('sla-pause', $expandedWorkflows, true) ? 'true' : 'false' }}"
+                aria-controls="ai-workflow-sla-pause-content"
+                class="ai-workflow-toggle flex w-full items-center justify-between gap-3 text-left">
+                <span>05 · Pause / Resume SLA (staff controlled)</span>
+                <span aria-hidden="true" class="text-lg">{{ in_array('sla-pause', $expandedWorkflows, true) ? '−' : '+' }}</span>
+            </button>
+            @if (in_array('sla-pause', $expandedWorkflows, true))
+                <div id="ai-workflow-sla-pause-content" class="ai-workflow-content">
+                    <livewire:ai-management.sla-pause-controls :case="$case" :key="'sla-pause-controls-' . $case->getKey()" />
+                </div>
+            @endif
+        </section>
+
         <section class="ai-card ai-workflow" id="ai-workflow-troubleshoot" wire:key="workflow-troubleshoot">
             <button type="button" wire:click="toggleWorkflow('troubleshoot')"
                 aria-expanded="{{ in_array('troubleshoot', $expandedWorkflows, true) ? 'true' : 'false' }}"
                 aria-controls="ai-workflow-troubleshoot-content"
                 class="ai-workflow-toggle flex w-full items-center justify-between gap-3 text-left">
-                <span>05 · Troubleshooting review</span>
+                <span>06 · Troubleshooting review</span>
                 <span aria-hidden="true"
                     class="text-lg">{{ in_array('troubleshoot', $expandedWorkflows, true) ? '−' : '+' }}</span>
             </button>
@@ -714,7 +729,7 @@
                 aria-expanded="{{ in_array('resolution', $expandedWorkflows, true) ? 'true' : 'false' }}"
                 aria-controls="ai-workflow-resolution-content"
                 class="ai-workflow-toggle flex w-full items-center justify-between gap-3 text-left">
-                <span>06 · Resolution readiness and customer notification</span>
+                <span>07 · Resolution readiness and customer notification</span>
                 <span aria-hidden="true"
                     class="text-lg">{{ in_array('resolution', $expandedWorkflows, true) ? '−' : '+' }}</span>
             </button>
