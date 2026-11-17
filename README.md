@@ -128,7 +128,7 @@ Prefer a preflight-checked, interactive installer? Download and inspect **[insta
 
 ```bash
 curl -fL -o install-case-management.py \
-  https://raw.githubusercontent.com/YusainiU/Case-Management-Application/feature/ai-agent-approvals-v1/scripts/install-case-management.py
+  https://raw.githubusercontent.com/YusainiU/Case-Management-Application/main/scripts/install-case-management.py
 python3 install-case-management.py --check-only
 python3 install-case-management.py
 ```
@@ -136,6 +136,8 @@ python3 install-case-management.py
 For bash script, after download run ..
 
 ```
+curl -fL -o install-case-management.sh \
+  https://raw.githubusercontent.com/YusainiU/Case-Management-Application/main/scripts/install-case-management.sh
 chmod u+x install-case-management.sh
 ./install-case-management.sh
 ```
