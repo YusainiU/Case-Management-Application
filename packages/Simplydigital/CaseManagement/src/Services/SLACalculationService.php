@@ -13,14 +13,14 @@ class SLACalculationService
 
     public array $holidays = [];
 
-    /** @var array<int, array<int, string>> */
+    /** @var array<string, array<int, array<int, string>>> */
     private array $holidaysByYear = [];
 
     public function __construct(?SLALoggerService $logger = null)
     {
         $this->casePublicHolidayService = new CasePublicHolidayService;
         $this->logger = $logger ?? new SLALoggerService;
-        $this->holidays = $this->casePublicHolidayService->getPublicHolidays();
+        // Load only years actually needed by the SLA, including for custom calendars.
     }
 
     /**
@@ -249,14 +249,16 @@ class SLACalculationService
         $dateTime = Carbon::createFromTimestamp($date, config('app.timezone', 'UTC'));
         $dateString = $dateTime->format('d-m-Y');
 
-        // A service may be used for historic cases or deadlines well beyond
-        // the current year. Reload the applicable year rather than relying
-        // on the constructor's current-year +/- one calendar.
+        // Historic cases and long deadlines need the applicable year.
+        // Include calendar settings in the key when configuration changes.
         $year = $dateTime->year;
-        $this->holidaysByYear[$year] ??=
+        $calendar = $this->casePublicHolidayService->getCalendarKey();
+        $this->holidaysByYear[$calendar][$year] ??=
             $this->casePublicHolidayService->getBankHolidaysForYear($year)['dmy'];
 
-        return in_array($dateString, $this->holidaysByYear[$year], true);
+        $this->holidays = $this->holidaysByYear[$calendar][$year];
+
+        return in_array($dateString, $this->holidays, true);
     }
 
     /**
