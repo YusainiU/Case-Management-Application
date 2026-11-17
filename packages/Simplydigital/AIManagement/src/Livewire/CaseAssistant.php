@@ -83,7 +83,7 @@ class CaseAssistant extends Component
     public array $expandedWorkflows = [];
 
     private const WORKFLOWS = [
-        'analysis', 'category', 'engineer', 'start-work', 'troubleshoot', 'resolution',
+        'analysis', 'category', 'engineer', 'start-work', 'sla-pause', 'troubleshoot', 'resolution',
     ];
 
     public function toggleWorkflow(string $workflow): void
@@ -396,6 +396,17 @@ class CaseAssistant extends Component
                 'at' => $proposals->get('start_case_work')?->updated_at,
             ],
             [
+                'workflow' => 'sla-pause',
+                'title' => 'SLA pause / resume',
+                'status' => $case->slaTasks?->paused ? 'pending'
+                    : ($case->slaTasks ? 'ready' : 'not_started'),
+                'detail' => $case->slaTasks?->paused
+                    ? 'SLA is paused; an authorised user must resume or cancel the pause'
+                    : ($case->slaTasks ? 'SLA active / not paused; manual controls available when eligible'
+                        : 'No SLA task recorded'),
+                'at' => $case->slaTasks?->activePause?->paused_at,
+            ],
+            [
                 'workflow' => 'troubleshoot',
                 'title' => 'Troubleshooting review',
                 'status' => $review ? 'complete'
@@ -493,6 +504,17 @@ class CaseAssistant extends Component
             ];
         }
 
+        // A paused SLA is an operational state, not evidence of inactivity.
+        // Direct staff to review it before suggesting more case workflow changes.
+        if ($stages->get('sla-pause')['status'] === 'pending') {
+            return [
+                'title' => 'SLA is paused',
+                'detail' => 'Review the recorded pause and resume or cancel it when permitted by the SLA working-hours rules. No action is automatic.',
+                'workflow' => 'sla-pause',
+                'tone' => 'pending',
+            ];
+        }
+
         if ($stages->get('troubleshoot')['status'] !== 'complete') {
             return [
                 'title' => 'Review troubleshooting suggestions',
@@ -522,7 +544,7 @@ class CaseAssistant extends Component
     public function render()
     {
         Gate::authorize('view', $this->case);
-        $currentCase = tickets::query()->with('assignedToUser')->findOrFail($this->case->getKey());
+        $currentCase = tickets::query()->with(['assignedToUser', 'slaTasks.activePause'])->findOrFail($this->case->getKey());
 
         // Each AI lifecycle stage already writes an internal case progress log.
         // Use that record as the single chronological source of truth, rather
