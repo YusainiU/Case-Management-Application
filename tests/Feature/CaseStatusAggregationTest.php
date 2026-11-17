@@ -72,6 +72,44 @@ class CaseStatusAggregationTest extends TestCase
         $this->assertFalse(slaTask::query()->fixBreached()->whereKey($sla->id)->exists());
     }
 
+    public function test_paused_dashboard_count_matches_case_filter_even_when_an_old_sla_pause_is_still_open(): void
+    {
+        $staff = User::factory()->create();
+        $pausedCase = $this->caseFor($staff, CaseState::Paused);
+        $inProgressCase = $this->caseFor($staff, CaseState::In_Progress);
+
+        foreach ([$pausedCase, $inProgressCase] as $case) {
+            $task = slaTask::query()->create([
+                'ticket_id' => $case->id,
+                'name' => 'SLA with active pause record',
+                'state' => $case->state,
+                'active' => true,
+                'respond_by' => now()->addHour(),
+                'fix_by' => now()->addHours(3),
+                'paused_at' => now()->subMinutes(20),
+            ]);
+            SlaTaskPause::query()->create([
+                'sla_task_id' => $task->id,
+                'paused_at' => $task->paused_at,
+                'remaining' => 3600,
+                'remaining_fix_time' => 10800,
+            ]);
+        }
+
+        // A legacy/stale active pause on an In Progress case must not
+        // inflate the number of CASES displayed under the Paused filter.
+        $utility = app(CaseTicketUtilityServices::class);
+        $statuses = $utility->retrieveTicketStatuses();
+        $this->assertSame(1, $statuses[$pausedCase->id]['paused']);
+        $this->assertSame(0, $statuses[$inProgressCase->id]['paused']);
+        $this->assertSame(1, collect($statuses)->sum('paused'));
+
+        $this->assertSame(1, tickets::query()
+            ->where('state', CaseState::Paused->value)
+            ->whereNull('closed_datetime')
+            ->count());
+    }
+
     public function test_fix_and_response_breaches_are_detected_without_persisted_breach_flags(): void
     {
         $staff = User::factory()->create();
