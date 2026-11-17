@@ -31,12 +31,19 @@ class AISlaPauseWorkflowTest extends TestCase
         $case = $this->caseFor($viewer);
 
         $this->actingAs($viewer);
+        // In Livewire 4, the nested SlaPauseControls component has its own
+        // render cycle. Its HTML is not part of the parent component's test
+        // response, even when the workflow is expanded.
         Livewire::test(CaseAssistant::class, ['case' => $case])
             ->assertSee('SLA pause / resume')
             ->assertSee('Pause / Resume SLA (staff controlled)')
             ->call('openWorkflow', 'sla-pause')
-            ->assertSee('The case has no SLA task')
-            ->assertSee('You can view the SLA status');
+            ->assertSet('expandedWorkflows', ['sla-pause'])
+            ->assertSee('ai-management.sla-pause-controls');
+
+        Livewire::test(SlaPauseControls::class, ['case' => $case])
+            ->assertSee('This case has no SLA task')
+            ->assertSee('Create it in the existing Manage SLA screen');
     }
 
     public function test_paused_case_suggests_manual_sla_review_without_executing_it(): void
