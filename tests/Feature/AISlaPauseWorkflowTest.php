@@ -186,7 +186,7 @@ class AISlaPauseWorkflowTest extends TestCase
             'fix_by' => now()->addHours(4),
         ]);
 
-        $calculator = \Mockery::mock(SLACalculationService::class)->makePartial();
+        $calculator = \Mockery::mock(SLACalculationService::class, [new \Simplydigital\CaseManagement\Services\SLALoggerService])->makePartial();
         $calculator->shouldReceive('workingSecondsBetween')->twice()
             ->andReturn(5400, 12600);
 
