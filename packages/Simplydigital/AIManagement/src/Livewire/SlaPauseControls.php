@@ -41,6 +41,9 @@ class SlaPauseControls extends Component
         if (! $sla) {
             return ['allowed' => false, 'reason' => 'The case has no SLA task. Use the normal SLA management screen to create one.'];
         }
+        if (! $case->slaApplication?->serviceLevelAgreement) {
+            return ['allowed' => false, 'reason' => 'The case has no valid SLA policy. Review SLA configuration in the normal case management screen.'];
+        }
         if ($case->closed_datetime !== null || $case->resolved_datetime !== null
             || ! in_array($case->state, CaseState::openStates(), true)) {
             return ['allowed' => false, 'reason' => 'Resolved, closed or inactive cases cannot change their SLA pause.'];
