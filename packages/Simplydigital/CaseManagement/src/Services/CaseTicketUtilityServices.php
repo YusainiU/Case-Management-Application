@@ -165,26 +165,35 @@ class CaseTicketUtilityServices
 
     public function retrieveTicketStatuses()
     {
-        $tickets = tickets::where('state', '!=', CaseState::Closed->value)
-            ->where('state', '!=', CaseState::Cancelled->value)
+        // Include unresolved cases plus Resolved for the dashboard's
+        // separate Resolved metric. Completed, Cancelled and Closed are excluded.
+        $tickets = tickets::query()
+            ->whereIn('state', array_map(
+                fn (CaseState $state): string => $state->value,
+                [...CaseState::openStates(), CaseState::Resolved]
+            ))
             ->whereNull('closed_datetime')
-            ->get();
+            ->get(['id']);
 
         return $this->caseRetrieveTicketStatus->retrieveStatuses($tickets);
     }
 
     public function getTotalOpenCases()
     {
-        return tickets::where('state', '!=', CaseState::Completed->value)
-            ->orWhere('state', '!=', CaseState::Cancelled->value)
-            ->orWhereNull('closed_datetime')
+        return tickets::query()
+            ->whereIn('state', array_map(
+                fn (CaseState $state): string => $state->value,
+                CaseState::openStates()
+            ))
+            ->whereNull('closed_datetime')
+            ->whereNull('resolved_datetime')
             ->count();
     }
 
     public function retrieveTicketStatus(int $caseId)
     {
 
-        $ticket = tickets::find($caseId);
+        $ticket = tickets::query()->findOrFail($caseId);
 
         return $this->caseRetrieveTicketStatus->retrieveStatus($ticket);
     }
