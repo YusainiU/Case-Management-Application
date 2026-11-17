@@ -19,6 +19,7 @@ This review checks the actual implementation of the Case Management package and 
 | `getHasInternalUpdateAttribute` and `latestInternalUpdate` used inconsistent log type strings | The Case Information Panel could show No Update while dashboard reported otherwise | Align both to configured `internal_update_log`, legacy `internal_update`, and reviewed `ai_assisted` notes |
 | Per-case status built many extra queries for logs and visits | Dashboard and status panels repeated database queries | Eager-load case-scoped relationships once for batch retrieval and calculate aggregates from the loaded records |
 | `slaTask::scopeFixBreached()` used a top-level `orWhere` after `notPaused()` | Overdue paused tasks could incorrectly match the scope | Group breach conditions with `where`, preserve the not-paused restriction and ignore resolved/closed cases |
+| `CaseStatus` standalone Livewire component had no `viewAny` check | An unauthorised user could request status totals via Livewire even when dashboard access was restricted | Enforce the same case-view policy that the dashboard uses, with a denial regression test |
 
 ## Metric definitions after the changes
 
