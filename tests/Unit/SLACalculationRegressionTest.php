@@ -135,7 +135,7 @@ class SLACalculationRegressionTest extends TestCase
     public function test_working_seconds_between_preserves_partial_minutes_across_weekend(): void
     {
         config()->set('app.timezone', 'Europe/London');
-        $calculator = \Mockery::mock(SLACalculationService::class)->makePartial();
+        $calculator = \Mockery::mock(SLACalculationService::class, [new \Simplydigital\CaseManagement\Services\SLALoggerService])->makePartial();
         $calculator->shouldReceive('createSlaData')->twice()
             ->andReturn($this->sla());
         $ticket = new \Simplydigital\CaseManagement\Models\tickets;
@@ -157,7 +157,7 @@ class SLACalculationRegressionTest extends TestCase
     public function test_resuming_on_an_off_day_does_not_change_contractual_working_week(): void
     {
         config()->set('app.timezone', 'Europe/London');
-        $calculator = \Mockery::mock(SLACalculationService::class)->makePartial();
+        $calculator = \Mockery::mock(SLACalculationService::class, [new \Simplydigital\CaseManagement\Services\SLALoggerService])->makePartial();
         $calculator->shouldReceive('createSlaData')->once()->andReturn(
             $this->sla([
                 'startDay' => 'monday',
