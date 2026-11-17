@@ -86,6 +86,14 @@ As with category changes, actual AI-assisted assignment requires separate execut
 
 Do not approve Start Work simply to advance a dashboard stage. It should represent genuine operational activity.
 
+### Optional workflow — Pause or Resume the SLA
+
+After work starts, staff may sometimes need to pause the case's service-level agreement under company policy (for example, while awaiting authorised external input). **Pause / Resume SLA** is a separate, staff-controlled stage within AI Case Assistant.
+
+The assistant uses the application's existing manual SLA process: it records remaining response/fix time at pause, and recalculates deadlines from the frozen allowance when staff choose **Resume SLA**. **Cancel Pause** reverses the pause without granting a deadline extension. All three operations require the proper case-update permission and adhere to the existing SLA working-day/hour and eligibility restrictions.
+
+**AI cannot decide on its own to pause the clock.** Pauses should be used only where permitted by the customer contract and internal operating policy. The normal Manage SLA screen remains available. For the operational details, see the [SLA Pause / Resume Guide](AI_SLA_PAUSE_RESUME_WORKFLOW.md).
+
 ### Step 5 — Troubleshooting Review
 
 This is where the AI's original analysis becomes a practical working aid.
@@ -153,10 +161,10 @@ The **AI Assistant Activity timeline** focuses on AI-related events and reviewed
 | Screen section | Purpose | Does it change the case? |
 | --- | --- | --- |
 | **Suggested Next Step** | Points to a relevant workflow based on current case information and outstanding issues | No—navigation advice only |
-| **Case Workflow Overview** | Shows six recorded stages: analysis, category, assignment, work started, troubleshooting and resolution | No—status display only |
+| **Case Workflow Overview** | Shows seven recorded stages: analysis, category, assignment, work started, SLA pause/resume, troubleshooting and resolution | No—status display only |
 | **Needs Attention** | Highlights current pending approvals and recorded failures | No—review prompt only |
 | **Activity Timeline** | Shows AI-related events newest first, grouped by calendar date; supports filters and older history | No—history only |
-| **Actions and Reviews** | Contains the actual analysis, approval, troubleshooting and resolution controls | Some actions can change data, but only after permission checks and relevant approvals |
+| **Actions and Reviews** | Contains analysis, approval, staff-operated SLA pause/resume, troubleshooting and resolution controls | SLA pause/resume requires an explicit authorised staff action; other changes retain their relevant permission and approval checks |
 | **Focus View / Full View** | Controls how much background detail is visible | No—presentation only |
 
 The interface provides **Open stage**, **Open related workflow**, and **Open suggested workflow** links. These expand the corresponding panel; they do not initiate an approval or AI request. Full View shows more history; Focus View keeps the action-oriented information prominent. Neither changes the underlying case.
