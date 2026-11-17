@@ -99,9 +99,18 @@
                 Today
                 <span class="ml-2 h-2.5 w-2.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
                 Other dates
+                <span class="ml-2 h-2.5 w-2.5 rounded-full bg-amber-200"></span>
+                Public holidays
             </div>
         </div>
     </section>
+
+    @foreach ($plannerWarnings as $warning)
+        <div wire:key="planner-warning-{{ $loop->index }}" role="alert"
+             class="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-100">
+            {{ $warning }}
+        </div>
+    @endforeach
 
     {{-- Calendar --}}
     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-gray-900">
@@ -179,32 +188,45 @@
                                         $eventText = $event['text'] ?? '#3730A3';
                                     @endphp
 
-                                    <button
-                                        type="button"
-                                        wire:key="calendar-event-{{ $event['id'] }}-{{ $dateKey }}"
-                                        wire:click="openEventModal({{ $event['id'] }})"
-                                        title="{{ $event['title'] }} — {{ $eventStart->format('H:i') }}"
-                                        style="background-color: {{ $eventColour }}; color: {{ $eventText }}; border-left-color: {{ $eventText }};"
-                                        class="block w-full min-w-0 rounded-md border-l-[3px] px-2 py-1.5
-                                               text-left transition hover:brightness-95
-                                               focus:outline-none focus-visible:ring-2
-                                               focus-visible:ring-indigo-500"
-                                    >
-                                        <span class="block truncate text-xs font-semibold">
-                                            {{ $event['title'] }}
-                                        </span>
+                                    @if (($event['type'] ?? '') === 'public_holiday')
+                                        <div
+                                            wire:key="calendar-event-{{ $event['id'] }}-{{ $dateKey }}"
+                                            data-event-type="public_holiday"
+                                            title="{{ $event['title'] }} — Public holiday · All day"
+                                            style="background-color: {{ $eventColour }}; color: {{ $eventText }}; border-left-color: {{ $eventText }};"
+                                            class="block w-full min-w-0 rounded-md border-l-[3px] px-2 py-1.5 text-left"
+                                        >
+                                            <span class="block truncate text-xs font-semibold">{{ $event['title'] }}</span>
+                                            <span class="mt-0.5 block text-[10px] font-medium opacity-80">Public holiday · All day</span>
+                                        </div>
+                                    @else
+                                        <button
+                                            type="button"
+                                            wire:key="calendar-event-{{ $event['id'] }}-{{ $dateKey }}"
+                                            wire:click="openEventModal({{ $event['id'] }})"
+                                            title="{{ $event['title'] }} — {{ $eventStart->format('H:i') }}"
+                                            style="background-color: {{ $eventColour }}; color: {{ $eventText }}; border-left-color: {{ $eventText }};"
+                                            class="block w-full min-w-0 rounded-md border-l-[3px] px-2 py-1.5
+                                                   text-left transition hover:brightness-95
+                                                   focus:outline-none focus-visible:ring-2
+                                                   focus-visible:ring-indigo-500"
+                                        >
+                                            <span class="block truncate text-xs font-semibold">
+                                                {{ $event['title'] }}
+                                            </span>
 
-                                        <span class="mt-0.5 flex items-center gap-1 text-[10px] font-medium opacity-80">
-                                            <svg class="h-3 w-3 shrink-0" viewBox="0 0 24 24"
-                                                 fill="none" stroke="currentColor" stroke-width="2"
-                                                 aria-hidden="true">
-                                                <circle cx="12" cy="12" r="9" />
-                                                <path stroke-linecap="round"
-                                                      d="M12 7v5l3 2" />
-                                            </svg>
-                                            {{ $eventStart->format('H:i') }}
-                                        </span>
-                                    </button>
+                                            <span class="mt-0.5 flex items-center gap-1 text-[10px] font-medium opacity-80">
+                                                <svg class="h-3 w-3 shrink-0" viewBox="0 0 24 24"
+                                                     fill="none" stroke="currentColor" stroke-width="2"
+                                                     aria-hidden="true">
+                                                    <circle cx="12" cy="12" r="9" />
+                                                    <path stroke-linecap="round"
+                                                          d="M12 7v5l3 2" />
+                                                </svg>
+                                                {{ $eventStart->format('H:i') }}
+                                            </span>
+                                        </button>
+                                    @endif
                                 @endforeach
 
                                 @if ($dayEvents->isEmpty())

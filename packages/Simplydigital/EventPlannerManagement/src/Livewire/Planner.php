@@ -41,14 +41,14 @@ class Planner extends Component
     public function getEvents(
         PlannerService $planner
     ): array {
-        $date = Carbon::parse($this->date);
+        $date = Carbon::parse($this->date, config('app.timezone', 'UTC'));
 
         if ($this->view === 'timeGridWeek') {
-            $start = $date->copy()->startOfWeek();
-            $end = $date->copy()->endOfWeek();
+            $start = $date->copy()->startOfWeek(Carbon::MONDAY);
+            $end = $date->copy()->endOfWeek(Carbon::SUNDAY);
         } else {
-            $start = $date->copy()->startOfMonth();
-            $end = $date->copy()->endOfMonth();
+            $start = $date->copy()->startOfMonth()->startOfWeek(Carbon::MONDAY);
+            $end = $date->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
         }
     
         $events = $planner
@@ -76,9 +76,9 @@ class Planner extends Component
 
     public function getCalendarDays(): array
     {
-        $date = Carbon::parse($this->date);
-        $start = $date->copy()->startOfMonth()->startOfWeek();
-        $end = $date->copy()->endOfMonth()->endOfWeek();
+        $date = Carbon::parse($this->date, config('app.timezone', 'UTC'));
+        $start = $date->copy()->startOfMonth()->startOfWeek(Carbon::MONDAY);
+        $end = $date->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
         $days = [];
         for ($day = $start->copy(); $day->lte($end); $day->addDay()) {
             $days[] = [
@@ -99,6 +99,7 @@ class Planner extends Component
             'eventplanner::livewire.planner',
             [
                 'events' => $events,
+                'plannerWarnings' => $planner->warnings(),
                 'calendarDays' => $this->getCalendarDays(),
             ]
         );
