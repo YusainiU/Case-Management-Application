@@ -154,6 +154,7 @@ def setup():
                 print('No .env.example found; created safe starter .env without secrets')
         finally:
             os.umask(previous_umask)
+        env.chmod(0o600)
     else:
         print('Preserving existing .env')
     if not re.search(r'^APP_KEY=base64:', env.read_text(encoding='utf-8'), flags=re.MULTILINE):
