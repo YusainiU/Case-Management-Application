@@ -285,6 +285,11 @@ AI_MANAGEMENT_MODEL=gpt-4o-mini
 AI_CASE_ASSISTANT_ENABLED=true
 OPENAI_BASE_URL=https://api.openai.com/v1
 OPENAI_API_KEY=
+
+CASE_PUBLIC_HOLIDAY_COUNTRY=GB
+CASE_PUBLIC_HOLIDAY_SOURCE=auto
+# Optional ISO 3166-2 state/province, e.g. DE-BY with country DE:
+CASE_PUBLIC_HOLIDAY_SUBDIVISION=
 ```
 
 5. Generate the application key:
