@@ -136,8 +136,8 @@ python3 install-case-management.py
 For bash script, after download run ..
 
 ```
-chmod u+x script.sh
-./script.sh
+chmod u+x install-case-management.sh
+./install-case-management.sh
 ```
 
 It **does not** automatically migrate/seed your database, publish assets, or configure a production server. Complete those steps when prompted, then use `composer run dev` locally. See the [Guided Local Deployment Guide](docs/GUIDED_LOCAL_DEPLOYMENT.md) for a detailed walkthrough.
