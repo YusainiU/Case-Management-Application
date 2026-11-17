@@ -119,6 +119,29 @@ class AISlaPauseWorkflowTest extends TestCase
         $this->assertFalse((bool) $service->resumeCaseSla($case));
     }
 
+    public function test_repeat_pause_uses_current_deadlines_not_original_case_creation_time(): void
+    {
+        $staff = User::factory()->create();
+        $case = $this->caseFor($staff);
+        $sla = slaTask::query()->create([
+            'ticket_id' => $case->id,
+            'name' => 'Repeat pause allowance test',
+            'state' => CaseState::In_Progress,
+            'active' => true,
+            'respond_by' => now()->addHours(2),
+            'fix_by' => now()->addHours(4),
+        ]);
+
+        $calculator = \Mockery::mock(SLACalculationService::class)->makePartial();
+        $calculator->shouldReceive('workingMinutesBetween')->twice()
+            ->andReturn(90, 210);
+
+        $remaining = $calculator->calculatePauseRemainingValue($case, now());
+
+        $this->assertSame(5400, $remaining['response_time_remaining']);
+        $this->assertSame(12600, $remaining['fix_time_remaining']);
+    }
+
     public function test_cancelling_pause_retains_original_sla_deadlines(): void
     {
         $staff = User::factory()->create();
