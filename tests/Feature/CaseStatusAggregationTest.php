@@ -155,11 +155,13 @@ class CaseStatusAggregationTest extends TestCase
         TaskSiteVisit::query()->create([
             'ticket_id' => $case->id,
             'short_description' => 'Engineer enroute',
+            'visit_scheduled_at' => now()->subMinutes(30),
             'enroute_at' => now(),
         ]);
         TaskSiteVisit::query()->create([
             'ticket_id' => $case->id,
             'short_description' => 'Engineer completed visit',
+            'visit_scheduled_at' => now()->subHours(3),
             'onsite_at' => now()->subHour(),
             'offsite_at' => now(),
         ]);
