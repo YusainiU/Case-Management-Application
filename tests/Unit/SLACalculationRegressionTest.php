@@ -132,6 +132,28 @@ class SLACalculationRegressionTest extends TestCase
         $this->assertSame('2026-03-29 10:00:00', $calc->calcRespondByTime($data));
     }
 
+    public function test_working_seconds_between_preserves_partial_minutes_across_weekend(): void
+    {
+        config()->set('app.timezone', 'Europe/London');
+        $calculator = \Mockery::mock(SLACalculationService::class)->makePartial();
+        $calculator->shouldReceive('createSlaData')->twice()
+            ->andReturn($this->sla());
+        $ticket = new \Simplydigital\CaseManagement\Models\tickets;
+
+        $from = Carbon::parse('2026-11-13 16:59:33', 'Europe/London'); // Friday
+        $to = Carbon::parse('2026-11-16 09:00:43', 'Europe/London'); // Monday
+
+        $this->assertSame(70, $calculator->workingSecondsBetween($ticket, $from, $to));
+        $this->assertSame(1, $calculator->workingMinutesBetween($ticket, $from, $to));
+    }
+
+    public function test_missing_sla_agreement_fails_with_an_explicit_domain_error(): void
+    {
+        $ticket = new \Simplydigital\CaseManagement\Models\tickets;
+        $this->expectException(DomainException::class);
+        (new SLACalculationService)->createSlaData($ticket);
+    }
+
     public function test_resuming_on_an_off_day_does_not_change_contractual_working_week(): void
     {
         config()->set('app.timezone', 'Europe/London');
