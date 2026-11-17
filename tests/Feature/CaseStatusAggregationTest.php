@@ -13,6 +13,7 @@ use Simplydigital\CaseManagement\Models\Customer;
 use Simplydigital\CaseManagement\Models\slaTask;
 use Simplydigital\CaseManagement\Models\SlaTaskPause;
 use Simplydigital\CaseManagement\Models\TaskLogs;
+use Simplydigital\CaseManagement\Models\TaskSiteVisit;
 use Simplydigital\CaseManagement\Models\tickets;
 use Simplydigital\CaseManagement\Services\CaseRetrieveTicketStatus;
 use Simplydigital\CaseManagement\Services\CaseTicketUtilityServices;
@@ -126,6 +127,65 @@ class CaseStatusAggregationTest extends TestCase
         $component = Livewire::test(CaseStatus::class);
         $this->assertSame(1, $component->instance()->buildStatus()['currentlyWorking']);
         $this->assertSame(1, $component->instance()->buildStatus()['resolved']);
+    }
+
+    public function test_customer_urgent_and_visit_totals_remain_case_scoped(): void
+    {
+        $staff = User::factory()->create();
+        $case = $this->caseFor($staff);
+        $other = $this->caseFor($staff);
+
+        TaskLogs::query()->create([
+            'ticket_id' => $case->id,
+            'name' => 'Urgent customer message',
+            'type' => 'external_update_log',
+            'source' => 'external',
+            'require_attention' => true,
+            'description' => 'Customer reply needs review.',
+        ]);
+        TaskLogs::query()->create([
+            'ticket_id' => $other->id,
+            'name' => 'Other case urgent log',
+            'type' => 'external_update_log',
+            'source' => 'external',
+            'require_attention' => true,
+            'description' => 'Do not include in first case.',
+        ]);
+        TaskSiteVisit::query()->create([
+            'ticket_id' => $case->id,
+            'short_description' => 'Engineer enroute',
+            'enroute_at' => now(),
+        ]);
+        TaskSiteVisit::query()->create([
+            'ticket_id' => $case->id,
+            'short_description' => 'Engineer completed visit',
+            'onsite_at' => now()->subHour(),
+            'offsite_at' => now(),
+        ]);
+
+        $status = app(CaseRetrieveTicketStatus::class)->retrieveStatus($case);
+        $this->assertSame(1, $status['numberOfUrgentLogs']);
+        $this->assertNotNull($status['lastUrgentLogCreatedAt']);
+        $this->assertNotNull($status['lastCustomerLogCreatedAt']);
+        $this->assertSame(1, $status['totalVisits']);
+        $this->assertSame(1, $status['currentlyEnroute']);
+        $this->assertSame(0, $status['currentlyOnsite']);
+        $this->assertTrue($status['visitScheduled']);
+    }
+
+    public function test_case_information_internal_update_accessor_matches_status_aggregation(): void
+    {
+        $staff = User::factory()->create();
+        $case = $this->caseFor($staff);
+        $this->logFor($case, 'system_log', 'internal');
+
+        $this->assertFalse($case->has_internal_update);
+        $this->assertSame(1, app(CaseRetrieveTicketStatus::class)->retrieveStatus($case)['noUpdate']);
+
+        $this->logFor($case, 'internal_update_log', 'internal');
+        $this->assertTrue($case->has_internal_update);
+        $this->assertSame(0, app(CaseRetrieveTicketStatus::class)->retrieveStatus($case)['noUpdate']);
+        $this->assertNotNull($case->latestInternalUpdate()->first());
     }
 
     public function test_missing_sla_task_returns_nullable_dates_and_zero_sla_flags(): void
