@@ -121,7 +121,7 @@ def setup():
     name = input('\nClone directory [Case-Management-Application]: ').strip() or 'Case-Management-Application'
     if name in ('.', '..') or Path(name).name != name or '\\' in name:
         sys.exit('Use a single directory name, without /, \\, . or ..')
-    branch = input('Git branch [main] (optional: feature/ai-agent-approvals-v1): ').strip() or DEFAULT_BRANCH
+    branch = input('Git branch [main] (optional: main): ').strip() or DEFAULT_BRANCH
     if branch.startswith('-') or any(c.isspace() for c in branch):
         sys.exit('Invalid Git branch name.')
     destination = Path.cwd() / name
