@@ -69,6 +69,7 @@ class CaseStatusAggregationTest extends TestCase
         $this->assertSame(0, $status['taskBreached']);
         $this->assertSame('', $status['breachType']);
         $this->assertSame(0, $status['closeToBreachWarning']);
+        $this->assertFalse(slaTask::query()->fixBreached()->whereKey($sla->id)->exists());
     }
 
     public function test_fix_and_response_breaches_are_detected_without_persisted_breach_flags(): void
