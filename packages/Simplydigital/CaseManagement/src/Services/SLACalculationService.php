@@ -149,6 +149,7 @@ class SLACalculationService
         $timezone = config('app.timezone', 'UTC');
         $start = Carbon::createFromTimestamp((int) $data['startDate'], $timezone);
         $remaining = (int) $data['response_time'];
+        $this->logger->log('Initial Data', $data);
 
         if ($remaining === 0) {
             return $start->format('Y-m-d H:i:s');
@@ -166,8 +167,11 @@ class SLACalculationService
                 if ($from->lt($serviceEnd)) {
                     $available = (int) $from->diffInSeconds($serviceEnd);
                     if ($remaining <= $available) {
-                        return $from->copy()->addSeconds($remaining)
+                        $deadline = $from->copy()->addSeconds($remaining)
                             ->format('Y-m-d H:i:s');
+                        $this->logger->log('Calculated SLA Deadline', $deadline);
+
+                        return $deadline;
                     }
 
                     $remaining -= $available;
