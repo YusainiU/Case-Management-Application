@@ -36,6 +36,46 @@ This review checks the actual implementation of the Case Management package and 
 
 **Note:** The dashboard aggregates are *status counts*. Some indicators can overlap (for example, a paused case can also be unassigned). A Resolved case appears in the separate Resolved card, not the Open count.
 
+## Paused case count versus active SLA pause records
+
+The **Paused** dashboard tile and **Paused Cases** filter now use the same operational definition: a non-closed, unresolved case whose `tickets.state` is `Paused`. The previously used `sla_tasks.activePause` relation means **unfinished SLA pause history**, which is not necessarily the same as a case currently labelled Paused. For example, a legacy manual change could leave `resumed_at = NULL` on an earlier pause even when the case is now `In Progress`. Counting those records as cases inflated the Paused dashboard tile.
+
+For SLA breach/near-breach calculations, the status service continues to check the **actual active pause** so it does not incorrectly label a frozen SLA as running. We deliberately **do not delete, rewrite or auto-resume historic pause rows**: if the case state and pause history disagree, the contractual SLA allowance may need investigation first.
+
+### Read-only diagnosis of mismatched records
+
+Run this query against the intended database to find cases which are **not** in the Paused state but have a live unfinished pause record:
+
+```sql
+SELECT t.id, t.number, t.state, st.id AS sla_task_id,
+       p.id AS pause_id, p.paused_at, p.resumed_at
+FROM tickets AS t
+JOIN sla_tasks AS st ON st.ticket_id = t.id AND st.deleted_at IS NULL
+JOIN sla_task_pauses AS p ON p.sla_task_id = st.id
+WHERE t.deleted_at IS NULL
+  AND t.closed_datetime IS NULL
+  AND p.resumed_at IS NULL
+  AND t.state <> 'Paused'
+ORDER BY t.id, p.paused_at;
+```
+
+The inverse discrepancy (a case labelled Paused with no active pause row) can be checked with:
+
+```sql
+SELECT t.id, t.number, t.state, st.id AS sla_task_id
+FROM tickets AS t
+LEFT JOIN sla_tasks AS st ON st.ticket_id = t.id AND st.deleted_at IS NULL
+WHERE t.deleted_at IS NULL
+  AND t.closed_datetime IS NULL
+  AND t.state = 'Paused'
+  AND NOT EXISTS (
+      SELECT 1 FROM sla_task_pauses AS p
+      WHERE p.sla_task_id = st.id AND p.resumed_at IS NULL
+  );
+```
+
+These are **diagnostic SELECTs only**. Review the affected case's progress logs and SLA history before deciding on a data repair. Do not blindly set `resumed_at`, delete pauses or modify deadlines.
+
 ## Performance and operational considerations
 
 Bulk status retrieval now loads the case's SLA, task logs and visits in batches, instead of querying each case's log and visit tables separately. For very large organisations with long case histories, further optimisation using database `withCount`/`withMax` aggregates can be considered in a later iteration.
