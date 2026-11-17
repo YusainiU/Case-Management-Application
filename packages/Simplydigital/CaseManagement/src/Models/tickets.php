@@ -122,14 +122,23 @@ class tickets extends Model implements FileOwner
     
     public function getHasInternalUpdateAttribute()
     {
-        return $this->taskLogs()->where('type', 'internal_update_log')->exists();
+        return $this->taskLogs()->where(function ($query): void {
+            $query->whereIn('type', [
+                config('case-management.logs.type.internal_update', 'internal_update_log'),
+                'internal_update', // Legacy records
+            ])->orWhere('source', 'ai_assisted'); // Staff-reviewed AI note
+        })->exists();
     }
 
     public function latestInternalUpdate()
     {
         return $this->hasOne(TaskLogs::class)
-            ->where('type', 'internal_update')
-            ->latestOfMany();
+            ->where(function ($query): void {
+                $query->whereIn('type', [
+                    config('case-management.logs.type.internal_update', 'internal_update_log'),
+                    'internal_update',
+                ])->orWhere('source', 'ai_assisted');
+            })->latestOfMany();
     }
 
     public function assignedToUser()
