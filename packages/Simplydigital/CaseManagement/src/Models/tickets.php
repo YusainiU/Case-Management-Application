@@ -132,7 +132,7 @@ class tickets extends Model implements FileOwner
 
     public function latestInternalUpdate()
     {
-        return $this->hasOne(TaskLogs::class)
+        return $this->hasOne(TaskLogs::class, 'ticket_id')
             ->where(function ($query): void {
                 $query->whereIn('type', [
                     config('case-management.logs.type.internal_update', 'internal_update_log'),
