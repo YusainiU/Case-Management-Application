@@ -727,148 +727,121 @@ class CaseTicketUtilityServices
 
     }
 
+    /**
+     * Shared SLA pause/resume operations for the manual and AI Assistant UIs.
+     * Keep the case, SLA, pause and progress logs in one transaction.
+     */
     public function pauseCaseSla(tickets $ticket)
     {
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($ticket) {
+            $ticket = tickets::query()->lockForUpdate()->findOrFail($ticket->id);
+            $slaTask = $ticket->slaTasks()->lockForUpdate()->first();
 
-        $slaTask = $ticket->slaTasks;
-        $now = Carbon::now();
+            if (! $slaTask || $ticket->deleted_at !== null || $ticket->closed_datetime !== null
+                || $ticket->resolved_datetime !== null
+                || ! in_array($ticket->state, CaseState::openStates(), true)
+                || $ticket->state === CaseState::Paused
+                || $slaTask->activePause()->exists() || $slaTask->breached) {
+                return false;
+            }
 
-        if (! $slaTask) {
-            return false;
-        }
+            $now = Carbon::now();
+            $remaining = $this->calcService->calculatePauseRemainingValue($ticket, $now);
+            $pause = $this->caseRepository->createPause([
+                'sla_task_id' => $slaTask->id,
+                'paused_at' => $now,
+                'remaining' => $remaining['response_time_remaining'],
+                'remaining_fix_time' => $remaining['fix_time_remaining'],
+            ]);
 
-        // Create Pause
-        $slaTimeRemaining = $this->calcService->calculatePauseRemainingValue($ticket, $now);
-        $data = [
-            'sla_task_id' => $slaTask->id,
-            'paused_at' => $now,
-            'remaining' => $slaTimeRemaining['response_time_remaining'],
-            'remaining_fix_time' => $slaTimeRemaining['fix_time_remaining'],
-        ];
-        $pause = $this->caseRepository->createPause($data);
-
-        if ($pause) {
-
-            // Update Ticket and create log
-            // Change - state, paused_at
-            $tdata = [
-                'state' => CaseState::Paused,
-                'paused_at' => $pause->paused_at,
-            ];
-            $this->caseRepository->updateTicket($ticket, $tdata);
-            $logText = $this->caseLogAdministrationService->buildPauseText($pause->paused_at);
-            $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
-
-            // Update Task
-            // Change - state
-            $sData = [
-                'state' => CaseState::Paused,
-            ];
-            $this->caseRepository->updateSlaTask($slaTask, $data);
+            $this->caseRepository->updateTicket($ticket, [
+                'state' => CaseState::Paused, 'paused_at' => $pause->paused_at,
+            ]);
+            $this->caseRepository->updateSlaTask($slaTask, [
+                'state' => CaseState::Paused, 'paused_at' => $pause->paused_at,
+            ]);
+            $this->caseLogAdministrationService->createSystemLog(
+                $ticket, $this->caseLogAdministrationService->buildPauseText($pause->paused_at)
+            );
 
             return $pause;
-
-        }
-
-        return false;
-
+        });
     }
 
     public function resumeCaseSla(tickets $ticket)
     {
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($ticket) {
+            $ticket = tickets::query()->lockForUpdate()->findOrFail($ticket->id);
+            $slaTask = $ticket->slaTasks()->lockForUpdate()->first();
+            if (! $slaTask || $ticket->state !== CaseState::Paused
+                || $ticket->closed_datetime !== null || $ticket->resolved_datetime !== null) {
+                return false;
+            }
 
-        // Get sla task
-        $slaTask = $ticket->slaTasks;
-        if (! $slaTask) {
-            return false;
-        }
+            // Prefer the active pause record itself rather than equality of
+            // rounded database timestamps across unrelated model objects.
+            $pause = $slaTask->activePause()->lockForUpdate()->first();
+            if (! $pause) {
+                return false;
+            }
 
-        // Get Pause
-        $pause = SlaTaskPause::where('sla_task_id', $slaTask->id)
-            ->where('paused_at', $slaTask->paused_at)
-            ->whereNull('resumed_at')
-            ->first();
-        if (! $pause) {
-            return false;
-        }
+            $now = Carbon::now();
+            $newRespondBy = $this->calcService->calcCustomRespondByTime($ticket, $pause->remaining, $now);
+            $newFixBy = $this->calcService->calcCustomRespondByTime($ticket, $pause->remaining_fix_time, $now);
 
-        // Recalculate Respondby time -- only when resume is triggere
-        $now = Carbon::now();
-        $timeResumed = Carbon::now();
-        $slaRemaining = $pause->remaining;
-        $fixTimeRemaining = $pause->remaining_fix_time;
-        $newRespondBy = $this->calcService->calcCustomRespondByTime($ticket, $slaRemaining, $timeResumed);
-        $newFixBy = $this->calcService->calcCustomRespondByTime($ticket, $fixTimeRemaining, $timeResumed);
+            $from = $slaTask->respond_by?->format('d-m-Y H:i:s') ?? 'Not set';
+            $to = Carbon::parse($newRespondBy)->format('d-m-Y H:i:s');
 
-        // Update sla_task_pause - resumed_at
-        $pdata = [
-            'resumed_at' => $now,
-        ];
-        $resumed = $this->caseRepository->updatePause($pause, $pdata);
-
-        if ($resumed) {
-            // Update ticket - state=In Progress, resumed_at
-            $tdata = [
+            $this->caseRepository->updatePause($pause, ['resumed_at' => $now]);
+            $this->caseRepository->updateTicket($ticket, [
+                'state' => CaseState::In_Progress, 'paused_at' => null,
+            ]);
+            $this->caseRepository->updateSlaTask($slaTask, [
                 'state' => CaseState::In_Progress,
-            ];
-            $this->caseRepository->updateTicket($ticket, $tdata);
-            $logText = $this->caseLogAdministrationService->buildResumeText($now->format('d-m-y H:i'));
-            $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
-            // update sla_task - state, respond_by
-            $from = $slaTask->respond_by->format('d-m-Y H:i:s');
-            $to = date('d-m-Y H:i:s', strtotime($newRespondBy));
-            $sData = [
-                'state' => CaseState::In_Progress,
+                'paused_at' => null,
+                'resumed_at' => $now,
                 'respond_by' => $newRespondBy,
                 'fix_by' => $newFixBy,
-            ];
-            $this->caseRepository->updateSlaTask($slaTask, $sData);
-            $logText = $this->caseLogAdministrationService->buildChangeRespondByText($from, $to);
-            $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
-        }
+            ]);
+            $this->caseLogAdministrationService->createSystemLog(
+                $ticket, $this->caseLogAdministrationService->buildResumeText($now->format('d-m-y H:i'))
+            );
+            $this->caseLogAdministrationService->createSystemLog(
+                $ticket, $this->caseLogAdministrationService->buildChangeRespondByText($from, $to)
+            );
 
-        return $resumed;
-
+            return true;
+        });
     }
 
     public function cancelPauseSla(tickets $ticket)
     {
-        // Get sla task
-        $slaTask = $ticket->slaTasks;
-        if (! $slaTask) {
-            return false;
-        }
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($ticket) {
+            $ticket = tickets::query()->lockForUpdate()->findOrFail($ticket->id);
+            $slaTask = $ticket->slaTasks()->lockForUpdate()->first();
+            if (! $slaTask || $ticket->state !== CaseState::Paused
+                || $ticket->closed_datetime !== null || $ticket->resolved_datetime !== null) {
+                return false;
+            }
 
-        // Get Pause
-        $pause = SlaTaskPause::where('sla_task_id', $slaTask->id)
-            ->where('paused_at', $slaTask->paused_at)
-            ->whereNull('resumed_at')
-            ->first();
-        if (! $pause) {
-            return false;
-        }
+            $pause = $slaTask->activePause()->lockForUpdate()->first();
+            if (! $pause) {
+                return false;
+            }
 
-        $deleted = $this->caseRepository->deletePause($pause->id);
+            $this->caseRepository->deletePause($pause->id);
+            $this->caseRepository->updateTicket($ticket, [
+                'state' => CaseState::In_Progress, 'paused_at' => null,
+            ]);
+            $this->caseRepository->updateSlaTask($slaTask, [
+                'state' => CaseState::In_Progress, 'paused_at' => null,
+            ]);
+            $this->caseLogAdministrationService->createSystemLog(
+                $ticket, $this->caseLogAdministrationService->buildCancelPauseText(Carbon::now()->format('d-m-y H:i'))
+            );
 
-        if ($deleted) {
-            // Update ticket - state=In Progress, resumed_at
-            $tdata = [
-                'state' => CaseState::In_Progress,
-                'paused_at' => null,
-            ];
-            $this->caseRepository->updateTicket($ticket, $tdata);
-            $now = Carbon::now()->format('d-m-y H:i');
-            $logText = $this->caseLogAdministrationService->buildCancelPauseText($now);
-            $this->caseLogAdministrationService->createSystemLog($ticket, $logText);
-            // update sla_task
-            $sData = [
-                'state' => CaseState::In_Progress,
-                'paused_at' => null,
-            ];
-            $this->caseRepository->updateSlaTask($slaTask, $sData);
-        }
-
-        return $deleted;
+            return true;
+        });
     }
 
     public function resolveCase(tickets $ticket, array $data, bool $notifyCustomer = true)
