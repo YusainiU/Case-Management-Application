@@ -32,7 +32,7 @@ This repository is a monorepo-style application with a Laravel application shell
 
 ## Stack
 
-- PHP 8.2+
+- PHP 8.3+ (Laravel 13)
 - Laravel 13
 - Livewire 4
 - Livewire Flux 2
@@ -122,13 +122,26 @@ The project is structured around reusable package directories under `packages/Si
 
 These packages are registered through Composer path repositories in the root `composer.json`.
 
+## Guided installer (Ubuntu/Linux)
+
+Prefer a preflight-checked, interactive installer? Download and inspect **[install-case-management.py](scripts/install-case-management.py)**. It checks software versions and PHP extensions, stops and explains any missing requirements, then prompts for the clone directory and branch before installing Composer/npm dependencies and building assets.
+
+```bash
+curl -fL -o install-case-management.py \
+  https://raw.githubusercontent.com/YusainiU/Case-Management-Application/feature/ai-agent-approvals-v1/scripts/install-case-management.py
+python3 install-case-management.py --check-only
+python3 install-case-management.py
+```
+
+It **does not** automatically migrate/seed your database, publish assets, or configure a production server. Complete those steps when prompted, then use `composer run dev` locally. See the [Guided Local Deployment Guide](docs/GUIDED_LOCAL_DEPLOYMENT.md) for a detailed walkthrough.
+
 ## Requirements
 
 Before running the project, ensure you have:
 
-- PHP 8.2 or newer
+- PHP 8.3 or newer
 - Composer
-- Node.js 18+ and npm
+- Node.js 20.19.x or 22.12+ (Vite 8) and npm 10+
 - A local database (MySQL is configured and supported)
 - An `.env` file for local application configuration
 
