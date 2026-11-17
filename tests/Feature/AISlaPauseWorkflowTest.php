@@ -86,6 +86,29 @@ class AISlaPauseWorkflowTest extends TestCase
         $this->assertDatabaseCount('sla_task_pauses', 0);
     }
 
+    public function test_missing_sla_policy_explains_blocker_instead_of_throwing(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view', 'case.update');
+        $case = $this->caseFor($staff);
+        slaTask::query()->create([
+            'ticket_id' => $case->id,
+            'name' => 'SLA without policy',
+            'state' => CaseState::Open,
+            'active' => true,
+        ]);
+
+        $this->actingAs($staff);
+        Livewire::test(SlaPauseControls::class, ['case' => $case])
+            ->assertSee('no valid SLA policy')
+            ->set('confirmPause', true)
+            ->call('pause')
+            ->assertSee('no valid SLA policy');
+
+        $this->assertSame(CaseState::Open, $case->refresh()->state);
+        $this->assertDatabaseCount('sla_task_pauses', 0);
+    }
+
     public function test_viewer_cannot_pause_or_resume_or_cancel_sla(): void
     {
         $viewer = User::factory()->create();
