@@ -98,84 +98,21 @@ class CasePublicHolidayService
         $bankHols[] = $ddate = date("Y-m-d", strtotime("+" . (easter_days($year) + 1) . " days", strtotime("$year-03-21 12:00:00")));
         $des[$ddate]['Easter Monday'] = 3;
 
-        // May Day:
-        switch (date("w", strtotime("$year-05-01 12:00:00"))) {
-            case 0:
-                $bankHols[] = $ddate = "$year-05-02";
-                break;
-            case 1:
-                $bankHols[] = $ddate = "$year-05-01";
-                break;
-            case 2:
-                $bankHols[] = $ddate = "$year-05-07";
-                break;
-            case 3:
-                $bankHols[] = $ddate = "$year-05-06";
-                break;
-            case 4:
-                $bankHols[] = $ddate = "$year-05-05";
-                break;
-            case 5:
-                ## replacing year-05-04
-                $bankHols[] = $ddate = "$year-05-08";
-                break;
-            case 6:
-                $bankHols[] = $ddate = "$year-05-03";
-                break;
-        }
+        // England/Wales-style May bank holidays:
+        // early May = first Monday, spring = last Monday of May,
+        // summer = last Monday of August. The previous weekday
+        // switch could return Wednesdays/Fridays instead of Mondays.
+        $mayDay = Carbon::create($year, 5, 1)->nextOrSame(Carbon::MONDAY);
+        $bankHols[] = $ddate = $mayDay->format('Y-m-d');
         $des[$ddate]['May Day'] = 4;
 
-        // Whitsun:
-        switch (date("w", strtotime("$year-05-31 12:00:00"))) {
-            case 0:
-                $bankHols[] = $ddate = "$year-05-25";
-                break;
-            case 1:
-                $bankHols[] = $ddate = "$year-05-31";
-                break;
-            case 2:
-                $bankHols[] = $ddate = "$year-05-30";
-                break;
-            case 3:
-                $bankHols[] = $ddate = "$year-05-29";
-                break;
-            case 4:
-                $bankHols[] = $ddate = "$year-05-28";
-                break;
-            case 5:
-                $bankHols[] = $ddate = "$year-05-27";
-                break;
-            case 6:
-                $bankHols[] = $ddate = "$year-05-26";
-                break;
-        }
-        $des[$ddate]["Spring Bank Holiday"] = 5;
+        $spring = Carbon::create($year, 5, 31)->previousOrSame(Carbon::MONDAY);
+        $bankHols[] = $ddate = $spring->format('Y-m-d');
+        $des[$ddate]['Spring Bank Holiday'] = 5;
 
-        // Summer Bank Holiday:
-        switch (date("w", strtotime("$year-08-31 12:00:00"))) {
-            case 0:
-                $bankHols[] = $ddate = "$year-08-25";
-                break;
-            case 1:
-                $bankHols[] = $ddate = "$year-08-31";
-                break;
-            case 2:
-                $bankHols[] = $ddate = "$year-08-30";
-                break;
-            case 3:
-                $bankHols[] = $ddate = "$year-08-29";
-                break;
-            case 4:
-                $bankHols[] = $ddate = "$year-08-28";
-                break;
-            case 5:
-                $bankHols[] = $ddate = "$year-08-27";
-                break;
-            case 6:
-                $bankHols[] = $ddate = "$year-08-26";
-                break;
-        }
-        $des[$ddate]["Summer Bank Holiday"] = 6;
+        $summer = Carbon::create($year, 8, 31)->previousOrSame(Carbon::MONDAY);
+        $bankHols[] = $ddate = $summer->format('Y-m-d');
+        $des[$ddate]['Summer Bank Holiday'] = 6;
 
         // Christmas:
         switch (date("w", strtotime("$year-12-25 12:00:00"))) {
