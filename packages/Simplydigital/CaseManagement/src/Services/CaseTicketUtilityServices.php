@@ -781,7 +781,9 @@ class CaseTicketUtilityServices
             // Prefer the active pause record itself rather than equality of
             // rounded database timestamps across unrelated model objects.
             $pause = $slaTask->activePause()->lockForUpdate()->first();
-            if (! $pause) {
+            if (! $pause || $pause->remaining === null || $pause->remaining_fix_time === null) {
+                // A legacy or incomplete pause must be repaired manually;
+                // do not guess fresh deadlines when the frozen allowance is missing.
                 return false;
             }
 
