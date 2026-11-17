@@ -39,6 +39,37 @@ class AISlaPauseWorkflowTest extends TestCase
             ->assertSee('You can view the SLA status');
     }
 
+    public function test_paused_case_suggests_manual_sla_review_without_executing_it(): void
+    {
+        $staff = User::factory()->create();
+        $this->grant($staff, 'case.view');
+        $case = $this->caseFor($staff);
+        $case->update(['state' => CaseState::Paused]);
+
+        $sla = slaTask::query()->create([
+            'ticket_id' => $case->id,
+            'name' => 'Paused SLA indicator',
+            'state' => CaseState::Paused,
+            'active' => true,
+            'paused_at' => now()->subMinutes(2),
+        ]);
+        SlaTaskPause::query()->create([
+            'sla_task_id' => $sla->id,
+            'paused_at' => $sla->paused_at,
+            'remaining' => 1800,
+            'remaining_fix_time' => 3600,
+        ]);
+
+        $this->actingAs($staff);
+        Livewire::test(CaseAssistant::class, ['case' => $case])
+            ->assertSee('SLA is paused')
+            ->assertSee('Review the recorded pause and resume or cancel it')
+            ->assertSee('SLA pause / resume');
+
+        $this->assertSame(CaseState::Paused, $case->refresh()->state);
+        $this->assertTrue($sla->refresh()->paused);
+    }
+
     public function test_staff_cannot_pause_an_sla_without_a_task(): void
     {
         $staff = User::factory()->create();
